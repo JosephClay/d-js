@@ -1,3 +1,41 @@
+require([
+	'libs/overload',
+
+	'D/parseHTML',
+	'D/conflict',
+
+	'module/classes'
+
+], function(
+	Overload,
+
+	parseHTML,
+	conflict,
+
+	classes
+) {
+
+	var document = document;
+	var window = window;
+	var _prevD = window.D;
+
+	var D = function() {
+
+	};
+
+	Overload.prototype.err = function() {
+		throw new TypeError();
+	};
+
+	_.extend(D, parseHTML, conflict);
+
+	_.extend(D.prototype, classes.fn);
+
+	return D;
+
+});
+
+
 (function(root, _, document, undefined) {
 
 	var DIV = document.createElement('div'),

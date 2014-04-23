@@ -1,9 +1,14 @@
-return {
-	noConflict: function() {
-		// TODO
-	},
+define(function() {
 
-	moreConflict: function() {
-		// TODO
-	}
-};
+	return {
+		noConflict: function() {
+			window.d = _prevD;
+			return D;
+		},
+
+		moreConflict: function() {
+			window.jQuery = window.$ = D;
+		}
+	};
+
+}());

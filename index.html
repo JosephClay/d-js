@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<meta charset="utf-8">
+        <meta charset="utf-8">
         <title>D.js</title>
         <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.14.0.css">
 
-    	<!-- dependencies -->
-    	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+        <!-- For unit tests -->
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/qunit/1.14.0/qunit.min.js"></script>
 
-    	<!-- For unit tests -->
-    	<script src="http://cdnjs.cloudflare.com/ajax/libs/qunit/1.14.0/qunit.min.js"></script>
-
+        <script>
+            window.require = {
+                modules: [
+                    {
+                        name: 'overload',
+                        include: ['libs/Overload']
+                    },
+                    {
+                        name: '_',
+                        include: ['libs/underscore']
+                    },
+                    {
+                        name: 'signal',
+                        include: ['libs/Signal']
+                    }
+                ]
+            };
+        </script>
         <script data-main="src/D" src="build/require.js"></script>
     </head>
     <body>
-		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
-		<script src="tests/tests.js"></script>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+        <script src="tests/tests.js"></script>
     </body>
 </html>
