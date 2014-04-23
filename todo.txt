@@ -24,7 +24,7 @@ jQuery:
 		moreConflict
 
 jQuery.fn:
-	Modules:
+	class:
 		@param {String}
 		@param {Array}
 		@return {D}
