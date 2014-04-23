@@ -1,18 +1,18 @@
 define([
     'utils',
     'nodeType',
-    'modules/array'
+    'supports'
 ],
 function(
     _utils,
     _nodeType,
-    _array
+    _supports
 ) {
 
-    var _isMatch = (function(_matcher) {
-        if (_matcher) {
+    var _isMatch = (function(matchSelector) {
+        if (matchSelector) {
             return function(elem, selector) {
-                return _matcher.call(elem, selector);
+                return matchSelector.call(elem, selector);
             };
         }
 
@@ -26,9 +26,23 @@ function(
             }
             return false;
         };
-    }(DIV.matches || DIV.matchesSelector || DIV.msMatchesSelector || DIV.mozMatchesSelector || DIV.webkitMatchesSelector || DIV.oMatchesSelector));
+    }(_supports.matchesSelector));
 
     var _find = function(selector, context) {
+        var idx = 0,
+            length = context.length,
+            result = [];
+
+        for (; idx < length; idx++) {
+            var ret = _findQuery(selector, context[idx]);
+            if (ret) { result.push(ret); }
+        }
+
+        // TODO: I think this needs to be flattened, but not sure
+        return _utils.unique(_.flatten(result));
+    };
+
+    var _findQuery = function(selector, context) {
         context = context || document;
 
         var nodeType;
@@ -40,13 +54,30 @@ function(
         return _utils.slice(query);
     };
 
+
     return {
+        find: _find,
+
         fn: {
-            has: function() {},
+            has: function(target) {
+                // TODO: Has
+                /*var i,
+                    targets = jQuery( target, this ),
+                    len = targets.length;
+
+                return this.filter(function() {
+                    for ( i = 0; i < len; i++ ) {
+                        if ( jQuery.contains( this, targets[i] ) ) {
+                            return true;
+                        }
+                    }
+                });*/
+            },
 
             is: Overload()
                     .args(String)
                     .use(function(selector) {
+                        // TODO: Internal "every"
                         return DOM(
                             _.every(this, function(elem) {
                                 return _isMatch(elem, selector);
@@ -55,6 +86,7 @@ function(
                     })
                     .args(Function)
                     .use(function(iterator) {
+                        // TODO: Internal "every"
                         return DOM(
                             _.every(this, iterator)
                         );
@@ -66,19 +98,28 @@ function(
             find: Overload()
                     .args(String)
                     .use(function(selector) {
-                        var idx = 0,
-                            length = this.length,
-                            result = [];
 
-                        for (; idx < length; idx++) {
-                            var ret = _find(selector, this[idx]);
-                            if (ret) { result.push(ret); }
-                        }
+                        return _utils.merge(DOM(), _find(selector, this));
 
-                        // TODO: I think this needs to be flattened, but not sure
-                        return _utils.merge(DOM(), _.flatten(result));
+                    }).expose(),
 
-                    }).expose()
+            filter: Overload()
+                        .args(String)
+                        .use(function(selector) {
+                            return this.is(selector);
+                        })
+                        .args(Function)
+                        .use(function(checker) {
+                            var result = [],
+                                idx = this.length;
+
+                            while (idx--) {
+                                if (checker(this[idx])) { result.unshift(this[idx]); }
+                            }
+
+                            return DOM(result);
+                        })
+                        .expose()
         }
     };
 });

@@ -12,7 +12,7 @@ define([ 'utils' ], function(utils) {
 
     // See jQuery
     // src\selector-native.js: 37
-    var _selectorSort = (function() {
+    var _elementSort = (function() {
 
         var _hasDuplicate = false;
         var _sort = function(a, b) {
@@ -50,7 +50,7 @@ define([ 'utils' ], function(utils) {
 
     return {
         slice: _slice,
-        selectorSort: _selectorSort,
+        elementSort: _elementSort,
 
         fn: {
             at: function(index) {
@@ -73,9 +73,6 @@ define([ 'utils' ], function(utils) {
             },
             last: function() {
                 return D(this[this.length - 1]);
-            },
-            filter: function() {
-                // TODO
             }
         }
     };

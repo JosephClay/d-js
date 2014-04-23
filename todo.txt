@@ -2,6 +2,26 @@ X: IE7<
 X: Android 2.3<
 
 +: Modular
++: Throw errors if you're stupid
+
+Deps:
+	Signal
+	Underscore
+	Overload?
+
+jQuery:
+	basic:
+		@param {String}
+		@return {D}
+		parseHTML
+
+	other:
+		@param {none}
+		@returns {D}
+		noConflict
+
+		@returns {none}
+		moreConflict
 
 jQuery.fn:
 	class:
@@ -77,26 +97,26 @@ jQuery.fn:
 		@return {Element}
 		last
 
-		@param {String|Function}
-		@return {D}
-		filter
-
 	selectors:
 		@param {String|Function}
 		@return {Boolean}
 		has
 
 		@param {String|Function}
-		@return {D}
+		@return {new D}
 		is
 
 		@param {String|Function}
-		@return {D}
+		@return {new D}
 		not
 
 		@param {String}
 		@return {new D}
 		find
+
+		@param {String|Function}
+		@return {new D}
+		filter
 
 	css:
 		@param {String} {String}

@@ -1,7 +1,7 @@
 require([
     'libs/overload',
 
-    'D/parseHTML',
+    'D/parser',
     'D/conflict',
 
     'module/classes'
@@ -9,17 +9,37 @@ require([
 ], function(
     Overload,
 
-    parseHTML,
+    parser,
     conflict,
 
     classes
 ) {
 
-    var document = document;
-    var window = window;
-    var _prevD = window.D;
+    var document = document,
+        window = window,
+        _prevD = window.D;
 
-    var DOM = function() {
+    var DOM = function(selector) {
+        if (!(this instanceof DOM)) { return new DOM(elem); }
+
+        if (_.isString(selector)) {
+
+            // If it's HTML, parse it into this
+            if (_utils.isHTML(selector)) {
+                _utils.merge(this, parser.parseHTML(selector));
+                return;
+            }
+
+            // Perform a find without creating a new DOM
+            _utils.merge(this, selectors.find(selector, this));
+            return;
+        }
+
+        if (_.isArray(selector)) {
+            var elements = selector;
+            _utils.merge(this, elements);
+            return;
+        }
 
     };
 
@@ -27,7 +47,7 @@ require([
         throw new TypeError();
     };
 
-    _.extend(DOM, parseHTML.fn, conflict.fn);
+    _.extend(DOM, parser.fn, conflict.fn);
 
     _.extend(DOM.prototype, Array.prototype, classes.fn);
 
@@ -85,12 +105,6 @@ require([
     };
 
     _.extend(Dom, {
-        parseHtml: function(str) {
-            var tmp = document.implementation.createHTMLDocument();
-            tmp.body.innerHTML = str;
-            return tmp.body.children;
-        },
-
         toD: function(elements) {
             elements = (elements instanceof D) ? elements.elem : elements;
             if (!elements.length) { return []; }
@@ -146,44 +160,6 @@ require([
             }
 
             return this.elem.textContent;
-        },
-
-        hasClass: function(name) {
-            if (this.elem.classList) {
-                return this.elem.classList.contains(name);
-            }
-
-            return new RegExp('(^| )' + name + '( |$)', 'gi').test(this.elem.className);
-        },
-
-        addClass: function(name) {
-            if (this.elem.classList) {
-                this.elem.classList.add(name);
-                return this;
-            }
-
-            this.elem.className += ' ' + name;
-            return this;
-        },
-
-        removeClass: function(name) {
-            if (this.elem.classList) {
-                this.elem.classList.remove(name);
-                return this;
-            }
-
-            this.elem.className = this.elem.className.replace(new RegExp('(^|\\b)' + name.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-            return this;
-        },
-
-        toggleClass: function(name) {
-            if (this.hasClass(name)) {
-                this.removeClass(name);
-            } else {
-                this.addClass(name);
-            }
-
-            return this;
         },
 
         parent: function() {
