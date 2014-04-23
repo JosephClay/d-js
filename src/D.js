@@ -19,7 +19,7 @@ require([
     var window = window;
     var _prevD = window.D;
 
-    var D = function() {
+    var DOM = function() {
 
     };
 
@@ -27,11 +27,11 @@ require([
         throw new TypeError();
     };
 
-    _.extend(D, parseHTML.fn, conflict.fn);
+    _.extend(DOM, parseHTML.fn, conflict.fn);
 
-    _.extend(D.prototype, classes.fn);
+    _.extend(DOM.prototype, Array.prototype, classes.fn);
 
-    return D;
+    return DOM;
 
 });
 
@@ -41,29 +41,6 @@ require([
     var DIV = document.createElement('div'),
 
         _getComputedStyle = root.getComputedStyle,
-
-        _exists = function(val) {
-            return (val !== null && val !== undefined);
-        },
-
-        _matches = (function(_matcher) {
-            if (_matcher) {
-                return function(elem, selector) {
-                    return _matcher.call(elem, selector);
-                };
-            }
-
-            return function(elem, selector) {
-                var nodes = elem.parentNode.querySelectorAll(selector),
-                    idx = nodes.length;
-                while (idx--) {
-                    if (nodes[idx] === elem) {
-                        return true;
-                    }
-                }
-                return false;
-            };
-        }(DIV.matches || DIV.matchesSelector || DIV.msMatchesSelector || DIV.mozMatchesSelector || DIV.webkitMatchesSelector || DIV.oMatchesSelector)),
 
         _bind = function(elem, eventName, callback) {
             if (elem.addEventListener) {
@@ -209,10 +186,6 @@ require([
             return this;
         },
 
-        find: function(selector) {
-            return new Dom(this.elem.querySelectorAll(selector));
-        },
-
         parent: function() {
             return new Dom(this.elem.parentNode);
         },
@@ -228,14 +201,6 @@ require([
             }
 
             return this.elem.getAttribute(attr);
-        },
-
-        is: function(selector) {
-            if (_.isString(selector)) {
-                return _matches(this.elem, selector);
-            }
-
-            return this.elem === ((selector instanceof Dom) ? selector.elem : selector);
         },
 
         position: function() {
