@@ -1,0 +1,291 @@
+X: IE7<
+X: Android 2.3<
+
++: Modular
++: Throw errors if you're stupid
+
+Deps:
+	Signal
+	Underscore
+	Overload?
+
+jQuery:
+	basic:
+		@param {String}
+		@return {D}
+		parseHTML
+
+	other:
+		@param {none}
+		@returns {D}
+		noConflict
+
+		@returns {none}
+		moreConflict
+
+jQuery.fn:
+	Modules:
+		@param {String}
+		@param {Array}
+		@return {D}
+		addClass
+
+		@param {String}
+		@param {Array}
+		@return {D}
+		removeClass
+
+		@param {String}
+		@param {Array}
+		@return {Boolean}
+		hasClass
+
+		@param {String}
+		@return {D}
+		toggleClass
+
+	events:
+		@param {String} {Function}
+		@param {String} {String} {Function}
+		@return {D}
+		on
+
+		@param {String} {Function}
+		@param {String} {String} {Function}
+		@return {D}
+		off
+
+	manip:
+		@param {none}
+		@return {D}
+		empty
+
+		@param {none}
+		@return {new D}
+		clone
+
+		@param {D|Element}
+		@return {D}
+		append
+
+		@param {D|Element}
+		@return {D}
+		prepend
+
+	array:
+		@param {Number}
+		@return {Element}
+		at
+
+		@param {none}
+		@return {new D}
+		slice
+
+		@param {none}
+		@return {Element}
+		next
+
+		@param {none}
+		@return {Element}
+		prev
+
+		@param {none}
+		@return {Element}
+		first
+
+		@param {none}
+		@return {Element}
+		last
+
+		@param {String|Function}
+		@return {D}
+		filter
+
+	selectors:
+		@param {String|Function}
+		@return {Boolean}
+		has
+
+		@param {String|Function}
+		@return {D}
+		is
+
+		@param {String|Function}
+		@return {D}
+		not
+
+		@param {String}
+		@return {new D}
+		find
+
+	css:
+		@param {String} {String}
+		@return {D}
+
+		@param {Object}
+		@return {D}
+
+		@param {String}
+		@return {String|Number}
+
+		@param {Array}
+		@return {Array.<String>}
+		css
+
+		@param {none}
+		@return {D}
+		hide
+
+		@param {none}
+		@return {D}
+		show
+
+		@param {none|Boolean}
+		@return {D}
+		toggle
+
+	dimensions:
+		@param {none|Number|String}
+		@return {Number}
+		width
+
+		@param {none|Number|String}
+		@return {Number}
+		height
+
+		@param {none}
+		@return {Number}
+		innerWidth
+
+		@param {none}
+		@return {Number}
+		innerHeight
+
+		@param {none}
+		@return {Number}
+		outerWidth
+
+		@param {none}
+		@return {Number}
+		outerHeight
+
+	transversal:
+		@param {none|String}
+		@return {new D}
+		closest
+
+		@param {none|String}
+		@return {new D}
+		siblings
+
+		@param {none|String}
+		@return {new D}
+		parent
+
+		@param {none|String}
+		@return {new D}
+		children
+
+	position:
+		@param {none}
+		@return {Object.<String:Number>}
+		position
+
+		@param {none}
+		@return {Object.<String:Number>}
+		offset
+
+	scroll:
+		@param {none}
+		@return {Number}
+
+		@param {Number}
+		@return {D}
+		scrollLeft
+
+		@param {none}
+		@return {Number}
+
+		@param {Number}
+		@return {D}
+		scrollTop
+
+	attr:
+		@param {String} {*}
+		@return {D}
+
+		@param {String}
+		@return {*}
+
+		@param {Object}
+		@return {D}
+		attr
+
+		@param {String}
+		@return {D}
+
+		@param {Array}
+		@return {D}
+		removeAttr
+
+	data:
+		@param {none}
+		@return {Object}
+		data
+
+	prop:
+		@param {String} {*}
+		@return {D}
+
+		@param {String}
+		@return {*}
+
+		@param {Object}
+		@return {D}
+		prop
+
+		@param {String}
+		@return {D}
+
+		@param {Array}
+		@return {D}
+		removeProp
+
+	values:
+		@param {none}
+		@return {String}
+
+		@param {String}
+		@return {D}
+		html
+
+		@param {none}
+		@return {String}
+
+		@param {String}
+		@return {D}
+		val
+
+		@param {none}
+		@return {String}
+
+		@param {String}
+		@return {D}
+		text
+
+	form:
+		@param {none}
+		@return {D}
+		enable
+
+		@param {none}
+		@return {D}
+		disable
+
+		@param {none}
+		@return {D}
+		check
+
+		@param {none}
+		@return {D}
+		uncheck
