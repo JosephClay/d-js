@@ -1,0 +1,18 @@
+# Default: Let git automatically handle line endings.
+# Files will be checked out with the OS's native line endings
+# (CRLF on Windows, LF on Mac/Linux) and committed with LF (on all OSes).
+* text=auto
+
+# Binary files
+*.exe binary
+*.png binary
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.ttf binary
+*.woff binary
+*.eot binary
+
+# Node.js text files
+package.json text eol=lf
+bower.json text eol=lf
