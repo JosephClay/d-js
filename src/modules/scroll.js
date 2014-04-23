@@ -1,4 +1,4 @@
 return {
-	scrollLeft: function() {},
-	scrollTop: function() {}
+    scrollLeft: function() {},
+    scrollTop: function() {}
 };

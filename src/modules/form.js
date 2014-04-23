@@ -1,7 +1,7 @@
 return {
-	isChecked: function() {},
-	enable: function() {},
-	disable: function() {},
-	check: function() {},
-	uncheck: function() {}
+    isChecked: function() {},
+    enable: function() {},
+    disable: function() {},
+    check: function() {},
+    uncheck: function() {}
 };

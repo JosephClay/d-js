@@ -1,4 +1,4 @@
 return {
-	prop: function() {},
-	removeProp: function() {}
+    prop: function() {},
+    removeProp: function() {}
 };

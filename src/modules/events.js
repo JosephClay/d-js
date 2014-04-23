@@ -1,4 +1,4 @@
 return {
-	on: function() {},
-	off: function() {}
+    on: function() {},
+    off: function() {}
 };

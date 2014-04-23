@@ -1,6 +1,6 @@
 return {
-	closest: function() {},
-	siblings: function() {},
-	parent: function() {},
-	children: function() {}
+    closest: function() {},
+    siblings: function() {},
+    parent: function() {},
+    children: function() {}
 };

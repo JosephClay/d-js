@@ -1,5 +1,5 @@
 return {
-	has: function() {},
-	is: function() {},
-	not: function() {}
+    has: function() {},
+    is: function() {},
+    not: function() {}
 };

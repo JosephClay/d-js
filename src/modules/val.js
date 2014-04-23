@@ -1,5 +1,5 @@
 return {
-	html: function() {},
-	val: function() {},
-	text: function() {}
+    html: function() {},
+    val: function() {},
+    text: function() {}
 };

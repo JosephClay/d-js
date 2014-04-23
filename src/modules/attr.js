@@ -1,4 +1,4 @@
 return {
-	attr: function() {},
-	removeAttr: function() {}
+    attr: function() {},
+    removeAttr: function() {}
 };

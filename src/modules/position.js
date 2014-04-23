@@ -1,4 +1,4 @@
 return {
-	position: function() {},
-	offset: function() {}
+    position: function() {},
+    offset: function() {}
 };
