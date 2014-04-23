@@ -1,4 +1,4 @@
-define([ '_', 'overload', 'utils' ], function(_, overload, utils) {
+define([ '_', 'overload', 'modules/array' ], function(_, overload, array) {
 
     var _rspace = /\s+/g;
 
@@ -62,7 +62,7 @@ define([ '_', 'overload', 'utils' ], function(_, overload, utils) {
                 elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
                 nameIdx = elemClassNameArray.length,
                 name,
-                newClasses = utils.slice(elemClassNameArray);
+                newClasses = array.slice(elemClassNameArray);
 
             while (nameIdx--) {
                 name = names[nameIdx];

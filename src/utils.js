@@ -1,8 +1,6 @@
 define(function() {
 
     return {
-        slice: _slice,
-
         exists: function(val) {
             return (val !== null && val !== undefined);
         },
