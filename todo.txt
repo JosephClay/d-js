@@ -2,26 +2,6 @@ X: IE7<
 X: Android 2.3<
 
 +: Modular
-+: Throw errors if you're stupid
-
-Deps:
-	Signal
-	Underscore
-	Overload?
-
-jQuery:
-	basic:
-		@param {String}
-		@return {D}
-		parseHTML
-
-	other:
-		@param {none}
-		@returns {D}
-		noConflict
-
-		@returns {none}
-		moreConflict
 
 jQuery.fn:
 	class:
