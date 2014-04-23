@@ -27,7 +27,7 @@ require([
 		throw new TypeError();
 	};
 
-	_.extend(D, parseHTML, conflict);
+	_.extend(D, parseHTML.fn, conflict.fn);
 
 	_.extend(D.prototype, classes.fn);
 

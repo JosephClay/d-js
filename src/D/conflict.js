@@ -1,6 +1,5 @@
-define(function() {
-
-	return {
+define({
+	fn: {
 		noConflict: function() {
 			window.d = _prevD;
 			return D;
@@ -9,6 +8,5 @@ define(function() {
 		moreConflict: function() {
 			window.jQuery = window.$ = D;
 		}
-	};
-
-}());
+	}
+});
