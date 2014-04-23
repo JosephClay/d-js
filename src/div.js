@@ -1,0 +1,1 @@
+define(document.createElement('div'));

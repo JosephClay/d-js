@@ -1,4 +1,4 @@
-define([ '_', 'overload', 'modules/array' ], function(_, overload, array) {
+define([ '_', 'supports', 'overload', 'modules/array' ], function(_, supports, overload, array) {
 
     var _rspace = /\s+/g;
 
@@ -7,7 +7,7 @@ define([ '_', 'overload', 'modules/array' ], function(_, overload, array) {
 
     var _isNotEmpty = function(str) { return str !== null && str !== undefined && str !== ''; };
 
-    // TODO: Create an internal cache
+    // TODO: Implement internal cache
     var _split = function(name) {
         if (_.isArray(name)) { return name; }
         return _classArrayCache[name] || (_classArrayCache[name] = _.chain(name.split(_rspace)).filter(_isNotEmpty).uniq().value());
@@ -77,8 +77,7 @@ define([ '_', 'overload', 'modules/array' ], function(_, overload, array) {
         }
     };
 
-    // TODO: Make a global dummy div
-    var _impl = document.createElement('div').classList ? _modern : _legacy;
+    var _impl = supports.classList ? _modern : _legacy;
 
     var _classes = {
         hasClass: function(elems, names) {

@@ -72,12 +72,11 @@ function(
 
                         for (; idx < length; idx++) {
                             var ret = _find(selector, this[idx]);
-                            if (ret) {
-                                result.push(ret);
-                            }
+                            if (ret) { result.push(ret); }
                         }
 
-                        return _utils.merge(Dom(), result);
+                        // TODO: I think this needs to be flattened, but not sure
+                        return _utils.merge(DOM(), _.flatten(result));
 
                     }).expose()
         }
