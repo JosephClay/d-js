@@ -27,12 +27,22 @@ require([
 
     var _prevD = window.D;
 
+    // Configure overload to throw type errors
+    Overload.prototype.err = function() {
+        throw new TypeError();
+    };
+
     var DOM = function(selector) {
+        // Wasn't created with "new"
         if (!(this instanceof DOM)) { return new DOM(elem); }
 
+        // Nothin
+        if (!selector) { return; }
+
+        // Selector
         if (_.isString(selector)) {
 
-            // If it's HTML, parse it into this
+            // HTML string
             if (_utils.isHTML(selector)) {
                 _utils.merge(this, parser.parseHTML(selector));
                 return;
@@ -43,21 +53,26 @@ require([
             return;
         }
 
+        // Element
+        if (selector.nodeType) {
+            this.push(selector);
+            return;
+        }
+
+        // NodeList or Array of Elements
+        // TODO: this is probably the wrong way to check if the item is a node list - fix
         if (_.isArray(selector)) {
             var elements = selector;
             _utils.merge(this, elements);
             return;
         }
 
+        // Document a ready
         if (_.isFunction(selector)) {
             var callback = selector;
             onready(callback);
         }
 
-    };
-
-    Overload.prototype.err = function() {
-        throw new TypeError();
     };
 
     _.extend(DOM, parser.fn, conflict.fn);
