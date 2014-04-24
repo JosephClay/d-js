@@ -7,6 +7,8 @@ require([
     'D/parser',
     'D/conflict',
 
+    'onready',
+
     'modules/classes'
 
 ], function(
@@ -17,6 +19,8 @@ require([
 
     parser,
     conflict,
+
+    onready,
 
     classes
 ) {
@@ -45,6 +49,11 @@ require([
             return;
         }
 
+        if (_.isFunction(selector)) {
+            var callback = selector;
+            onready(callback);
+        }
+
     };
 
     Overload.prototype.err = function() {
@@ -62,8 +71,6 @@ require([
 /*
 
 (function(root, _, document, undefined) {
-
-    var DIV = document.createElement('div'),
 
         _getComputedStyle = root.getComputedStyle,
 
