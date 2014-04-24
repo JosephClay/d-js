@@ -1,12 +1,18 @@
 require([
-    'libs/overload',
+    'window',
+    'document',
+
+    'overload',
 
     'D/parser',
     'D/conflict',
 
-    'module/classes'
+    'modules/classes'
 
 ], function(
+    window,
+    document,
+
     Overload,
 
     parser,
@@ -15,9 +21,7 @@ require([
     classes
 ) {
 
-    var document = document,
-        window = window,
-        _prevD = window.D;
+    var _prevD = window.D;
 
     var DOM = function(selector) {
         if (!(this instanceof DOM)) { return new DOM(elem); }
@@ -55,6 +59,7 @@ require([
 
 });
 
+/*
 
 (function(root, _, document, undefined) {
 
@@ -239,3 +244,4 @@ require([
     return Dom;
 
 }(this, _, document));
+*/

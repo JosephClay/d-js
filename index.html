@@ -8,22 +8,25 @@
         <!-- For unit tests -->
         <script src="http://cdnjs.cloudflare.com/ajax/libs/qunit/1.14.0/qunit.min.js"></script>
 
+        <!-- Dependencies -->
+        <script src="src/libs/Overload.js"></script>
+        <script src="src/libs/Signal.js"></script>
+
         <script>
-            window.require = {
-                modules: [
-                    {
-                        name: 'overload',
-                        include: ['libs/Overload']
+            var require = {
+                paths: {
+                    'overload': 'libs/Overload',
+                    'signal': 'libs/Signal',
+                    'underscore': 'libs/underscore'
+                },
+                shim: {
+                    'overload': {
+                        exports: 'Overload'
                     },
-                    {
-                        name: '_',
-                        include: ['libs/underscore']
-                    },
-                    {
-                        name: 'signal',
-                        include: ['libs/Signal']
+                    'signal': {
+                        exports: 'Signal'
                     }
-                ]
+                }
             };
         </script>
         <script data-main="src/D" src="build/require.js"></script>

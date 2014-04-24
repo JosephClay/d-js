@@ -1,4 +1,4 @@
-define([ 'arr' ], function(_arr) {
+define([ 'modules/arr' ], function(_arr) {
 
     return {
         exists: function(val) {

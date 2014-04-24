@@ -1,4 +1,4 @@
-define([ '_', 'supports', 'overload', 'modules/array' ], function(_, supports, overload, array) {
+define([ 'underscore', 'supports', 'overload', 'modules/arr' ], function(_, supports, Overload, array) {
 
     var _rspace = /\s+/g;
 
@@ -121,7 +121,7 @@ define([ '_', 'supports', 'overload', 'modules/array' ], function(_, supports, o
 
     return _.extend({}, _classes, {
         fn: {
-            addClass: overload()
+            addClass: Overload()
                 .args(String).use(function(name) {
                     // TODO: Generalize this check?
                     if (!this.length) { return this; }
