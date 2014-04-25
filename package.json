@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-requirejs": "^0.4.2",
+    "requirejs": "^2.1.11"
+  }
+}
