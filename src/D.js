@@ -1,4 +1,4 @@
-require([
+define([
     'window',
     'document',
 
@@ -7,7 +7,7 @@ require([
     'D/parser',
     'D/conflict',
 
-    'onready',
+    'modules/onready',
 
     'modules/classes'
 
@@ -34,10 +34,16 @@ require([
 
     var DOM = function(selector) {
         // Wasn't created with "new"
-        if (!(this instanceof DOM)) { return new DOM(elem); }
-
+        if (!(this instanceof DOM)) { return new DOM(selector); }
+        
         // Nothin
         if (!selector) { return; }
+
+        // Element
+        if (selector.nodeType) {
+            this.push(selector);
+            return;
+        }
 
         // Selector
         if (_.isString(selector)) {
@@ -53,11 +59,6 @@ require([
             return;
         }
 
-        // Element
-        if (selector.nodeType) {
-            this.push(selector);
-            return;
-        }
 
         // NodeList or Array of Elements
         // TODO: this is probably the wrong way to check if the item is a node list - fix
@@ -72,14 +73,19 @@ require([
             var callback = selector;
             onready(callback);
         }
-
     };
 
     _.extend(DOM, parser.fn, conflict.fn);
 
     _.extend(DOM.prototype, Array.prototype, classes.fn);
 
-    return DOM;
+    window.D = DOM;
+
+    /*if (typeof define === 'function' && define.amd) {
+        define('D', [], function() {
+            return DOM;
+        });
+    }*/
 
 });
 
