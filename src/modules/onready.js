@@ -4,9 +4,14 @@ define([ 'document' ], function(document) {
         _registration = [];
 
     var _bind = function(fn) {
+        if (document.readyState === "complete") {
+            return fn();
+        }
+
         if (document.addEventListener) {
             return document.addEventListener('DOMContentLoaded', fn);
         }
+        
         document.attachEvent('onreadystatechange', function() {
             if (document.readyState === 'interactive') { fn(); }
         });
@@ -29,7 +34,12 @@ define([ 'document' ], function(document) {
     });
 
     return function(callback) {
-        if (_isReady) { return callback(); }
+        if (_isReady) {
+            callback();
+            return this;
+        }
+
         _registration.push(callback);
+        return this;
     };
 });
