@@ -1,3 +1,1 @@
-define('div', function() {
-	return document.createElement('div');
-});
+module.exports = document.createElement('div');

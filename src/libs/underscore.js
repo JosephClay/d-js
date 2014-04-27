@@ -1341,4 +1341,4 @@
       return _;
     });
   }
-}).call(this);
+}).call(window);

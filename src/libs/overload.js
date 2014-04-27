@@ -419,4 +419,4 @@
 	root.Overload = Overload;
 	root.O = O;
 
-}(this));
+}(window));

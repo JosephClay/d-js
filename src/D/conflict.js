@@ -1,4 +1,4 @@
-define({
+module.exports = {
     fn: {
         noConflict: function() {
             window.d = _prevD;
@@ -9,4 +9,4 @@ define({
             window.jQuery = window.$ = D;
         }
     }
-});
+};

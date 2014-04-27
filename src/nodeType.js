@@ -1,4 +1,4 @@
-define({
+var nodeType = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
     TEXT:                   3,
@@ -11,4 +11,4 @@ define({
     DOCUMENT_TYPE:          10,
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
-});
+};

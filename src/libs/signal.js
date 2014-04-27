@@ -332,4 +332,4 @@
 	// Expose
 	root.Signal = pubSub;
 
-}(this));
+}(window));

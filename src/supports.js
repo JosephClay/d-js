@@ -1,8 +1,6 @@
-define([ 'div' ], function(_div) {
+var div = require('./div');
 
-    return {
-        classList: !!_div.classList,
-        matchesSelector: _div.matches || _div.matchesSelector || _div.msMatchesSelector || _div.mozMatchesSelector || _div.webkitMatchesSelector || _div.oMatchesSelector
-    };
-
-});
+module.exports = {
+    classList: !!div.classList,
+    matchesSelector: div.matches || div.matchesSelector || div.msMatchesSelector || div.mozMatchesSelector || div.webkitMatchesSelector || div.oMatchesSelector
+};

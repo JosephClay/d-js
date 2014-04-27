@@ -1,55 +1,73 @@
 module.exports = function(grunt) {
 
-	grunt.loadNpmTasks('grunt-requirejs');
+    /*
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-rename');
 
-	var _REGEX = {
-		require: /^require\(\[[^\]]*\], function\([^\)]*\)/,
-		define: /^define\((|'|\[)[^\]]*(|'|\])({|,[^f]*function\([^\)]*\))/,
-		endingFunc: /\}\)\;$/,
-		pathToName: /^.+\//
-	};
+    var srcFiles = [
+        'build/intro.js',
 
-	var _convert = function(name, path, contents) {
-		if (name === 'D') {
-			return contents.replace(_REGEX.require, 'function()')
-							.replace(_REGEX.endingFunc, '};');
-		}
+        'src/div.js',
+        'src/nodeType.js',
 
-		if (name.indexOf('globals/') > -1) {
-			return '';
-		}
-		
-		grunt.log.writeln(name);
+        'src/utils.js',
+        'src/cache.js',
+        'src/supports.js',
 
-		// libs
-		if (name === 'underscore' || name === 'overload' || name === 'signal') {
-			return '';
-		}
+        'src/D.js',
 
-		return contents.replace(_REGEX.define, 'var '+ name.replace(_REGEX.pathToName, '') +' = function()')
-						.replace(_REGEX.endingFunc, '};');
-	};
+        'build/outro.js'
+    ];
 
-	grunt.initConfig({
-		requirejs: {
-			compile: {
-				options: {
-					// almond: true,
-					// wrap: true,
-					// modules: [{name: 'D'}],
-					include: 'D',
-					// name: '../build/almond',
-					mainConfigFile: 'build/config.js',
-					baseUrl: 'src/',
-					// dir: 'out/',
-					out: 'out/D-build.js',
-					inlineText: true,
-					preserveLicenseComments: true,
-					onBuildWrite: _convert
-				}
-			}
-		}
-	});
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        concat: {
+            options: {
+                stripBanners: true,
+                separator: '\n\n//----\n\n',
+            },
+            dist: {
+                files: {
+                    'D.js': srcFiles
+                },
+                nonull: true
+            }
+        },
+        rename: {
+            basic: {
+                files: [
+                    {
+                        src: 'D.js',
+                        dest: 'out/D.js'
+                    }
+                ]
+            }
+        }
+    });
 
-	grunt.registerTask('default', 'requirejs');
+    grunt.registerTask('default', [
+        'concat',
+        'rename:basic'
+    ]);
+    */
+   
+    grunt.loadNpmTasks('grunt-browserify');
+
+    grunt.initConfig({
+        browserify: {
+            build: {
+                src: ['src/D.js'],
+                dest: 'out/D.js',
+                // options: {
+                //     alias: [
+                //         'src/libs/Overload.js:overload',
+                //         'src/libs/Signal.js:signal',
+                //         'src/libs/underscore.js:underscore'
+                //     ]
+                // }
+            }
+        }
+    });
+
+    grunt.registerTask('default', ['browserify']);
 };

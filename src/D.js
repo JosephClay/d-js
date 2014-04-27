@@ -1,95 +1,70 @@
-require([
-    'globals/window',
-    'globals/document',
+var parser = require('./D/parser'),
+    conflict = require('./D/conflict'),
+    onready = require('./modules/onready'),
+    classes = require('./modules/classes');
 
-    'overload',
+var _prevD = window.D;
 
-    'D/parser',
-    'D/conflict',
+// Configure overload to throw type errors
+Overload.prototype.err = function() {
+    throw new TypeError();
+};
 
-    'modules/onready',
+var DOM = function(selector) {
+    // Wasn't created with "new"
+    if (!(this instanceof DOM)) { return new DOM(selector); }
+    
+    // Nothin
+    if (!selector) { return; }
 
-    'modules/classes'
+    // Element
+    if (selector.nodeType) {
+        this.push(selector);
+        return;
+    }
 
-], function(
-    window,
-    document,
+    // Selector
+    if (_.isString(selector)) {
 
-    Overload,
-
-    parser,
-    conflict,
-
-    onready,
-
-    classes
-) {
-
-    var _prevD = window.D;
-
-    // Configure overload to throw type errors
-    Overload.prototype.err = function() {
-        throw new TypeError();
-    };
-
-    var DOM = function(selector) {
-        // Wasn't created with "new"
-        if (!(this instanceof DOM)) { return new DOM(selector); }
-        
-        // Nothin
-        if (!selector) { return; }
-
-        // Element
-        if (selector.nodeType) {
-            this.push(selector);
+        // HTML string
+        if (_utils.isHTML(selector)) {
+            _utils.merge(this, parser.parseHTML(selector));
             return;
         }
 
-        // Selector
-        if (_.isString(selector)) {
-
-            // HTML string
-            if (_utils.isHTML(selector)) {
-                _utils.merge(this, parser.parseHTML(selector));
-                return;
-            }
-
-            // Perform a find without creating a new DOM
-            _utils.merge(this, selectors.find(selector, this));
-            return;
-        }
+        // Perform a find without creating a new DOM
+        _utils.merge(this, selectors.find(selector, this));
+        return;
+    }
 
 
-        // NodeList or Array of Elements
-        // TODO: this is probably the wrong way to check if the item is a node list - fix
-        if (_.isArray(selector)) {
-            var elements = selector;
-            _utils.merge(this, elements);
-            return;
-        }
+    // NodeList or Array of Elements
+    // TODO: this is probably the wrong way to check if the item is a node list - fix
+    if (_.isArray(selector)) {
+        var elements = selector;
+        _utils.merge(this, elements);
+        return;
+    }
 
-        // Document a ready
-        if (_.isFunction(selector)) {
-            var callback = selector;
-            onready(callback);
-        }
-    };
+    // Document a ready
+    if (_.isFunction(selector)) {
+        var callback = selector;
+        onready(callback);
+    }
+};
 
-    _.extend(DOM, parser.fn, conflict.fn);
+_.extend(DOM, parser.fn, conflict.fn);
 
-    _.extend(DOM.prototype, Array.prototype, classes.fn);
+_.extend(DOM.prototype, Array.prototype, classes.fn);
 
-    console.log(window);
+module.exports = window.D = DOM;
 
-    window.D = DOM;
 
-    /*if (typeof define === 'function' && define.amd) {
-        define('D', [], function() {
-            return DOM;
-        });
-    }*/
-
-});
+/*if (typeof define === 'function' && define.amd) {
+    define('D', [], function() {
+        return DOM;
+    });
+}*/
 
 /*
 
