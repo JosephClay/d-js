@@ -1,6 +1,6 @@
-define([
-    'window',
-    'document',
+require([
+    'globals/window',
+    'globals/document',
 
     'overload',
 
@@ -78,6 +78,8 @@ define([
     _.extend(DOM, parser.fn, conflict.fn);
 
     _.extend(DOM.prototype, Array.prototype, classes.fn);
+
+    console.log(window);
 
     window.D = DOM;
 

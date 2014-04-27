@@ -11,5 +11,11 @@ var require = {
         'signal': {
             exports: 'Signal'
         }
-    }
+    },
+    wrap: {
+        startFile: 'intro.js',
+        endFile: 'outro.js'
+    },
+    optimize: 'none',
+    skipDirOptimize: true
 };

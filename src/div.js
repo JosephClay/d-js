@@ -1,1 +1,3 @@
-define(document.createElement('div'));
+define('div', function() {
+	return document.createElement('div');
+});

@@ -1,4 +1,4 @@
-define([ 'document' ], function(document) {
+define([ 'globals/document' ], function(document) {
 
     var _isReady = false,
         _registration = [];
