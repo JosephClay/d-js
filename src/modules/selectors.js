@@ -30,7 +30,7 @@ var _find = function(selector, context) {
         result = [];
 
     // Early return if the selector is bad
-    if (_selectorBlackList.indexOf(selector)) { return result; }
+    if (_selectorBlackList.indexOf(selector) > -1) { return result; }
 
     for (; idx < length; idx++) {
         var ret = _findQuery(selector, context[idx]);
