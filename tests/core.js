@@ -60,6 +60,7 @@ test('D()', function() {
 
 test("end()", function() {
 	expect(3);
+
 	equal( "Yahoo", D("#yahoo").parent().end().text(), "check for end" );
 	ok( D("#yahoo").end(), "check for end with nothing to end" );
 
@@ -68,33 +69,38 @@ test("end()", function() {
 	equal( "Yahoo", D("#yahoo").text(), "check for non-destructive behaviour" );
 });
 
-test("length", function() {
+test('length', function() {
 	expect(1);
-	equal( D("#qunit-fixture p").length, 6, "Get Number of Elements Found" );
-});
 
-test("get()", function() {
-	expect(1);
-	deepEqual( D("#qunit-fixture p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
+	equal(D('#TestDiv p').length, 3, 'Get Number of Elements Found');
 });
 
 test('toArray()', function() {
-	expect(3);
+	expect(4);
+
 	deepEqual(D('#').toArray(), [], 'Convert D object to an empty Array');
 	ok(_.isArray(D('body').toArray()), 'Convert D object to an Array');
 	equal(D('body').toArray().length, 1, 'Convert D object to an Array with the appropriate length');
+	deepEqual(D('body').toArray(), [document.body], 'Convert D object to an Array of elements');
 });
 
-test("get(Number)", function() {
-	expect(2);
-	equal( D("#qunit-fixture p").get(0), document.getElementById("firstp"), "Get A Single Element" );
-	strictEqual( D("#firstp").get(1), undefined, "Try get with index larger elements count" );
+test('get()', function() {
+	expect(1);
+	equal(D('#TestDiv p').get().length, 3, 'Get All Elements');
 });
 
-test("get(-Number)",function() {
+test('get(Number)', function() {
 	expect(2);
-	equal( D("p").get(-1), document.getElementById("first"), "Get a single element with negative index" );
-	strictEqual( D("#firstp").get(-2), undefined, "Try get with index negative index larger then elements count" );
+
+	equal(D('#TestDiv p').get(0), document.getElementById('firstp'), 'Get A Single Element');
+	strictEqual(D('#firstp').get(1), undefined, 'Try get with index larger elements count');
+});
+
+test('get(-Number)',function() {
+	expect(2);
+
+	equal(D('#TestDiv p').get(-1), document.getElementById('lastp'), 'Get a single element with negative index');
+	strictEqual(D('#firstp').get(-2), undefined, 'Try get with index negative index larger then elements count');
 });
 
 test("each(Function)", function() {
