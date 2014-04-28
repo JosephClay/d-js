@@ -13,19 +13,6 @@ test('Basic requirements', function() {
 
 test('D()', function() {
 
-	var elem,
-		i,
-		code = D('<code/>'),
-		img = D('<img/>'),
-		div = D('<div/><hr/><code/><b/>'),
-		exec = false,
-		lng = '',
-		attrObj = {
-			'text': 'test',
-			'class': 'test2',
-			'id': 'test3'
-		};
-
 	expect(22);
 
 	// Basic constructor's behavior
@@ -37,95 +24,61 @@ test('D()', function() {
 
 	equal(D(window).length, 1, 'Correct number of elements generated for D(window)');
 
+	var code = D('<code/>');
 	equal(code.length, 1, 'Correct number of elements generated for code');
 	equal(code.parent().length, 0, 'Make sure that the generated HTML has no parent.');
 
-	equal(img.length, 1, "Correct number of elements generated for img");
-	equal(img.parent().length, 0, "Make sure that the generated HTML has no parent.");
+	var img = D('<img/>');
+	equal(img.length, 1, 'Correct number of elements generated for img');
+	equal(img.parent().length, 0, 'Make sure that the generated HTML has no parent.');
 
-	equal(div.length, 4, "Correct number of elements generated for div hr code b");
-	equal(div.parent().length, 0, "Make sure that the generated HTML has no parent.");
+	var div = D('<div/><hr/><code/><b/>');
+	equal(div.length, 4, 'Correct number of elements generated for div hr code b');
+	equal(div.parent().length, 0, 'Make sure that the generated HTML has no parent.');
 
-	equal(D([1,2,3]).get(1), 2, "Test passing an array");
+	equal(D([1,2,3]).get(1), 2, 'Test passing an array');
 
-	equal(D(document.body).get(0), D("body").get(0), "Test passing an html node");
+	equal(D(document.body).get(0), D('body').get(0), 'Test passing an html node');
 
-	elem = D("  <em>hello</em>")[0];
-	equal( elem.nodeName.toLowerCase(), "em", "leading space" );
+	var elem = D('  <em>hello</em>')[0];
+	equal(elem.nodeName.toLowerCase(), 'em', 'leading space');
 
-	elem = D("\n\n<em>world</em>")[0];
-	equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
+	elem = D('\n\n<em>world</em>')[0];
+	equal(elem.nodeName.toLowerCase(), 'em', 'leading newlines');
 
-	elem = D("<div/>", attrObj );
+	equal(elem[0].childNodes.length, 1, 'D quick setter text');
+	equal(elem[0].firstChild.nodeValue, 'test', 'D quick setter text');
+	equal(elem[0].className, 'test2', 'D() quick setter class');
+	equal(elem[0].id, 'test3', 'D() quick setter id');
 
-	if ( D.fn.width ) {
-		equal( elem[0].style.width, "10px", "D() quick setter width");
-	}
-
-	if ( D.fn.offset ) {
-		equal( elem[0].style.top, "1px", "D() quick setter offset");
-	}
-
-	if ( D.fn.css ) {
-		equal( elem[0].style.paddingLeft, "1px", "D quick setter css");
-		equal( elem[0].style.paddingRight, "1px", "D quick setter css");
-	}
-
-	if ( D.fn.attr ) {
-		equal( elem[0].getAttribute("desired"), "very", "D quick setter attr");
-	}
-
-	equal( elem[0].childNodes.length, 1, "D quick setter text");
-	equal( elem[0].firstChild.nodeValue, "test", "D quick setter text");
-	equal( elem[0].className, "test2", "D() quick setter class");
-	equal( elem[0].id, "test3", "D() quick setter id");
-
-	exec = true;
-	elem.trigger("click");
+	elem.trigger('click');
 
 	// manually clean up detached elements
 	elem.remove();
 
-	for ( i = 0; i < 3; ++i ) {
-		elem = D("<input type='text' value='TEST' />");
+	var idx = 0;
+	for (; idx < 3; ++idx) {
+		elem = D('<input type="text" value="TEST" />');
 	}
-	equal( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
+	equal( elem[0].defaultValue, 'TEST', 'Ensure cached nodes are cloned properly (Bug #6655)' );
 
 	// manually clean up detached elements
 	elem.remove();
-
-	for ( i = 0; i < 128; i++ ) {
-		lng += "12345678";
-	}
-});
-
-test('noConflict', function() {
-	expect(3);
-
-	var originalD = D,
-		DD = D.noConflict();
-
-	strictEqual(originalD, DD, 'noConflict returned the D object');
-	equal(window.D, undefined, 'Make sure previous D was reverted.');
-	ok(DD(), 'Make sure that D still works.');
-
-	window.D = D = DD;
 });
 
 test('D("html")', function() {
-	expect( 18 );
+	expect(18);
 
-	var s, div, j;
+	D.foo = false;
+	var script = D('<script>D.foo="test";</script>')[0];
 
-	D["foo"] = false;
-	s = D("<script>D.foo='test';</script>")[0];
-	ok( s, "Creating a script" );
-	ok( !D["foo"], "Make sure the script wasn't executed prematurely" );
-	D("body").append("<script>D.foo='test';</script>");
-	ok( D["foo"], "Executing a scripts contents in the right context" );
+	ok(script, "Creating a script");
+	ok(!D.foo, "Make sure the script wasn't executed prematurely" );
+	D('body').append("<script>D.foo='test';</script>");
+	ok(D.foo, "Executing a scripts contents in the right context" );
 
 	// Test multi-line HTML
-	div = D("<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>")[0];
+	var div = D("<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>")[0];
 	equal( div.nodeName.toUpperCase(), "DIV", "Make sure we're getting a div." );
 	equal( div.firstChild.nodeType, 3, "Text node." );
 	equal( div.lastChild.nodeType, 3, "Text node." );
@@ -138,7 +91,7 @@ test('D("html")', function() {
 
 	ok( D("<input/>").attr("type", "hidden"), "Create an input and set the type." );
 
-	j = D("<span>hi</span> there <!-- mon ami -->");
+	var j = D("<span>hi</span> there <!-- mon ami -->");
 	ok( j.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
 
 	ok( !D("<option>test</option>")[0].selected, "Make sure that options are auto-selected #2050" );
