@@ -13,7 +13,7 @@ test('Basic requirements', function() {
 
 test('D()', function() {
 
-	expect(22);
+	expect(13);
 
 	// Basic constructor's behavior
 	equal(D().length, 0, 'D() === D([])');
@@ -50,24 +50,12 @@ test('D()', function() {
 	elem = D('\n\n<em>world</em>')[0];
 	equal(elem.nodeName.toLowerCase(), 'em', 'leading newlines');
 
-	equal(elem[0].childNodes.length, 1, 'D quick setter text');
-	equal(elem[0].firstChild.nodeValue, 'test', 'D quick setter text');
-	equal(elem[0].className, 'test2', 'D() quick setter class');
-	equal(elem[0].id, 'test3', 'D() quick setter id');
-
-	elem.trigger('click');
-
-	// manually clean up detached elements
-	elem.remove();
-
 	var idx = 0;
-	for (; idx < 3; ++idx) {
+	for (; idx < 3; idx++) {
 		elem = D('<input type="text" value="TEST" />');
 	}
-	equal( elem[0].defaultValue, 'TEST', 'Ensure cached nodes are cloned properly (Bug #6655)' );
-
-	// manually clean up detached elements
-	elem.remove();
+	// TODO: Cache nodes
+	equal(elem[0].defaultValue, 'TEST', 'Ensure cached nodes are cloned properly (Bug #6655)');
 });
 
 test('D("html")', function() {
