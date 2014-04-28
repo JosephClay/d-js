@@ -41,9 +41,8 @@ var DOM = function(arg) {
         return;
     }
 
-    // NodeList or Array of Elements
-    // TODO: this is probably the wrong way to check if the item is a node list - fix
-    if (_.isArray(arg)) {
+    // Array of Elements or NodeList
+    if (_.isArray(arg) || _.isNodeList(arg)) {
         utils.merge(this, arg);
         return;
     }
