@@ -3,6 +3,7 @@ var parser = require('./D/parser'),
     array = require('./modules/array'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
+    transversal = require('./modules/transversal'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -65,6 +66,7 @@ _.extend(DOM, parser.fn, {
 });
 
 var arrayProto = (function() {
+
     // TODO: Implement forEach since forEach isn't in all browsers
     var keys = [
             'length',
@@ -89,6 +91,7 @@ var arrayProto = (function() {
         ],
         idx = keys.length,
         obj = {};
+
     while (idx--) {
         obj[keys[idx]] = Array.prototype[keys[idx]];
     }
@@ -102,8 +105,14 @@ _.extend(
     arrayProto,
     classes.fn,
     array.fn,
+    selectors.fn,
+    transversal.fn,
     { constructor: DOM }
 );
+
+// Expose the prototype so that
+// it can be hooked into for plugins
+DOM.fn = DOM.prototype;
 
 module.exports = window.D = DOM;
 
