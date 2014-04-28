@@ -7,7 +7,7 @@ var _getSiblings = function(context) {
         length = context.length,
         result = [];
     for (; idx < length; idx++) {
-        var sibs = _getNodeSiblings(idx);
+        var sibs = _getNodeSiblings(context[idx]);
         if (sibs.length) { result.push(sibs); }
     }
     return _.flatten(result);
@@ -25,33 +25,74 @@ var _getNodeSiblings = function(node) {
     return siblings;
 };
 
-module.exports = {
-    // TODO: Filter by selector
-    closest: function(selector) {
+// Parents ------
+var _getParents = function(context) {
+    var idx = 0,
+        length = context.length,
+        result = [];
+    for (; idx < length; idx++) {
+        var parents = _crawlUpNode(context[idx]);
+        result.push(parents);
+    }
+    return _.flatten(result);
+};
 
-    },
-    // TODO: Filter by selector
-    siblings: function(selector) {
-        return D(
-            _selectors.filter(_getSiblings(this), selector)
-        );
-    },
-    // TODO: Filter by selector
-    parents: function(selector) {
-        return D(
-            _selectors.filter(_getParents(this), selector)
-        );
-    },
-    // TODO: Filter by selector
-    parent: function(selector) {
-        return D(
-            _selectors.filter(_getParents(this, 1), selector)
-        );
-    },
-    // TODO: Filter by selector
-    children: function(selector) {
-        return D(
-            _selectors.filter(_getChildren(this), selector)
-        );
+var _crawlUpNode = function(node) {
+    var result = [],
+        parent = node;
+    while ((parent = _getNodeParent(parent))) {
+        result.push(parent);
+    }
+
+    return result;
+};
+
+// Parent ------
+var _getParent = function(context) {
+    var idx = 0,
+        length = context.length,
+        result = [];
+    for (; idx < length; idx++) {
+        var parent = _getNodeParent(context[idx]);
+        if (parent) { result.push(parent); }
+    }
+    return result;
+};
+
+// Safely get parent node
+var _getNodeParent = function(node) {
+    return node && node.parentNode;
+};
+
+module.exports = {
+    fn: {
+        // TODO: Filter by selector
+        closest: function(selector) {
+
+        },
+        // TODO: Filter by selector
+        siblings: function(selector) {
+            return D(
+                _selectors.filter(_getSiblings(this), selector)
+            );
+        },
+        // TODO: Filter by selector
+        parents: function(selector) {
+            return D(
+                _selectors.filter(_getParents(this), selector)
+            );
+        },
+        // TODO: Filter by selector
+        parent: function(selector) {
+            return D(
+                _selectors.filter(_getParent(this), selector)
+            );
+        },
+        // TODO: Filter by selector
+        children: function(selector) {
+            return D(
+                _selectors.filter(_getChildren(this), selector)
+            );
+        }
     }
 };
