@@ -1,12 +1,10 @@
-var utils = require('../utils');
-
 var _slice = (function(_slice) {
     return function(arr, index) {
         // Exit early for empty array
         if (!arr || !arr.length) { return []; }
 
         // Make sure index is defined
-        return _slice.call(arr[index], index || 0);
+        return _slice.call(arr, index || 0);
     };
 }([].slice));
 
@@ -60,7 +58,7 @@ module.exports = {
             return D(this[+index]);
         },
         slice: function(index) {
-            return D(utils.slice(this, index));
+            return D(_slice(this, index));
         },
         next: function() {
             // TODO
@@ -73,6 +71,9 @@ module.exports = {
         },
         last: function() {
             return D(this[this.length - 1]);
+        },
+        toArray: function() {
+            return _slice(this);
         }
     }
 };

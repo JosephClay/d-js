@@ -1,4 +1,5 @@
 var _utils = require('../utils'),
+    _array = require('./array'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports');
 
@@ -23,7 +24,7 @@ var _isMatch = (function(matchSelector) {
 
 var _find = function(selector, context) {
     var idx = 0,
-        length = context.length,
+        length = context.length || 1,
         result = [];
 
     for (; idx < length; idx++) {
@@ -44,7 +45,7 @@ var _findQuery = function(selector, context) {
 
     var query = context.querySelectorAll(selector);
     if (!query.length) { return; }
-    return _utils.slice(query);
+    return _array.slice(query);
 };
 
 

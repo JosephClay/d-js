@@ -1,6 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var parser = require('./D/parser'),
     utils = require('./utils'),
+    array = require('./modules/array'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
     classes = require('./modules/classes');
@@ -64,7 +65,7 @@ _.extend(DOM, parser.fn, {
     }
 });
 
-_.extend(DOM.prototype, (function() {
+var arrayProto = (function() {
     // TODO: Implement forEach since forEach isn't in all browsers
     var keys = [
             'length',
@@ -95,9 +96,15 @@ _.extend(DOM.prototype, (function() {
 
     return obj;
 
-}()), {
-    constructor: DOM
-}, classes.fn);
+}());
+
+_.extend(
+    DOM.prototype,
+    arrayProto,
+    classes.fn,
+    array.fn,
+    { constructor: DOM }
+);
 
 module.exports = window.D = DOM;
 
@@ -292,7 +299,7 @@ module.exports = window.D = DOM;
 
 }(this, _, document));
 */
-},{"./D/parser":2,"./modules/classes":5,"./modules/onready":6,"./modules/selectors":7,"./utils":10}],2:[function(require,module,exports){
+},{"./D/parser":2,"./modules/array":4,"./modules/classes":5,"./modules/onready":6,"./modules/selectors":7,"./utils":10}],2:[function(require,module,exports){
 var _parseHtml = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -312,15 +319,13 @@ module.exports = {
 },{}],3:[function(require,module,exports){
 module.exports = document.createElement('div');
 },{}],4:[function(require,module,exports){
-var utils = require('../utils');
-
 var _slice = (function(_slice) {
     return function(arr, index) {
         // Exit early for empty array
         if (!arr || !arr.length) { return []; }
 
         // Make sure index is defined
-        return _slice.call(arr[index], index || 0);
+        return _slice.call(arr, index || 0);
     };
 }([].slice));
 
@@ -374,7 +379,7 @@ module.exports = {
             return D(this[+index]);
         },
         slice: function(index) {
-            return D(utils.slice(this, index));
+            return D(_slice(this, index));
         },
         next: function() {
             // TODO
@@ -387,11 +392,14 @@ module.exports = {
         },
         last: function() {
             return D(this[this.length - 1]);
+        },
+        toArray: function() {
+            return _slice(this);
         }
     }
 };
 
-},{"../utils":10}],5:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -587,6 +595,7 @@ module.exports = function(callback) {
 
 },{}],7:[function(require,module,exports){
 var _utils = require('../utils'),
+    _array = require('./array'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports');
 
@@ -611,7 +620,7 @@ var _isMatch = (function(matchSelector) {
 
 var _find = function(selector, context) {
     var idx = 0,
-        length = context.length,
+        length = context.length || 1,
         result = [];
 
     for (; idx < length; idx++) {
@@ -632,7 +641,7 @@ var _findQuery = function(selector, context) {
 
     var query = context.querySelectorAll(selector);
     if (!query.length) { return; }
-    return _utils.slice(query);
+    return _array.slice(query);
 };
 
 
@@ -703,8 +712,8 @@ module.exports = {
                     .expose()
     }
 };
-},{"../nodeType":8,"../supports":9,"../utils":10}],8:[function(require,module,exports){
-var nodeType = {
+},{"../nodeType":8,"../supports":9,"../utils":10,"./array":4}],8:[function(require,module,exports){
+module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
     TEXT:                   3,

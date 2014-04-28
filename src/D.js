@@ -1,5 +1,6 @@
 var parser = require('./D/parser'),
     utils = require('./utils'),
+    array = require('./modules/array'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
     classes = require('./modules/classes');
@@ -63,7 +64,7 @@ _.extend(DOM, parser.fn, {
     }
 });
 
-_.extend(DOM.prototype, (function() {
+var arrayProto = (function() {
     // TODO: Implement forEach since forEach isn't in all browsers
     var keys = [
             'length',
@@ -94,9 +95,15 @@ _.extend(DOM.prototype, (function() {
 
     return obj;
 
-}()), {
-    constructor: DOM
-}, classes.fn);
+}());
+
+_.extend(
+    DOM.prototype,
+    arrayProto,
+    classes.fn,
+    array.fn,
+    { constructor: DOM }
+);
 
 module.exports = window.D = DOM;
 

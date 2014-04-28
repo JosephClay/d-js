@@ -99,56 +99,6 @@ test('D()', function() {
 	}
 });
 
-test("D(selector, context)", function() {
-	expect(3);
-	deepEqual( D("div p", "#qunit-fixture").get(), q("sndp", "en", "sap"), "Basic selector with string as context" );
-	deepEqual( D("div p", q("qunit-fixture")[0]).get(), q("sndp", "en", "sap"), "Basic selector with element as context" );
-	deepEqual( D("div p", D("#qunit-fixture")).get(), q("sndp", "en", "sap"), "Basic selector with D object as context" );
-});
-
-test( "selector state", function() {
-	expect( 18 );
-
-	var test;
-
-	test = D( undefined );
-	equal( test.selector, "", "Empty D Selector" );
-	equal( test.context, undefined, "Empty D Context" );
-
-	test = D( document );
-	equal( test.selector, "", "Document Selector" );
-	equal( test.context, document, "Document Context" );
-
-	test = D( document.body );
-	equal( test.selector, "", "Body Selector" );
-	equal( test.context, document.body, "Body Context" );
-
-	test = D("#qunit-fixture");
-	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
-	equal( test.context, document, "#qunit-fixture Context" );
-
-	test = D("#notfoundnono");
-	equal( test.selector, "#notfoundnono", "#notfoundnono Selector" );
-	equal( test.context, document, "#notfoundnono Context" );
-
-	test = D( "#qunit-fixture", document );
-	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
-	equal( test.context, document, "#qunit-fixture Context" );
-
-	test = D( "#qunit-fixture", document.body );
-	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
-	equal( test.context, document.body, "#qunit-fixture Context" );
-
-	// Test cloning
-	test = D( test );
-	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
-	equal( test.context, document.body, "#qunit-fixture Context" );
-
-	test = D( document.body ).find("#qunit-fixture");
-	equal( test.selector, "#qunit-fixture", "#qunit-fixture find Selector" );
-	equal( test.context, document.body, "#qunit-fixture find Context" );
-});
-
 test('noConflict', function() {
 	expect(3);
 
@@ -162,7 +112,7 @@ test('noConflict', function() {
 	window.D = D = DD;
 });
 
-test("D('html')", function() {
+test('D("html")', function() {
 	expect( 18 );
 
 	var s, div, j;
@@ -206,20 +156,21 @@ test("D('html')", function() {
 });
 
 test("D('massive html #7990')", function() {
-	expect( 3 );
+	expect(3);
 
-	var i,
-		li = "<li>very very very very large html string</li>",
-		html = ["<ul>"];
+	var idx = 30000,
+		li = '<li>very very very very large html string</li>',
+		html = ['<ul>'];
 
-	for ( i = 0; i < 30000; i += 1 ) {
-		html[html.length] = li;
+	while (idx--) {
+		html.push(li);
 	}
-	html[html.length] = "</ul>";
-	html = D(html.join(""))[0];
-	equal( html.nodeName.toLowerCase(), "ul");
-	equal( html.firstChild.nodeName.toLowerCase(), "li");
-	equal( html.childNodes.length, 30000 );
+	html.push('</ul>');
+	html = D(html.join(''))[0];
+
+	equal(html.nodeName.toLowerCase(), 'ul');
+	equal(html.firstChild.nodeName.toLowerCase(), 'li');
+	equal(html.childNodes.length, 30000);
 });
 
 test("end()", function() {
@@ -242,11 +193,11 @@ test("get()", function() {
 	deepEqual( D("#qunit-fixture p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
-test("toArray()", function() {
-	expect(1);
-	deepEqual( D("#qunit-fixture p").toArray(),
-		q("firstp","ap","sndp","en","sap","first"),
-		"Convert D object to an Array" );
+test('toArray()', function() {
+	expect(3);
+	deepEqual(D('#').toArray(), [], 'Convert D object to an empty Array');
+	ok(_.isArray(D('body').toArray()), 'Convert D object to an Array');
+	equal(D('body').toArray().length, 1, 'Convert D object to an Array with the appropriate length');
 });
 
 test("get(Number)", function() {
