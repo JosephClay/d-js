@@ -1,7 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var parser = require('./D/parser'),
+    utils = require('./utils'),
     conflict = require('./D/conflict'),
     onready = require('./modules/onready'),
+    selectors = require('./modules/selectors'),
     classes = require('./modules/classes');
 
 var _prevD = window.D;
@@ -11,46 +13,43 @@ Overload.prototype.err = function() {
     throw new TypeError();
 };
 
-var DOM = function(selector) {
+var DOM = function(arg) {
     // Wasn't created with "new"
-    if (!(this instanceof DOM)) { return new DOM(selector); }
-    
+    if (!(this instanceof DOM)) { return new DOM(arg); }
+
     // Nothin
-    if (!selector) { return; }
+    if (!arg) { return; }
 
     // Element
-    if (selector.nodeType) {
-        this.push(selector);
+    if (arg.nodeType) {
+        this.push(arg);
         return;
     }
 
-    // Selector
-    if (_.isString(selector)) {
+    // String
+    if (_.isString(arg)) {
 
         // HTML string
-        if (_utils.isHTML(selector)) {
-            _utils.merge(this, parser.parseHTML(selector));
+        if (utils.isHTML(arg)) {
+            utils.merge(this, parser.parseHtml(arg));
             return;
         }
 
-        // Perform a find without creating a new DOM
-        _utils.merge(this, selectors.find(selector, this));
+        // Selector: perform a find without creating a new DOM
+        utils.merge(this, selectors.find(arg, this));
         return;
     }
 
-
     // NodeList or Array of Elements
     // TODO: this is probably the wrong way to check if the item is a node list - fix
-    if (_.isArray(selector)) {
-        var elements = selector;
-        _utils.merge(this, elements);
+    if (_.isArray(arg)) {
+        utils.merge(this, arg);
         return;
     }
 
     // Document a ready
-    if (_.isFunction(selector)) {
-        var callback = selector;
-        onready(callback);
+    if (_.isFunction(arg)) {
+        onready(arg);
     }
 };
 
@@ -251,7 +250,7 @@ module.exports = window.D = DOM;
 
 }(this, _, document));
 */
-},{"./D/conflict":2,"./D/parser":3,"./modules/classes":6,"./modules/onready":7}],2:[function(require,module,exports){
+},{"./D/conflict":2,"./D/parser":3,"./modules/classes":6,"./modules/onready":7,"./modules/selectors":8,"./utils":11}],2:[function(require,module,exports){
 module.exports = {
     fn: {
         noConflict: function() {
@@ -363,7 +362,7 @@ module.exports = {
     }
 };
 
-},{"../utils":9}],6:[function(require,module,exports){
+},{"../utils":11}],6:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -513,7 +512,7 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":8,"./array":5}],7:[function(require,module,exports){
+},{"../supports":10,"./array":5}],7:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -558,13 +557,146 @@ module.exports = function(callback) {
 };
 
 },{}],8:[function(require,module,exports){
+var _utils = require('../utils'),
+    _nodeType = require('../nodeType'),
+    _supports = require('../supports');
+
+var _isMatch = (function(matchSelector) {
+    if (matchSelector) {
+        return function(elem, selector) {
+            return matchSelector.call(elem, selector);
+        };
+    }
+
+    return function(elem, selector) {
+        var nodes = elem.parentNode.querySelectorAll(selector),
+            idx = nodes.length;
+        while (idx--) {
+            if (nodes[idx] === elem) {
+                return true;
+            }
+        }
+        return false;
+    };
+}(_supports.matchesSelector));
+
+var _find = function(selector, context) {
+    var idx = 0,
+        length = context.length,
+        result = [];
+
+    for (; idx < length; idx++) {
+        var ret = _findQuery(selector, context[idx]);
+        if (ret) { result.push(ret); }
+    }
+
+    // TODO: I think this needs to be flattened, but not sure
+    return _utils.unique(_.flatten(result));
+};
+
+var _findQuery = function(selector, context) {
+    context = context || document;
+
+    var nodeType;
+    // Early return if context is not an element or document
+    if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
+
+    var query = context.querySelectorAll(selector);
+    if (!query.length) { return; }
+    return _utils.slice(query);
+};
+
+
+module.exports = {
+    find: _find,
+
+    fn: {
+        has: function(target) {
+            // TODO: Has
+            /*var i,
+                targets = jQuery( target, this ),
+                len = targets.length;
+
+            return this.filter(function() {
+                for ( i = 0; i < len; i++ ) {
+                    if ( jQuery.contains( this, targets[i] ) ) {
+                        return true;
+                    }
+                }
+            });*/
+        },
+
+        is: Overload()
+                .args(String)
+                .use(function(selector) {
+                    // TODO: Internal "every"
+                    return DOM(
+                        _.every(this, function(elem) {
+                            return _isMatch(elem, selector);
+                        })
+                    );
+                })
+                .args(Function)
+                .use(function(iterator) {
+                    // TODO: Internal "every"
+                    return DOM(
+                        _.every(this, iterator)
+                    );
+                })
+                .expose(),
+
+        not: function() {},
+
+        find: Overload()
+                .args(String)
+                .use(function(selector) {
+
+                    return _utils.merge(DOM(), _find(selector, this));
+
+                }).expose(),
+
+        filter: Overload()
+                    .args(String)
+                    .use(function(selector) {
+                        return this.is(selector);
+                    })
+                    .args(Function)
+                    .use(function(checker) {
+                        var result = [],
+                            idx = this.length;
+
+                        while (idx--) {
+                            if (checker(this[idx])) { result.unshift(this[idx]); }
+                        }
+
+                        return DOM(result);
+                    })
+                    .expose()
+    }
+};
+},{"../nodeType":9,"../supports":10,"../utils":11}],9:[function(require,module,exports){
+var nodeType = {
+    ELEMENT:                1,
+    ATTRIBUTE:              2,
+    TEXT:                   3,
+    CDATA:                  4,
+    ENTITY_REFERENCE:       5,
+    ENTITY:                 6,
+    PROCESSING_INSTRUCTION: 7,
+    COMMENT:                8,
+    DOCUMENT:               9,
+    DOCUMENT_TYPE:          10,
+    DOCUMENT_FRAGMENT:      11,
+    NOTATION:               12
+};
+},{}],10:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
     matchesSelector: div.matches || div.matchesSelector || div.msMatchesSelector || div.mozMatchesSelector || div.webkitMatchesSelector || div.oMatchesSelector
 };
-},{"./div":4}],9:[function(require,module,exports){
+},{"./div":4}],11:[function(require,module,exports){
 var array = require('./modules/array');
 
 module.exports = {
