@@ -1,3 +1,5 @@
+module('parse');
+
 test('D("html")', function() {
     expect(18);
 

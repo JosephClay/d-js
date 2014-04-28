@@ -1,3 +1,5 @@
+module('conflict');
+
 test('noConflict', function() {
     expect(3);
 
