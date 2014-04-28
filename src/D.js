@@ -1,10 +1,10 @@
 var parser = require('./D/parser'),
     utils = require('./utils'),
-    conflict = require('./D/conflict'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
     classes = require('./modules/classes');
 
+// Store previous reference
 var _prevD = window.D;
 
 // Configure overload to throw type errors
@@ -52,7 +52,16 @@ var DOM = function(arg) {
     }
 };
 
-_.extend(DOM, parser.fn, conflict.fn);
+_.extend(DOM, parser.fn, {
+    noConflict: function() {
+        window.D = _prevD;
+        return DOM;
+    },
+
+    moreConflict: function() {
+        window.jQuery = window.$ = DOM;
+    }
+});
 
 _.extend(DOM.prototype, (function() {
     // TODO: Implement forEach since forEach isn't in all browsers

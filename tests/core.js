@@ -149,23 +149,17 @@ test( "selector state", function() {
 	equal( test.context, document.body, "#qunit-fixture find Context" );
 });
 
-test("noConflict", function() {
-	expect(7);
+test('noConflict', function() {
+	expect(3);
 
-	var $$ = D;
+	var originalD = D,
+		DD = D.noConflict();
 
-	strictEqual( D, D.noConflict(), "noConflict returned the D object" );
-	strictEqual( window["D"], $$, "Make sure D wasn't touched." );
-	strictEqual( window["$"], original$, "Make sure $ was reverted." );
+	strictEqual(originalD, DD, 'noConflict returned the D object');
+	equal(window.D, undefined, 'Make sure previous D was reverted.');
+	ok(DD(), 'Make sure that D still works.');
 
-	D = $ = $$;
-
-	strictEqual( D.noConflict(true), $$, "noConflict returned the D object" );
-	strictEqual( window["D"], originalD, "Make sure D was reverted." );
-	strictEqual( window["$"], original$, "Make sure $ was reverted." );
-	ok( $$().pushStack([]), "Make sure that D still works." );
-
-	window["D"] = D = $$;
+	window.D = D = DD;
 });
 
 test("D('html')", function() {

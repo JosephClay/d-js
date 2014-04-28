@@ -1,11 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var parser = require('./D/parser'),
     utils = require('./utils'),
-    conflict = require('./D/conflict'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
     classes = require('./modules/classes');
 
+// Store previous reference
 var _prevD = window.D;
 
 // Configure overload to throw type errors
@@ -53,7 +53,16 @@ var DOM = function(arg) {
     }
 };
 
-_.extend(DOM, parser.fn, conflict.fn);
+_.extend(DOM, parser.fn, {
+    noConflict: function() {
+        window.D = _prevD;
+        return DOM;
+    },
+
+    moreConflict: function() {
+        window.jQuery = window.$ = DOM;
+    }
+});
 
 _.extend(DOM.prototype, (function() {
     // TODO: Implement forEach since forEach isn't in all browsers
@@ -283,20 +292,7 @@ module.exports = window.D = DOM;
 
 }(this, _, document));
 */
-},{"./D/conflict":2,"./D/parser":3,"./modules/classes":6,"./modules/onready":7,"./modules/selectors":8,"./utils":11}],2:[function(require,module,exports){
-module.exports = {
-    fn: {
-        noConflict: function() {
-            window.d = _prevD;
-            return D;
-        },
-
-        moreConflict: function() {
-            window.jQuery = window.$ = D;
-        }
-    }
-};
-},{}],3:[function(require,module,exports){
+},{"./D/parser":2,"./modules/classes":5,"./modules/onready":6,"./modules/selectors":7,"./utils":10}],2:[function(require,module,exports){
 var _parseHtml = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -313,9 +309,9 @@ module.exports = {
     }
 };
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 module.exports = document.createElement('div');
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var utils = require('../utils');
 
 var _slice = (function(_slice) {
@@ -395,7 +391,7 @@ module.exports = {
     }
 };
 
-},{"../utils":11}],6:[function(require,module,exports){
+},{"../utils":10}],5:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -545,7 +541,7 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":10,"./array":5}],7:[function(require,module,exports){
+},{"../supports":9,"./array":4}],6:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -589,7 +585,7 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var _utils = require('../utils'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports');
@@ -707,7 +703,7 @@ module.exports = {
                     .expose()
     }
 };
-},{"../nodeType":9,"../supports":10,"../utils":11}],9:[function(require,module,exports){
+},{"../nodeType":8,"../supports":9,"../utils":10}],8:[function(require,module,exports){
 var nodeType = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -722,14 +718,14 @@ var nodeType = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
     matchesSelector: div.matches || div.matchesSelector || div.msMatchesSelector || div.mozMatchesSelector || div.webkitMatchesSelector || div.oMatchesSelector
 };
-},{"./div":4}],11:[function(require,module,exports){
+},{"./div":3}],10:[function(require,module,exports){
 var array = require('./modules/array');
 
 module.exports = {
@@ -787,4 +783,4 @@ module.exports = {
     }
 };
 
-},{"./modules/array":5}]},{},[1])
+},{"./modules/array":4}]},{},[1])
