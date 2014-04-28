@@ -54,6 +54,9 @@ module.exports = {
         at: function(index) {
             return this[+index];
         },
+        get: function(index) {
+            return this[+index];
+        },
         eq: function(index) {
             return D(this[+index]);
         },

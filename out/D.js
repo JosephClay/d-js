@@ -375,6 +375,9 @@ module.exports = {
         at: function(index) {
             return this[+index];
         },
+        get: function(index) {
+            return this[+index];
+        },
         eq: function(index) {
             return D(this[+index]);
         },
@@ -599,6 +602,8 @@ var _utils = require('../utils'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports');
 
+var _selectorBlackList = ['.', '#', '', ' '];
+
 var _isMatch = (function(matchSelector) {
     if (matchSelector) {
         return function(elem, selector) {
@@ -623,6 +628,9 @@ var _find = function(selector, context) {
         length = context.length || 1,
         result = [];
 
+    // Early return if the selector is bad
+    if (_selectorBlackList.indexOf(selector)) { return result; }
+
     for (; idx < length; idx++) {
         var ret = _findQuery(selector, context[idx]);
         if (ret) { result.push(ret); }
@@ -634,6 +642,7 @@ var _find = function(selector, context) {
 
 var _findQuery = function(selector, context) {
     context = context || document;
+
 
     var nodeType;
     // Early return if context is not an element or document
