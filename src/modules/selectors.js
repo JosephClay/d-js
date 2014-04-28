@@ -54,9 +54,39 @@ var _findQuery = function(selector, context) {
     return _array.slice(query);
 };
 
+var _filter = function(arr, qualifier) {
+    // Early return, no qualifier. Everything matches
+    if (!qualifier) { return arr; }
+
+    // Function
+    if (_.isFunction(qualifier)) {
+        return _.filter(arr, qualifier);
+    }
+
+    // Element
+    if (qualifier.nodeType) {
+        return _.filter(arr, function(elem) {
+            return (elem === qualifier);
+        });
+    }
+
+    // Selector
+    if (_.isString(qualifier)) {
+        return _.filter(arr, function(elem) {
+            return elem.nodeType === 1 && _isMatch(elem, qualifier);
+        });
+    }
+
+    // Array qualifier
+    return _.filter(arr, function(elem) {
+        return arr.indexOf(qualifier) > -1;
+    });
+};
 
 module.exports = {
     find: _find,
+    is: _isMatch,
+    filter: _filter,
 
     fn: {
         has: function(target) {
