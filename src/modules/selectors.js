@@ -38,7 +38,7 @@ var _find = function(selector, context) {
     }
 
     // TODO: I think this needs to be flattened, but not sure
-    return _utils.unique(_.flatten(result));
+    return _array.unique(_.flatten(result));
 };
 
 var _findQuery = function(selector, context) {
