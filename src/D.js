@@ -1,6 +1,8 @@
 var parser = require('./D/parser'),
+    utils = require('./utils'),
     conflict = require('./D/conflict'),
     onready = require('./modules/onready'),
+    selectors = require('./modules/selectors'),
     classes = require('./modules/classes');
 
 var _prevD = window.D;
@@ -10,52 +12,82 @@ Overload.prototype.err = function() {
     throw new TypeError();
 };
 
-var DOM = function(selector) {
+var DOM = function(arg) {
     // Wasn't created with "new"
-    if (!(this instanceof DOM)) { return new DOM(selector); }
-    
+    if (!(this instanceof DOM)) { return new DOM(arg); }
+
     // Nothin
-    if (!selector) { return; }
+    if (!arg) { return; }
 
     // Element
-    if (selector.nodeType) {
-        this.push(selector);
+    if (arg.nodeType || arg === window || arg === document) {
+        this.push(arg);
         return;
     }
 
-    // Selector
-    if (_.isString(selector)) {
+    // String
+    if (_.isString(arg)) {
 
         // HTML string
-        if (_utils.isHTML(selector)) {
-            _utils.merge(this, parser.parseHTML(selector));
+        if (utils.isHTML(arg)) {
+            utils.merge(this, parser.parseHtml(arg));
             return;
         }
 
-        // Perform a find without creating a new DOM
-        _utils.merge(this, selectors.find(selector, this));
+        // Selector: perform a find without creating a new DOM
+        utils.merge(this, selectors.find(arg, this));
         return;
     }
 
-
     // NodeList or Array of Elements
     // TODO: this is probably the wrong way to check if the item is a node list - fix
-    if (_.isArray(selector)) {
-        var elements = selector;
-        _utils.merge(this, elements);
+    if (_.isArray(arg)) {
+        utils.merge(this, arg);
         return;
     }
 
     // Document a ready
-    if (_.isFunction(selector)) {
-        var callback = selector;
-        onready(callback);
+    if (_.isFunction(arg)) {
+        onready(arg);
     }
 };
 
 _.extend(DOM, parser.fn, conflict.fn);
 
-_.extend(DOM.prototype, Array.prototype, classes.fn);
+_.extend(DOM.prototype, (function() {
+    // TODO: Implement forEach since forEach isn't in all browsers
+    var keys = [
+            'length',
+            'toString',
+            'toLocaleString',
+            'join',
+            'pop',
+            'push',
+            'concat',
+            'reverse',
+            'shift',
+            'unshift',
+            'slice',
+            'splice',
+            'sort',
+            'some',
+            'every',
+            'indexOf',
+            'lastIndexOf',
+            'reduce',
+            'reduceRight'
+        ],
+        idx = keys.length,
+        obj = {};
+    while (idx--) {
+        obj[keys[idx]] = Array.prototype[keys[idx]];
+    }
+
+    return obj;
+
+}()), {
+    constructor: DOM
+}, classes.fn);
 
 module.exports = window.D = DOM;
 
