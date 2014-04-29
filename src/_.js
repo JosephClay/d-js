@@ -33,10 +33,12 @@ if (typeof (/./) !== 'function') {
     };
 }
 
+// NodeList check
 _.isNodeList = function(obj) {
     return obj instanceof NodeList;
 };
 
+// Flatten that also checks if value is a NodeList
 _.flatten = function(arr) {
     var result = [];
 
@@ -55,6 +57,7 @@ _.flatten = function(arr) {
     return result;
 };
 
+// No-context every; strip each()
 _.every = function(arr, iterator) {
     if (!_.exists(arr)) { return true; }
 
@@ -66,6 +69,7 @@ _.every = function(arr, iterator) {
     return true;
 };
 
+// Faster extend; strip each()
 _.extend = function() {
     var args = arguments,
         obj = args[0],
@@ -85,16 +89,16 @@ _.extend = function() {
     return obj;
 };
 
+// Array-perserving map
 _.map = function(arr, iterator) {
-    var results = [];
-    if (!arr) { return results; }
+    if (!arr) { return []; }
 
     var idx = 0, length = arr.length;
     for (; idx < length; idx++) {
-        results.push(iterator(arr[idx], idx));
+        arr[idx] = iterator(arr[idx], idx);
     }
 
-    return results;
+    return arr;
 };
 
 _.filter = function(arr, iterator) {
