@@ -4,6 +4,10 @@ _.exists = function(obj) {
     return obj !== null && obj !== undefined;
 };
 
+_.parseInt = function(num) {
+    return parseInt(num, 10);
+};
+
 _.isElement = function(obj) {
     return !!(obj && obj.nodeType === 1);
 };
@@ -33,9 +37,10 @@ if (typeof (/./) !== 'function') {
     };
 }
 
-// NodeList check
+// NodeList check. For our purposes, a node list
+// and an HTMLCollection are the same
 _.isNodeList = function(obj) {
-    return obj instanceof NodeList;
+    return obj instanceof NodeList || obj instanceof HTMLCollection;
 };
 
 // Flatten that also checks if value is a NodeList

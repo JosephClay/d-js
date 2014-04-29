@@ -1,4 +1,4 @@
-module('event');
+module('ready');
 
 (function() {
 	var order = [];
@@ -17,7 +17,7 @@ module('event');
 
 	test('ready', function() {
 		expect(2);
-		
+
 		// Ensure execution order.
 		deepEqual(order, ['a', 'b'], 'Bound DOM ready handlers should execute in on-order');
 

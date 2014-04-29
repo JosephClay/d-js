@@ -1,6 +1,4 @@
-module( "attributes", {
-	teardown: moduleTeardown
-});
+module("attributes");
 
 function bareObj( value ) {
 	return value;

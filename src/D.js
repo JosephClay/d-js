@@ -5,6 +5,7 @@ var _ = require('./_'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
     transversal = require('./modules/transversal'),
+    dimensions = require('./modules/dimensions'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -125,6 +126,7 @@ _.extend(
     array.fn,
     selectors.fn,
     transversal.fn,
+    dimensions.fn,
     { constructor: DOM }
 );
 
@@ -145,8 +147,6 @@ module.exports = window.D = DOM;
 
 (function(root, _, document, undefined) {
 
-        _getComputedStyle = root.getComputedStyle,
-
         _bind = function(elem, eventName, callback) {
             if (elem.addEventListener) {
                 return elem.addEventListener(eventName, callback);
@@ -165,40 +165,13 @@ module.exports = window.D = DOM;
             elem.detachEvent('on' + eventName, callback);
         },
 
-        _outerWidth = function(elem) {
-            var width = elem.offsetWidth,
-                style = elem.currentStyle || _getComputedStyle(elem);
 
-            width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
-
-            return width;
-        },
-
-        _outerHeight = function(elem) {
-            var height = elem.offsetHeight,
-                style = elem.currentStyle || _getComputedStyle(elem);
-
-            height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
-
-            return height;
-        };
 
     var Dom = root.D = function(elem) {
         if (!(this instanceof Dom)) { return new Dom(elem); }
 
         this.elem = (elem instanceof D) ? elem.elem : _.isString(elem) ? document.querySelectorAll(elem) : elem;
     };
-
-    _.extend(Dom, {
-        toD: function(elements) {
-            elements = (elements instanceof D) ? elements.elem : elements;
-            if (!elements.length) { return []; }
-
-            return _.map(elements, function(elem) {
-                return new Dom(elem);
-            });
-        }
-    });
 
     Dom.prototype = {
 
@@ -284,31 +257,7 @@ module.exports = window.D = DOM;
             return this.elem.getBoundingClientRect();
         },
 
-        width: function(val) {
-            if (_exists(val)) {
-                this.elem.style.width = _.isNumber(val) ? val + 'px' : val;
-                return this;
-            }
 
-            return this.elem.offsetWidth;
-        },
-
-        height: function(val) {
-            if (_exists(val)) {
-                this.elem.style.height = _.isNumber(val) ? val + 'px' : val;
-                return this;
-            }
-
-            return this.elem.offsetHeight;
-        },
-
-        outerWidth: function(withMargin) {
-            return withMargin ? _outerWidth(this.elem) : this.elem.offsetWidth;
-        },
-
-        outerHeight: function(withMargin) {
-            return withMargin ? _outerHeight(this.elem) : this.elem.offsetHeight;
-        },
 
         on: function(eventName, callback) {
             _bind(this.elem, eventName, callback);
