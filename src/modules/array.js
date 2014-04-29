@@ -1,12 +1,15 @@
 var _utils = require('../utils');
 
 var _slice = (function(_slice) {
-    return function(arr, index) {
+    return function(arr, start, end) {
         // Exit early for empty array
         if (!arr || !arr.length) { return []; }
 
-        // Make sure index is defined
-        return _slice.call(arr, index || 0);
+        // End, naturally, has to be higher than 0 to matter,
+        // so a simple existance check will do
+        if (end) { return _slice.call(arr, start, end); }
+
+        return _slice.call(arr, start || 0);
     };
 }([].slice));
 
@@ -76,17 +79,31 @@ var _unique = function(results) {
     return results;
 };
 
+var _each = function(arr, iterator) {
+    if (!arr.length || !iterator) { return; }
+    
+    var idx = 0, length = arr.length,
+        item;
+    for (; idx < length; idx++) {
+        item = arr[idx];
+        if (iterator.call(item, item, idx) === false) { return; }
+    }
+};
+
 module.exports = {
     slice: _slice,
     elementSort: _elementSort,
     unique: _unique,
+    each: _each,
 
     fn: {
         at: function(index) {
             return this[+index];
         },
+
         get: function(index) {
-            if (!_utils.exists(index)) { return this; }
+            // No index, return all
+            if (!_utils.exists(index)) { return this.toArray(); }
 
             index = +index;
 
@@ -95,26 +112,38 @@ module.exports = {
 
             return this[index];
         },
+
         eq: function(index) {
             return D(this.get(index));
         },
-        slice: function(index) {
-            return D(_slice(this, index));
+
+        slice: function(start, end) {
+            return D(_slice(this.toArray(), start, end));
         },
+
         next: function() {
             // TODO
         },
+
         prev: function() {
             // TODO
         },
+
         first: function() {
             return D(this[0]);
         },
+
         last: function() {
             return D(this[this.length - 1]);
         },
+
         toArray: function() {
             return _slice(this);
+        },
+
+        each: function(iterator) {
+            _each(this, iterator);
+            return this;
         }
     }
 };

@@ -58,17 +58,6 @@ test('D()', function() {
 	equal(elem[0].defaultValue, 'TEST', 'Ensure cached nodes are cloned properly (Bug #6655)');
 });
 
-test("end()", function() {
-	expect(3);
-
-	equal( "Yahoo", D("#yahoo").parent().end().text(), "check for end" );
-	ok( D("#yahoo").end(), "check for end with nothing to end" );
-
-	var x = D("#yahoo");
-	x.parent();
-	equal( "Yahoo", D("#yahoo").text(), "check for non-destructive behaviour" );
-});
-
 test('length', function() {
 	expect(1);
 
@@ -103,34 +92,42 @@ test('get(-Number)',function() {
 	strictEqual(D('#firstp').get(-2), undefined, 'Try get with index negative index larger then elements count');
 });
 
-test("each(Function)", function() {
+test('each(Function)', function() {
 	expect(1);
-	var div, pass, i;
 
-	div = D("div");
-	div.each(function(){this.foo = "zoo";});
-	pass = true;
-	for ( i = 0; i < div.length; i++ ) {
-		if ( div.get(i).foo !== "zoo" ) {
-			pass = false;
+	var div = D('div');
+	div.each(function() { this.foo = 'zoo'; });
+
+	var hasPassed = true,
+		idx = 0, length = div.length;
+	for (; idx < length; idx++) {
+		if (div.get(idx).foo !== 'zoo') {
+			hasPassed = false;
 		}
 	}
-	ok( pass, "Execute a function, Relative" );
+
+	ok(hasPassed, 'Execute a function, Relative');
 });
 
-test("slice()", function() {
-	expect(7);
+test('slice()', function() {
+	expect(4);
 
-	var $links = D("#ap a");
+	var ps = D('#TestDiv p');
 
-	deepEqual( $links.slice(1,2).get(), q("groups"), "slice(1,2)" );
-	deepEqual( $links.slice(1).get(), q("groups", "anchor1", "mark"), "slice(1)" );
-	deepEqual( $links.slice(0,3).get(), q("google", "groups", "anchor1"), "slice(0,3)" );
-	deepEqual( $links.slice(-1).get(), q("mark"), "slice(-1)" );
+	deepEqual(ps.slice(1, 2).get(), [ ps.get(1) ], 'slice(1,2)' );
+	deepEqual(ps.slice(1).get(), [ ps.get(1), ps.get(2) ], 'slice(1)');
+	deepEqual(ps.slice(0, 3).get(), [ ps.get(0), ps.get(1), ps.get(2) ], 'slice(0,3)');
+	deepEqual(ps.slice(-1).get(), [ ps.get(2) ], 'slice(-1)' );
+});
 
-	deepEqual( $links.eq(1).get(), q("groups"), "eq(1)" );
-	deepEqual( $links.eq("2").get(), q("anchor1"), "eq('2')" );
-	deepEqual( $links.eq(-1).get(), q("mark"), "eq(-1)" );
+test('eq()', function() {
+	expect(3);
+
+	var ps = D('#TestDiv p');
+
+	deepEqual(ps.eq(1).get(), [ ps.get(1) ], 'eq(1)');
+	deepEqual(ps.eq(2).get(), [ ps.get(2) ], 'eq(2)');
+	deepEqual(ps.eq(-1).get(), [ ps.get(2) ], 'eq(-1)' );
 });
 
 test("first()/last()", function() {
