@@ -57,6 +57,15 @@ _.flatten = function(arr) {
     return result;
 };
 
+// Concat flat for a single array of arrays
+_.concatFlat = (function(concat) {
+
+    return function(nestedArrays) {
+        return concat.apply([], nestedArrays);
+    };
+
+}([].concat));
+
 // No-context every; strip each()
 _.every = function(arr, iterator) {
     if (!_.exists(arr)) { return true; }
@@ -89,8 +98,22 @@ _.extend = function() {
     return obj;
 };
 
-// Array-perserving map
+// Standard map
 _.map = function(arr, iterator) {
+    var results = [];
+    if (!arr) { return results; }
+
+    var idx = 0, length = arr.length;
+    for (; idx < length; idx++) {
+        results.push(iterator(arr[idx], idx));
+    }
+
+    return results;
+};
+
+// Array-perserving map
+// http://jsperf.com/push-map-vs-index-replacement-map
+_.fastmap = function(arr, iterator) {
     if (!arr) { return []; }
 
     var idx = 0, length = arr.length;

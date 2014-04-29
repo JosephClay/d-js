@@ -130,35 +130,30 @@ test('eq()', function() {
 	deepEqual(ps.eq(-1).get(), [ ps.get(2) ], 'eq(-1)' );
 });
 
-test("first()/last()", function() {
+test('first()/last()', function() {
 	expect(4);
 
-	var $links = D("#ap a"), $none = D("asdf");
+	var items = D('#TestDiv p'),
+		none = D('asdf');
 
-	deepEqual( $links.first().get(), q("google"), "first()" );
-	deepEqual( $links.last().get(), q("mark"), "last()" );
+	deepEqual(items.first().get(), [ items.get(0) ], 'first()');
+	deepEqual(items.last().get(), [ items.get(2) ], 'last()');
 
-	deepEqual( $none.first().get(), [], "first() none" );
-	deepEqual( $none.last().get(), [], "last() none" );
+	deepEqual(none.first().get(), [], 'first() none');
+	deepEqual(none.last().get(), [], 'last() none');
 });
 
-test("map()", function() {
-	expect( 2 );
+test('map()', function() {
+	expect(1);
+
+	var ps = D('#TestDiv p');
 
 	deepEqual(
-		D("#ap").map(function() {
-			return D( this ).find("a").get();
+		ps.map(function() {
+			return D(this).get();
 		}).get(),
-		q( "google", "groups", "anchor1", "mark" ),
-		"Array Map"
-	);
-
-	deepEqual(
-		D("#ap > a").map(function() {
-			return this.parentNode;
-		}).get(),
-		q( "ap","ap","ap" ),
-		"Single Map"
+		[ ps.get(0), ps.get(1), ps.get(2) ],
+		'Array Map'
 	);
 });
 

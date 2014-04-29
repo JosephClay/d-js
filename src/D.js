@@ -1,4 +1,5 @@
-var parser = require('./D/parser'),
+var _ = require('./_'),
+    parser = require('./D/parser'),
     utils = require('./utils'),
     array = require('./modules/array'),
     onready = require('./modules/onready'),
@@ -53,20 +54,38 @@ var DOM = function(arg) {
     }
 };
 
+var _hasMoreConflict = false,
+    _prevjQuery,
+    _prev$;
+
 _.extend(DOM, parser.fn, {
+    each:    array.each,
+    map:     _.map,
+    extend:  _.extend,
+    forEach: _.each,
+
     noConflict: function() {
+        if (_hasMoreConflict) {
+            window.jQuery = _prevjQuery;
+            window.$ = _prev$;
+
+            _hasMoreConflict = false;
+        }
+
         window.D = _prevD;
         return DOM;
     },
 
     moreConflict: function() {
+        _hasMoreConflict = true;
+        _prevjQuery = window.jQuery;
+        _prev$ = window.$;
         window.jQuery = window.$ = DOM;
     }
 });
 
 var arrayProto = (function() {
 
-    // TODO: Implement forEach since forEach isn't in all browsers
     var keys = [
             'length',
             'toString',

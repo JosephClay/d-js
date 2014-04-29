@@ -1,4 +1,5 @@
-var _utils = require('../utils');
+var _ = require('../_'),
+    _utils = require('../utils');
 
 var _slice = (function(_slice) {
     return function(arr, start, end) {
@@ -79,6 +80,20 @@ var _unique = function(results) {
     return results;
 };
 
+var _map = function(arr, iterator) {
+    var results = [];
+    if (!arr.length || !iterator) { return results; }
+    
+    var idx = 0, length = arr.length,
+        item;
+    for (; idx < length; idx++) {
+        item = arr[idx];
+        results.push(iterator.call(item, item, idx));
+    }
+
+    return _.concatFlat(results);
+};
+
 var _each = function(arr, iterator) {
     if (!arr.length || !iterator) { return; }
     
@@ -94,6 +109,7 @@ module.exports = {
     slice: _slice,
     elementSort: _elementSort,
     unique: _unique,
+    each: _each,
 
     fn: {
         at: function(index) {
@@ -140,7 +156,16 @@ module.exports = {
             return _slice(this);
         },
 
+        map: function(iterator) {
+            return D(_map(this, iterator));
+        },
+        
         each: function(iterator) {
+            _each(this, iterator);
+            return this;
+        },
+
+        forEach: function(iterator) {
             _each(this, iterator);
             return this;
         }
