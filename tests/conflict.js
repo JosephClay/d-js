@@ -14,9 +14,9 @@ test('noConflict', function() {
 });
 
 test('moreConflict', function() {
-    // expect(2);
+    expect(2);
 
-    // D.moreConflict();
-    // strictEqual(window.D, window.jQuery, 'Overwrote jQuery with D.');
-    // strictEqual(window.D, window.$, 'Overwrote $ with D.');
+    D.moreConflict();
+    strictEqual(window.D, window.jQuery, 'Overwrote jQuery with D.');
+    strictEqual(window.D, window.$, 'Overwrote $ with D.');
 });

@@ -94,7 +94,6 @@ module.exports = {
     slice: _slice,
     elementSort: _elementSort,
     unique: _unique,
-    each: _each,
 
     fn: {
         at: function(index) {
