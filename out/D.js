@@ -7,6 +7,7 @@ var _ = require('./_'),
     selectors = require('./modules/selectors'),
     transversal = require('./modules/transversal'),
     dimensions = require('./modules/dimensions'),
+    css = require('./modules/css'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -123,11 +124,12 @@ var arrayProto = (function() {
 _.extend(
     DOM.prototype,
     arrayProto,
-    classes.fn,
     array.fn,
     selectors.fn,
     transversal.fn,
     dimensions.fn,
+    css.fn,
+    classes.fn,
     { constructor: DOM }
 );
 
@@ -176,25 +178,8 @@ module.exports = window.D = DOM;
 
     Dom.prototype = {
 
-        hide: function() {
-            this.elem.style.display = 'none';
-            return this;
-        },
 
-        show: function() {
-            this.elem.style.display = '';
-            return this;
-        },
 
-        prepend: function(elem) {
-            this.elem.insertBefore(elem, this.parent.firstChild);
-            return this;
-        },
-
-        append: function(el) {
-            this.elem.appendChild(el);
-            return this;
-        },
 
         clone: function() {
             return new Dom(this.elem.cloneNode(true));
@@ -275,7 +260,7 @@ module.exports = window.D = DOM;
 
 }(this, _, document));
 */
-},{"./D/parser":2,"./_":3,"./modules/array":5,"./modules/classes":6,"./modules/dimensions":7,"./modules/onready":8,"./modules/selectors":9,"./modules/transversal":10,"./utils":13}],2:[function(require,module,exports){
+},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/classes":7,"./modules/css":8,"./modules/dimensions":9,"./modules/onready":10,"./modules/selectors":11,"./modules/transversal":12,"./utils":16}],2:[function(require,module,exports){
 var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -299,7 +284,8 @@ module.exports = {
 };
 
 },{}],3:[function(require,module,exports){
-var _ = {};
+var _ = {},
+    _toString = Object.prototype.toString;
 
 _.exists = function(obj) {
     return obj !== null && obj !== undefined;
@@ -315,12 +301,16 @@ _.coerceToNum = function(val) {
             0; // Default to zero
 };
 
+_.toPx = function(num) {
+    return num + 'px';
+};
+
 _.isElement = function(obj) {
     return !!(obj && obj.nodeType === 1);
 };
 
 _.isArray = Array.isArray || function(obj) {
-    return toString.call(obj) == '[object Array]';
+    return _toString.call(obj) == '[object Array]';
 };
 
 // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
@@ -328,7 +318,7 @@ var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
-            return toString.call(obj) == '[object ' + name + ']';
+            return _toString.call(obj) === '[object ' + name + ']';
         };
     },
     name;
@@ -341,6 +331,13 @@ while (idx--) {
 if (typeof (/./) !== 'function') {
     _.isFunction = function(obj) {
         return typeof obj === 'function';
+    };
+}
+
+// Optimize `isString` if appropriate.
+if (typeof ('') === 'string') {
+    _.isString = function(obj) {
+        return typeof obj === 'string';
     };
 }
 
@@ -452,8 +449,31 @@ _.filter = function(arr, iterator) {
 
 module.exports = _;
 },{}],4:[function(require,module,exports){
-module.exports = document.createElement('div');
+var _cache = {};
+
+var getterSetter = function(key) {
+
+    var ref = (_cache[key] = {});
+
+    return {
+        get: function(key) {
+            return ref[key];
+        },
+        set: function(key, value) {
+            ref[key] = value;
+        }
+    };
+};
+
+module.exports = {
+    classArray: getterSetter('CLASS_ARRAY'),
+    classMap: getterSetter('CLASS_MAP'),
+    selector: getterSetter('SELECTOR')
+};
+
 },{}],5:[function(require,module,exports){
+module.exports = document.createElement('div');
+},{}],6:[function(require,module,exports){
 var _ = require('../_'),
     _utils = require('../utils');
 
@@ -627,10 +647,9 @@ module.exports = {
         }
     }
 };
-},{"../_":3,"../utils":13}],6:[function(require,module,exports){
+},{"../_":3,"../utils":16}],7:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
-
 
 var _rspace = /\s+/g;
 
@@ -777,44 +796,144 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":12,"./array":5}],7:[function(require,module,exports){
-var div = require('../div');
+},{"../supports":15,"./array":6}],8:[function(require,module,exports){
+var _div = require('../div');
 
-// TODO: This may be better suited in supports or css
-var _getComputedStyle = (function() {
-        return div.currentStyle ? function(elem) { return elem.currentStyle; } : window.getComputedStyle;
-    }()),
+var _hide = function(elem) {
+        elem.style.display = 'none';
+    },
+    _show = function(elem) {
+        elem.style.display = '';
+    };
+
+var _cssSwap = function(elem, options, callback) {
+    var old = {};
+
+    // Remember the old values, and insert the new ones
+    var name;
+    for (name in options) {
+        old[name] = elem.style[name];
+        elem.style[name] = options[name];
+    }
+
+    var ret = callback(elem);
+
+    // Revert the old values
+    for (name in options) {
+        elem.style[name] = old[name];
+    }
+
+    return ret;
+};
+
+var _computedStyle = (function() {
+    return _div.currentStyle ?
+        function(elem) { return elem.currentStyle; } :
+            function(elem) { return window.getComputedStyle(elem); };
+}());
+
+module.exports = {
+    swap: _cssSwap,
+    getComputedStyle: _computedStyle,
+
+    fn: {
+        // TODO: Css
+        css: function() {},
+
+        hide: function() {
+            var idx = 0, length = this.length;
+            for (; idx < length; idx++) {
+                _hide(this[idx]);
+            }
+            return this;
+        },
+        show: function() {
+            var idx = 0, length = this.length;
+            for (; idx < length; idx++) {
+                _show(this[idx]);
+            }
+            return this;
+        },
+
+        // TODO: Toggle
+        toggle: function() {
+
+        }
+    }
+};
+
+},{"../div":5}],9:[function(require,module,exports){
+var _ = require('../_'),
+    _regex = require('../regex'),
+    _div = require('../div'),
+
+    _css = require('./css');
+/*
+if (jQuery.isWindow(elem)) {
+                        // As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
+                        // isn't a whole lot we can do. See pull request at this URL for discussion:
+                        // https://github.com/jquery/jquery/pull/764
+                        return elem.document.documentElement["client" + name];
+                    }
+
+                    // Get document width or height
+                    if (elem.nodeType === 9) {
+                        doc = elem.documentElement;
+
+                        // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
+                        // unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
+                        return Math.max(
+                        elem.body["scroll" + name], doc["scroll" + name],
+                        elem.body["offset" + name], doc["offset" + name],
+                        doc["client" + name]
+                        );
+                    }
+                    */
+
+var _MEASURE_DISPLAY = {
+        display: 'block',
+        position: 'absolute',
+        visibility: 'hidden'
+    },
 
     _getWidth = function(elem) {
-        return elem.offsetWidth;
+        var width = elem.offsetWidth;
+        return (width === 0 &&
+                _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
+                    _css.swap(elem, _MEASURE_DISPLAY, function() { return elem.offsetWidth; }) :
+                        width;
     },
     _setWidth = function(elem, val) {
-        elem.style.width = _.isNumber(val) ? val + 'px' : val;
+        elem.style.width = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
     },
 
     _getHeight = function(elem) {
-        return elem.offsetHeight;
+        var height = elem.offsetHeight;
+        return (height === 0 &&
+                _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
+                    _css.swap(elem, _MEASURE_DISPLAY, function() { return elem.offsetHeight; }) :
+                        height;
     },
     _setHeight = function(elem, val) {
-        elem.style.height = _.isNumber(val) ? val + 'px' : val;
+        elem.style.height = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
     },
 
     _getInnerWidth = function(elem) {
         var width = _getWidth(elem),
-            style = _getComputedStyle(elem);
+            style = _css.getComputedStyle(elem);
 
         return width + _.parseInt(style.paddingLeft) + _.parseInt(style.paddingRight);
     },
     _getInnerHeight = function(elem) {
         var height = _getHeight(elem),
-            style = _getComputedStyle(elem);
+            style = _css.getComputedStyle(elem);
 
         return height + _.parseInt(style.paddingTop) + _.parseInt(style.paddingBottom);
     },
 
     _getOuterWidth = function(elem, withMargin) {
         var width = _getInnerWidth(elem),
-            style = _getComputedStyle(elem);
+            style = _css.getComputedStyle(elem);
 
         if (withMargin) {
             width += _.parseInt(style.marginLeft) + _.parseInt(style.marginRight);
@@ -824,7 +943,7 @@ var _getComputedStyle = (function() {
     },
     _getOuterHeight = function(elem, withMargin) {
         var height = _getInnerHeight(elem),
-            style = _getComputedStyle(elem);
+            style = _css.getComputedStyle(elem);
 
         if (withMargin) {
             height += _.parseInt(style.marginTop) + _.parseInt(style.marginBottom);
@@ -834,7 +953,7 @@ var _getComputedStyle = (function() {
     };
 
 // TODO: Overload
-return {
+module.exports = {
     fn: {
         width: function(val) {
             var elem = this[0], // The first elem
@@ -893,7 +1012,7 @@ return {
     }
 };
 
-},{"../div":4}],8:[function(require,module,exports){
+},{"../_":3,"../div":5,"../regex":14,"./css":8}],10:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -937,13 +1056,15 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var _utils = require('../utils'),
+    _cache = require('../cache'),
+    _regex = require('../regex'),
     _array = require('./array'),
     _nodeType = require('../nodeType'),
-    _supports = require('../supports');
+    _supports = require('../supports'),
 
-var _selectorBlackList = ['.', '#', '', ' '];
+    _selectorBlackList = ['.', '#', '', ' '];
 
 var _isMatch = (function(matchSelector) {
     if (matchSelector) {
@@ -972,24 +1093,42 @@ var _find = function(selector, context) {
     // Early return if the selector is bad
     if (_selectorBlackList.indexOf(selector) > -1) { return result; }
 
+    var method = _determineMethod(selector);
     for (; idx < length; idx++) {
-        var ret = _findQuery(selector, context[idx]);
+        var ret = _findQuery(selector, context[idx], method);
         if (ret) { result.push(ret); }
     }
 
-    // TODO: I think this needs to be flattened, but not sure
+    // TODO: I think this needs to be flattened, but not sure - double check
     return _array.unique(_.flatten(result));
 };
 
-var _findQuery = function(selector, context) {
-    context = context || document;
+var _determineMethod = function(selector) {
+    var method = _cache.selector.get(selector);
+    if (method) { return method; }
 
+    if (_regex.selector.isStrictId(selector)) {
+        method = 'getElementById';
+    } else if (_regex.selector.isClass(selector)) {
+        method = 'getElementsByClassName';
+    } else if (_regex.selector.isTag(selector)) {
+        method = 'getElementsByTagName';
+    } else {
+        method = 'querySelectorAll';
+    }
+
+    _cache.selector.set(selector, method);
+    return method;
+};
+
+var _findQuery = function(selector, context, method) {
+    context = context || document;
 
     var nodeType;
     // Early return if context is not an element or document
     if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
 
-    var query = context.querySelectorAll(selector);
+    var query = context[method](selector);
     if (!query.length) { return; }
     return _array.slice(query);
 };
@@ -1092,7 +1231,7 @@ module.exports = {
                     .expose()
     }
 };
-},{"../nodeType":11,"../supports":12,"../utils":13,"./array":5}],10:[function(require,module,exports){
+},{"../cache":4,"../nodeType":13,"../regex":14,"../supports":15,"../utils":16,"./array":6}],12:[function(require,module,exports){
 var _array = require('./array'),
     _selectors = require('./selectors');
 
@@ -1192,7 +1331,7 @@ module.exports = {
     }
 };
 
-},{"./array":5,"./selectors":9}],11:[function(require,module,exports){
+},{"./array":6,"./selectors":11}],13:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -1207,14 +1346,47 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+var _DISPLAY_TEST = {
+    noneOrTable: /^(none|table(?!-c[ea]).+)/
+};
+
+var _SELECTOR_TEST = {
+    id:    /^#([\w-]+)$/,
+    tag:   /^[\w-]+$/,
+    klass: /^\.([\w-]+)$/
+};
+
+module.exports = {
+    display: {
+        isNoneOrTable: function(str) {
+            return !!_DISPLAY_TEST.noneOrTable.exec(str);
+        }
+    },
+
+    selector: {
+        isStrictId: function(str) {
+            var result = _SELECTOR_TEST.id.exec(str);
+            return result ? !result[1] : false;
+        },
+        isTag: function(str) {
+            var result = _SELECTOR_TEST.tag.exec(str);
+            return result ? !result[1] : false;
+        },
+        isClass: function(str) {
+            var result = _SELECTOR_TEST.klass.exec(str);
+            return result ? !result[1] : false;
+        }
+    }
+};
+},{}],15:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
     matchesSelector: div.matches || div.matchesSelector || div.msMatchesSelector || div.mozMatchesSelector || div.webkitMatchesSelector || div.oMatchesSelector
 };
-},{"./div":4}],13:[function(require,module,exports){
+},{"./div":5}],16:[function(require,module,exports){
 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {

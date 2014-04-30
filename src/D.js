@@ -6,6 +6,7 @@ var _ = require('./_'),
     selectors = require('./modules/selectors'),
     transversal = require('./modules/transversal'),
     dimensions = require('./modules/dimensions'),
+    css = require('./modules/css'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -122,11 +123,12 @@ var arrayProto = (function() {
 _.extend(
     DOM.prototype,
     arrayProto,
-    classes.fn,
     array.fn,
     selectors.fn,
     transversal.fn,
     dimensions.fn,
+    css.fn,
+    classes.fn,
     { constructor: DOM }
 );
 
@@ -175,17 +177,9 @@ module.exports = window.D = DOM;
 
     Dom.prototype = {
 
-        hide: function() {
-            this.elem.style.display = 'none';
-            return this;
-        },
 
-        show: function() {
-            this.elem.style.display = '';
-            return this;
-        },
 
-        
+
         clone: function() {
             return new Dom(this.elem.cloneNode(true));
         },

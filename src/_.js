@@ -1,4 +1,5 @@
-var _ = {};
+var _ = {},
+    _toString = Object.prototype.toString;
 
 _.exists = function(obj) {
     return obj !== null && obj !== undefined;
@@ -14,12 +15,16 @@ _.coerceToNum = function(val) {
             0; // Default to zero
 };
 
+_.toPx = function(num) {
+    return num + 'px';
+};
+
 _.isElement = function(obj) {
     return !!(obj && obj.nodeType === 1);
 };
 
 _.isArray = Array.isArray || function(obj) {
-    return toString.call(obj) == '[object Array]';
+    return _toString.call(obj) == '[object Array]';
 };
 
 // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
@@ -27,7 +32,7 @@ var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
-            return toString.call(obj) == '[object ' + name + ']';
+            return _toString.call(obj) === '[object ' + name + ']';
         };
     },
     name;
@@ -40,6 +45,13 @@ while (idx--) {
 if (typeof (/./) !== 'function') {
     _.isFunction = function(obj) {
         return typeof obj === 'function';
+    };
+}
+
+// Optimize `isString` if appropriate.
+if (typeof ('') === 'string') {
+    _.isString = function(obj) {
+        return typeof obj === 'string';
     };
 }
 

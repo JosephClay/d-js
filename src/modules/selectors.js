@@ -1,9 +1,11 @@
 var _utils = require('../utils'),
+    _cache = require('../cache'),
+    _regex = require('../regex'),
     _array = require('./array'),
     _nodeType = require('../nodeType'),
-    _supports = require('../supports');
+    _supports = require('../supports'),
 
-var _selectorBlackList = ['.', '#', '', ' '];
+    _selectorBlackList = ['.', '#', '', ' '];
 
 var _isMatch = (function(matchSelector) {
     if (matchSelector) {
@@ -32,24 +34,42 @@ var _find = function(selector, context) {
     // Early return if the selector is bad
     if (_selectorBlackList.indexOf(selector) > -1) { return result; }
 
+    var method = _determineMethod(selector);
     for (; idx < length; idx++) {
-        var ret = _findQuery(selector, context[idx]);
+        var ret = _findQuery(selector, context[idx], method);
         if (ret) { result.push(ret); }
     }
 
-    // TODO: I think this needs to be flattened, but not sure
+    // TODO: I think this needs to be flattened, but not sure - double check
     return _array.unique(_.flatten(result));
 };
 
-var _findQuery = function(selector, context) {
-    context = context || document;
+var _determineMethod = function(selector) {
+    var method = _cache.selector.get(selector);
+    if (method) { return method; }
 
+    if (_regex.selector.isStrictId(selector)) {
+        method = 'getElementById';
+    } else if (_regex.selector.isClass(selector)) {
+        method = 'getElementsByClassName';
+    } else if (_regex.selector.isTag(selector)) {
+        method = 'getElementsByTagName';
+    } else {
+        method = 'querySelectorAll';
+    }
+
+    _cache.selector.set(selector, method);
+    return method;
+};
+
+var _findQuery = function(selector, context, method) {
+    context = context || document;
 
     var nodeType;
     // Early return if context is not an element or document
     if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
 
-    var query = context.querySelectorAll(selector);
+    var query = context[method](selector);
     if (!query.length) { return; }
     return _array.slice(query);
 };

@@ -1,7 +1,6 @@
 var supports = require('../supports'),
     array = require('./array');
 
-
 var _rspace = /\s+/g;
 
 var _classArrayCache = {};
