@@ -1,77 +1,54 @@
-module("traversing", { teardown: moduleTeardown });
+module("traversing");
 
-test( "find(String)", function() {
-	expect( 1 );
-	equal( jQuery("#foo").find(".blogTest").text(), "Yahoo", "Basic selector" );
+test("find(String)", function() {
+	expect(1);
+
+	equal(jQuery("#foo").find(".blogTest").text(), "Yahoo", "Basic selector");
 });
 
 test( "find(String) under non-elements", function() {
-	expect( 2 );
+	expect(2);
 
 	var j = jQuery("#nonnodes").contents();
-	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
-	equal( j.find("div").addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
+	equal(j.find("div").length, 0, "Check node,textnode,comment to find zero divs");
+	equal(j.find("div").addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack");
 });
 
-test( "find(leading combinator)", function() {
-	expect( 4 );
+test("find(leading combinator)", function() {
+	expect(4);
 
-	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
-	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q( "foo", "moretests" ), "find child elements" );
-	deepEqual( jQuery("#qunit-fixture").find("> #foo > p").get(), q( "sndp", "en", "sap" ), "find child elements" );
+	deepEqual(jQuery("#qunit-fixture").find("> div").get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements");
+	deepEqual(jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q( "foo", "moretests" ), "find child elements");
+	deepEqual(jQuery("#qunit-fixture").find("> #foo > p").get(), q( "sndp", "en", "sap" ), "find child elements");
 
-	deepEqual( jQuery("#siblingTest, #siblingfirst").find("+ *").get(), q( "siblingnext", "fx-test-group" ), "ensure document order" );
-});
-
-test( "find(node|jQuery object)", function() {
-	expect( 13 );
-
-	var $foo = jQuery("#foo"),
-		$blog = jQuery(".blogTest"),
-		$first = jQuery("#first"),
-		$two = $blog.add( $first ),
-		$twoMore = jQuery("#ap").add( $blog ),
-		$fooTwo = $foo.add( $blog );
-
-	equal( $foo.find( $blog ).text(), "Yahoo", "Find with blog jQuery object" );
-	equal( $foo.find( $blog[ 0 ] ).text(), "Yahoo", "Find with blog node" );
-	equal( $foo.find( $first ).length, 0, "#first is not in #foo" );
-	equal( $foo.find( $first[ 0 ]).length, 0, "#first not in #foo (node)" );
-	deepEqual( $foo.find( $two ).get(), $blog.get(), "Find returns only nodes within #foo" );
-	deepEqual( $foo.find( $twoMore ).get(), $blog.get(), "...regardless of order" );
-	ok( $fooTwo.find( $blog ).is(".blogTest"), "Blog is part of the collection, but also within foo" );
-	ok( $fooTwo.find( $blog[ 0 ] ).is(".blogTest"), "Blog is part of the collection, but also within foo(node)" );
-
-	equal( $two.find( $foo ).length, 0, "Foo is not in two elements" );
-	equal( $two.find( $foo[ 0 ] ).length, 0, "Foo is not in two elements(node)" );
-	equal( $two.find( $first ).length, 0, "first is in the collection and not within two" );
-	equal( $two.find( $first ).length, 0, "first is in the collection and not within two(node)" );
-
-	equal( $two.find( $foo[ 0 ] ).addBack().length, 2, "find preserves the pushStack, see #12009" );
+	deepEqual(jQuery("#siblingTest, #siblingfirst").find("+ *").get(), q( "siblingnext", "fx-test-group" ), "ensure document order");
 });
 
 test("is(String|undefined)", function() {
 	expect(23);
-	ok( jQuery("#form").is("form"), "Check for element: A form must be a form" );
-	ok( !jQuery("#form").is("div"), "Check for element: A form is not a div" );
-	ok( jQuery("#mark").is(".blog"), "Check for class: Expected class 'blog'" );
-	ok( !jQuery("#mark").is(".link"), "Check for class: Did not expect class 'link'" );
-	ok( jQuery("#simon").is(".blog.link"), "Check for multiple classes: Expected classes 'blog' and 'link'" );
-	ok( !jQuery("#simon").is(".blogTest"), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
-	ok( jQuery("#en").is("[lang=\"en\"]"), "Check for attribute: Expected attribute lang to be 'en'" );
-	ok( !jQuery("#en").is("[lang=\"de\"]"), "Check for attribute: Expected attribute lang to be 'en', not 'de'" );
-	ok( jQuery("#text1").is("[type=\"text\"]"), "Check for attribute: Expected attribute type to be 'text'" );
-	ok( !jQuery("#text1").is("[type=\"radio\"]"), "Check for attribute: Expected attribute type to be 'text', not 'radio'" );
-	ok( jQuery("#text2").is(":disabled"), "Check for pseudoclass: Expected to be disabled" );
-	ok( !jQuery("#text1").is(":disabled"), "Check for pseudoclass: Expected not disabled" );
-	ok( jQuery("#radio2").is(":checked"), "Check for pseudoclass: Expected to be checked" );
-	ok( !jQuery("#radio1").is(":checked"), "Check for pseudoclass: Expected not checked" );
 
-	ok( !jQuery("#foo").is(0), "Expected false for an invalid expression - 0" );
-	ok( !jQuery("#foo").is(null), "Expected false for an invalid expression - null" );
-	ok( !jQuery("#foo").is(""), "Expected false for an invalid expression - \"\"" );
-	ok( !jQuery("#foo").is(undefined), "Expected false for an invalid expression - undefined" );
-	ok( !jQuery("#foo").is({ plain: "object" }), "Check passing invalid object" );
+	ok(jQuery("#form").is("form"), "Check for element: A form must be a form");
+	ok(!jQuery("#form").is("div"), "Check for element: A form is not a div");
+	ok(jQuery("#mark").is(".blog"), "Check for class: Expected class 'blog'");
+	ok(!jQuery("#mark").is(".link"), "Check for class: Did not expect class 'link'");
+	ok(jQuery("#simon").is(".blog.link"), "Check for multiple classes: Expected classes 'blog' and 'link'");
+	ok(!jQuery("#simon").is(".blogTest"), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'");
+	ok(jQuery("#en").is("[lang=\"en\"]"), "Check for attribute: Expected attribute lang to be 'en'");
+	ok(!jQuery("#en").is("[lang=\"de\"]"), "Check for attribute: Expected attribute lang to be 'en', not 'de'");
+	ok(jQuery("#text1").is("[type=\"text\"]"), "Check for attribute: Expected attribute type to be 'text'");
+	ok(!jQuery("#text1").is("[type=\"radio\"]"), "Check for attribute: Expected attribute type to be 'text', not 'radio'");
+
+	// TODO: look into viability of adding this
+	// ok(jQuery("#text2").is(":disabled"), "Check for pseudoclass: Expected to be disabled");
+	// ok(!jQuery("#text1").is(":disabled"), "Check for pseudoclass: Expected not disabled");
+	// ok(jQuery("#radio2").is(":checked"), "Check for pseudoclass: Expected to be checked");
+	// ok(!jQuery("#radio1").is(":checked"), "Check for pseudoclass: Expected not checked");
+
+	ok(!jQuery("#foo").is(0), "Expected false for an invalid expression - 0");
+	ok(!jQuery("#foo").is(null), "Expected false for an invalid expression - null");
+	ok(!jQuery("#foo").is(""), "Expected false for an invalid expression - \"\"");
+	ok(!jQuery("#foo").is(undefined), "Expected false for an invalid expression - undefined");
+	ok(!jQuery("#foo").is({ plain: "object" }), "Check passing invalid object");
 
 	// test is() with comma-separated expressions
 	ok( jQuery("#en").is("[lang=\"en\"],[lang=\"de\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
@@ -128,68 +105,6 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#mark").is( jQuery(".link")[0] ), "Check for class: Did not expect class 'link'" );
 	ok( jQuery("#simon").is( jQuery(".blog.link")[0] ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
 	ok( !jQuery("#simon").is( jQuery(".blogTest")[0] ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
-});
-
-test("is() with :has() selectors", function() {
-	expect(6);
-
-	ok( jQuery("#foo").is(":has(p)"), "Check for child: Expected a child 'p' element" );
-	ok( !jQuery("#foo").is(":has(ul)"), "Check for child: Did not expect 'ul' element" );
-	ok( jQuery("#foo").is(":has(p):has(a):has(code)"), "Check for childs: Expected 'p', 'a' and 'code' child elements" );
-	ok( !jQuery("#foo").is(":has(p):has(a):has(code):has(ol)"), "Check for childs: Expected 'p', 'a' and 'code' child elements, but no 'ol'" );
-
-	ok( jQuery("#foo").is( jQuery("div:has(p)") ), "Check for child: Expected a child 'p' element" );
-	ok( !jQuery("#foo").is( jQuery("div:has(ul)") ), "Check for child: Did not expect 'ul' element" );
-});
-
-test("is() with positional selectors", function() {
-	expect(27);
-
-	var
-		posp = jQuery(
-			"<p id='posp'><a class='firsta' href='#'><em>first</em></a>" +
-			"<a class='seconda' href='#'><b>test</b></a><em></em></p>"
-		).appendTo( "#qunit-fixture" ),
-		isit = function( sel, match, expect ) {
-			equal(
-				jQuery( sel ).is( match ),
-				expect,
-				"jQuery('" + sel + "').is('" + match + "')"
-			);
-		};
-
-	isit( "#posp", "p:last", true );
-	isit( "#posp", "#posp:first", true );
-	isit( "#posp", "#posp:eq(2)", false );
-	isit( "#posp", "#posp a:first", false );
-
-	isit( "#posp .firsta", "#posp a:first", true );
-	isit( "#posp .firsta", "#posp a:last", false );
-	isit( "#posp .firsta", "#posp a:even", true );
-	isit( "#posp .firsta", "#posp a:odd", false );
-	isit( "#posp .firsta", "#posp a:eq(0)", true );
-	isit( "#posp .firsta", "#posp a:eq(9)", false );
-	isit( "#posp .firsta", "#posp em:eq(0)", false );
-	isit( "#posp .firsta", "#posp em:first", false );
-	isit( "#posp .firsta", "#posp:first", false );
-
-	isit( "#posp .seconda", "#posp a:first", false );
-	isit( "#posp .seconda", "#posp a:last", true );
-	isit( "#posp .seconda", "#posp a:gt(0)", true );
-	isit( "#posp .seconda", "#posp a:lt(5)", true );
-	isit( "#posp .seconda", "#posp a:lt(1)", false );
-
-	isit( "#posp em", "#posp a:eq(0) em", true );
-	isit( "#posp em", "#posp a:lt(1) em", true );
-	isit( "#posp em", "#posp a:gt(1) em", false );
-	isit( "#posp em", "#posp a:first em", true );
-	isit( "#posp em", "#posp a em:last", true );
-	isit( "#posp em", "#posp a em:eq(2)", false );
-
-	ok( jQuery("#option1b").is("#select1 option:not(:first)"), "POS inside of :not() (#10970)" );
-
-	ok( jQuery( posp[0] ).is("p:last"), "context constructed from a single node (#13797)" );
-	ok( !jQuery( posp[0] ).find("#firsta").is("a:first"), "context derived from a single node (#13797)" );
 });
 
 test("index()", function() {
@@ -279,49 +194,6 @@ test("filter(jQuery)", function() {
 	deepEqual( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
 });
 
-
-test("filter() with positional selectors", function() {
-	expect(19);
-
-	var filterit = function(sel, filter, length) {
-		equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
-	};
-
-	jQuery( "" +
-		"<p id='posp'>" +
-			"<a class='firsta' href='#'>" +
-				"<em>first</em>" +
-			"</a>" +
-			"<a class='seconda' href='#'>" +
-				"<b>test</b>" +
-			"</a>" +
-			"<em></em>" +
-		"</p>" ).appendTo( "#qunit-fixture" );
-
-	filterit( "#posp", "#posp:first", 1);
-	filterit( "#posp", "#posp:eq(2)", 0 );
-	filterit( "#posp", "#posp a:first", 0 );
-
-	// Keep in mind this is within the selection and
-	// not in relation to other elements (.is() is a different story)
-	filterit( "#posp .firsta", "#posp a:first", 1 );
-	filterit( "#posp .firsta", "#posp a:last", 1 );
-	filterit( "#posp .firsta", "#posp a:last-child", 0 );
-	filterit( "#posp .firsta", "#posp a:even", 1 );
-	filterit( "#posp .firsta", "#posp a:odd", 0 );
-	filterit( "#posp .firsta", "#posp a:eq(0)", 1 );
-	filterit( "#posp .firsta", "#posp a:eq(9)", 0 );
-	filterit( "#posp .firsta", "#posp em:eq(0)", 0 );
-	filterit( "#posp .firsta", "#posp em:first", 0 );
-	filterit( "#posp .firsta", "#posp:first", 0 );
-
-	filterit( "#posp .seconda", "#posp a:first", 1 );
-	filterit( "#posp .seconda", "#posp em:first", 0 );
-	filterit( "#posp .seconda", "#posp a:last", 1 );
-	filterit( "#posp .seconda", "#posp a:gt(0)", 0 );
-	filterit( "#posp .seconda", "#posp a:lt(5)", 1 );
-	filterit( "#posp .seconda", "#posp a:lt(1)", 1 );
-});
 
 test("closest()", function() {
 	expect( 13 );
@@ -480,14 +352,6 @@ test("has(Arrayish)", function() {
 	deepEqual( multipleHas.get(), q("qunit-fixture"), "Only adds elements once" );
 });
 
-test("addBack()", function() {
-	expect(5);
-	deepEqual( jQuery("#en").siblings().addBack().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
-	deepEqual( jQuery("#foo").children().addBack().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
-	deepEqual( jQuery("#sndp, #en").parent().addBack().get(), q("foo","sndp","en"), "Check for parent and self" );
-	deepEqual( jQuery("#groups").parents("p, div").addBack().get(), q("qunit-fixture", "ap", "groups"), "Check for parents and self" );
-	deepEqual( jQuery("#select1 > option").filter(":first-child").addBack(":last-child").get(), q("option1a", "option1d"), "Should contain the last elems plus the *filtered* prior set elements" );
-});
 
 test("siblings([String])", function() {
 	expect(6);
@@ -579,67 +443,6 @@ test("prev([String])", function() {
 	equal( jQuery("#foo").prev("p, div")[0].id, "ap", "Multiple filters" );
 });
 
-test("nextAll([String])", function() {
-	expect(5);
-
-	var elems = jQuery("#form").children();
-
-	deepEqual( jQuery("#label-for").nextAll().get(), elems.slice(1).get(), "Simple nextAll check" );
-	equal( jQuery("<div>text<a id='element'></a></div>").contents().eq(0).nextAll().attr("id"), "element", "Text node nextAll check" );
-	deepEqual( jQuery("#label-for").nextAll("input").get(), elems.slice(1).filter("input").get(), "Filtered nextAll check" );
-	deepEqual( jQuery("#label-for").nextAll("input,select").get(), elems.slice(1).filter("input,select").get(), "Multiple-filtered nextAll check" );
-	deepEqual( jQuery("#label-for, #hidden1").nextAll("input,select").get(), elems.slice(1).filter("input,select").get(), "Multi-source, multiple-filtered nextAll check" );
-});
-
-test("prevAll([String])", function() {
-	expect(5);
-
-	var elems = jQuery( jQuery("#form").children().slice(0, 12).get().reverse() );
-
-	deepEqual( jQuery("#area1").prevAll().get(), elems.get(), "Simple prevAll check" );
-	deepEqual( jQuery("#nonnodes").contents().eq(1).prevAll().get(), q("nonnodesElement"), "Text node prevAll check" );
-	deepEqual( jQuery("#area1").prevAll("input").get(), elems.filter("input").get(), "Filtered prevAll check" );
-	deepEqual( jQuery("#area1").prevAll("input,select").get(), elems.filter("input,select").get(), "Multiple-filtered prevAll check" );
-	deepEqual( jQuery("#area1, #hidden1").prevAll("input,select").get(), elems.filter("input,select").get(), "Multi-source, multiple-filtered prevAll check" );
-});
-
-test("nextUntil([String])", function() {
-	expect(12);
-
-	var elems = jQuery("#form").children().slice( 2, 12 );
-
-	deepEqual( jQuery("#text1").nextUntil().get(), jQuery("#text1").nextAll().get(), "nextUntil with no selector (nextAll)" );
-	equal( jQuery("<div>text<a id='element'></a></div>").contents().eq(0).nextUntil().attr("id"), "element", "Text node nextUntil with no selector (nextAll)" );
-	deepEqual( jQuery("#text1").nextUntil(".foo").get(), jQuery("#text1").nextAll().get(), "nextUntil with invalid selector (nextAll)" );
-	deepEqual( jQuery("#text1").nextUntil("#area1").get(), elems.get(), "Simple nextUntil check" );
-	equal( jQuery("#text1").nextUntil("#text2").length, 0, "Simple nextUntil check" );
-	deepEqual( jQuery("#text1").nextUntil("#area1, #radio1").get(), jQuery("#text1").next().get(), "Less simple nextUntil check" );
-	deepEqual( jQuery("#text1").nextUntil("#area1", "input").get(), elems.not("button").get(), "Filtered nextUntil check" );
-	deepEqual( jQuery("#text1").nextUntil("#area1", "button").get(), elems.not("input").get(), "Filtered nextUntil check" );
-	deepEqual( jQuery("#text1").nextUntil("#area1", "button,input").get(), elems.get(), "Multiple-filtered nextUntil check" );
-	equal( jQuery("#text1").nextUntil("#area1", "div").length, 0, "Filtered nextUntil check, no match" );
-	deepEqual( jQuery("#text1, #hidden1").nextUntil("#area1", "button,input").get(), elems.get(), "Multi-source, multiple-filtered nextUntil check" );
-
-	deepEqual( jQuery("#text1").nextUntil("[class=foo]").get(), jQuery("#text1").nextAll().get(), "Non-element nodes must be skipped, since they have no attributes" );
-});
-
-test("prevUntil([String])", function() {
-	expect(11);
-
-	var elems = jQuery("#area1").prevAll();
-
-	deepEqual( jQuery("#area1").prevUntil().get(), elems.get(), "prevUntil with no selector (prevAll)" );
-	deepEqual( jQuery("#nonnodes").contents().eq(1).prevUntil().get(), q("nonnodesElement"), "Text node prevUntil with no selector (prevAll)" );
-	deepEqual( jQuery("#area1").prevUntil(".foo").get(), elems.get(), "prevUntil with invalid selector (prevAll)" );
-	deepEqual( jQuery("#area1").prevUntil("label").get(), elems.slice(0, -1).get(), "Simple prevUntil check" );
-	equal( jQuery("#area1").prevUntil("#button").length, 0, "Simple prevUntil check" );
-	deepEqual( jQuery("#area1").prevUntil("label, #search").get(), jQuery("#area1").prev().get(), "Less simple prevUntil check" );
-	deepEqual( jQuery("#area1").prevUntil("label", "input").get(), elems.slice(0, -1).not("button").get(), "Filtered prevUntil check" );
-	deepEqual( jQuery("#area1").prevUntil("label", "button").get(), elems.slice(0, -1).not("input").get(), "Filtered prevUntil check" );
-	deepEqual( jQuery("#area1").prevUntil("label", "button,input").get(), elems.slice(0, -1).get(), "Multiple-filtered prevUntil check" );
-	equal( jQuery("#area1").prevUntil("label", "div").length, 0, "Filtered prevUntil check, no match" );
-	deepEqual( jQuery("#area1, #hidden1").prevUntil("label", "button,input").get(), elems.slice(0, -1).get(), "Multi-source, multiple-filtered prevUntil check" );
-});
 
 test("contents()", function() {
 	expect(12);

@@ -185,16 +185,7 @@ module.exports = window.D = DOM;
             return this;
         },
 
-        prepend: function(elem) {
-            this.elem.insertBefore(elem, this.parent.firstChild);
-            return this;
-        },
-
-        append: function(el) {
-            this.elem.appendChild(el);
-            return this;
-        },
-
+        
         clone: function() {
             return new Dom(this.elem.cloneNode(true));
         },
