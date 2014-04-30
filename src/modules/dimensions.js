@@ -14,7 +14,6 @@ var _MEASURE_DISPLAY = {
 
     _getDocumentDimension = function(elem, name) {
         // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
-        // unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
         var doc = elem.documentElement;
         return Math.max(
             elem.body['scroll' + name],
