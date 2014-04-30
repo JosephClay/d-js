@@ -1,6 +1,4 @@
-module( "manipulation", {
-	teardown: moduleTeardown
-});
+module("manipulation");
 
 // Ensure that an extended Array prototype doesn't break jQuery
 Array.prototype.arrayProtoFn = function() {

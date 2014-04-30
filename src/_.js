@@ -8,6 +8,12 @@ _.parseInt = function(num) {
     return parseInt(num, 10);
 };
 
+_.coerceToNum = function(val) {
+    return _.isNumber(val) ? val : // Its a number!
+            _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN
+            0; // Default to zero
+};
+
 _.isElement = function(obj) {
     return !!(obj && obj.nodeType === 1);
 };

@@ -53,6 +53,7 @@ var _getComputedStyle = (function() {
         return height + _.parseInt(style.borderTopWidth) + _.parseInt(style.borderBottomWidth);
     };
 
+// TODO: Overload
 return {
     fn: {
         width: function(val) {

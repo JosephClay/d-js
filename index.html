@@ -6,24 +6,20 @@
         <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.14.0.css">
 
         <!-- For unit tests -->
-        <script src="tests/jquery.js"></script>
-        <script src="tests/qunit.js"></script>
+        <script src="tests/libs/jquery.js"></script>
+        <script src="tests/libs/qunit.js"></script>
 
         <!-- Dependencies -->
         <script src="src/libs/underscore.js"></script>
         <script src="src/libs/Overload.js"></script>
         <script src="src/libs/Signal.js"></script>
 
-        <script>
-            // TODO: Remove this
-            _.isNodeList = function(item) {
-                return item instanceof NodeList;
-            };
-        </script>
-
         <script src="out/D.js"></script>
     </head>
     <body>
+        <div id="NotHiddenDiv">
+            <div id="NotHiddenDivChild"></div>
+        </div>
         <div id="TestDiv">
             <p id="firstp"></p>
             <p></p>
@@ -33,6 +29,8 @@
         <div id="qunit-fixture"></div>
         <script src="tests/core.js"></script>
         <script src="tests/ready.js"></script>
+        <script src="tests/dimensions.js"></script>
+        <script src="tests/parse.js"></script>
         <script src="tests/conflict.js"></script>
     </body>
 </html>

@@ -1,9 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var parser = require('./D/parser'),
+var _ = require('./_'),
+    parser = require('./D/parser'),
     utils = require('./utils'),
     array = require('./modules/array'),
     onready = require('./modules/onready'),
     selectors = require('./modules/selectors'),
+    transversal = require('./modules/transversal'),
+    dimensions = require('./modules/dimensions'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -41,9 +44,8 @@ var DOM = function(arg) {
         return;
     }
 
-    // NodeList or Array of Elements
-    // TODO: this is probably the wrong way to check if the item is a node list - fix
-    if (_.isArray(arg)) {
+    // Array of Elements or NodeList
+    if (_.isArray(arg) || _.isNodeList(arg)) {
         utils.merge(this, arg);
         return;
     }
@@ -54,19 +56,38 @@ var DOM = function(arg) {
     }
 };
 
+var _hasMoreConflict = false,
+    _prevjQuery,
+    _prev$;
+
 _.extend(DOM, parser.fn, {
+    each:    array.each,
+    map:     _.map,
+    extend:  _.extend,
+    forEach: _.each,
+
     noConflict: function() {
+        if (_hasMoreConflict) {
+            window.jQuery = _prevjQuery;
+            window.$ = _prev$;
+
+            _hasMoreConflict = false;
+        }
+
         window.D = _prevD;
         return DOM;
     },
 
     moreConflict: function() {
+        _hasMoreConflict = true;
+        _prevjQuery = window.jQuery;
+        _prev$ = window.$;
         window.jQuery = window.$ = DOM;
     }
 });
 
 var arrayProto = (function() {
-    // TODO: Implement forEach since forEach isn't in all browsers
+
     var keys = [
             'length',
             'toString',
@@ -90,6 +111,7 @@ var arrayProto = (function() {
         ],
         idx = keys.length,
         obj = {};
+
     while (idx--) {
         obj[keys[idx]] = Array.prototype[keys[idx]];
     }
@@ -103,8 +125,15 @@ _.extend(
     arrayProto,
     classes.fn,
     array.fn,
+    selectors.fn,
+    transversal.fn,
+    dimensions.fn,
     { constructor: DOM }
 );
+
+// Expose the prototype so that
+// it can be hooked into for plugins
+DOM.fn = DOM.prototype;
 
 module.exports = window.D = DOM;
 
@@ -118,8 +147,6 @@ module.exports = window.D = DOM;
 /*
 
 (function(root, _, document, undefined) {
-
-        _getComputedStyle = root.getComputedStyle,
 
         _bind = function(elem, eventName, callback) {
             if (elem.addEventListener) {
@@ -139,40 +166,13 @@ module.exports = window.D = DOM;
             elem.detachEvent('on' + eventName, callback);
         },
 
-        _outerWidth = function(elem) {
-            var width = elem.offsetWidth,
-                style = elem.currentStyle || _getComputedStyle(elem);
 
-            width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
-
-            return width;
-        },
-
-        _outerHeight = function(elem) {
-            var height = elem.offsetHeight,
-                style = elem.currentStyle || _getComputedStyle(elem);
-
-            height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
-
-            return height;
-        };
 
     var Dom = root.D = function(elem) {
         if (!(this instanceof Dom)) { return new Dom(elem); }
 
         this.elem = (elem instanceof D) ? elem.elem : _.isString(elem) ? document.querySelectorAll(elem) : elem;
     };
-
-    _.extend(Dom, {
-        toD: function(elements) {
-            elements = (elements instanceof D) ? elements.elem : elements;
-            if (!elements.length) { return []; }
-
-            return _.map(elements, function(elem) {
-                return new Dom(elem);
-            });
-        }
-    });
 
     Dom.prototype = {
 
@@ -258,31 +258,7 @@ module.exports = window.D = DOM;
             return this.elem.getBoundingClientRect();
         },
 
-        width: function(val) {
-            if (_exists(val)) {
-                this.elem.style.width = _.isNumber(val) ? val + 'px' : val;
-                return this;
-            }
 
-            return this.elem.offsetWidth;
-        },
-
-        height: function(val) {
-            if (_exists(val)) {
-                this.elem.style.height = _.isNumber(val) ? val + 'px' : val;
-                return this;
-            }
-
-            return this.elem.offsetHeight;
-        },
-
-        outerWidth: function(withMargin) {
-            return withMargin ? _outerWidth(this.elem) : this.elem.offsetWidth;
-        },
-
-        outerHeight: function(withMargin) {
-            return withMargin ? _outerHeight(this.elem) : this.elem.offsetHeight;
-        },
 
         on: function(eventName, callback) {
             _bind(this.elem, eventName, callback);
@@ -299,33 +275,192 @@ module.exports = window.D = DOM;
 
 }(this, _, document));
 */
-},{"./D/parser":2,"./modules/array":4,"./modules/classes":5,"./modules/onready":6,"./modules/selectors":7,"./utils":10}],2:[function(require,module,exports){
-var _parseHtml = function(htmlStr) {
+},{"./D/parser":2,"./_":3,"./modules/array":5,"./modules/classes":6,"./modules/dimensions":7,"./modules/onready":8,"./modules/selectors":9,"./modules/transversal":10,"./utils":13}],2:[function(require,module,exports){
+var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
     return tmp.body.children;
 };
 
+var _parseHtml = function(str) {
+    var result = _parse(str);
+    if (!result || !result.length) { return null; }
+    return D(result);
+};
+
 module.exports = {
-    parseHtml: _parseHtml,
+    parseHtml: _parse,
 
     fn: {
-        parseHtml: function(str) {
-            return DOM(_parseHtml(str));
-        }
+        parseHtml: _parseHtml,
+        // Because no one know what the case should be
+        parseHTML: _parseHtml
     }
 };
 
 },{}],3:[function(require,module,exports){
-module.exports = document.createElement('div');
+var _ = {};
+
+_.exists = function(obj) {
+    return obj !== null && obj !== undefined;
+};
+
+_.parseInt = function(num) {
+    return parseInt(num, 10);
+};
+
+_.isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+};
+
+_.isArray = Array.isArray || function(obj) {
+    return toString.call(obj) == '[object Array]';
+};
+
+// Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
+var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
+    idx = types.length,
+    generateCheck = function(name) {
+        return function(obj) {
+            return toString.call(obj) == '[object ' + name + ']';
+        };
+    },
+    name;
+while (idx--) {
+    var name = types[idx];
+    _['is' + name] = generateCheck(name);
+}
+
+// Optimize `isFunction` if appropriate.
+if (typeof (/./) !== 'function') {
+    _.isFunction = function(obj) {
+        return typeof obj === 'function';
+    };
+}
+
+// NodeList check. For our purposes, a node list
+// and an HTMLCollection are the same
+_.isNodeList = function(obj) {
+    return obj instanceof NodeList || obj instanceof HTMLCollection;
+};
+
+// Flatten that also checks if value is a NodeList
+_.flatten = function(arr) {
+    var result = [];
+
+    var idx = 0, length = arr.length,
+        value;
+    for (; idx < length; idx++) {
+        value = arr[idx];
+
+        if (_.isArray(value) || _isNodeList(value)) {
+            _flatten(value, shallow, result);
+        } else {
+            result.push(value);
+        }
+    }
+
+    return result;
+};
+
+// Concat flat for a single array of arrays
+_.concatFlat = (function(concat) {
+
+    return function(nestedArrays) {
+        return concat.apply([], nestedArrays);
+    };
+
+}([].concat));
+
+// No-context every; strip each()
+_.every = function(arr, iterator) {
+    if (!_.exists(arr)) { return true; }
+
+    var idx = 0, length = arr.length;
+    for (; idx < length; idx++) {
+        if (!iterator(value, idx)) { return false; }
+    }
+
+    return true;
+};
+
+// Faster extend; strip each()
+_.extend = function() {
+    var args = arguments,
+        obj = args[0],
+        idx = 1, length = args.length;
+
+    if (!obj) { return obj; }
+
+    for (; idx < length; idx++) {
+        var source = args[idx];
+        if (source) {
+            for (var prop in source) {
+                obj[prop] = source[prop];
+            }
+        }
+    }
+
+    return obj;
+};
+
+// Standard map
+_.map = function(arr, iterator) {
+    var results = [];
+    if (!arr) { return results; }
+
+    var idx = 0, length = arr.length;
+    for (; idx < length; idx++) {
+        results.push(iterator(arr[idx], idx));
+    }
+
+    return results;
+};
+
+// Array-perserving map
+// http://jsperf.com/push-map-vs-index-replacement-map
+_.fastmap = function(arr, iterator) {
+    if (!arr) { return []; }
+
+    var idx = 0, length = arr.length;
+    for (; idx < length; idx++) {
+        arr[idx] = iterator(arr[idx], idx);
+    }
+
+    return arr;
+};
+
+_.filter = function(arr, iterator) {
+    var results = [];
+    if (!arr) { return results; }
+
+    var idx = 0, length = arr.length;
+    for (; idx < length; idx++) {
+        if (iterator(arr[idx], idx)) {
+            results.push(value);
+        }
+    }
+
+    return results;
+};
+
+module.exports = _;
 },{}],4:[function(require,module,exports){
+module.exports = document.createElement('div');
+},{}],5:[function(require,module,exports){
+var _ = require('../_'),
+    _utils = require('../utils');
+
 var _slice = (function(_slice) {
-    return function(arr, index) {
+    return function(arr, start, end) {
         // Exit early for empty array
         if (!arr || !arr.length) { return []; }
 
-        // Make sure index is defined
-        return _slice.call(arr, index || 0);
+        // End, naturally, has to be higher than 0 to matter,
+        // so a simple existance check will do
+        if (end) { return _slice.call(arr, start, end); }
+
+        return _slice.call(arr, start || 0);
     };
 }([].slice));
 
@@ -367,42 +502,126 @@ var _elementSort = (function() {
 
 }());
 
+var _unique = function(results) {
+    var hasDuplicates = _elementSort(results);
+    if (!hasDuplicates) { return results; }
+
+    var elem,
+        idx = 0,
+        // create the array here
+        // so that a new array isn't
+        // created/destroyed every unique call
+        duplicates = [];
+
+    // Go through the array and identify
+    // the duplicates to be removed
+    while ((elem = results[idx++])) {
+        if (elem === results[idx]) {
+            duplicates.push(idx);
+        }
+    }
+
+    // Remove the duplicates from the results
+    idx = duplicates.length;
+    while (idx--) {
+       results.splice(duplicates[idx], 1);
+    }
+
+    return results;
+};
+
+var _map = function(arr, iterator) {
+    var results = [];
+    if (!arr.length || !iterator) { return results; }
+    
+    var idx = 0, length = arr.length,
+        item;
+    for (; idx < length; idx++) {
+        item = arr[idx];
+        results.push(iterator.call(item, item, idx));
+    }
+
+    return _.concatFlat(results);
+};
+
+var _each = function(arr, iterator) {
+    if (!arr.length || !iterator) { return; }
+    
+    var idx = 0, length = arr.length,
+        item;
+    for (; idx < length; idx++) {
+        item = arr[idx];
+        if (iterator.call(item, item, idx) === false) { return; }
+    }
+};
+
 module.exports = {
     slice: _slice,
     elementSort: _elementSort,
+    unique: _unique,
+    each: _each,
 
     fn: {
         at: function(index) {
             return this[+index];
         },
+
         get: function(index) {
-            return this[+index];
+            // No index, return all
+            if (!_utils.exists(index)) { return this.toArray(); }
+
+            index = +index;
+
+            // Looking to get an index from the end of the set
+            if (index < 0) { index = (this.length + index); }
+
+            return this[index];
         },
+
         eq: function(index) {
-            return D(this[+index]);
+            return D(this.get(index));
         },
-        slice: function(index) {
-            return D(_slice(this, index));
+
+        slice: function(start, end) {
+            return D(_slice(this.toArray(), start, end));
         },
+
         next: function() {
             // TODO
         },
+
         prev: function() {
             // TODO
         },
+
         first: function() {
             return D(this[0]);
         },
+
         last: function() {
             return D(this[this.length - 1]);
         },
+
         toArray: function() {
             return _slice(this);
+        },
+
+        map: function(iterator) {
+            return D(_map(this, iterator));
+        },
+        
+        each: function(iterator) {
+            _each(this, iterator);
+            return this;
+        },
+
+        forEach: function(iterator) {
+            _each(this, iterator);
+            return this;
         }
     }
 };
-
-},{}],5:[function(require,module,exports){
+},{"../_":3,"../utils":13}],6:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -552,7 +771,122 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":9,"./array":4}],6:[function(require,module,exports){
+},{"../supports":12,"./array":5}],7:[function(require,module,exports){
+var div = require('../div');
+
+// TODO: This may be better suited in supports or css
+var _getComputedStyle = (function() {
+        return div.currentStyle ? function(elem) { return elem.currentStyle; } : window.getComputedStyle;
+    }()),
+
+    _getWidth = function(elem) {
+        return elem.offsetWidth;
+    },
+    _setWidth = function(elem, val) {
+        elem.style.width = _.isNumber(val) ? val + 'px' : val;
+    },
+
+    _getHeight = function(elem) {
+        return elem.offsetHeight;
+    },
+    _setHeight = function(elem, val) {
+        elem.style.height = _.isNumber(val) ? val + 'px' : val;
+    },
+
+    _getInnerWidth = function(elem) {
+        var width = _getWidth(elem),
+            style = _getComputedStyle(elem);
+
+        return width + _.parseInt(style.paddingLeft) + _.parseInt(style.paddingRight);
+    },
+    _getInnerHeight = function(elem) {
+        var height = _getHeight(elem),
+            style = _getComputedStyle(elem);
+
+        return height + _.parseInt(style.paddingTop) + _.parseInt(style.paddingBottom);
+    },
+
+    _getOuterWidth = function(elem, withMargin) {
+        var width = _getInnerWidth(elem),
+            style = _getComputedStyle(elem);
+
+        if (withMargin) {
+            width += _.parseInt(style.marginLeft) + _.parseInt(style.marginRight);
+        }
+
+        return width + _.parseInt(style.borderLeftWidth) + _.parseInt(style.borderRightWidth);
+    },
+    _getOuterHeight = function(elem, withMargin) {
+        var height = _getInnerHeight(elem),
+            style = _getComputedStyle(elem);
+
+        if (withMargin) {
+            height += _.parseInt(style.marginTop) + _.parseInt(style.marginBottom);
+        }
+
+        return height + _.parseInt(style.borderTopWidth) + _.parseInt(style.borderBottomWidth);
+    };
+
+return {
+    fn: {
+        width: function(val) {
+            var elem = this[0], // The first elem
+                valExists = _.exists(val);
+            if (!elem && !valExists) { return null; }
+            if (!elem) { return this; }
+
+            if (valExists) {
+                _setWidth(elem, val);
+                return this;
+            }
+
+            return _getWidth(elem);
+        },
+
+        height: function(val) {
+            var elem = this[0], // The first elem
+                valExists = _.exists(val);
+            if (!elem && !valExists) { return null; }
+            if (!elem) { return this; }
+
+            if (valExists) {
+                _setHeight(elem, val);
+                return this;
+            }
+
+            return _getHeight(elem);
+        },
+
+        innerWidth: function() {
+            var elem = this[0];
+            if (!elem) { return this; }
+
+            return _getInnerWidth(elem);
+        },
+
+        innerHeight: function() {
+            var elem = this[0];
+            if (!elem) { return this; }
+
+            return _getInnerHeight(elem);
+        },
+
+        outerWidth: function(withMargin) {
+            var elem = this[0];
+            if (!elem) { return this; }
+
+            return _getOuterWidth(elem, withMargin);
+        },
+        outerHeight: function(withMargin) {
+            var elem = this[0];
+            if (!elem) { return this; }
+
+            return _getOuterHeight(elem, withMargin);
+        }
+    }
+};
+
+},{"../div":4}],8:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -596,7 +930,7 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var _utils = require('../utils'),
     _array = require('./array'),
     _nodeType = require('../nodeType'),
@@ -629,7 +963,7 @@ var _find = function(selector, context) {
         result = [];
 
     // Early return if the selector is bad
-    if (_selectorBlackList.indexOf(selector)) { return result; }
+    if (_selectorBlackList.indexOf(selector) > -1) { return result; }
 
     for (; idx < length; idx++) {
         var ret = _findQuery(selector, context[idx]);
@@ -637,7 +971,7 @@ var _find = function(selector, context) {
     }
 
     // TODO: I think this needs to be flattened, but not sure
-    return _utils.unique(_.flatten(result));
+    return _array.unique(_.flatten(result));
 };
 
 var _findQuery = function(selector, context) {
@@ -653,9 +987,39 @@ var _findQuery = function(selector, context) {
     return _array.slice(query);
 };
 
+var _filter = function(arr, qualifier) {
+    // Early return, no qualifier. Everything matches
+    if (!qualifier) { return arr; }
+
+    // Function
+    if (_.isFunction(qualifier)) {
+        return _.filter(arr, qualifier);
+    }
+
+    // Element
+    if (qualifier.nodeType) {
+        return _.filter(arr, function(elem) {
+            return (elem === qualifier);
+        });
+    }
+
+    // Selector
+    if (_.isString(qualifier)) {
+        return _.filter(arr, function(elem) {
+            return elem.nodeType === 1 && _isMatch(elem, qualifier);
+        });
+    }
+
+    // Array qualifier
+    return _.filter(arr, function(elem) {
+        return arr.indexOf(qualifier) > -1;
+    });
+};
 
 module.exports = {
     find: _find,
+    is: _isMatch,
+    filter: _filter,
 
     fn: {
         has: function(target) {
@@ -721,7 +1085,107 @@ module.exports = {
                     .expose()
     }
 };
-},{"../nodeType":8,"../supports":9,"../utils":10,"./array":4}],8:[function(require,module,exports){
+},{"../nodeType":11,"../supports":12,"../utils":13,"./array":5}],10:[function(require,module,exports){
+var _array = require('./array'),
+    _selectors = require('./selectors');
+
+
+var _getSiblings = function(context) {
+    var idx = 0,
+        length = context.length,
+        result = [];
+    for (; idx < length; idx++) {
+        var sibs = _getNodeSiblings(context[idx]);
+        if (sibs.length) { result.push(sibs); }
+    }
+    return _.flatten(result);
+};
+var _getNodeSiblings = function(node) {
+    var siblings = _array.slice(node.parentNode.children),
+        idx = siblings.length;
+
+    while (idx--) {
+        if (siblings[idx] === node) {
+            siblings.splice(i, 1);
+        }
+    }
+
+    return siblings;
+};
+
+// Parents ------
+var _getParents = function(context) {
+    var idx = 0,
+        length = context.length,
+        result = [];
+    for (; idx < length; idx++) {
+        var parents = _crawlUpNode(context[idx]);
+        result.push(parents);
+    }
+    return _.flatten(result);
+};
+
+var _crawlUpNode = function(node) {
+    var result = [],
+        parent = node;
+    while ((parent = _getNodeParent(parent))) {
+        result.push(parent);
+    }
+
+    return result;
+};
+
+// Parent ------
+var _getParent = function(context) {
+    var idx = 0,
+        length = context.length,
+        result = [];
+    for (; idx < length; idx++) {
+        var parent = _getNodeParent(context[idx]);
+        if (parent) { result.push(parent); }
+    }
+    return result;
+};
+
+// Safely get parent node
+var _getNodeParent = function(node) {
+    return node && node.parentNode;
+};
+
+module.exports = {
+    fn: {
+        // TODO: Filter by selector
+        closest: function(selector) {
+
+        },
+        // TODO: Filter by selector
+        siblings: function(selector) {
+            return D(
+                _selectors.filter(_getSiblings(this), selector)
+            );
+        },
+        // TODO: Filter by selector
+        parents: function(selector) {
+            return D(
+                _selectors.filter(_getParents(this), selector)
+            );
+        },
+        // TODO: Filter by selector
+        parent: function(selector) {
+            return D(
+                _selectors.filter(_getParent(this), selector)
+            );
+        },
+        // TODO: Filter by selector
+        children: function(selector) {
+            return D(
+                _selectors.filter(_getChildren(this), selector)
+            );
+        }
+    }
+};
+
+},{"./array":5,"./selectors":9}],11:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -736,15 +1200,15 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
     matchesSelector: div.matches || div.matchesSelector || div.msMatchesSelector || div.mozMatchesSelector || div.webkitMatchesSelector || div.oMatchesSelector
 };
-},{"./div":3}],10:[function(require,module,exports){
-var array = require('./modules/array');
+},{"./div":4}],13:[function(require,module,exports){
+var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {
     exists: function(val) {
@@ -752,35 +1216,13 @@ module.exports = {
     },
 
     isHTML: function(text) {
-        return _.isString(text) && (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
-    },
+        if (!_.isString(text)) { return false; }
 
-    unique: function(results) {
-        var hasDuplicates = array.elementSort(results);
-        if (!hasDuplicates) { return results; }
+        // TODO: Using es5 native method (trim)
+        text = text.trim();
+        text = text.replace(_BEGINNING_NEW_LINES, '');
 
-        var elem,
-            idx = 0,
-            // create the array here
-            // so that a new array isn't
-            // created/destroyed every unique call
-            duplicates = [];
-
-        // Go through the array and identify
-        // the duplicates to be removed
-        while ((elem = results[idx++])) {
-            if (elem === results[idx]) {
-                duplicates.push(idx);
-            }
-        }
-
-        // Remove the duplicates from the results
-        idx = duplicates.length;
-        while (idx--) {
-           results.splice(duplicates[idx], 1);
-        }
-
-        return results;
+        return (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
     },
 
     merge: function(first, second) {
@@ -801,4 +1243,4 @@ module.exports = {
     }
 };
 
-},{"./modules/array":4}]},{},[1])
+},{}]},{},[1])
