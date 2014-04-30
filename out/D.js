@@ -347,6 +347,12 @@ _.isNodeList = function(obj) {
     return obj instanceof NodeList || obj instanceof HTMLCollection;
 };
 
+// Window check
+_.isWindow = function(obj) {
+    return obj && obj === obj.window;
+};
+
+
 // Flatten that also checks if value is a NodeList
 _.flatten = function(arr) {
     var result = [];
@@ -865,30 +871,11 @@ module.exports = {
 },{"../div":5}],9:[function(require,module,exports){
 var _ = require('../_'),
     _regex = require('../regex'),
+    _nodeType = require('../nodeType'),
     _div = require('../div'),
 
     _css = require('./css');
-/*
-if (jQuery.isWindow(elem)) {
-                        // As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
-                        // isn't a whole lot we can do. See pull request at this URL for discussion:
-                        // https://github.com/jquery/jquery/pull/764
-                        return elem.document.documentElement["client" + name];
-                    }
 
-                    // Get document width or height
-                    if (elem.nodeType === 9) {
-                        doc = elem.documentElement;
-
-                        // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
-                        // unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
-                        return Math.max(
-                        elem.body["scroll" + name], doc["scroll" + name],
-                        elem.body["offset" + name], doc["offset" + name],
-                        doc["client" + name]
-                        );
-                    }
-                    */
 
 var _MEASURE_DISPLAY = {
         display: 'block',
@@ -896,7 +883,30 @@ var _MEASURE_DISPLAY = {
         visibility: 'hidden'
     },
 
+    _getDocumentDimension = function(elem, name) {
+        // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
+        // unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
+        var doc = elem.documentElement;
+        return Math.max(
+            elem.body['scroll' + name],
+            elem.body['offset' + name],
+
+            doc['scroll' + name],
+            doc['offset' + name],
+
+            doc['client' + name]
+        );
+    },
+
     _getWidth = function(elem) {
+        if (_.isWindow(elem)) {
+            return elem.document.documentElement.clientWidth;
+        }
+
+        if (elem.nodeType === _nodeType.DOCUMENT) {
+            return _getDocumentDimension(elem, 'Width');
+        }
+
         var width = elem.offsetWidth;
         return (width === 0 &&
                 _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
@@ -908,6 +918,14 @@ var _MEASURE_DISPLAY = {
     },
 
     _getHeight = function(elem) {
+        if (_.isWindow(elem)) {
+            return elem.document.documentElement.clientHeight;
+        }
+
+        if (elem.nodeType === _nodeType.DOCUMENT) {
+            return _getDocumentDimension(elem, 'Height');
+        }
+
         var height = elem.offsetHeight;
         return (height === 0 &&
                 _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
@@ -1012,7 +1030,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../div":5,"../regex":14,"./css":8}],10:[function(require,module,exports){
+},{"../_":3,"../div":5,"../nodeType":13,"../regex":14,"./css":8}],10:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 

@@ -61,6 +61,12 @@ _.isNodeList = function(obj) {
     return obj instanceof NodeList || obj instanceof HTMLCollection;
 };
 
+// Window check
+_.isWindow = function(obj) {
+    return obj && obj === obj.window;
+};
+
+
 // Flatten that also checks if value is a NodeList
 _.flatten = function(arr) {
     var result = [];
