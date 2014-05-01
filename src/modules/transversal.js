@@ -1,7 +1,6 @@
 var _array = require('./array'),
     _selectors = require('./selectors');
 
-
 var _getSiblings = function(context) {
     var idx = 0,
         length = context.length,
@@ -70,25 +69,25 @@ module.exports = {
         closest: function(selector) {
 
         },
-        // TODO: Filter by selector
+
         siblings: function(selector) {
             return D(
                 _selectors.filter(_getSiblings(this), selector)
             );
         },
-        // TODO: Filter by selector
+
         parents: function(selector) {
             return D(
                 _selectors.filter(_getParents(this), selector)
             );
         },
-        // TODO: Filter by selector
+
         parent: function(selector) {
             return D(
                 _selectors.filter(_getParent(this), selector)
             );
         },
-        // TODO: Filter by selector
+
         children: function(selector) {
             return D(
                 _selectors.filter(_getChildren(this), selector)
