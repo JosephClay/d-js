@@ -24,7 +24,7 @@ var getterSetter = function(key) {
 
 module.exports = (function() {
 
-    var exp = {},
+    var exp = getterSetter(''),
         caches = [
             'classArray',
             'classMap',
