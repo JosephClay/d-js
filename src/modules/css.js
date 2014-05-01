@@ -49,14 +49,6 @@ var _hooks = {
 };
 
 module.exports = {
-    swapSetting: {
-        measureDisplay: {
-            display: 'block',
-            position: 'absolute',
-            visibility: 'hidden'
-        }
-    },
-
     swap: _cssSwap,
     swapSetting: _swapSettings,
     getComputedStyle: _computedStyle,
