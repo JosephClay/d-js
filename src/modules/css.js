@@ -30,10 +30,25 @@ var _cssSwap = function(elem, options, callback) {
 var _computedStyle = (function() {
     return _div.currentStyle ?
         function(elem) { return elem.currentStyle; } :
+            // Avoids an "Illegal Invocation" error
             function(elem) { return window.getComputedStyle(elem); };
 }());
 
+var _hooks = {
+    opacity: require('./cssHooks/opacity'),
+    width: require('./cssHooks/width'),
+    height: require('./cssHooks/height')
+};
+
 module.exports = {
+    swapSetting: {
+        measureDisplay: {
+            display: 'block',
+            position: 'absolute',
+            visibility: 'hidden'
+        }
+    },
+
     swap: _cssSwap,
     getComputedStyle: _computedStyle,
 
