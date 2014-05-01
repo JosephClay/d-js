@@ -1,5 +1,7 @@
 var _id = 0,
-    _toString = Object.prototype.toString;
+    _toString = Object.prototype.toString,
+    _stringProto = String.prototype,
+    _rtrim = /^\s+|\s+$/g;
 
 var _ = {
     uniqueId: function() {
@@ -9,6 +11,10 @@ var _ = {
     exists: function(obj) {
         return obj !== null && obj !== undefined;
     },
+
+    trim: _stringProto.trim ?
+            function(str) { return (str + '').trim(); } :
+                function(str) { return (str + '').replace(_rtrim, ''); },
 
     parseInt: function(num) {
         return parseInt(num, 10);
@@ -29,7 +35,7 @@ var _ = {
     },
 
     isArray: Array.isArray || function(obj) {
-        return _toString.call(obj) == '[object Array]';
+        return _toString.call(obj) === '[object Array]';
     },
 
     // NodeList check. For our purposes, a node list

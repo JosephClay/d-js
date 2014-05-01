@@ -48,6 +48,13 @@ var _hooks = {
     height: require('./cssHooks/height')
 };
 
+var _setStyle = function(elem, name, value) {
+    if (_hooks[name]) {
+        return _hooks[name].set(elem, value);
+    }
+
+};
+
 module.exports = {
     swap: _cssSwap,
     swapSetting: _swapSettings,
@@ -55,7 +62,21 @@ module.exports = {
 
     fn: {
         // TODO: Css
-        css: function() {},
+        css: Overload().args(String, String)
+                        .use(function(name, value) {
+                            var idx = 0, length = this.length;
+                            for (; idx < length; idx++) {
+                                this[idx]
+                            }
+
+                        })
+                        .args(String, Number)
+                        .use(function() {})
+                        .args(Array)
+                        .use(function() {})
+                        .args(Object)
+                        .use(function() {})
+                        .expose(),
 
         hide: function() {
             var idx = 0, length = this.length;

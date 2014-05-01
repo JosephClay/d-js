@@ -21,6 +21,9 @@ var _camelCase = function(match, letter) {
 };
 
 module.exports = {
+    alpha: /alpha\([^)]*\)/i,
+    opacity: /opacity\s*=\s*([^)]*)/,
+
     camelCase: function(str) {
         return _cache.camelCase.getOrSet(str, function() {
             return string.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);

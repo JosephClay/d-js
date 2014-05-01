@@ -1,10 +1,9 @@
 var _ = require('../_'),
+    _div = require('../div'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),
-    _div = require('../div'),
 
     _css = require('./css');
-
 
 var _getDocumentDimension = function(elem, name) {
         // Either scroll[Width/Height] or offset[Width/Height] or
