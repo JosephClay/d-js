@@ -139,16 +139,13 @@ DOM.fn = DOM.prototype;
 module.exports = window.D = DOM;
 
 
-/*if (typeof define === 'function' && define.amd) {
+if (typeof define === 'function' && define.amd) {
     define('D', [], function() {
         return DOM;
     });
-}*/
+}
 
 /*
-
-(function(root, _, document, undefined) {
-
         _bind = function(elem, eventName, callback) {
             if (elem.addEventListener) {
                 return elem.addEventListener(eventName, callback);
@@ -167,13 +164,6 @@ module.exports = window.D = DOM;
             elem.detachEvent('on' + eventName, callback);
         },
 
-
-
-    var Dom = root.D = function(elem) {
-        if (!(this instanceof Dom)) { return new Dom(elem); }
-
-        this.elem = (elem instanceof D) ? elem.elem : _.isString(elem) ? document.querySelectorAll(elem) : elem;
-    };
 
     Dom.prototype = {
 
@@ -254,8 +244,4 @@ module.exports = window.D = DOM;
             return this;
         }
     };
-
-    return Dom;
-
-}(this, _, document));
 */

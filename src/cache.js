@@ -1,3 +1,5 @@
+var _ = require('./_');
+
 var _cache = {};
 
 var getterSetter = function(key) {
@@ -10,12 +12,35 @@ var getterSetter = function(key) {
         },
         set: function(key, value) {
             ref[key] = value;
+            return value;
+        },
+        getOrSet: function(key, fn) {
+            var cachedVal = ref[key];
+            if (cachedVal !== undefined) { return cachedVal; }
+            return (ref[key] = fn());
         }
     };
 };
 
-module.exports = {
-    classArray: getterSetter('CLASS_ARRAY'),
-    classMap: getterSetter('CLASS_MAP'),
-    selector: getterSetter('SELECTOR')
-};
+module.exports = (function() {
+
+    var exp = {},
+        caches = [
+            'classArray',
+            'classMap',
+            'selector',
+            'selectedTestId',
+            'selectedTestTag',
+            'selectedTestClass',
+            'camelCase',
+            'display'
+        ],
+        idx = caches.length;
+
+    while (idx--) {
+        exp[caches[idx]] = getterSetter(_.uniqueId());
+    }
+
+    return exp;
+
+}());

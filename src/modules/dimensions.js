@@ -6,14 +6,9 @@ var _ = require('../_'),
     _css = require('./css');
 
 
-var _MEASURE_DISPLAY = {
-        display: 'block',
-        position: 'absolute',
-        visibility: 'hidden'
-    },
-
-    _getDocumentDimension = function(elem, name) {
-        // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
+var _getDocumentDimension = function(elem, name) {
+        // Either scroll[Width/Height] or offset[Width/Height] or
+        // client[Width/Height], whichever is greatest
         var doc = elem.documentElement;
         return Math.max(
             elem.body['scroll' + name],
@@ -38,7 +33,7 @@ var _MEASURE_DISPLAY = {
         var width = elem.offsetWidth;
         return (width === 0 &&
                 _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _MEASURE_DISPLAY, function() { return elem.offsetWidth; }) :
+                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetWidth; }) :
                         width;
     },
     _setWidth = function(elem, val) {
@@ -57,7 +52,7 @@ var _MEASURE_DISPLAY = {
         var height = elem.offsetHeight;
         return (height === 0 &&
                 _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _MEASURE_DISPLAY, function() { return elem.offsetHeight; }) :
+                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetHeight; }) :
                         height;
     },
     _setHeight = function(elem, val) {

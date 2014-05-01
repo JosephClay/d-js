@@ -140,16 +140,13 @@ DOM.fn = DOM.prototype;
 module.exports = window.D = DOM;
 
 
-/*if (typeof define === 'function' && define.amd) {
+if (typeof define === 'function' && define.amd) {
     define('D', [], function() {
         return DOM;
     });
-}*/
+}
 
 /*
-
-(function(root, _, document, undefined) {
-
         _bind = function(elem, eventName, callback) {
             if (elem.addEventListener) {
                 return elem.addEventListener(eventName, callback);
@@ -168,13 +165,6 @@ module.exports = window.D = DOM;
             elem.detachEvent('on' + eventName, callback);
         },
 
-
-
-    var Dom = root.D = function(elem) {
-        if (!(this instanceof Dom)) { return new Dom(elem); }
-
-        this.elem = (elem instanceof D) ? elem.elem : _.isString(elem) ? document.querySelectorAll(elem) : elem;
-    };
 
     Dom.prototype = {
 
@@ -255,12 +245,8 @@ module.exports = window.D = DOM;
             return this;
         }
     };
-
-    return Dom;
-
-}(this, _, document));
 */
-},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/classes":7,"./modules/css":8,"./modules/dimensions":9,"./modules/onready":10,"./modules/selectors":11,"./modules/transversal":12,"./utils":16}],2:[function(require,module,exports){
+},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/classes":7,"./modules/css":8,"./modules/dimensions":12,"./modules/onready":13,"./modules/selectors":14,"./modules/transversal":15,"./utils":19}],2:[function(require,module,exports){
 var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -284,33 +270,150 @@ module.exports = {
 };
 
 },{}],3:[function(require,module,exports){
-var _ = {},
+var _id = 0,
     _toString = Object.prototype.toString;
 
-_.exists = function(obj) {
-    return obj !== null && obj !== undefined;
-};
+var _ = {
+    uniqueId: function() {
+        return _id++;
+    },
 
-_.parseInt = function(num) {
-    return parseInt(num, 10);
-};
+    exists: function(obj) {
+        return obj !== null && obj !== undefined;
+    },
 
-_.coerceToNum = function(val) {
-    return _.isNumber(val) ? val : // Its a number!
-            _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN
-            0; // Default to zero
-};
+    parseInt: function(num) {
+        return parseInt(num, 10);
+    },
 
-_.toPx = function(num) {
-    return num + 'px';
-};
+    coerceToNum: function(val) {
+        return _.isNumber(val) ? val : // Its a number!
+                _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN
+                0; // Default to zero
+    },
 
-_.isElement = function(obj) {
-    return !!(obj && obj.nodeType === 1);
-};
+    toPx: function(num) {
+        return num + 'px';
+    },
 
-_.isArray = Array.isArray || function(obj) {
-    return _toString.call(obj) == '[object Array]';
+    isElement: function(obj) {
+        return !!(obj && obj.nodeType === 1);
+    },
+
+    isArray: Array.isArray || function(obj) {
+        return _toString.call(obj) == '[object Array]';
+    },
+
+    // NodeList check. For our purposes, a node list
+    // and an HTMLCollection are the same
+    isNodeList: function(obj) {
+        return obj instanceof NodeList || obj instanceof HTMLCollection;
+    },
+
+    // Window check
+    isWindow: function(obj) {
+        return obj && obj === obj.window;
+    },
+
+    // Flatten that also checks if value is a NodeList
+    flatten: function(arr) {
+        var result = [];
+
+        var idx = 0, length = arr.length,
+            value;
+        for (; idx < length; idx++) {
+            value = arr[idx];
+
+            if (_.isArray(value) || _isNodeList(value)) {
+                _flatten(value, shallow, result);
+            } else {
+                result.push(value);
+            }
+        }
+
+        return result;
+    },
+
+    // Concat flat for a single array of arrays
+    concatFlat: (function(concat) {
+
+        return function(nestedArrays) {
+            return concat.apply([], nestedArrays);
+        };
+
+    }([].concat)),
+
+    // No-context every; strip each()
+    every: function(arr, iterator) {
+        if (!_.exists(arr)) { return true; }
+
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            if (!iterator(value, idx)) { return false; }
+        }
+
+        return true;
+    },
+
+    // Faster extend; strip each()
+    extend: function() {
+        var args = arguments,
+            obj = args[0],
+            idx = 1, length = args.length;
+
+        if (!obj) { return obj; }
+
+        for (; idx < length; idx++) {
+            var source = args[idx];
+            if (source) {
+                for (var prop in source) {
+                    obj[prop] = source[prop];
+                }
+            }
+        }
+
+        return obj;
+    },
+
+    // Standard map
+    map: function(arr, iterator) {
+        var results = [];
+        if (!arr) { return results; }
+
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            results.push(iterator(arr[idx], idx));
+        }
+
+        return results;
+    },
+
+    // Array-perserving map
+    // http://jsperf.com/push-map-vs-index-replacement-map
+    fastmap: function(arr, iterator) {
+        if (!arr) { return []; }
+
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            arr[idx] = iterator(arr[idx], idx);
+        }
+
+        return arr;
+    },
+
+    filter: function(arr, iterator) {
+        var results = [];
+        if (!arr) { return results; }
+
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            if (iterator(arr[idx], idx)) {
+                results.push(value);
+            }
+        }
+
+        return results;
+    }
 };
 
 // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
@@ -341,120 +444,10 @@ if (typeof ('') === 'string') {
     };
 }
 
-// NodeList check. For our purposes, a node list
-// and an HTMLCollection are the same
-_.isNodeList = function(obj) {
-    return obj instanceof NodeList || obj instanceof HTMLCollection;
-};
-
-// Window check
-_.isWindow = function(obj) {
-    return obj && obj === obj.window;
-};
-
-
-// Flatten that also checks if value is a NodeList
-_.flatten = function(arr) {
-    var result = [];
-
-    var idx = 0, length = arr.length,
-        value;
-    for (; idx < length; idx++) {
-        value = arr[idx];
-
-        if (_.isArray(value) || _isNodeList(value)) {
-            _flatten(value, shallow, result);
-        } else {
-            result.push(value);
-        }
-    }
-
-    return result;
-};
-
-// Concat flat for a single array of arrays
-_.concatFlat = (function(concat) {
-
-    return function(nestedArrays) {
-        return concat.apply([], nestedArrays);
-    };
-
-}([].concat));
-
-// No-context every; strip each()
-_.every = function(arr, iterator) {
-    if (!_.exists(arr)) { return true; }
-
-    var idx = 0, length = arr.length;
-    for (; idx < length; idx++) {
-        if (!iterator(value, idx)) { return false; }
-    }
-
-    return true;
-};
-
-// Faster extend; strip each()
-_.extend = function() {
-    var args = arguments,
-        obj = args[0],
-        idx = 1, length = args.length;
-
-    if (!obj) { return obj; }
-
-    for (; idx < length; idx++) {
-        var source = args[idx];
-        if (source) {
-            for (var prop in source) {
-                obj[prop] = source[prop];
-            }
-        }
-    }
-
-    return obj;
-};
-
-// Standard map
-_.map = function(arr, iterator) {
-    var results = [];
-    if (!arr) { return results; }
-
-    var idx = 0, length = arr.length;
-    for (; idx < length; idx++) {
-        results.push(iterator(arr[idx], idx));
-    }
-
-    return results;
-};
-
-// Array-perserving map
-// http://jsperf.com/push-map-vs-index-replacement-map
-_.fastmap = function(arr, iterator) {
-    if (!arr) { return []; }
-
-    var idx = 0, length = arr.length;
-    for (; idx < length; idx++) {
-        arr[idx] = iterator(arr[idx], idx);
-    }
-
-    return arr;
-};
-
-_.filter = function(arr, iterator) {
-    var results = [];
-    if (!arr) { return results; }
-
-    var idx = 0, length = arr.length;
-    for (; idx < length; idx++) {
-        if (iterator(arr[idx], idx)) {
-            results.push(value);
-        }
-    }
-
-    return results;
-};
-
 module.exports = _;
 },{}],4:[function(require,module,exports){
+var _ = require('./_');
+
 var _cache = {};
 
 var getterSetter = function(key) {
@@ -467,18 +460,43 @@ var getterSetter = function(key) {
         },
         set: function(key, value) {
             ref[key] = value;
+            return value;
+        },
+        getOrSet: function(key, fn) {
+            var cachedVal = ref[key];
+            if (cachedVal !== undefined) { return cachedVal; }
+            return (ref[key] = fn());
         }
     };
 };
 
-module.exports = {
-    classArray: getterSetter('CLASS_ARRAY'),
-    classMap: getterSetter('CLASS_MAP'),
-    selector: getterSetter('SELECTOR')
-};
+module.exports = (function() {
 
-},{}],5:[function(require,module,exports){
-module.exports = document.createElement('div');
+    var exp = {},
+        caches = [
+            'classArray',
+            'classMap',
+            'selector',
+            'selectedTestId',
+            'selectedTestTag',
+            'selectedTestClass',
+            'camelCase',
+            'display'
+        ],
+        idx = caches.length;
+
+    while (idx--) {
+        exp[caches[idx]] = getterSetter(_.uniqueId());
+    }
+
+    return exp;
+
+}());
+
+},{"./_":3}],5:[function(require,module,exports){
+var div = document.createElement('div');
+div.cssText = 'opacity:.55';
+module.exports = div;
 },{}],6:[function(require,module,exports){
 var _ = require('../_'),
     _utils = require('../utils');
@@ -653,7 +671,7 @@ module.exports = {
         }
     }
 };
-},{"../_":3,"../utils":16}],7:[function(require,module,exports){
+},{"../_":3,"../utils":19}],7:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -802,7 +820,7 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":15,"./array":6}],8:[function(require,module,exports){
+},{"../supports":18,"./array":6}],8:[function(require,module,exports){
 var _div = require('../div');
 
 var _hide = function(elem) {
@@ -835,10 +853,25 @@ var _cssSwap = function(elem, options, callback) {
 var _computedStyle = (function() {
     return _div.currentStyle ?
         function(elem) { return elem.currentStyle; } :
+            // Avoids an "Illegal Invocation" error
             function(elem) { return window.getComputedStyle(elem); };
 }());
 
+var _hooks = {
+    opacity: require('./cssHooks/opacity'),
+    width: require('./cssHooks/width'),
+    height: require('./cssHooks/height')
+};
+
 module.exports = {
+    swapSetting: {
+        measureDisplay: {
+            display: 'block',
+            position: 'absolute',
+            visibility: 'hidden'
+        }
+    },
+
     swap: _cssSwap,
     getComputedStyle: _computedStyle,
 
@@ -868,7 +901,83 @@ module.exports = {
     }
 };
 
-},{"../div":5}],9:[function(require,module,exports){
+},{"../div":5,"./cssHooks/height":9,"./cssHooks/opacity":10,"./cssHooks/width":11}],9:[function(require,module,exports){
+module.exports = {
+    get: function( elem, computed, extra ) {
+        if ( computed ) {
+            // certain elements can have dimension info if we invisibly show them
+            // however, it must have a current display style that would benefit from this
+            return elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ?
+                jQuery.swap( elem, cssShow, function() {
+                    return getWidthOrHeight( elem, name, extra );
+                }) :
+                getWidthOrHeight( elem, name, extra );
+        }
+    },
+
+    set: function( elem, value, extra ) {
+        var styles = extra && getStyles( elem );
+        return setPositiveNumber( elem, value, extra ?
+            augmentWidthOrHeight(
+                elem,
+                name,
+                extra,
+                support.boxSizing() && jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+                styles
+            ) : 0
+        );
+    }
+};
+},{}],10:[function(require,module,exports){
+var _supports = require('../../supports');
+
+if (_supports.opacity) { return; }
+
+module.exports = {
+    get: function( elem, computed ) {
+        // IE uses filters for opacity
+        return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
+            ( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
+            computed ? "1" : "";
+    },
+
+    set: function( elem, value ) {
+        var style = elem.style,
+            currentStyle = elem.currentStyle,
+            opacity = jQuery.isNumeric( value ) ? "alpha(opacity=" + value * 100 + ")" : "",
+            filter = currentStyle && currentStyle.filter || style.filter || "";
+
+        // IE has trouble with opacity if it does not have layout
+        // Force it by setting the zoom level
+        style.zoom = 1;
+
+        // if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
+        // if value === "", then remove inline opacity #12685
+        if ( ( value >= 1 || value === "" ) &&
+                jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
+                style.removeAttribute ) {
+
+            // Setting style.filter to null, "" & " " still leave "filter:" in the cssText
+            // if "filter:" is present at all, clearType is disabled, we want to avoid this
+            // style.removeAttribute is IE Only, but so apparently is this code path...
+            style.removeAttribute( "filter" );
+
+            // if there is no filter style applied in a css rule or unset inline opacity, we are done
+            if ( value === "" || currentStyle && !currentStyle.filter ) {
+                return;
+            }
+        }
+
+        // otherwise, set new filter values
+        style.filter = ralpha.test( filter ) ?
+            filter.replace( ralpha, opacity ) :
+            filter + " " + opacity;
+    }
+};
+
+},{"../../supports":18}],11:[function(require,module,exports){
+module.exports=require(9)
+},{}],12:[function(require,module,exports){
 var _ = require('../_'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),
@@ -877,15 +986,9 @@ var _ = require('../_'),
     _css = require('./css');
 
 
-var _MEASURE_DISPLAY = {
-        display: 'block',
-        position: 'absolute',
-        visibility: 'hidden'
-    },
-
-    _getDocumentDimension = function(elem, name) {
-        // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
-        // unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
+var _getDocumentDimension = function(elem, name) {
+        // Either scroll[Width/Height] or offset[Width/Height] or
+        // client[Width/Height], whichever is greatest
         var doc = elem.documentElement;
         return Math.max(
             elem.body['scroll' + name],
@@ -910,7 +1013,7 @@ var _MEASURE_DISPLAY = {
         var width = elem.offsetWidth;
         return (width === 0 &&
                 _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _MEASURE_DISPLAY, function() { return elem.offsetWidth; }) :
+                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetWidth; }) :
                         width;
     },
     _setWidth = function(elem, val) {
@@ -929,7 +1032,7 @@ var _MEASURE_DISPLAY = {
         var height = elem.offsetHeight;
         return (height === 0 &&
                 _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _MEASURE_DISPLAY, function() { return elem.offsetHeight; }) :
+                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetHeight; }) :
                         height;
     },
     _setHeight = function(elem, val) {
@@ -1030,7 +1133,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../div":5,"../nodeType":13,"../regex":14,"./css":8}],10:[function(require,module,exports){
+},{"../_":3,"../div":5,"../nodeType":16,"../regex":17,"./css":8}],13:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -1074,7 +1177,7 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1249,10 +1352,9 @@ module.exports = {
                     .expose()
     }
 };
-},{"../cache":4,"../nodeType":13,"../regex":14,"../supports":15,"../utils":16,"./array":6}],12:[function(require,module,exports){
+},{"../cache":4,"../nodeType":16,"../regex":17,"../supports":18,"../utils":19,"./array":6}],15:[function(require,module,exports){
 var _array = require('./array'),
     _selectors = require('./selectors');
-
 
 var _getSiblings = function(context) {
     var idx = 0,
@@ -1322,25 +1424,25 @@ module.exports = {
         closest: function(selector) {
 
         },
-        // TODO: Filter by selector
+
         siblings: function(selector) {
             return D(
                 _selectors.filter(_getSiblings(this), selector)
             );
         },
-        // TODO: Filter by selector
+
         parents: function(selector) {
             return D(
                 _selectors.filter(_getParents(this), selector)
             );
         },
-        // TODO: Filter by selector
+
         parent: function(selector) {
             return D(
                 _selectors.filter(_getParent(this), selector)
             );
         },
-        // TODO: Filter by selector
+
         children: function(selector) {
             return D(
                 _selectors.filter(_getChildren(this), selector)
@@ -1349,7 +1451,7 @@ module.exports = {
     }
 };
 
-},{"./array":6,"./selectors":11}],13:[function(require,module,exports){
+},{"./array":6,"./selectors":14}],16:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -1364,47 +1466,83 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],14:[function(require,module,exports){
-var _DISPLAY_TEST = {
-    noneOrTable: /^(none|table(?!-c[ea]).+)/
-};
+},{}],17:[function(require,module,exports){
+var _cache = require('./cache');
 
-var _SELECTOR_TEST = {
-    id:    /^#([\w-]+)$/,
-    tag:   /^[\w-]+$/,
-    klass: /^\.([\w-]+)$/
+    // Matches "-ms-" so that it can be changed to "ms-"
+var _TRUNCATE_MS_PREFIX = /^-ms-/,
+
+    // Matches dashed string for camelizing
+    _DASH_CATCH = /-([\da-z])/gi,
+
+    // Matches "none" or a table type e.g. "table",
+    // "table-cell" etc...
+    _NONE_OR_TABLE = /^(none|table(?!-c[ea]).+)/,
+
+    _SELECTOR_TEST = {
+        id:    /^#([\w-]+)$/,
+        tag:   /^[\w-]+$/,
+        klass: /^\.([\w-]+)$/
+    };
+
+var _camelCase = function(match, letter) {
+    return letter.toUpperCase();
 };
 
 module.exports = {
+    camelCase: function(str) {
+        return _cache.camelCase.getOrSet(str, function() {
+            return string.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
+        });
+    },
+
     display: {
         isNoneOrTable: function(str) {
-            return !!_DISPLAY_TEST.noneOrTable.exec(str);
+            return _cache.display.getOrSet(str, function() {
+                return !!_NONE_OR_TABLE.exec(str);
+            });
         }
     },
 
     selector: {
         isStrictId: function(str) {
-            var result = _SELECTOR_TEST.id.exec(str);
-            return result ? !result[1] : false;
+            return _cache.selectedTestId.getOrSet(str, function() {
+                var result = _SELECTOR_TEST.id.exec(str);
+                return result ? !result[1] : false;
+            });
         },
         isTag: function(str) {
-            var result = _SELECTOR_TEST.tag.exec(str);
-            return result ? !result[1] : false;
+            return _cache.selectedTestTag.getOrSet(str, function() {
+                var result = _SELECTOR_TEST.tag.exec(str);
+                return result ? !result[1] : false;
+            });
         },
         isClass: function(str) {
-            var result = _SELECTOR_TEST.klass.exec(str);
-            return result ? !result[1] : false;
+            return _cache.selectedTestClass.getOrSet(str, function() {
+                var result = _SELECTOR_TEST.klass.exec(str);
+                return result ? !result[1] : false;
+            });
         }
     }
 };
-},{}],15:[function(require,module,exports){
+},{"./cache":4}],18:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
-    matchesSelector: div.matches || div.matchesSelector || div.msMatchesSelector || div.mozMatchesSelector || div.webkitMatchesSelector || div.oMatchesSelector
+    matchesSelector: div.matches ||
+                        div.matchesSelector ||
+                            div.msMatchesSelector ||
+                                div.mozMatchesSelector ||
+                                    div.webkitMatchesSelector ||
+                                        div.oMatchesSelector,
+
+    // Make sure that element opacity exists
+    // (IE uses filter instead)
+    // Use a regex to work around a WebKit issue. See #5145
+    opacity: (/^0.55$/).test(div.style.opacity)
 };
-},{"./div":5}],16:[function(require,module,exports){
+},{"./div":5}],19:[function(require,module,exports){
 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {
