@@ -6,8 +6,7 @@ if (_supports.opacity) { return; }
 module.exports = {
     get: function(elem) {
         // IE uses filters for opacity
-        var currentStyle = elem.currentStyle,
-            style = currentStyle ? currentStyle.filter : elem.style.filter;
+        var style = _supports.currentStyle ? elem.currentStyle.filter : elem.style.filter;
         return _regex.opacity.test(style || '') ?
                     (0.01 * parseFloat(RegExp.$1)) + '' :
                         '1';
@@ -28,7 +27,7 @@ module.exports = {
             style.removeAttribute('filter');
 
             // if there is no filter style applied in a css rule or unset inline opacity, we are done
-            if (value === '' || currentStyle && !currentStyle.filter) { return; }
+            if (value === '' || _supports.currentStyle && !currentStyle.filter) { return; }
         }
 
         // IE has trouble with opacity if it does not have layout

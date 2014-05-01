@@ -27,9 +27,7 @@
 	var testWidth = function(val) {
 		expect(9);
 
-		var $div, blah;
-
-		$div = D('#NotHiddenDiv');
+		var $div = D('#NotHiddenDiv');
 		$div.width(val(30));
 		equal($div.width(), 30, 'Test set to 30 correctly');
 		$div.hide();
@@ -48,7 +46,7 @@
 		equal(D('#NotHiddenDivChild').width(), 20, 'Test child width with border and padding');
 		D('#NotHiddenDiv, #NotHiddenDivChild').css({ 'border': '', 'padding': '', 'width': '' });
 
-		blah = D('blah');
+		var blah = D('blah');
 		equal(blah.width(val(10)), blah, 'Make sure that setting a width on an empty set returns the set.');
 		equal(blah.width(), null, 'Make sure "null" is returned on an empty set');
 

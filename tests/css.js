@@ -1,9 +1,7 @@
-if ( jQuery.css ) {
-
-module("css", { teardown: moduleTeardown });
+module("css");
 
 test("css(String|Hash)", function() {
-	expect( 42 );
+	expect(42);
 
 	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
 
@@ -116,7 +114,9 @@ test("css(String|Hash)", function() {
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 });
 
-test( "css() explicit and relative values", 29, function() {
+test("css() explicit and relative values", function() {
+	expect(29);
+
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 });
@@ -204,7 +204,8 @@ test( "css() explicit and relative values", 29, function() {
 });
 
 test("css(String, Object)", function() {
-	expect( 20 );
+	expect(20);
+
 	var j, div, display, ret, success;
 
 	jQuery("#nothiddendiv").css("top", "-1em");
@@ -241,16 +242,15 @@ test("css(String, Object)", function() {
 
 	success = true;
 	try {
-		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
+		jQuery("#foo").css("backgroundColor", "rgba(0, 0, 0, 0.1)");
 	}
 	catch (e) {
 		success = false;
 	}
 	ok( success, "Setting RGBA values does not throw Error (#5509)" );
 
-	jQuery( "#foo" ).css( "font", "7px/21px sans-serif" );
-	strictEqual( jQuery( "#foo" ).css( "line-height" ), "21px",
-		"Set font shorthand property (#14759)" );
+	jQuery("#foo").css("font", "7px/21px sans-serif");
+	strictEqual(jQuery("#foo").css("line-height"), "21px", "Set font shorthand property (#14759)");
 });
 
 test( "css(Array)", function() {
@@ -1068,4 +1068,3 @@ test( "show() after hide() should always set display to initial value (#14750)",
 		});
 	}
 })();
-}

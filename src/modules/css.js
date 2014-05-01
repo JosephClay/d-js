@@ -1,4 +1,4 @@
-var _div = require('../div');
+var _supports = require('../supports');
 
 var _swapSettings = {
     measureDisplay: {
@@ -36,7 +36,7 @@ var _hide = function(elem) {
     };
 
 var _computedStyle = (function() {
-    return _div.currentStyle ?
+    return _supports.currentStyle ?
         function(elem) { return elem.currentStyle; } :
             // Avoids an "Illegal Invocation" error
             function(elem) { return window.getComputedStyle(elem); };
@@ -66,7 +66,7 @@ module.exports = {
                         .use(function(name, value) {
                             var idx = 0, length = this.length;
                             for (; idx < length; idx++) {
-                                this[idx]
+                                // this[idx]
                             }
 
                         })

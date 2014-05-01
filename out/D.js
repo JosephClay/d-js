@@ -827,7 +827,7 @@ module.exports = _.extend({}, _classes, {
     }
 });
 },{"../supports":18,"./array":6}],8:[function(require,module,exports){
-var _div = require('../div');
+var _supports = require('../supports');
 
 var _swapSettings = {
     measureDisplay: {
@@ -865,7 +865,7 @@ var _hide = function(elem) {
     };
 
 var _computedStyle = (function() {
-    return _div.currentStyle ?
+    return _supports.currentStyle ?
         function(elem) { return elem.currentStyle; } :
             // Avoids an "Illegal Invocation" error
             function(elem) { return window.getComputedStyle(elem); };
@@ -895,7 +895,7 @@ module.exports = {
                         .use(function(name, value) {
                             var idx = 0, length = this.length;
                             for (; idx < length; idx++) {
-                                this[idx]
+                                // this[idx]
                             }
 
                         })
@@ -929,7 +929,7 @@ module.exports = {
     }
 };
 
-},{"../div":5,"./cssHooks/height":9,"./cssHooks/opacity":10,"./cssHooks/width":11}],9:[function(require,module,exports){
+},{"../supports":18,"./cssHooks/height":9,"./cssHooks/opacity":10,"./cssHooks/width":11}],9:[function(require,module,exports){
 module.exports = {
     get: function( elem, computed, extra ) {
         if ( computed ) {
@@ -965,8 +965,7 @@ if (_supports.opacity) { return; }
 module.exports = {
     get: function(elem) {
         // IE uses filters for opacity
-        var currentStyle = elem.currentStyle,
-            style = currentStyle ? currentStyle.filter : elem.style.filter;
+        var style = _supports.currentStyle ? elem.currentStyle.filter : elem.style.filter;
         return _regex.opacity.test(style || '') ?
                     (0.01 * parseFloat(RegExp.$1)) + '' :
                         '1';
@@ -987,7 +986,7 @@ module.exports = {
             style.removeAttribute('filter');
 
             // if there is no filter style applied in a css rule or unset inline opacity, we are done
-            if (value === '' || currentStyle && !currentStyle.filter) { return; }
+            if (value === '' || _supports.currentStyle && !currentStyle.filter) { return; }
         }
 
         // IE has trouble with opacity if it does not have layout
@@ -1563,6 +1562,7 @@ var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
+    currentStyle: !!div.currentStyle,
     matchesSelector: div.matches ||
                         div.matchesSelector ||
                             div.msMatchesSelector ||

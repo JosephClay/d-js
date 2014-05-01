@@ -2,6 +2,7 @@ var div = require('./div');
 
 module.exports = {
     classList: !!div.classList,
+    currentStyle: !!div.currentStyle,
     matchesSelector: div.matches ||
                         div.matchesSelector ||
                             div.msMatchesSelector ||
