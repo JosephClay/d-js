@@ -125,17 +125,14 @@ module.exports = {
         },
 
         is: Overload()
-                .args(String)
-                .use(function(selector) {
-                    // TODO: Internal "every"
+                .args(String).use(function(selector) {
                     return DOM(
                         _.every(this, function(elem) {
                             return _isMatch(elem, selector);
                         })
                     );
                 })
-                .args(Function)
-                .use(function(iterator) {
+                .args(Function).use(function(iterator) {
                     // TODO: Internal "every"
                     return DOM(
                         _.every(this, iterator)

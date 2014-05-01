@@ -1,0 +1,34 @@
+:first  // :first-child
+:last   // :last-child
+:even   // :nth-child(even)
+:odd    // :nth-child(odd)
+
+:eq(index)
+:gt(no)
+:lt(no)
+:not(selector)
+
+:header  // h1||h1||h3...
+:focus
+:contains(text)
+:has(selector)
+:empty
+:parent
+:hidden
+:visible
+:root      // document.getElementsByTagName("html")[0]
+
+:input
+:text
+:password
+:radio
+:checkbox
+:submit
+:reset
+:button
+:image
+:file
+:enabled
+:disabled
+:selected
+:checked

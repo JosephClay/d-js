@@ -269,68 +269,6 @@ test( "css(Array)", function() {
 	deepEqual( elem.css( expectedSingle ).css([ "width" ]), expectedSingle, "Getting single element array" );
 });
 
-test("css(String, Function)", function() {
-	expect(3);
-
-	var index,
-		sizes = ["10px", "20px", "30px"];
-
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>")
-		.appendTo("body");
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css("font-size", function() {
-		var size = sizes[index];
-		index++;
-		return size;
-	});
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size"),
-			expectedSize = sizes[index];
-		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
-		index++;
-	});
-
-	jQuery("#cssFunctionTest").remove();
-});
-
-test("css(String, Function) with incoming value", function() {
-	expect(3);
-
-	var index,
-		sizes = ["10px", "20px", "30px"];
-
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>")
-		.appendTo("body");
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css("font-size", function() {
-		var size = sizes[index];
-		index++;
-		return size;
-	});
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css("font-size", function(i, computedSize) {
-		var expectedSize = sizes[index];
-		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
-		index++;
-		return computedSize;
-	});
-
-	jQuery("#cssFunctionTest").remove();
-});
-
 test("css(Object) where values are Functions", function() {
 	expect(3);
 

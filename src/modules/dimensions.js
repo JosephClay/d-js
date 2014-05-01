@@ -1,8 +1,4 @@
 var _ = require('../_'),
-    _div = require('../div'),
-    _regex = require('../regex'),
-    _nodeType = require('../nodeType'),
-
     _css = require('./css');
 
 var _getDocumentDimension = function(elem, name) {
@@ -20,52 +16,14 @@ var _getDocumentDimension = function(elem, name) {
         );
     },
 
-    _getWidth = function(elem) {
-        if (_.isWindow(elem)) {
-            return elem.document.documentElement.clientWidth;
-        }
-
-        if (elem.nodeType === _nodeType.DOCUMENT) {
-            return _getDocumentDimension(elem, 'Width');
-        }
-
-        var width = elem.offsetWidth;
-        return (width === 0 &&
-                _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetWidth; }) :
-                        width;
-    },
-    _setWidth = function(elem, val) {
-        elem.style.width = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
-    },
-
-    _getHeight = function(elem) {
-        if (_.isWindow(elem)) {
-            return elem.document.documentElement.clientHeight;
-        }
-
-        if (elem.nodeType === _nodeType.DOCUMENT) {
-            return _getDocumentDimension(elem, 'Height');
-        }
-
-        var height = elem.offsetHeight;
-        return (height === 0 &&
-                _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetHeight; }) :
-                        height;
-    },
-    _setHeight = function(elem, val) {
-        elem.style.height = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
-    },
-
     _getInnerWidth = function(elem) {
-        var width = _getWidth(elem),
+        var width = _css.width.get(elem),
             style = _css.getComputedStyle(elem);
 
         return width + _.parseInt(style.paddingLeft) + _.parseInt(style.paddingRight);
     },
     _getInnerHeight = function(elem) {
-        var height = _getHeight(elem),
+        var height = _css.height.get(elem),
             style = _css.getComputedStyle(elem);
 
         return height + _.parseInt(style.paddingTop) + _.parseInt(style.paddingBottom);
@@ -92,36 +50,37 @@ var _getDocumentDimension = function(elem, name) {
         return height + _.parseInt(style.borderTopWidth) + _.parseInt(style.borderBottomWidth);
     };
 
-// TODO: Overload
 module.exports = {
     fn: {
-        width: function(val) {
-            var elem = this[0], // The first elem
-                valExists = _.exists(val);
-            if (!elem && !valExists) { return null; }
-            if (!elem) { return this; }
+        width: Overload().args(Number).use(function(val) {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return this; }
 
-            if (valExists) {
-                _setWidth(elem, val);
-                return this;
-            }
+                    _css.width.set(elem, val);
+                    return this;
+                })
+                .fallback(function() {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return null; }
 
-            return _getWidth(elem);
-        },
+                    return _css.width.get(elem);
+                })
+                .expose(),
 
-        height: function(val) {
-            var elem = this[0], // The first elem
-                valExists = _.exists(val);
-            if (!elem && !valExists) { return null; }
-            if (!elem) { return this; }
+        height: Overload().args(Number).use(function(val) {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return this; }
 
-            if (valExists) {
-                _setHeight(elem, val);
-                return this;
-            }
+                    _css.height.set(elem, val);
+                    return this;
+                })
+                .fallback(function() {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return null; }
 
-            return _getHeight(elem);
-        },
+                    return _css.height.get(elem);
+                })
+                .expose(),
 
         innerWidth: function() {
             var elem = this[0];

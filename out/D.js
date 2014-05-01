@@ -246,7 +246,7 @@ if (typeof define === 'function' && define.amd) {
         }
     };
 */
-},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/classes":7,"./modules/css":8,"./modules/dimensions":12,"./modules/onready":13,"./modules/selectors":14,"./modules/transversal":15,"./utils":19}],2:[function(require,module,exports){
+},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/classes":7,"./modules/css":8,"./modules/dimensions":9,"./modules/onready":10,"./modules/selectors":11,"./modules/transversal":12,"./utils":16}],2:[function(require,module,exports){
 var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -487,7 +487,8 @@ module.exports = (function() {
             'selectedTestTag',
             'selectedTestClass',
             'camelCase',
-            'display'
+            'display',
+            'csskey'
         ],
         idx = caches.length;
 
@@ -677,7 +678,7 @@ module.exports = {
         }
     }
 };
-},{"../_":3,"../utils":19}],7:[function(require,module,exports){
+},{"../_":3,"../utils":16}],7:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -826,8 +827,12 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":18,"./array":6}],8:[function(require,module,exports){
-var _supports = require('../supports');
+},{"../supports":15,"./array":6}],8:[function(require,module,exports){
+var _ = require('../_'),
+    _cache = require('../cache'),
+    _regex = require('../regex'),
+    _nodeType = require('../nodeType'),
+    _supports = require('../supports');
 
 var _swapSettings = {
     measureDisplay: {
@@ -862,49 +867,255 @@ var _hide = function(elem) {
         }
 
         return ret;
+    },
+
+    _getComputedStyle = (function() {
+        return _supports.currentStyle ?
+            function(elem) { return elem.currentStyle; } :
+                // Avoids an "Illegal Invocation" error
+                function(elem) { return window.getComputedStyle(elem); };
+    }()),
+
+    _width = {
+         get: function(elem) {
+            if (_.isWindow(elem)) {
+                return elem.document.documentElement.clientWidth;
+            }
+
+            if (elem.nodeType === _nodeType.DOCUMENT) {
+                return _getDocumentDimension(elem, 'Width');
+            }
+
+            var width = elem.offsetWidth;
+            return (width === 0 &&
+                    _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
+                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return elem.offsetWidth; }) :
+                            _getWidthOrHeight(elem, 'width'); // TODO: Eeewwww
+        },
+        set: function(elem, val) {
+            elem.style.width = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
+        }
+    },
+
+    _height = {
+        get: function(elem) {
+            if (_.isWindow(elem)) {
+                return elem.document.documentElement.clientHeight;
+            }
+
+            if (elem.nodeType === _nodeType.DOCUMENT) {
+                return _getDocumentDimension(elem, 'Height');
+            }
+
+            var height = elem.offsetHeight;
+            return (height === 0 &&
+                    _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
+                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return elem.offsetHeight; }) :
+                            _getWidthOrHeight(elem, 'height');
+        },
+
+        set: function(elem, val) {
+            elem.style.height = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
+        }
     };
 
-var _computedStyle = (function() {
-    return _supports.currentStyle ?
-        function(elem) { return elem.currentStyle; } :
-            // Avoids an "Illegal Invocation" error
-            function(elem) { return window.getComputedStyle(elem); };
-}());
+// TODO: Leaving off here
+var _getWidthOrHeight = function(elem, name) {
+
+    // Start with offset property, which is equivalent to the border-box value
+    var valueIsBorderBox = true,
+        val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
+        styles = getStyles( elem ),
+        isBorderBox = support.boxSizing() && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+
+    // some non-html elements return undefined for offsetWidth, so check for null/undefined
+    // svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
+    // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
+    if (val <= 0 || !val) {
+        // Fall back to computed then uncomputed css if necessary
+        val = curCSS( elem, name, styles );
+        if (val < 0 || !val) {
+            val = elem.style[ name ];
+        }
+
+        // Computed unit is not pixels. Stop here and return.
+        if ( rnumnonpx.test(val) ) {
+            return val;
+        }
+
+        // we need the check for style in case a browser which returns unreliable values
+        // for getComputedStyle silently falls back to the reliable elem.style
+        valueIsBorderBox = isBorderBox && ( support.boxSizingReliable() || val === elem.style[ name ] );
+
+        // Normalize "", auto, and prepare for extra
+        val = parseFloat( val ) || 0;
+    }
+
+    // use the active box-sizing model to add/subtract irrelevant styles
+    return ( val +
+        _augmentWidthOrHeight(
+            elem,
+            name,
+            isBorderBox ? "border" : "content",
+            valueIsBorderBox,
+            styles
+        )
+    ) + "px";
+};
+
+var _augmentWidthOrHeight = function( elem, name, extra, isBorderBox, styles ) {
+    var i = extra === ( isBorderBox ? "border" : "content" ) ?
+        // If we already have the right measurement, avoid augmentation
+        4 :
+        // Otherwise initialize for horizontal or vertical properties
+        name === "width" ? 1 : 0,
+
+        val = 0;
+
+    for ( ; i < 4; i += 2 ) {
+        // both box models exclude margin, so add it if we want it
+        if ( extra === "margin" ) {
+            val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
+        }
+
+        if ( isBorderBox ) {
+            // border-box includes padding, so remove it if we want content
+            if ( extra === "content" ) {
+                val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+            }
+
+            // at this point, extra isn't border nor margin, so remove border
+            if ( extra !== "margin" ) {
+                val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+            }
+        } else {
+            // at this point, extra isn't content, so add padding
+            val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+
+            // at this point, extra isn't content nor padding, so add border
+            if ( extra !== "padding" ) {
+                val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+            }
+        }
+    }
+
+    return val;
+};
 
 var _hooks = {
-    opacity: require('./cssHooks/opacity'),
-    width: require('./cssHooks/width'),
-    height: require('./cssHooks/height')
+    opacity: _supports.opacity ? {} : {
+        get: function(elem) {
+            // IE uses filters for opacity
+            var style = _supports.currentStyle ? elem.currentStyle.filter : elem.style.filter;
+            return _regex.opacity.test(style || '') ?
+                        (0.01 * parseFloat(RegExp.$1)) + '' :
+                            '1';
+        },
+
+        set: function(elem, value) {
+            var style = elem.style,
+                currentStyle = elem.currentStyle,
+                filter = currentStyle && currentStyle.filter || style.filter || '';
+
+            // if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
+            // if value === '', then remove inline opacity #12685
+            if (value >= 1 || value === '' && _.trim(filter.replace(_regex.alpha, '')) === '') {
+
+                // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
+                // if 'filter:' is present at all, clearType is disabled, we want to avoid this
+                // style.removeAttribute is IE Only, but so apparently is this code path...
+                style.removeAttribute('filter');
+
+                // if there is no filter style applied in a css rule or unset inline opacity, we are done
+                if (value === '' || _supports.currentStyle && !currentStyle.filter) { return; }
+            }
+
+            // IE has trouble with opacity if it does not have layout
+            // Force it by setting the zoom level.. but only if we're
+            // applying a value (below)
+            style.zoom = 1;
+
+            // Only calculate the opacity if we're setting a value (below)
+            var opacity = (_.isNumber(value) ? 'alpha(opacity=' + (value * 100) + ')' : '');
+
+            style.filter = _regex.alpha.test(filter) ?
+                // replace "alpha(opacity)" in the filter definition
+                filter.replace(_regex.alpha, opacity) :
+                // append "alpha(opacity)" to the current filter definition
+                filter + ' ' + opacity;
+        }
+    }
+};
+
+var _normalizeCssKey = function(name) {
+    return _cache.csskey.get(name) || _cache.csskey.set(name, _regex.camelCase(name));
 };
 
 var _setStyle = function(elem, name, value) {
-    if (_hooks[name]) {
+    name = _normalizeCssKey(name);
+
+    if (_hooks[name] && _hooks[name].set) {
         return _hooks[name].set(elem, value);
     }
 
+    elem.style[name] = value;
+};
+
+var _getStyle = function(elem, name) {
+    name = _normalizeCssKey(name);
+
+    if (_hooks[name] && _hooks[name].get) {
+        return _hooks[name].get(elem);
+    }
+
+    return _getComputedStyle(elem)[name];
 };
 
 module.exports = {
     swap: _cssSwap,
     swapSetting: _swapSettings,
-    getComputedStyle: _computedStyle,
+    getComputedStyle: _getComputedStyle,
+
+    width: _width,
+    height: _width,
 
     fn: {
-        // TODO: Css
-        css: Overload().args(String, String)
-                        .use(function(name, value) {
+        css: Overload().args(String, O.any(String, Number)).use(function(name, value) {
                             var idx = 0, length = this.length;
                             for (; idx < length; idx++) {
-                                // this[idx]
+                                _setStyle(this[idx], name, value);
+                            }
+                            return this;
+                        })
+
+                        .args(Object).use(function(obj) {
+                            var idx = 0, length = this.length,
+                                key;
+                            for (; idx < length; idx++) {
+                                for (key in obj) {
+                                    _setStyle(this[idx], key, obj[key]);
+                                }
+                            }
+                            return this;
+                        })
+
+                        .args(Array).use(function(arr) {
+                            var first = this[0];
+                            if (!first) { return; }
+
+                            var ret = {},
+                                idx = arr.length,
+                                value;
+                            if (!idx) { return ret; } // return early
+
+                            while (idx--) {
+                                value = arr[idx];
+                                if (!_.isString(value)) { return; }
+                                ret[value] = _getStyle(first);
                             }
 
+                            return ret;
                         })
-                        .args(String, Number)
-                        .use(function() {})
-                        .args(Array)
-                        .use(function() {})
-                        .args(Object)
-                        .use(function() {})
                         .expose(),
 
         hide: function() {
@@ -929,90 +1140,8 @@ module.exports = {
     }
 };
 
-},{"../supports":18,"./cssHooks/height":9,"./cssHooks/opacity":10,"./cssHooks/width":11}],9:[function(require,module,exports){
-module.exports = {
-    get: function( elem, computed, extra ) {
-        if ( computed ) {
-            // certain elements can have dimension info if we invisibly show them
-            // however, it must have a current display style that would benefit from this
-            return elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ?
-                jQuery.swap( elem, cssShow, function() {
-                    return getWidthOrHeight( elem, name, extra );
-                }) :
-                getWidthOrHeight( elem, name, extra );
-        }
-    },
-
-    set: function( elem, value, extra ) {
-        var styles = extra && getStyles( elem );
-        return setPositiveNumber( elem, value, extra ?
-            augmentWidthOrHeight(
-                elem,
-                name,
-                extra,
-                support.boxSizing() && jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
-                styles
-            ) : 0
-        );
-    }
-};
-},{}],10:[function(require,module,exports){
-var _regex = require('../../regex'),
-    _supports = require('../../supports');
-
-if (_supports.opacity) { return; }
-
-module.exports = {
-    get: function(elem) {
-        // IE uses filters for opacity
-        var style = _supports.currentStyle ? elem.currentStyle.filter : elem.style.filter;
-        return _regex.opacity.test(style || '') ?
-                    (0.01 * parseFloat(RegExp.$1)) + '' :
-                        '1';
-    },
-
-    set: function(elem, value) {
-        var style = elem.style,
-            currentStyle = elem.currentStyle,
-            filter = currentStyle && currentStyle.filter || style.filter || '';
-
-        // if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
-        // if value === '', then remove inline opacity #12685
-        if (value >= 1 || value === '' && _.trim(filter.replace(_regex.alpha, '')) === '') {
-
-            // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
-            // if 'filter:' is present at all, clearType is disabled, we want to avoid this
-            // style.removeAttribute is IE Only, but so apparently is this code path...
-            style.removeAttribute('filter');
-
-            // if there is no filter style applied in a css rule or unset inline opacity, we are done
-            if (value === '' || _supports.currentStyle && !currentStyle.filter) { return; }
-        }
-
-        // IE has trouble with opacity if it does not have layout
-        // Force it by setting the zoom level.. but only if we're
-        // applying a value (below)
-        style.zoom = 1;
-
-        // Only calculate the opacity if we're setting a value (below)
-        var opacity = (_.isNumber(value) ? 'alpha(opacity=' + (value * 100) + ')' : '');
-
-        style.filter = _regex.alpha.test(filter) ?
-            // replace "alpha(opacity)" in the filter definition
-            filter.replace(_regex.alpha, opacity) :
-            // append "alpha(opacity)" to the current filter definition
-            filter + ' ' + opacity;
-    }
-};
-
-},{"../../regex":17,"../../supports":18}],11:[function(require,module,exports){
-module.exports=require(9)
-},{}],12:[function(require,module,exports){
+},{"../_":3,"../cache":4,"../nodeType":13,"../regex":14,"../supports":15}],9:[function(require,module,exports){
 var _ = require('../_'),
-    _div = require('../div'),
-    _regex = require('../regex'),
-    _nodeType = require('../nodeType'),
-
     _css = require('./css');
 
 var _getDocumentDimension = function(elem, name) {
@@ -1030,52 +1159,14 @@ var _getDocumentDimension = function(elem, name) {
         );
     },
 
-    _getWidth = function(elem) {
-        if (_.isWindow(elem)) {
-            return elem.document.documentElement.clientWidth;
-        }
-
-        if (elem.nodeType === _nodeType.DOCUMENT) {
-            return _getDocumentDimension(elem, 'Width');
-        }
-
-        var width = elem.offsetWidth;
-        return (width === 0 &&
-                _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetWidth; }) :
-                        width;
-    },
-    _setWidth = function(elem, val) {
-        elem.style.width = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
-    },
-
-    _getHeight = function(elem) {
-        if (_.isWindow(elem)) {
-            return elem.document.documentElement.clientHeight;
-        }
-
-        if (elem.nodeType === _nodeType.DOCUMENT) {
-            return _getDocumentDimension(elem, 'Height');
-        }
-
-        var height = elem.offsetHeight;
-        return (height === 0 &&
-                _regex.display.isNoneOrTable(_css.getComputedStyle(elem).display)) ?
-                    _css.swap(elem, _css.swapSetting.measureDisplay, function() { return elem.offsetHeight; }) :
-                        height;
-    },
-    _setHeight = function(elem, val) {
-        elem.style.height = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
-    },
-
     _getInnerWidth = function(elem) {
-        var width = _getWidth(elem),
+        var width = _css.width.get(elem),
             style = _css.getComputedStyle(elem);
 
         return width + _.parseInt(style.paddingLeft) + _.parseInt(style.paddingRight);
     },
     _getInnerHeight = function(elem) {
-        var height = _getHeight(elem),
+        var height = _css.height.get(elem),
             style = _css.getComputedStyle(elem);
 
         return height + _.parseInt(style.paddingTop) + _.parseInt(style.paddingBottom);
@@ -1102,36 +1193,37 @@ var _getDocumentDimension = function(elem, name) {
         return height + _.parseInt(style.borderTopWidth) + _.parseInt(style.borderBottomWidth);
     };
 
-// TODO: Overload
 module.exports = {
     fn: {
-        width: function(val) {
-            var elem = this[0], // The first elem
-                valExists = _.exists(val);
-            if (!elem && !valExists) { return null; }
-            if (!elem) { return this; }
+        width: Overload().args(Number).use(function(val) {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return this; }
 
-            if (valExists) {
-                _setWidth(elem, val);
-                return this;
-            }
+                    _css.width.set(elem, val);
+                    return this;
+                })
+                .fallback(function() {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return null; }
 
-            return _getWidth(elem);
-        },
+                    return _css.width.get(elem);
+                })
+                .expose(),
 
-        height: function(val) {
-            var elem = this[0], // The first elem
-                valExists = _.exists(val);
-            if (!elem && !valExists) { return null; }
-            if (!elem) { return this; }
+        height: Overload().args(Number).use(function(val) {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return this; }
 
-            if (valExists) {
-                _setHeight(elem, val);
-                return this;
-            }
+                    _css.height.set(elem, val);
+                    return this;
+                })
+                .fallback(function() {
+                    var elem = this[0]; // The first elem
+                    if (!elem) { return null; }
 
-            return _getHeight(elem);
-        },
+                    return _css.height.get(elem);
+                })
+                .expose(),
 
         innerWidth: function() {
             var elem = this[0];
@@ -1162,7 +1254,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../div":5,"../nodeType":16,"../regex":17,"./css":8}],13:[function(require,module,exports){
+},{"../_":3,"./css":8}],10:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -1206,7 +1298,7 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],14:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1334,17 +1426,14 @@ module.exports = {
         },
 
         is: Overload()
-                .args(String)
-                .use(function(selector) {
-                    // TODO: Internal "every"
+                .args(String).use(function(selector) {
                     return DOM(
                         _.every(this, function(elem) {
                             return _isMatch(elem, selector);
                         })
                     );
                 })
-                .args(Function)
-                .use(function(iterator) {
+                .args(Function).use(function(iterator) {
                     // TODO: Internal "every"
                     return DOM(
                         _.every(this, iterator)
@@ -1381,7 +1470,7 @@ module.exports = {
                     .expose()
     }
 };
-},{"../cache":4,"../nodeType":16,"../regex":17,"../supports":18,"../utils":19,"./array":6}],15:[function(require,module,exports){
+},{"../cache":4,"../nodeType":13,"../regex":14,"../supports":15,"../utils":16,"./array":6}],12:[function(require,module,exports){
 var _array = require('./array'),
     _selectors = require('./selectors');
 
@@ -1480,7 +1569,7 @@ module.exports = {
     }
 };
 
-},{"./array":6,"./selectors":14}],16:[function(require,module,exports){
+},{"./array":6,"./selectors":11}],13:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -1495,7 +1584,7 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],17:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var _cache = require('./cache');
 
     // Matches "-ms-" so that it can be changed to "ms-"
@@ -1524,7 +1613,7 @@ module.exports = {
 
     camelCase: function(str) {
         return _cache.camelCase.getOrSet(str, function() {
-            return string.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
+            return str.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
         });
     },
 
@@ -1557,7 +1646,7 @@ module.exports = {
         }
     }
 };
-},{"./cache":4}],18:[function(require,module,exports){
+},{"./cache":4}],15:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
@@ -1575,7 +1664,7 @@ module.exports = {
     // Use a regex to work around a WebKit issue. See #5145
     opacity: (/^0.55$/).test(div.style.opacity)
 };
-},{"./div":5}],19:[function(require,module,exports){
+},{"./div":5}],16:[function(require,module,exports){
 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {

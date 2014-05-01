@@ -36,6 +36,7 @@
 		$div.width(val(-1)); // handle negative numbers by setting to 0 #11604
 		equal($div.width(), 0, 'Test negative width normalized to 0');
 		$div.css('padding', '20px');
+		// TODO: width() is returning 40 and that seems wrong, but it also seems to be the exact same way jQuery is doing it...debug
 		equal($div.width(), 0, 'Test padding specified with pixels');
 		$div.css('border', '2px solid #fff');
 		equal($div.width(), 0, 'Test border specified with pixels');
@@ -61,12 +62,12 @@
 		expect(9);
 
 		var $div = D('#NotHiddenDiv');
-		$div.height( val(30) );
+		$div.height(val(30));
 		equal($div.height(), 30, 'Test set to 30 correctly');
 		$div.hide();
 		equal($div.height(), 30, 'Test hidden div');
 		$div.show();
-		$div.height( val(-1) ); // handle negative numbers by setting to 0 #11604
+		$div.height(val(-1)); // handle negative numbers by setting to 0 #11604
 		equal($div.height(), 0, 'Test negative height normalized to 0');
 		$div.css('padding', '20px');
 		equal($div.height(), 0, 'Test padding specified with pixels');
@@ -84,19 +85,10 @@
 		equal(blah.height(), null, 'Make sure "null" is returned on an empty set');
 
 		equal(D(window).height(), document.documentElement.clientHeight, 'Window width is equal to width reported by window/document.');
-
 	};
 
-	test('height(Function(args))', function() {
-		expect( 2 );
-
-		var $div = D('#NotHiddenDiv');
-		$div.height(30).height(function(i, height) {
-			equal(height, 30, 'Make sure previous value is correct.');
-			return height + 1;
-		});
-
-		equal( $div.height(), 31, 'Make sure value was modified correctly.');
+	test('height()', function() {
+		testHeight(pass);
 	});
 
 	test('innerWidth()', function() {

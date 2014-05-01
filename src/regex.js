@@ -26,7 +26,7 @@ module.exports = {
 
     camelCase: function(str) {
         return _cache.camelCase.getOrSet(str, function() {
-            return string.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
+            return str.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
         });
     },
 

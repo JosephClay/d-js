@@ -33,7 +33,8 @@ module.exports = (function() {
             'selectedTestTag',
             'selectedTestClass',
             'camelCase',
-            'display'
+            'display',
+            'csskey'
         ],
         idx = caches.length;
 
