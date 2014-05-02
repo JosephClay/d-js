@@ -2,108 +2,108 @@ var _ = require('../_'),
     _utils = require('../utils');
 
 var _slice = (function(_slice) {
-    return function(arr, start, end) {
-        // Exit early for empty array
-        if (!arr || !arr.length) { return []; }
+        return function(arr, start, end) {
+            // Exit early for empty array
+            if (!arr || !arr.length) { return []; }
 
-        // End, naturally, has to be higher than 0 to matter,
-        // so a simple existance check will do
-        if (end) { return _slice.call(arr, start, end); }
+            // End, naturally, has to be higher than 0 to matter,
+            // so a simple existance check will do
+            if (end) { return _slice.call(arr, start, end); }
 
-        return _slice.call(arr, start || 0);
-    };
-}([].slice));
+            return _slice.call(arr, start || 0);
+        };
+    }([].slice)),
 
-// See jQuery
-// src\selector-native.js: 37
-var _elementSort = (function() {
+    // See jQuery
+    // src\selector-native.js: 37
+    _elementSort = (function() {
 
-    var _hasDuplicate = false;
-    var _sort = function(a, b) {
-        // Flag for duplicate removal
-        if (a === b) {
-            _hasDuplicate = true;
-            return 0;
+        var _hasDuplicate = false;
+        var _sort = function(a, b) {
+            // Flag for duplicate removal
+            if (a === b) {
+                _hasDuplicate = true;
+                return 0;
+            }
+
+            var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
+
+            // Not directly comparable, sort on existence of method
+            if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
+
+            // Disconnected nodes
+            if (compare & 1) {
+
+                // Choose the first element that is related to our document
+                if (a === document || b === document) { return 1; }
+
+                // Maintain original order
+                return 0;
+            }
+
+            return compare & 4 ? -1 : 1;
+        };
+
+        return function(array) {
+            _hasDuplicate = false;
+            array.sort(_sort);
+            return _hasDuplicate;
+        };
+
+    }()),
+
+    _unique = function(results) {
+        var hasDuplicates = _elementSort(results);
+        if (!hasDuplicates) { return results; }
+
+        var elem,
+            idx = 0,
+            // create the array here
+            // so that a new array isn't
+            // created/destroyed every unique call
+            duplicates = [];
+
+        // Go through the array and identify
+        // the duplicates to be removed
+        while ((elem = results[idx++])) {
+            if (elem === results[idx]) {
+                duplicates.push(idx);
+            }
         }
 
-        var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
-
-        // Not directly comparable, sort on existence of method
-        if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
-
-        // Disconnected nodes
-        if (compare & 1) {
-
-            // Choose the first element that is related to our document
-            if (a === document || b === document) { return 1; }
-
-            // Maintain original order
-            return 0;
+        // Remove the duplicates from the results
+        idx = duplicates.length;
+        while (idx--) {
+           results.splice(duplicates[idx], 1);
         }
 
-        return compare & 4 ? -1 : 1;
-    };
+        return results;
+    },
 
-    return function(array) {
-        _hasDuplicate = false;
-        array.sort(_sort);
-        return _hasDuplicate;
-    };
+    _map = function(arr, iterator) {
+        var results = [];
+        if (!arr.length || !iterator) { return results; }
 
-}());
-
-var _unique = function(results) {
-    var hasDuplicates = _elementSort(results);
-    if (!hasDuplicates) { return results; }
-
-    var elem,
-        idx = 0,
-        // create the array here
-        // so that a new array isn't
-        // created/destroyed every unique call
-        duplicates = [];
-
-    // Go through the array and identify
-    // the duplicates to be removed
-    while ((elem = results[idx++])) {
-        if (elem === results[idx]) {
-            duplicates.push(idx);
+        var idx = 0, length = arr.length,
+            item;
+        for (; idx < length; idx++) {
+            item = arr[idx];
+            results.push(iterator.call(item, item, idx));
         }
-    }
 
-    // Remove the duplicates from the results
-    idx = duplicates.length;
-    while (idx--) {
-       results.splice(duplicates[idx], 1);
-    }
+        return _.concatFlat(results);
+    },
 
-    return results;
-};
+    _each = function(arr, iterator) {
+        if (!arr.length || !iterator) { return; }
 
-var _map = function(arr, iterator) {
-    var results = [];
-    if (!arr.length || !iterator) { return results; }
-
-    var idx = 0, length = arr.length,
-        item;
-    for (; idx < length; idx++) {
-        item = arr[idx];
-        results.push(iterator.call(item, item, idx));
-    }
-
-    return _.concatFlat(results);
-};
-
-var _each = function(arr, iterator) {
-    if (!arr.length || !iterator) { return; }
-
-    var idx = 0, length = arr.length,
-        item;
-    for (; idx < length; idx++) {
-        item = arr[idx];
-        if (iterator.call(item, item, idx) === false) { return; }
-    }
-};
+        var idx = 0, length = arr.length,
+            item;
+        for (; idx < length; idx++) {
+            item = arr[idx];
+            if (iterator.call(item, item, idx) === false) { return; }
+        }
+    };
 
 module.exports = {
     slice: _slice,
@@ -134,24 +134,6 @@ module.exports = {
 
         slice: function(start, end) {
             return D(_slice(this.toArray(), start, end));
-        },
-
-        // TODO: next
-        next: function(str) {
-            if (_.isString(str)) {
-                // TODO:
-            }
-
-            return; // TODO:
-        },
-
-        // TODO: prev
-        prev: function(str) {
-            if (_.isString(str)) {
-                // TODO:
-            }
-
-            return; // TODO:
         },
 
         first: function() {

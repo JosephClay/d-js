@@ -1,4 +1,6 @@
-var _array = require('./array'),
+var _ = require('../_'),
+
+    _array = require('./array'),
     _selectors = require('./selectors');
 
 var _getSiblings = function(context) {
@@ -62,6 +64,10 @@ var _getSiblings = function(context) {
     // Safely get parent node
     _getNodeParent = function(node) {
         return node && node.parentNode;
+    },
+
+    _getIndex = function(d) {
+        return d.__idx || 0;
     };
 
 module.exports = {
@@ -93,6 +99,24 @@ module.exports = {
             return D(
                 _selectors.filter(_getChildren(this), selector)
             );
+        },
+
+        // TODO: next
+        next: function(str) {
+            if (_.isString(str)) {
+                // TODO:
+            }
+
+            return; // TODO:
+        },
+
+        // TODO: prev
+        prev: function(str) {
+            if (_.isString(str)) {
+                // TODO:
+            }
+
+            return; // TODO:
         }
     }
 };

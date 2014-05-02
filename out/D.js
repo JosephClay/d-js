@@ -495,108 +495,108 @@ var _ = require('../_'),
     _utils = require('../utils');
 
 var _slice = (function(_slice) {
-    return function(arr, start, end) {
-        // Exit early for empty array
-        if (!arr || !arr.length) { return []; }
+        return function(arr, start, end) {
+            // Exit early for empty array
+            if (!arr || !arr.length) { return []; }
 
-        // End, naturally, has to be higher than 0 to matter,
-        // so a simple existance check will do
-        if (end) { return _slice.call(arr, start, end); }
+            // End, naturally, has to be higher than 0 to matter,
+            // so a simple existance check will do
+            if (end) { return _slice.call(arr, start, end); }
 
-        return _slice.call(arr, start || 0);
-    };
-}([].slice));
+            return _slice.call(arr, start || 0);
+        };
+    }([].slice)),
 
-// See jQuery
-// src\selector-native.js: 37
-var _elementSort = (function() {
+    // See jQuery
+    // src\selector-native.js: 37
+    _elementSort = (function() {
 
-    var _hasDuplicate = false;
-    var _sort = function(a, b) {
-        // Flag for duplicate removal
-        if (a === b) {
-            _hasDuplicate = true;
-            return 0;
+        var _hasDuplicate = false;
+        var _sort = function(a, b) {
+            // Flag for duplicate removal
+            if (a === b) {
+                _hasDuplicate = true;
+                return 0;
+            }
+
+            var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
+
+            // Not directly comparable, sort on existence of method
+            if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
+
+            // Disconnected nodes
+            if (compare & 1) {
+
+                // Choose the first element that is related to our document
+                if (a === document || b === document) { return 1; }
+
+                // Maintain original order
+                return 0;
+            }
+
+            return compare & 4 ? -1 : 1;
+        };
+
+        return function(array) {
+            _hasDuplicate = false;
+            array.sort(_sort);
+            return _hasDuplicate;
+        };
+
+    }()),
+
+    _unique = function(results) {
+        var hasDuplicates = _elementSort(results);
+        if (!hasDuplicates) { return results; }
+
+        var elem,
+            idx = 0,
+            // create the array here
+            // so that a new array isn't
+            // created/destroyed every unique call
+            duplicates = [];
+
+        // Go through the array and identify
+        // the duplicates to be removed
+        while ((elem = results[idx++])) {
+            if (elem === results[idx]) {
+                duplicates.push(idx);
+            }
         }
 
-        var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
-
-        // Not directly comparable, sort on existence of method
-        if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
-
-        // Disconnected nodes
-        if (compare & 1) {
-
-            // Choose the first element that is related to our document
-            if (a === document || b === document) { return 1; }
-
-            // Maintain original order
-            return 0;
+        // Remove the duplicates from the results
+        idx = duplicates.length;
+        while (idx--) {
+           results.splice(duplicates[idx], 1);
         }
 
-        return compare & 4 ? -1 : 1;
-    };
+        return results;
+    },
 
-    return function(array) {
-        _hasDuplicate = false;
-        array.sort(_sort);
-        return _hasDuplicate;
-    };
+    _map = function(arr, iterator) {
+        var results = [];
+        if (!arr.length || !iterator) { return results; }
 
-}());
-
-var _unique = function(results) {
-    var hasDuplicates = _elementSort(results);
-    if (!hasDuplicates) { return results; }
-
-    var elem,
-        idx = 0,
-        // create the array here
-        // so that a new array isn't
-        // created/destroyed every unique call
-        duplicates = [];
-
-    // Go through the array and identify
-    // the duplicates to be removed
-    while ((elem = results[idx++])) {
-        if (elem === results[idx]) {
-            duplicates.push(idx);
+        var idx = 0, length = arr.length,
+            item;
+        for (; idx < length; idx++) {
+            item = arr[idx];
+            results.push(iterator.call(item, item, idx));
         }
-    }
 
-    // Remove the duplicates from the results
-    idx = duplicates.length;
-    while (idx--) {
-       results.splice(duplicates[idx], 1);
-    }
+        return _.concatFlat(results);
+    },
 
-    return results;
-};
+    _each = function(arr, iterator) {
+        if (!arr.length || !iterator) { return; }
 
-var _map = function(arr, iterator) {
-    var results = [];
-    if (!arr.length || !iterator) { return results; }
-    
-    var idx = 0, length = arr.length,
-        item;
-    for (; idx < length; idx++) {
-        item = arr[idx];
-        results.push(iterator.call(item, item, idx));
-    }
-
-    return _.concatFlat(results);
-};
-
-var _each = function(arr, iterator) {
-    if (!arr.length || !iterator) { return; }
-    
-    var idx = 0, length = arr.length,
-        item;
-    for (; idx < length; idx++) {
-        item = arr[idx];
-        if (iterator.call(item, item, idx) === false) { return; }
-    }
-};
+        var idx = 0, length = arr.length,
+            item;
+        for (; idx < length; idx++) {
+            item = arr[idx];
+            if (iterator.call(item, item, idx) === false) { return; }
+        }
+    };
 
 module.exports = {
     slice: _slice,
@@ -629,14 +629,6 @@ module.exports = {
             return D(_slice(this.toArray(), start, end));
         },
 
-        next: function() {
-            // TODO
-        },
-
-        prev: function() {
-            // TODO
-        },
-
         first: function() {
             return D(this[0]);
         },
@@ -652,7 +644,7 @@ module.exports = {
         map: function(iterator) {
             return D(_map(this, iterator));
         },
-        
+
         each: function(iterator) {
             _each(this, iterator);
             return this;
@@ -675,7 +667,6 @@ var _classMapCache = {};
 
 var _isNotEmpty = function(str) { return str !== null && str !== undefined && str !== ''; };
 
-// TODO: Implement internal cache
 var _split = function(name) {
     if (_.isArray(name)) { return name; }
     return _classArrayCache[name] || (_classArrayCache[name] = _.chain(name.split(_rspace)).filter(_isNotEmpty).uniq().value());
@@ -1492,70 +1483,77 @@ module.exports = {
     }
 };
 },{"../cache":4,"../nodeType":13,"../regex":14,"../supports":15,"../utils":16,"./array":6}],12:[function(require,module,exports){
-var _array = require('./array'),
+var _ = require('../_'),
+
+    _array = require('./array'),
     _selectors = require('./selectors');
 
 var _getSiblings = function(context) {
-    var idx = 0,
-        length = context.length,
-        result = [];
-    for (; idx < length; idx++) {
-        var sibs = _getNodeSiblings(context[idx]);
-        if (sibs.length) { result.push(sibs); }
-    }
-    return _.flatten(result);
-};
-var _getNodeSiblings = function(node) {
-    var siblings = _array.slice(node.parentNode.children),
-        idx = siblings.length;
-
-    while (idx--) {
-        if (siblings[idx] === node) {
-            siblings.splice(i, 1);
+        var idx = 0,
+            length = context.length,
+            result = [];
+        for (; idx < length; idx++) {
+            var sibs = _getNodeSiblings(context[idx]);
+            if (sibs.length) { result.push(sibs); }
         }
-    }
+        return _.flatten(result);
+    },
 
-    return siblings;
-};
+    _getNodeSiblings = function(node) {
+        var siblings = _array.slice(node.parentNode.children),
+            idx = siblings.length;
 
-// Parents ------
-var _getParents = function(context) {
-    var idx = 0,
-        length = context.length,
-        result = [];
-    for (; idx < length; idx++) {
-        var parents = _crawlUpNode(context[idx]);
-        result.push(parents);
-    }
-    return _.flatten(result);
-};
+        while (idx--) {
+            if (siblings[idx] === node) {
+                siblings.splice(i, 1);
+            }
+        }
 
-var _crawlUpNode = function(node) {
-    var result = [],
-        parent = node;
-    while ((parent = _getNodeParent(parent))) {
-        result.push(parent);
-    }
+        return siblings;
+    },
 
-    return result;
-};
+    // Parents ------
+    _getParents = function(context) {
+        var idx = 0,
+            length = context.length,
+            result = [];
+        for (; idx < length; idx++) {
+            var parents = _crawlUpNode(context[idx]);
+            result.push(parents);
+        }
+        return _.flatten(result);
+    },
 
-// Parent ------
-var _getParent = function(context) {
-    var idx = 0,
-        length = context.length,
-        result = [];
-    for (; idx < length; idx++) {
-        var parent = _getNodeParent(context[idx]);
-        if (parent) { result.push(parent); }
-    }
-    return result;
-};
+    _crawlUpNode = function(node) {
+        var result = [],
+            parent = node;
+        while ((parent = _getNodeParent(parent))) {
+            result.push(parent);
+        }
 
-// Safely get parent node
-var _getNodeParent = function(node) {
-    return node && node.parentNode;
-};
+        return result;
+    },
+
+    // Parent ------
+    _getParent = function(context) {
+        var idx = 0,
+            length = context.length,
+            result = [];
+        for (; idx < length; idx++) {
+            var parent = _getNodeParent(context[idx]);
+            if (parent) { result.push(parent); }
+        }
+        return result;
+    },
+
+    // Safely get parent node
+    _getNodeParent = function(node) {
+        return node && node.parentNode;
+    },
+
+    _getIndex = function(d) {
+        return d.__idx || 0;
+    };
 
 module.exports = {
     fn: {
@@ -1586,11 +1584,29 @@ module.exports = {
             return D(
                 _selectors.filter(_getChildren(this), selector)
             );
+        },
+
+        // TODO: next
+        next: function(str) {
+            if (_.isString(str)) {
+                // TODO:
+            }
+
+            return; // TODO:
+        },
+
+        // TODO: prev
+        prev: function(str) {
+            if (_.isString(str)) {
+                // TODO:
+            }
+
+            return; // TODO:
         }
     }
 };
 
-},{"./array":6,"./selectors":11}],13:[function(require,module,exports){
+},{"../_":3,"./array":6,"./selectors":11}],13:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
