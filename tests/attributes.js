@@ -17,13 +17,14 @@
 		bareObj and functionReturningObj can be used to test passing functions to setters
 		See testVal below for an example
 
-		bareObj( value);
+		bareObj(value);
 			This function returns whatever value is passed in
 
-		functionReturningObj( value);
+		functionReturningObj(value);
 			Returns a function that returns the value
 	*/
 
+	/* TODO: Enable for testing props?
 	test('D.propFix integrity test', function() {
 		expect(1);
 
@@ -48,6 +49,7 @@
 
 		deepEqual(props, D.propFix, 'D.propFix passes integrity check');
 	});
+	*/
 
 	test('attr(String)', function() {
 		expect(50);
@@ -100,7 +102,7 @@
 		equal(D('#tAnchor5').prop('href'), D('#scriptSrc').prop('src'), 'Check for absolute src prop on a script');
 
 		// list attribute is readonly by default in browsers that support it
-		D('#list-test').attr( 'list', 'datalist');
+		D('#list-test').attr('list', 'datalist');
 		equal(D('#list-test').attr('list'), 'datalist', 'Check setting list attribute');
 
 		// Related to [5574] and [5683]
@@ -109,7 +111,7 @@
 
 		strictEqual($body.attr('foo'), undefined, 'Make sure that a non existent attribute returns undefined');
 
-		body.setAttribute( 'foo', 'baz');
+		body.setAttribute('foo', 'baz');
 		equal($body.attr('foo'), 'baz', 'Make sure the dom attribute is retrieved when no expando is found');
 
 		$body.attr('foo','cool');
@@ -124,7 +126,7 @@
 		optgroup.appendChild(option);
 		select.appendChild(optgroup);
 
-		equal(D( option ).prop('selected'), true, 'Make sure that a single option is selected, even when in an optgroup.');
+		equal(D(option).prop('selected'), true, 'Make sure that a single option is selected, even when in an optgroup.');
 
 		$img = D('<img style="display:none" width="215" height="53" src="data/1x1.jpg"/>').appendTo('body');
 		equal($img.attr('width'), '215', 'Retrieve width attribute an an element with display:none.');
@@ -140,12 +142,12 @@
 		// Check value on button element (#1954)
 		$button = D('<button>text</button>').insertAfter('#button');
 		strictEqual($button.attr('value'), undefined, 'Absence of value attribute on a button');
-		equal($button.attr( 'value', 'foobar').attr('value'), 'foobar', 'Value attribute on a button does not return innerHTML');
+		equal($button.attr('value', 'foobar').attr('value'), 'foobar', 'Value attribute on a button does not return innerHTML');
 		equal($button.attr('value', 'baz').html(), 'text', 'Setting the value attribute does not change innerHTML');
 
 		// Attributes with a colon on a table element (#1591)
 		equal(D('#table').attr('test:attrib'), undefined, 'Retrieving a non-existent attribute on a table with a colon does not throw an error.');
-		equal(D('#table').attr( 'test:attrib', 'foobar').attr('test:attrib'), 'foobar', 'Setting an attribute on a table with a colon does not throw an error.');
+		equal(D('#table').attr('test:attrib', 'foobar').attr('test:attrib'), 'foobar', 'Setting an attribute on a table with a colon does not throw an error.');
 
 		$form = D('<form class="something"></form>').appendTo('#qunit-fixture');
 		equal($form.attr('class'), 'something', 'Retrieve the class attribute on a form.');
@@ -155,12 +157,12 @@
 
 		ok(D('<div/>').attr('doesntexist') === undefined, 'Make sure undefined is returned when no attribute is found.');
 		ok(D('<div/>').attr('title') === undefined, 'Make sure undefined is returned when no attribute is found.');
-		equal(D('<div/>').attr( 'title', 'something').attr('title'), 'something', 'Set the title attribute.');
+		equal(D('<div/>').attr('title', 'something').attr('title'), 'something', 'Set the title attribute.');
 		ok(D().attr('doesntexist') === undefined, 'Make sure undefined is returned when no element is there.');
 		equal(D('<div/>').attr('value'), undefined, 'An unset value on a div returns undefined.');
 		strictEqual(D('<select><option value="property"></option></select>').attr('value'), undefined, 'An unset value on a select returns undefined.');
 
-		$form = D('#form').attr( 'enctype', 'multipart/form-data');
+		$form = D('#form').attr('enctype', 'multipart/form-data');
 		equal($form.prop('enctype'), 'multipart/form-data', 'Set the enctype of a form (encoding in IE6/7 #6743)');
 	});
 
@@ -172,26 +174,26 @@
 
 		input.attr('name');
 
-		strictEqual( input.clone( true ).attr( 'name', 'test')[ 0 ].name, 'test', 'Name attribute should be changed on cloned element');
+		strictEqual(input.clone(true).attr('name', 'test')[ 0 ].name, 'test', 'Name attribute should be changed on cloned element');
 
 		div = D('<div id="tester" />');
 		div.attr('id');
 
-		strictEqual( div.clone( true ).attr( 'id', 'test')[ 0 ].id, 'test', 'Id attribute should be changed on cloned element');
+		strictEqual(div.clone(true).attr('id', 'test')[ 0 ].id, 'test', 'Id attribute should be changed on cloned element');
 
 		input = D('<input value="tester" />');
 		input.attr('value');
 
-		strictEqual( input.clone( true ).attr( 'value', 'test')[ 0 ].value, 'test', 'Value attribute should be changed on cloned element');
+		strictEqual(input.clone(true).attr('value', 'test')[ 0 ].value, 'test', 'Value attribute should be changed on cloned element');
 
-		strictEqual( input.clone( true ).attr( 'value', 42 )[ 0 ].value, '42', 'Value attribute should be changed on cloned element');
+		strictEqual(input.clone(true).attr('value', 42)[ 0 ].value, '42', 'Value attribute should be changed on cloned element');
 	});
 
 	test('attr(String, Function)', function() {
 		expect(2);
 
 		equal(
-			D('#text1').attr( 'value', function() {
+			D('#text1').attr('value', function() {
 				return this.id;
 			}).attr('value'),
 			'text1',
@@ -199,7 +201,7 @@
 		);
 
 		equal(
-			D('#text1').attr( 'title', function(i) {
+			D('#text1').attr('title', function(i) {
 				return i;
 			}).attr('title'),
 			'0',
@@ -215,7 +217,7 @@
 			foo: 'baz',
 			zoo: 'ping'
 		}).each(function() {
-			if ( this.getAttribute('foo') !== 'baz' && this.getAttribute('zoo') !== 'ping') {
+			if (this.getAttribute('foo') !== 'baz' && this.getAttribute('zoo') !== 'ping') {
 				pass = false;
 			}
 		});
@@ -243,7 +245,7 @@
 	});
 
 	test('attr(String, Object)', function() {
-		expect(71);
+		expect(69);
 
 		var $input, $text, $details,
 			attributeNode, commentNode, textNode, obj,
@@ -274,59 +276,52 @@
 		D('#name').attr('name', null);
 		equal(D('#name').attr('name'), undefined, 'Remove name attribute');
 
-		$input = D('<input>', {
-			name: 'something',
-			id: 'specified'
-		});
-		equal($input.attr('name'), 'something', 'Check element creation gets/sets the name attribute.');
-		equal($input.attr('id'), 'specified', 'Check element creation gets/sets the id attribute.');
-
 		// As of fixing #11115, we only guarantee boolean property update for checked and selected
-		$input = D('<input type="checkbox"/>').attr( 'checked', true);
+		$input = D('<input type="checkbox"/>').attr('checked', true);
 		equal($input.prop('checked'), true, 'Setting checked updates property (verified by .prop)');
 		equal($input[0].checked, true, 'Setting checked updates property (verified by native property)');
-		$input = D('<option/>').attr( 'selected', true);
+		$input = D('<option/>').attr('selected', true);
 		equal($input.prop('selected'), true, 'Setting selected updates property (verified by .prop)');
 		equal($input[0].selected, true, 'Setting selected updates property (verified by native property)');
 
 		$input = D('#check2');
-		$input.prop( 'checked', true ).prop( 'checked', false ).attr( 'checked', true);
+		$input.prop('checked', true).prop('checked', false).attr('checked', true);
 		equal($input.attr('checked'), 'checked', 'Set checked (verified by .attr)');
-		$input.prop( 'checked', false ).prop( 'checked', true ).attr( 'checked', false);
+		$input.prop('checked', false).prop('checked', true).attr('checked', false);
 		equal($input.attr('checked'), undefined, 'Remove checked (verified by .attr)');
 
-		$input = D('#text1').prop( 'readOnly', true ).prop( 'readOnly', false ).attr( 'readonly', true);
+		$input = D('#text1').prop('readOnly', true).prop('readOnly', false).attr('readonly', true);
 		equal($input.attr('readonly'), 'readonly', 'Set readonly (verified by .attr)');
-		$input.prop( 'readOnly', false ).prop( 'readOnly', true ).attr( 'readonly', false);
+		$input.prop('readOnly', false).prop('readOnly', true).attr('readonly', false);
 		equal($input.attr('readonly'), undefined, 'Remove readonly (verified by .attr)');
 
-		$input = D('#check2').attr( 'checked', true ).attr( 'checked', false ).prop( 'checked', true);
+		$input = D('#check2').attr('checked', true).attr('checked', false).prop('checked', true);
 		equal($input[0].checked, true, 'Set checked property (verified by native property)');
 		equal($input.prop('checked'), true, 'Set checked property (verified by .prop)');
 		equal($input.attr('checked'), undefined, 'Setting checked property doesnt affect checked attribute');
-		$input.attr( 'checked', false ).attr( 'checked', true ).prop( 'checked', false);
+		$input.attr('checked', false).attr('checked', true).prop('checked', false);
 		equal($input[0].checked, false, 'Clear checked property (verified by native property)');
 		equal($input.prop('checked'), false, 'Clear checked property (verified by .prop)');
 		equal($input.attr('checked'), 'checked', 'Clearing checked property doesnt affect checked attribute');
 
-		$input = D('#check2').attr( 'checked', false ).attr( 'checked', 'checked');
+		$input = D('#check2').attr('checked', false).attr('checked', 'checked');
 		equal($input.attr('checked'), 'checked', 'Set checked to "checked" (verified by .attr)');
 
 		$radios = D('#checkedtest').find('input[type="radio"]');
-		$radios.eq( 1 ).trigger('click');
-		equal($radios.eq( 1 ).prop('checked'), true, 'Second radio was checked when clicked');
-		equal($radios.eq( 0 ).attr('checked'), 'checked', 'First radio is still [checked]');
+		$radios.eq(1).trigger('click');
+		equal($radios.eq(1).prop('checked'), true, 'Second radio was checked when clicked');
+		equal($radios.eq(0).attr('checked'), 'checked', 'First radio is still [checked]');
 
-		$input = D('#text1').attr( 'readonly', false ).prop( 'readOnly', true);
+		$input = D('#text1').attr('readonly', false).prop('readOnly', true);
 		equal($input[0].readOnly, true, 'Set readonly property (verified by native property)');
 		equal($input.prop('readOnly'), true, 'Set readonly property (verified by .prop)');
-		$input.attr( 'readonly', true ).prop( 'readOnly', false);
+		$input.attr('readonly', true).prop('readOnly', false);
 		equal($input[0].readOnly, false, 'Clear readonly property (verified by native property)');
 		equal($input.prop('readOnly'), false, 'Clear readonly property (verified by .prop)');
 
-		$input = D('#name').attr( 'maxlength', '5');
+		$input = D('#name').attr('maxlength', '5');
 		equal($input[0].maxLength, 5, 'Set maxlength (verified by native property)');
-		$input.attr( 'maxLength', '10');
+		$input.attr('maxLength', '10');
 		equal($input[0].maxLength, 10, 'Set maxlength (verified by native property)');
 
 		// HTML5 boolean attributes
@@ -335,21 +330,21 @@
 			'required': true
 		});
 		equal($text.attr('autofocus'), 'autofocus', 'Reading autofocus attribute yields "autofocus"');
-		equal($text.attr( 'autofocus', false ).attr('autofocus'), undefined, 'Setting autofocus to false removes it');
+		equal($text.attr('autofocus', false).attr('autofocus'), undefined, 'Setting autofocus to false removes it');
 		equal($text.attr('required'), 'required', 'Reading required attribute yields "required"');
-		equal($text.attr( 'required', false ).attr('required'), undefined, 'Setting required attribute to false removes it');
+		equal($text.attr('required', false).attr('required'), undefined, 'Setting required attribute to false removes it');
 
 		$details = D('<details open></details>').appendTo('#qunit-fixture');
 		equal($details.attr('open'), 'open', 'open attribute presence indicates true');
-		equal($details.attr( 'open', false ).attr('open'), undefined, 'Setting open attribute to false removes it');
+		equal($details.attr('open', false).attr('open'), undefined, 'Setting open attribute to false removes it');
 
-		$text.attr( 'data-something', true);
+		$text.attr('data-something', true);
 		equal($text.attr('data-something'), 'true', 'Set data attributes');
 		equal($text.data('something'), true, 'Setting data attributes are not affected by boolean settings');
-		$text.attr( 'data-another', false);
+		$text.attr('data-another', false);
 		equal($text.attr('data-another'), 'false', 'Set data attributes');
 		equal($text.data('another'), false, 'Setting data attributes are not affected by boolean settings');
-		equal($text.attr( 'aria-disabled', false ).attr('aria-disabled'), 'false', 'Setting aria attributes are not affected by boolean settings');
+		equal($text.attr('aria-disabled', false).attr('aria-disabled'), 'false', 'Setting aria attributes are not affected by boolean settings');
 		$text.removeData('something').removeData('another').removeAttr('aria-disabled');
 
 		D('#foo').attr('contenteditable', true);
@@ -360,22 +355,22 @@
 		textNode = document.createTextNode('some text');
 		obj = {};
 
-		D.each( [ commentNode, textNode, attributeNode ], function( i, elem ) {
-			var $elem = D( elem);
-			$elem.attr( 'nonexisting', 'foo');
-			strictEqual( $elem.attr('nonexisting'), undefined, 'attr(name, value) works correctly on comment and text nodes (bug #7500).');
+		D.each([ commentNode, textNode, attributeNode ], function(i, elem) {
+			var $elem = D(elem);
+			$elem.attr('nonexisting', 'foo');
+			strictEqual($elem.attr('nonexisting'), undefined, 'attr(name, value) works correctly on comment and text nodes (bug #7500).');
 		});
 
-		D.each( [ window, document, obj, '#firstp' ], function( i, elem ) {
+		D.each([ window, document, obj, '#firstp' ], function(i, elem) {
 			var oldVal = elem.nonexisting,
-				$elem = D( elem);
-			strictEqual( $elem.attr('nonexisting'), undefined, 'attr works correctly for non existing attributes (bug #7500).');
-			equal($elem.attr( 'nonexisting', 'foo').attr('nonexisting'), 'foo', 'attr falls back to prop on unsupported arguments');
+				$elem = D(elem);
+			strictEqual($elem.attr('nonexisting'), undefined, 'attr works correctly for non existing attributes (bug #7500).');
+			equal($elem.attr('nonexisting', 'foo').attr('nonexisting'), 'foo', 'attr falls back to prop on unsupported arguments');
 			elem.nonexisting = oldVal;
 		});
 
 		// Register the property on the window for the previous assertion so it will be clean up
-		Globals.register( 'nonexisting');
+		Globals.register('nonexisting');
 
 		table = D('#table').append('<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>');
 		td = table.find('td').eq(0);
@@ -389,11 +384,11 @@
 		equal(D('#area1').attr('value'), undefined, 'Value attribute is distinct from value property.');
 
 		// for #1070
-		D('#name').attr( 'someAttr', '0');
+		D('#name').attr('someAttr', '0');
 		equal(D('#name').attr('someAttr'), '0', 'Set attribute to a string of "0"');
-		D('#name').attr( 'someAttr', 0);
+		D('#name').attr('someAttr', 0);
 		equal(D('#name').attr('someAttr'), '0', 'Set attribute to the number 0');
-		D('#name').attr( 'someAttr', 1);
+		D('#name').attr('someAttr', 1);
 		equal(D('#name').attr('someAttr'), '1', 'Set attribute to the number 1');
 
 		// using contents will get comments regular, text, and comment nodes
@@ -406,7 +401,7 @@
 		// Type
 		type = D('#check2').attr('type');
 		try {
-			D('#check2').attr( 'type', 'hidden');
+			D('#check2').attr('type', 'hidden');
 			ok(true, 'No exception thrown on input type change');
 		} catch(e) {
 			ok(true, 'Exception thrown on input type change: ' + e);
@@ -420,7 +415,7 @@
 			thrown = false;
 		}
 		ok(thrown, 'Exception thrown when trying to change type property');
-		equal('checkbox', D( check ).attr('type'), 'Verify that you can change the type of an input element that isnt in the DOM');
+		equal('checkbox', D(check).attr('type'), 'Verify that you can change the type of an input element that isnt in the DOM');
 
 		check = D('<input />');
 		thrown = true;
@@ -434,7 +429,7 @@
 
 		button = D('#button');
 		try {
-			button.attr( 'type', 'submit');
+			button.attr('type', 'submit');
 			ok(true, 'No exception thrown on button type change');
 		} catch (e) {
 			ok(true, 'Exception thrown on button type change: ' + e);
@@ -452,29 +447,14 @@
 				'<circle cx="200" cy="200" r="150" />' +
 				'</svg>'
 			).appendTo('body');
-		equal($svg.attr( 'cx', 100 ).attr('cx'), '100', 'Set attribute on svg element');
+		equal($svg.attr('cx', 100).attr('cx'), '100', 'Set attribute on svg element');
 		$svg.remove();
 
 		// undefined values are chainable
-		D('#name').attr( 'maxlength', '5').removeAttr('nonexisting');
-		equal(typeof D('#name').attr( 'maxlength', undefined ), 'object', '.attr("attribute", undefined) is chainable (#5571)');
-		equal(D('#name').attr( 'maxlength', undefined ).attr('maxlength'), '5', '.attr("attribute", undefined) does not change value (#5571)');
-		equal(D('#name').attr( 'nonexisting', undefined ).attr('nonexisting'), undefined, '.attr("attribute", undefined) does not create attribute (#5571)');
-	});
-
-	test('attr - extending the boolean attrHandle', function() {
-		expect();
-
-		var called = false,
-			_handle = D.expr.attrHandle.checked || $.noop;
-		D.expr.attrHandle.checked = function() {
-			called = true;
-			_handle.apply(this, arguments);
-		};
-		D('input').attr('checked');
-		called = false;
-		D('input').attr('checked');
-		ok(called, 'The boolean attrHandle does not drop custom attrHandles');
+		D('#name').attr('maxlength', '5').removeAttr('nonexisting');
+		equal(typeof D('#name').attr('maxlength', undefined), 'object', '.attr("attribute", undefined) is chainable (#5571)');
+		equal(D('#name').attr('maxlength', undefined).attr('maxlength'), '5', '.attr("attribute", undefined) does not change value (#5571)');
+		equal(D('#name').attr('nonexisting', undefined).attr('nonexisting'), undefined, '.attr("attribute", undefined) does not create attribute (#5571)');
 	});
 
 	test('attr("tabindex")', function() {
@@ -502,33 +482,33 @@
 		equal(element.attr('tabindex'), undefined, 'start with no tabindex');
 
 		// set a positive string
-		element.attr( 'tabindex', '1');
+		element.attr('tabindex', '1');
 		equal(element.attr('tabindex'), '1', 'set tabindex to 1 (string)');
 
 		// set a zero string
-		element.attr( 'tabindex', '0');
+		element.attr('tabindex', '0');
 		equal(element.attr('tabindex'), '0', 'set tabindex to 0 (string)');
 
 		// set a negative string
-		element.attr( 'tabindex', '-1');
+		element.attr('tabindex', '-1');
 		equal(element.attr('tabindex'), '-1', 'set tabindex to -1 (string)');
 
 		// set a positive number
-		element.attr( 'tabindex', 1);
+		element.attr('tabindex', 1);
 		equal(element.attr('tabindex'), '1', 'set tabindex to 1 (number)');
 
 		// set a zero number
-		element.attr( 'tabindex', 0);
+		element.attr('tabindex', 0);
 		equal(element.attr('tabindex'), '0', 'set tabindex to 0 (number)');
 
 		// set a negative number
-		element.attr( 'tabindex', -1);
+		element.attr('tabindex', -1);
 		equal(element.attr('tabindex'), '-1', 'set tabindex to -1 (number)');
 
 		element = D('#linkWithTabIndex');
 		equal(element.attr('tabindex'), '2', 'start with tabindex 2');
 
-		element.attr( 'tabindex', -1);
+		element.attr('tabindex', -1);
 		equal(element.attr('tabindex'), '-1', 'set negative tabindex');
 	});
 
@@ -539,21 +519,21 @@
 
 		equal(D('#mark').removeAttr('class').attr('class'), undefined, 'remove class');
 		equal(D('#form').removeAttr('id').attr('id'), undefined, 'Remove id');
-		equal(D('#foo').attr( 'style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute');
-		equal(D('#form').attr( 'style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute on a form');
+		equal(D('#foo').attr('style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute');
+		equal(D('#form').attr('style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute on a form');
 		equal(D('<div style="position: absolute"></div>').appendTo('#foo').removeAttr('style').prop('style').cssText, '', 'Check removing style attribute (#9699 Webkit)');
-		equal(D('#fx-test-group').attr( 'height', '3px').removeAttr('height').get( 0 ).style.height, '1px', 'Removing height attribute has no effect on height set with style attribute');
+		equal(D('#fx-test-group').attr('height', '3px').removeAttr('height').get(0).style.height, '1px', 'Removing height attribute has no effect on height set with style attribute');
 
-		D('#check1').removeAttr('checked').prop( 'checked', true ).removeAttr('checked');
+		D('#check1').removeAttr('checked').prop('checked', true).removeAttr('checked');
 		equal(document.getElementById('check1').checked, false, 'removeAttr sets boolean properties to false');
-		D('#text1').prop( 'readOnly', true ).removeAttr('readonly');
+		D('#text1').prop('readOnly', true).removeAttr('readonly');
 		equal(document.getElementById('text1').readOnly, false, 'removeAttr sets boolean properties to false');
 
 		D('#option2c').removeAttr('selected');
 		equal(D('#option2d').attr('selected'), 'selected', 'Removing `selected` from an option that is not selected does not remove selected from the currently selected option (#10870)');
 
 		try {
-			$first = D('#first').attr( 'contenteditable', 'true').removeAttr('contenteditable');
+			$first = D('#first').attr('contenteditable', 'true').removeAttr('contenteditable');
 			equal($first.attr('contenteditable'), undefined, 'Remove the contenteditable attribute');
 		} catch (e) {
 			ok(false, 'Removing contenteditable threw an error (#10429)');
@@ -562,7 +542,7 @@
 		$first = D('<div Case="mixed"></div>');
 		equal($first.attr('Case'), 'mixed', 'case of attribute doesnt matter');
 		$first.removeAttr('Case');
-		equal($first.attr( 'Case'), undefined, 'mixed-case attribute was removed');
+		equal($first.attr('Case'), undefined, 'mixed-case attribute was removed');
 	});
 
 	test('removeAttr(Multi String, variable space width)', function() {
@@ -576,14 +556,14 @@
 				rel: 'd'
 			};
 
-		D.each( tests, function( key, val ) {
-			equal(div.attr( key ), val, 'Attribute `' + key + '` exists, and has a value of `' + val + '`');
+		D.each(tests, function(key, val) {
+			equal(div.attr(key), val, 'Attribute `' + key + '` exists, and has a value of `' + val + '`');
 		});
 
-		div.removeAttr( 'id   alt title  rel  ');
+		div.removeAttr('id   alt title  rel  ');
 
-		D.each( tests, function( key ) {
-			equal(div.attr( key ), undefined, 'Attribute `' + key + '` was removed');
+		D.each(tests, function(key) {
+			equal(div.attr(key), undefined, 'Attribute `' + key + '` was removed');
 		});
 	});
 
@@ -591,30 +571,30 @@
 		expect(17);
 
 		equal(D('#text1').prop('value'), 'Test', 'Check for value attribute');
-		equal(D('#text1').prop( 'value', 'Test2').prop('defaultValue'), 'Test', 'Check for defaultValue attribute');
+		equal(D('#text1').prop('value', 'Test2').prop('defaultValue'), 'Test', 'Check for defaultValue attribute');
 		equal(D('#select2').prop('selectedIndex'), 3, 'Check for selectedIndex attribute');
 		equal(D('#foo').prop('nodeName').toUpperCase(), 'DIV', 'Check for nodeName attribute');
 		equal(D('#foo').prop('tagName').toUpperCase(), 'DIV', 'Check for tagName attribute');
 		equal(D('<option/>').prop('selected'), false, 'Check selected attribute on disconnected element.');
 
 		equal(D('#listWithTabIndex').prop('tabindex'), 5, 'Check retrieving tabindex');
-		D('#text1').prop( 'readonly', true);
+		D('#text1').prop('readonly', true);
 		equal(document.getElementById('text1').readOnly, true, 'Check setting readOnly property with "readonly"');
 		equal(D('#label-for').prop('for'), 'action', 'Check retrieving htmlFor');
 		D('#text1').prop('class', 'test');
 		equal(document.getElementById('text1').className, 'test', 'Check setting className with "class"');
 		equal(D('#text1').prop('maxlength'), 30, 'Check retrieving maxLength');
-		D('#table').prop( 'cellspacing', 1);
+		D('#table').prop('cellspacing', 1);
 		equal(D('#table').prop('cellSpacing'), '1', 'Check setting and retrieving cellSpacing');
-		D('#table').prop( 'cellpadding', 1);
+		D('#table').prop('cellpadding', 1);
 		equal(D('#table').prop('cellPadding'), '1', 'Check setting and retrieving cellPadding');
-		D('#table').prop( 'rowspan', 1);
+		D('#table').prop('rowspan', 1);
 		equal(D('#table').prop('rowSpan'), 1, 'Check setting and retrieving rowSpan');
-		D('#table').prop( 'colspan', 1);
+		D('#table').prop('colspan', 1);
 		equal(D('#table').prop('colSpan'), 1, 'Check setting and retrieving colSpan');
-		D('#table').prop( 'usemap', 1);
+		D('#table').prop('usemap', 1);
 		equal(D('#table').prop('useMap'), 1, 'Check setting and retrieving useMap');
-		D('#table').prop( 'frameborder', 1);
+		D('#table').prop('frameborder', 1);
 		equal(D('#table').prop('frameBorder'), 1, 'Check setting and retrieving frameBorder');
 	});
 
@@ -623,7 +603,7 @@
 
 		var select, optgroup, option, attributeNode, commentNode, textNode, obj, $form,
 			body = document.body,
-			$body = D( body);
+			$body = D(body);
 
 		ok($body.prop('nextSibling') === null, 'Make sure a null expando returns null');
 		body.foo = 'bar';
@@ -635,29 +615,29 @@
 		optgroup = document.createElement('optgroup');
 		option = document.createElement('option');
 
-		optgroup.appendChild( option);
-		select.appendChild( optgroup);
+		optgroup.appendChild(option);
+		select.appendChild(optgroup);
 
-		equal(D( option ).prop('selected'), true, 'Make sure that a single option is selected, even when in an optgroup.');
-		equal(D( document ).prop('nodeName'), '#document', 'prop works correctly on document nodes (bug #7451).');
+		equal(D(option).prop('selected'), true, 'Make sure that a single option is selected, even when in an optgroup.');
+		equal(D(document).prop('nodeName'), '#document', 'prop works correctly on document nodes (bug #7451).');
 
 		attributeNode = document.createAttribute('irrelevant');
 		commentNode = document.createComment('some comment');
 		textNode = document.createTextNode('some text');
 		obj = {};
-		D.each( [ document, attributeNode, commentNode, textNode, obj, '#firstp' ], function( i, ele ) {
-			strictEqual( D( ele ).prop('nonexisting'), undefined, 'prop works correctly for non existing attributes (bug #7500).');
+		D.each([ document, attributeNode, commentNode, textNode, obj, '#firstp' ], function(i, ele) {
+			strictEqual(D(ele).prop('nonexisting'), undefined, 'prop works correctly for non existing attributes (bug #7500).');
 		});
 
 		obj = {};
-		D.each( [ document, obj ], function( i, ele ) {
-			var $ele = D( ele);
-			$ele.prop( 'nonexisting', 'foo');
+		D.each([ document, obj ], function(i, ele) {
+			var $ele = D(ele);
+			$ele.prop('nonexisting', 'foo');
 			equal($ele.prop('nonexisting'), 'foo', 'prop(name, value) works correctly for non existing attributes (bug #7500).');
 		});
-		D( document ).removeProp('nonexisting');
+		D(document).removeProp('nonexisting');
 
-		$form = D('#form').prop( 'enctype', 'multipart/form-data');
+		$form = D('#form').prop('enctype', 'multipart/form-data');
 		equal($form.prop('enctype'), 'multipart/form-data', 'Set the enctype of a form (encoding in IE6/7 #6743)');
 	});
 
@@ -692,37 +672,37 @@
 		equal(element.prop('tabindex'), -1, 'start with no tabindex');
 
 		// set a positive string
-		element.prop( 'tabindex', '1');
+		element.prop('tabindex', '1');
 		equal(element.prop('tabindex'), 1, 'set tabindex to 1 (string)');
 
 		// set a zero string
-		element.prop( 'tabindex', '0');
+		element.prop('tabindex', '0');
 		equal(element.prop('tabindex'), 0, 'set tabindex to 0 (string)');
 
 		// set a negative string
-		element.prop( 'tabindex', '-1');
+		element.prop('tabindex', '-1');
 		equal(element.prop('tabindex'), -1, 'set tabindex to -1 (string)');
 
 		// set a positive number
-		element.prop( 'tabindex', 1);
+		element.prop('tabindex', 1);
 		equal(element.prop('tabindex'), 1, 'set tabindex to 1 (number)');
 
 		// set a zero number
-		element.prop( 'tabindex', 0);
+		element.prop('tabindex', 0);
 		equal(element.prop('tabindex'), 0, 'set tabindex to 0 (number)');
 
 		// set a negative number
-		element.prop( 'tabindex', -1);
+		element.prop('tabindex', -1);
 		equal(element.prop('tabindex'), -1, 'set tabindex to -1 (number)');
 
 		element = D('#linkWithTabIndex');
 		equal(element.prop('tabindex'), 2, 'start with tabindex 2');
 
-		element.prop( 'tabindex', -1);
+		element.prop('tabindex', -1);
 		equal(element.prop('tabindex'), -1, 'set negative tabindex');
 
 		clone = element.clone();
-		clone.prop( 'tabindex', 1);
+		clone.prop('tabindex', 1);
 		equal(clone[ 0 ].getAttribute('tabindex'), '1', 'set tabindex on cloned element');
 	});
 
@@ -735,20 +715,20 @@
 			obj = {};
 
 		strictEqual(
-			D('#firstp').prop( 'nonexisting', 'foo').removeProp( 'nonexisting')[ 0 ].nonexisting,
+			D('#firstp').prop('nonexisting', 'foo').removeProp('nonexisting')[ 0 ].nonexisting,
 			undefined,
 			'removeprop works correctly on DOM element nodes'
 		);
 
-		D.each( [ document, obj ], function( i, ele ) {
-			var $ele = D( ele);
-			$ele.prop( 'nonexisting', 'foo').removeProp('nonexisting');
-			strictEqual( ele.nonexisting, undefined, 'removeProp works correctly on non DOM element nodes (bug #7500).');
+		D.each([ document, obj ], function(i, ele) {
+			var $ele = D(ele);
+			$ele.prop('nonexisting', 'foo').removeProp('nonexisting');
+			strictEqual(ele.nonexisting, undefined, 'removeProp works correctly on non DOM element nodes (bug #7500).');
 		});
-		D.each( [ commentNode, textNode, attributeNode ], function( i, ele ) {
-			var $ele = D( ele);
-			$ele.prop( 'nonexisting', 'foo').removeProp('nonexisting');
-			strictEqual( ele.nonexisting, undefined, 'removeProp works correctly on non DOM element nodes (bug #7500).');
+		D.each([ commentNode, textNode, attributeNode ], function(i, ele) {
+			var $ele = D(ele);
+			$ele.prop('nonexisting', 'foo').removeProp('nonexisting');
+			strictEqual(ele.nonexisting, undefined, 'removeProp works correctly on non DOM element nodes (bug #7500).');
 		});
 	});
 
@@ -761,7 +741,7 @@
 
 
 	test('val()', function() {
-		expect(20+ ( D.fn.serialize ? 6 : 0 ));
+		expect(20+ (D.fn.serialize ? 6 : 0));
 
 		var checks, $button;
 		equal(D('#text1').val(), 'Test', 'Check for value of input element');
@@ -771,7 +751,7 @@
 
 		equal(D('#select2').val(), '3', 'Call val() on a single="single" select');
 
-		deepEqual( D('#select3').val(), [ '1', '2' ], 'Call val() on a multiple="multiple" select');
+		deepEqual(D('#select3').val(), [ '1', '2' ], 'Call val() on a multiple="multiple" select');
 
 		equal(D('#option3c').val(), '2', 'Call val() on a option element with value');
 
@@ -782,22 +762,22 @@
 		equal(D('#option3a').val(), '', 'Call val() on a option element with no value attribute');
 
 		D('#select3').val('');
-		deepEqual( D('#select3').val(), [''], 'Call val() on a multiple="multiple" select');
+		deepEqual(D('#select3').val(), [''], 'Call val() on a multiple="multiple" select');
 
-		deepEqual( D('#select4').val(), [], 'Call val() on multiple="multiple" select with all disabled options');
+		deepEqual(D('#select4').val(), [], 'Call val() on multiple="multiple" select with all disabled options');
 
-		D('#select4 optgroup').add('#select4 > [disabled]').attr( 'disabled', false);
-		deepEqual( D('#select4').val(), [ '2', '3' ], 'Call val() on multiple="multiple" select with some disabled options');
+		D('#select4 optgroup').add('#select4 > [disabled]').attr('disabled', false);
+		deepEqual(D('#select4').val(), [ '2', '3' ], 'Call val() on multiple="multiple" select with some disabled options');
 
-		D('#select4').attr( 'disabled', true);
-		deepEqual( D('#select4').val(), [ '2', '3' ], 'Call val() on disabled multiple="multiple" select');
+		D('#select4').attr('disabled', true);
+		deepEqual(D('#select4').val(), [ '2', '3' ], 'Call val() on disabled multiple="multiple" select');
 
 		equal(D('#select5').val(), '3', 'Check value on ambiguous select.');
 
-		D('#select5').val( 1);
+		D('#select5').val(1);
 		equal(D('#select5').val(), '1', 'Check value on ambiguous select.');
 
-		D('#select5').val( 3);
+		D('#select5').val(3);
 		equal(D('#select5').val(), '3', 'Check value on ambiguous select.');
 
 		strictEqual(
@@ -806,24 +786,24 @@
 			'Select-one with only option disabled (#12584)'
 		);
 
-		if ( D.fn.serialize ) {
+		if (D.fn.serialize) {
 			checks = D('<input type="checkbox" name="test" value="1"/><input type="checkbox" name="test" value="2"/><input type="checkbox" name="test" value=""/><input type="checkbox" name="test"/>').appendTo('#form');
 
-			deepEqual( checks.serialize(), '', 'Get unchecked values.');
+			deepEqual(checks.serialize(), '', 'Get unchecked values.');
 
-			equal(checks.eq( 3 ).val(), 'on', 'Make sure a value of "on" is provided if none is specified.');
+			equal(checks.eq(3).val(), 'on', 'Make sure a value of "on" is provided if none is specified.');
 
 			checks.val([ '2' ]);
-			deepEqual( checks.serialize(), 'test=2', 'Get a single checked value.');
+			deepEqual(checks.serialize(), 'test=2', 'Get a single checked value.');
 
 			checks.val([ '1', '' ]);
-			deepEqual( checks.serialize(), 'test=1&test=', 'Get multiple checked values.');
+			deepEqual(checks.serialize(), 'test=1&test=', 'Get multiple checked values.');
 
 			checks.val([ '', '2' ]);
-			deepEqual( checks.serialize(), 'test=2&test=', 'Get multiple checked values.');
+			deepEqual(checks.serialize(), 'test=2&test=', 'Get multiple checked values.');
 
 			checks.val([ '1', 'on' ]);
-			deepEqual( checks.serialize(), 'test=1&test=on', 'Get multiple checked values.');
+			deepEqual(checks.serialize(), 'test=1&test=on', 'Get multiple checked values.');
 
 			checks.remove();
 		}
@@ -838,20 +818,20 @@
 	test('val() with non-matching values on dropdown list', function() {
 		expect(3);
 
-		D('#select5').val( '');
+		D('#select5').val('');
 		equal(D('#select5').val(), null, 'Non-matching set on select-one');
 
 		var select6 = D('<select multiple id=\'select6\'><option value=\'1\'>A</option><option value=\'2\'>B</option></select>').appendTo('#form');
-		D(select6).val( 'nothing');
+		D(select6).val('nothing');
 		equal(D(select6).val(), null, 'Non-matching set (single value) on select-multiple');
 
-		D(select6).val( ['nothing1', 'nothing2']);
+		D(select6).val(['nothing1', 'nothing2']);
 		equal(D(select6).val(), null, 'Non-matching set (array of values) on select-multiple');
 
 		select6.remove();
 	});
 
-	if ( 'value' in document.createElement('meter') && 'value' in document.createElement('progress') ) {
+	if ('value' in document.createElement('meter') && 'value' in document.createElement('progress')) {
 
 		test('val() respects numbers without exception (Bug #9319)', function() {
 			expect(4);
@@ -873,51 +853,51 @@
 		});
 	}
 
-	var testVal = function( valueObj ) {
+	var testVal = function(valueObj) {
 		expect(9);
 
-		D('#text1').val( valueObj('test'));
+		D('#text1').val(valueObj('test'));
 		equal(document.getElementById('text1').value, 'test', 'Check for modified (via val(String)) value of input element');
 
-		D('#text1').val( valueObj( undefined ));
+		D('#text1').val(valueObj(undefined));
 		equal(document.getElementById('text1').value, '', 'Check for modified (via val(undefined)) value of input element');
 
-		D('#text1').val( valueObj( 67 ));
+		D('#text1').val(valueObj(67));
 		equal(document.getElementById('text1').value, '67', 'Check for modified (via val(Number)) value of input element');
 
-		D('#text1').val( valueObj( null ));
+		D('#text1').val(valueObj(null));
 		equal(document.getElementById('text1').value, '', 'Check for modified (via val(null)) value of input element');
 
 		var j,
 			$select = D('<select multiple><option value="1"/><option value="2"/></select>'),
 			$select1 = D('#select1');
 
-		$select1.val( valueObj('3'));
+		$select1.val(valueObj('3'));
 		equal($select1.val(), '3', 'Check for modified (via val(String)) value of select element');
 
-		$select1.val( valueObj( 2 ));
+		$select1.val(valueObj(2));
 		equal($select1.val(), '2', 'Check for modified (via val(Number)) value of select element');
 
 		$select1.append('<option value="4">four</option>');
-		$select1.val( valueObj( 4 ));
+		$select1.val(valueObj(4));
 		equal($select1.val(), '4', 'Should be possible to set the val() to a newly created option');
 
 		// using contents will get comments regular, text, and comment nodes
 		j = D('#nonnodes').contents();
-		j.val( valueObj( 'asdf'));
+		j.val(valueObj('asdf'));
 		equal(j.val(), 'asdf', 'Check node,textnode,comment with val()');
 		j.removeAttr('value');
 
-		$select.val( valueObj( [ '1', '2' ] ));
-		deepEqual( $select.val(), [ '1', '2' ], 'Should set array of values');
+		$select.val(valueObj([ '1', '2' ]));
+		deepEqual($select.val(), [ '1', '2' ], 'Should set array of values');
 	};
 
 	test('val(String/Number)', function() {
-		testVal( bareObj);
+		testVal(bareObj);
 	});
 
 	test('val(Function)', function() {
-		testVal( functionReturningObj);
+		testVal(functionReturningObj);
 	});
 
 	test('val(Array of Numbers) (Bug #7123)', function() {
@@ -938,7 +918,7 @@
 
 		var oldVal = D('#text1').val();
 
-		D('#text1').val(function( i, val ) {
+		D('#text1').val(function(i, val) {
 			equal(val, oldVal, 'Make sure the incoming value is correct.');
 			return 'test';
 		});
@@ -947,7 +927,7 @@
 
 		oldVal = D('#text1').val();
 
-		D('#text1').val(function( i, val ) {
+		D('#text1').val(function(i, val) {
 			equal(val, oldVal, 'Make sure the incoming value is correct.');
 			return 67;
 		});
@@ -956,7 +936,7 @@
 
 		oldVal = D('#select1').val();
 
-		D('#select1').val(function( i, val ) {
+		D('#select1').val(function(i, val) {
 			equal(val, oldVal, 'Make sure the incoming value is correct.');
 			return '3';
 		});
@@ -965,7 +945,7 @@
 
 		oldVal = D('#select1').val();
 
-		D('#select1').val(function( i, val ) {
+		D('#select1').val(function(i, val) {
 			equal(val, oldVal, 'Make sure the incoming value is correct.');
 			return 2;
 		});
@@ -976,7 +956,7 @@
 
 		oldVal = D('#select1').val();
 
-		D('#select1').val(function( i, val ) {
+		D('#select1').val(function(i, val) {
 			equal(val, oldVal, 'Make sure the incoming value is correct.');
 			return 4;
 		});
@@ -998,20 +978,20 @@
 		equal(D('#kkk').val(), 'cf', 'Check value of select after form reset.');
 
 		// re-verify the multi-select is not broken (after form.reset) by our fix for single-select
-		deepEqual( D('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select');
+		deepEqual(D('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select');
 
 		D('#kk').remove();
 	});
 
-	var testAddClass = function( valueObj ) {
+	var testAddClass = function(valueObj) {
 		expect(9);
 
 		var pass, j, i,
 			div = D('#qunit-fixture div');
-		div.addClass( valueObj('test'));
+		div.addClass(valueObj('test'));
 		pass = true;
-		for ( i = 0; i < div.length; i++ ) {
-			if ( !~div.get( i ).className.indexOf('test') ) {
+		for (i = 0; i < div.length; i++) {
+			if (!~div.get(i).className.indexOf('test')) {
 				pass = false;
 			}
 		}
@@ -1019,42 +999,42 @@
 
 		// using contents will get regular, text, and comment nodes
 		j = D('#nonnodes').contents();
-		j.addClass( valueObj('asdf'));
+		j.addClass(valueObj('asdf'));
 		ok(j.hasClass('asdf'), 'Check node,textnode,comment for addClass');
 
 		div = D('<div/>');
 
-		div.addClass( valueObj('test'));
+		div.addClass(valueObj('test'));
 		equal(div.attr('class'), 'test', 'Make sure theres no extra whitespace.');
 
-		div.attr( 'class', ' foo');
-		div.addClass( valueObj('test'));
+		div.attr('class', ' foo');
+		div.addClass(valueObj('test'));
 		equal(div.attr('class'), 'foo test', 'Make sure theres no extra whitespace.');
 
-		div.attr( 'class', 'foo');
-		div.addClass( valueObj('bar baz'));
+		div.attr('class', 'foo');
+		div.addClass(valueObj('bar baz'));
 		equal(div.attr('class'), 'foo bar baz', 'Make sure there isnt too much trimming.');
 
 		div.removeClass();
-		div.addClass( valueObj('foo') ).addClass( valueObj('foo'));
+		div.addClass(valueObj('foo')).addClass(valueObj('foo'));
 		equal(div.attr('class'), 'foo', 'Do not add the same class twice in separate calls.');
 
-		div.addClass( valueObj('fo'));
+		div.addClass(valueObj('fo'));
 		equal(div.attr('class'), 'foo fo', 'Adding a similar class does not get interrupted.');
 		div.removeClass().addClass('wrap2');
 		ok(div.addClass('wrap').hasClass('wrap'), 'Can add similarly named classes');
 
 		div.removeClass();
-		div.addClass( valueObj('bar bar'));
+		div.addClass(valueObj('bar bar'));
 		equal(div.attr('class'), 'bar', 'Do not add the same class twice in the same call.');
 	};
 
 	test('addClass(String)', function() {
-		testAddClass( bareObj);
+		testAddClass(bareObj);
 	});
 
 	test('addClass(Function)', function() {
-		testAddClass( functionReturningObj);
+		testAddClass(functionReturningObj);
 	});
 
 	test('addClass(Function) with incoming value', function() {
@@ -1066,16 +1046,16 @@
 				return D(this).attr('class') || '';
 			});
 
-		div.addClass(function( i, val ) {
-			if ( this.id !== '_firebugConsole') {
+		div.addClass(function(i, val) {
+			if (this.id !== '_firebugConsole') {
 				equal(val, old[ i ], 'Make sure the incoming value is correct.');
 				return 'test';
 			}
 		});
 
 		pass = true;
-		for ( i = 0; i < div.length; i++ ) {
-			if ( div.get(i).className.indexOf('test') === -1 ) {
+		for (i = 0; i < div.length; i++) {
+			if (div.get(i).className.indexOf('test') === -1) {
 				pass = false;
 			}
 		}
@@ -1088,60 +1068,60 @@
 		var $set = D('#qunit-fixture div'),
 			div = document.createElement('div');
 
-		$set.addClass('test').removeClass( valueObj('test'));
+		$set.addClass('test').removeClass(valueObj('test'));
 
 		ok(!$set.is('.test'), 'Remove Class');
 
 		$set.addClass('test').addClass('foo').addClass('bar');
-		$set.removeClass( valueObj('test') ).removeClass( valueObj('bar') ).removeClass( valueObj('foo'));
+		$set.removeClass(valueObj('test')).removeClass(valueObj('bar')).removeClass(valueObj('foo'));
 
 		ok(!$set.is('.test,.bar,.foo'), 'Remove multiple classes');
 
-		$set.eq( 0 ).addClass('expected').removeClass( valueObj( null ) );
-		ok($set.eq( 0 ).is('.expected'), 'Null value passed to removeClass');
+		$set.eq(0).addClass('expected').removeClass(valueObj(null));
+		ok($set.eq(0).is('.expected'), 'Null value passed to removeClass');
 
-		$set.eq( 0 ).addClass('expected').removeClass( valueObj('') );
-		ok($set.eq( 0 ).is('.expected'), 'Empty string passed to removeClass');
+		$set.eq(0).addClass('expected').removeClass(valueObj(''));
+		ok($set.eq(0).is('.expected'), 'Empty string passed to removeClass');
 
 
 		// using contents will get regular, text, and comment nodes
 		$set = D('#nonnodes').contents();
-		$set.removeClass( valueObj('asdf'));
+		$set.removeClass(valueObj('asdf'));
 		ok(!$set.hasClass('asdf'), 'Check node,textnode,comment for removeClass');
 
 
-		D( div ).removeClass( valueObj('foo'));
-		strictEqual( D( div ).attr('class'), undefined, 'removeClass doesnt create a class attribute');
+		D(div).removeClass(valueObj('foo'));
+		strictEqual(D(div).attr('class'), undefined, 'removeClass doesnt create a class attribute');
 
 		div.className = ' test foo ';
 
-		D( div ).removeClass( valueObj('foo'));
+		D(div).removeClass(valueObj('foo'));
 		equal(div.className, 'test', 'Make sure remaining className is trimmed.');
 
 		div.className = ' test ';
 
-		D( div ).removeClass( valueObj('test'));
+		D(div).removeClass(valueObj('test'));
 		equal(div.className, '', 'Make sure there is nothing left after everything is removed.');
 	};
 
 	test('removeClass(String) - simple', function() {
-		testRemoveClass( bareObj);
+		testRemoveClass(bareObj);
 	});
 
 	test('removeClass(Function) - simple', function() {
-		testRemoveClass( functionReturningObj);
+		testRemoveClass(functionReturningObj);
 	});
 
 	test('removeClass(Function) with incoming value', function() {
 		expect(52);
 
 		var $divs = D('#qunit-fixture div').addClass('test'), old = $divs.map(function() {
-			return D( this ).attr('class');
+			return D(this).attr('class');
 		});
 
-		$divs.removeClass(function( i, val ) {
-			if ( this.id !== '_firebugConsole') {
-				equal(val, old[ i ], 'Make sure the incoming value is correct.');
+		$divs.removeClass(function(i, val) {
+			if (this.id !== '_firebugConsole') {
+				equal(val, old[i], 'Make sure the incoming value is correct.');
 				return 'test';
 			}
 		});
@@ -1152,7 +1132,7 @@
 	test('removeClass() removes duplicates', function() {
 		expect(1);
 
-		var $div = D( D.parseHTML('<div class="x x x"></div>'));
+		var $div = D(D.parseHTML('<div class="x x x"></div>'));
 
 		$div.removeClass('x');
 
@@ -1163,7 +1143,7 @@
 		expect(1);
 
 		var $div = D('<div class="base second"></div>');
-		$div.removeClass( undefined);
+		$div.removeClass(undefined);
 
 		ok($div.hasClass('base') && $div.hasClass('second'), 'Element still has classes after removeClass(undefined)');
 	});
@@ -1173,29 +1153,29 @@
 
 		var e = D('#firstp');
 		ok(!e.is('.test'), 'Assert class not present');
-		e.toggleClass( valueObj('test'));
+		e.toggleClass(valueObj('test'));
 		ok(e.is('.test'), 'Assert class present');
-		e.toggleClass( valueObj('test'));
+		e.toggleClass(valueObj('test'));
 		ok(!e.is('.test'), 'Assert class not present');
 
 		// class name with a boolean
-		e.toggleClass( valueObj('test'), false);
+		e.toggleClass(valueObj('test'), false);
 		ok(!e.is('.test'), 'Assert class not present');
-		e.toggleClass( valueObj('test'), true);
+		e.toggleClass(valueObj('test'), true);
 		ok(e.is('.test'), 'Assert class present');
-		e.toggleClass( valueObj('test'), false);
+		e.toggleClass(valueObj('test'), false);
 		ok(!e.is('.test'), 'Assert class not present');
 
 		// multiple class names
 		e.addClass('testA testB');
 		ok(e.is('.testA.testB'), 'Assert 2 different classes present');
-		e.toggleClass( valueObj('testB testC'));
+		e.toggleClass(valueObj('testB testC'));
 		ok((e.is('.testA.testC') && !e.is('.testB')), 'Assert 1 class added, 1 class removed, and 1 class kept');
-		e.toggleClass( valueObj('testA testC'));
+		e.toggleClass(valueObj('testA testC'));
 		ok((!e.is('.testA') && !e.is('.testB') && !e.is('.testC')), 'Assert no class present');
 
 		// toggleClass storage
-		e.toggleClass( true);
+		e.toggleClass(true);
 		ok(e[ 0 ].className === '', 'Assert class is empty (data was empty)');
 		e.addClass('testD testE');
 		ok(e.is('.testD.testE'), 'Assert class present');
@@ -1204,12 +1184,12 @@
 		ok(D._data(e[ 0 ], '__className__') === 'testD testE', 'Assert data was stored');
 		e.toggleClass();
 		ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
-		e.toggleClass( false);
+		e.toggleClass(false);
 		ok(!e.is('.testD.testE'), 'Assert class not present');
-		e.toggleClass( true);
+		e.toggleClass(true);
 		ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
 		e.toggleClass();
-		e.toggleClass( false);
+		e.toggleClass(false);
 		e.toggleClass();
 		ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
 
@@ -1218,11 +1198,11 @@
 	};
 
 	test('toggleClass(String|boolean|undefined[, boolean])', function() {
-		testToggleClass( bareObj);
+		testToggleClass(bareObj);
 	});
 
 	test('toggleClass(Function[, boolean])', function() {
-		testToggleClass( functionReturningObj);
+		testToggleClass(functionReturningObj);
 	});
 
 	test('toggleClass(Function[, boolean]) with incoming value', function() {
@@ -1233,7 +1213,7 @@
 
 		ok(!e.is('.test'), 'Assert class not present');
 
-		e.toggleClass(function( i, val ) {
+		e.toggleClass(function(i, val) {
 			equal(old, val, 'Make sure the incoming value is correct.');
 			return 'test';
 		});
@@ -1241,7 +1221,7 @@
 
 		old = e.attr('class');
 
-		e.toggleClass(function( i, val ) {
+		e.toggleClass(function(i, val) {
 			equal(old, val, 'Make sure the incoming value is correct.');
 			return 'test';
 		});
@@ -1250,7 +1230,7 @@
 		old = e.attr('class') || '';
 
 		// class name with a boolean
-		e.toggleClass(function( i, val, state ) {
+		e.toggleClass(function(i, val, state) {
 			equal(old, val, 'Make sure the incoming value is correct.');
 			equal(state, false, 'Make sure that the state is passed in.');
 			return 'test';
@@ -1259,7 +1239,7 @@
 
 		old = e.attr('class') || '';
 
-		e.toggleClass(function( i, val, state ) {
+		e.toggleClass(function(i, val, state) {
 			equal(old, val, 'Make sure the incoming value is correct.');
 			equal(state, true, 'Make sure that the state is passed in.');
 			return 'test';
@@ -1268,7 +1248,7 @@
 
 		old = e.attr('class');
 
-		e.toggleClass(function( i, val, state ) {
+		e.toggleClass(function(i, val, state) {
 			equal(old, val, 'Make sure the incoming value is correct.');
 			equal(state, false, 'Make sure that the state is passed in.');
 			return 'test';
@@ -1322,12 +1302,12 @@
 
 		var elem = D('<p>p0</p><p>p1</p><p>p2</p>');
 
-		elem.addClass( 'hi');
+		elem.addClass('hi');
 		equal(elem[ 0 ].className, 'hi', 'Check single added class');
 		equal(elem[ 1 ].className, 'hi', 'Check single added class');
 		equal(elem[ 2 ].className, 'hi', 'Check single added class');
 
-		elem.addClass( 'foo bar');
+		elem.addClass('foo bar');
 		equal(elem[ 0 ].className, 'hi foo bar', 'Check more added classes');
 		equal(elem[ 1 ].className, 'hi foo bar', 'Check more added classes');
 		equal(elem[ 2 ].className, 'hi foo bar', 'Check more added classes');
@@ -1337,23 +1317,22 @@
 		equal(elem[ 1 ].className, '', 'Remove all classes');
 		equal(elem[ 2 ].className, '', 'Remove all classes');
 
-		elem.addClass( 'hi foo bar');
-		elem.removeClass( 'foo');
+		elem.addClass('hi foo bar');
+		elem.removeClass('foo');
 		equal(elem[ 0 ].className, 'hi bar', 'Check removal of one class');
 		equal(elem[ 1 ].className, 'hi bar', 'Check removal of one class');
 		equal(elem[ 2 ].className, 'hi bar', 'Check removal of one class');
 
-		ok(elem.hasClass( 'hi'), 'Check has1');
-		ok(elem.hasClass( 'bar'), 'Check has2');
+		ok(elem.hasClass('hi'), 'Check has1');
+		ok(elem.hasClass('bar'), 'Check has2');
 
-		ok(D('<p class="hi">p0</p><p>p1</p><p>p2</p>').hasClass( 'hi'), 'Did find a class in the first element');
-		ok(D('<p>p0</p><p class="hi">p1</p><p>p2</p>').hasClass( 'hi'), 'Did find a class in the second element');
-		ok(D('<p>p0</p><p>p1</p><p class="hi">p2</p>').hasClass( 'hi'), 'Did find a class in the last element');
+		ok(D('<p class="hi">p0</p><p>p1</p><p>p2</p>').hasClass('hi'), 'Did find a class in the first element');
+		ok(D('<p>p0</p><p class="hi">p1</p><p>p2</p>').hasClass('hi'), 'Did find a class in the second element');
+		ok(D('<p>p0</p><p>p1</p><p class="hi">p2</p>').hasClass('hi'), 'Did find a class in the last element');
 
-		ok(D('<p class="hi">p0</p><p class="hi">p1</p><p class="hi">p2</p>').hasClass( 'hi'),
-			'Did find a class when present in all elements');
+		ok(D('<p class="hi">p0</p><p class="hi">p1</p><p class="hi">p2</p>').hasClass('hi'), 'Did find a class when present in all elements');
 
-		ok(!D('<p class="hi0">p0</p><p class="hi1">p1</p><p class="hi2">p2</p>').hasClass( 'hi'), 'Did not find a class when not present');
+		ok(!D('<p class="hi0">p0</p><p class="hi1">p1</p><p class="hi2">p2</p>').hasClass('hi'), 'Did not find a class when not present');
 	});
 
 	test('contents().hasClass() returns correct values', function() {
@@ -1375,24 +1354,14 @@
 				'form-feed': '&#12;',
 				'carriage-return': '&#13;'
 			},
-			classes = D.map( map, function( separator, label ) {
+			classes = D.map(map, function(separator, label) {
 				return ' ' + separator + label + separator + ' ';
 			}),
 			$div = D('<div class="' + classes + '"></div>');
 
-		D.each( map, function( label ) {
-			ok($div.hasClass( label ), label.replace( '-', ' '));
+		D.each(map, function(label) {
+			ok($div.hasClass(label), label.replace('-', ' '));
 		});
-	});
-
-	test('coords returns correct values in IE6/IE7, see #10828', function() {
-		expect(1);
-
-		var area,
-			map = D('<map />');
-
-		area = map.html('<area shape="rect" coords="0,0,0,0" href="#" alt="a" />').find('area');
-		equal(area.attr('coords'), '0,0,0,0', 'did not retrieve coords correctly');
 	});
 
 	test('should not throw at $(option).val() (#14686)', function() {

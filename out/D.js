@@ -666,7 +666,7 @@ var _hooks = {
             get: function(elem) {
                 var tabindex = elem.getAttribute('tabindex');
                 if (!_.exists(tabindex) || tabindex === '') { return; }
-                return _.parseInt(elem.getAttribute(tabindex)) || 0;
+                return _.parseInt(tabindex) || 0;
             }
         }
     },
@@ -735,6 +735,17 @@ module.exports = {
                         return this;
                     })
 
+                    .args(String, Boolean)
+                    .use(function(attr, bool) {
+                        if (bool) {
+                            _setAttributes(this, attr, bool);
+                            return this;
+                        }
+
+                        _removeAttributes(this, attr);
+                        return this;
+                    })
+
                     .args(Object).use(function(attrs) {
                         var attr, value;
                         for (attr in attrs) {
@@ -768,7 +779,6 @@ module.exports = {
                     .expose()
     }
 };
-
 },{"../_":3}],8:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');

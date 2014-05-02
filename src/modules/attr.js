@@ -5,7 +5,7 @@ var _hooks = {
             get: function(elem) {
                 var tabindex = elem.getAttribute('tabindex');
                 if (!_.exists(tabindex) || tabindex === '') { return; }
-                return _.parseInt(elem.getAttribute(tabindex)) || 0;
+                return _.parseInt(tabindex) || 0;
             }
         }
     },
@@ -70,6 +70,17 @@ module.exports = {
 
                     .args(String, null)
                     .use(function(attr) {
+                        _removeAttributes(this, attr);
+                        return this;
+                    })
+
+                    .args(String, Boolean)
+                    .use(function(attr, bool) {
+                        if (bool) {
+                            _setAttributes(this, attr, bool);
+                            return this;
+                        }
+
                         _removeAttributes(this, attr);
                         return this;
                     })
