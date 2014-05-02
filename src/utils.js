@@ -5,7 +5,7 @@ module.exports = {
         return (val !== null && val !== undefined);
     },
 
-    isHTML: function(text) {
+    isHtml: function(text) {
         if (!_.isString(text)) { return false; }
 
         // TODO: Using es5 native method (trim)

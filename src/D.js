@@ -34,7 +34,7 @@ var DOM = function(arg) {
     if (_.isString(arg)) {
 
         // HTML string
-        if (utils.isHTML(arg)) {
+        if (utils.isHtml(arg)) {
             utils.merge(this, parser.parseHtml(arg));
             return;
         }

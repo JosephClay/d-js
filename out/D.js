@@ -35,7 +35,7 @@ var DOM = function(arg) {
     if (_.isString(arg)) {
 
         // HTML string
-        if (utils.isHTML(arg)) {
+        if (utils.isHtml(arg)) {
             utils.merge(this, parser.parseHtml(arg));
             return;
         }
@@ -1693,7 +1693,7 @@ module.exports = {
         return (val !== null && val !== undefined);
     },
 
-    isHTML: function(text) {
+    isHtml: function(text) {
         if (!_.isString(text)) { return false; }
 
         // TODO: Using es5 native method (trim)

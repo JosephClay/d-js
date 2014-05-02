@@ -1,22 +1,87 @@
+var _ = require('../_'),
+    utils = require('../utils');
+
+/*
 var _empty = function(elem) {
         var child;
         while ((child = elem.firstChild)) {
             elem.removeChild(child);
         }
     },
-    
+
     _clone = function(elem) {
         return elem.cloneNode(true);
-    },
-    
-    _prepend = function(elem) {
-        this.elem.insertBefore(elem, this.parent.firstChild);
-        return this;
+    };
+*/
+
+var _stringToFrag = function(str) {
+        var frag = document.createDocumentFragment();
+        frag.textContent = str;
+        return frag;
     },
 
-    _append = function(el) {
-        this.elem.appendChild(el);
-        return this;
+    _appendFunc = function(d, fn) {
+        var idx = 0, length = d.length,
+            elem, result;
+        for (; idx < length; idx++) {
+            elem = d[idx];
+            result = fn.call(elem, idx, elem.innerHTML);
+
+            if (!_.exists(result)) {
+
+                // do nothing
+
+            } else if (_.isString(result)) {
+
+                if (utils.isHTML(value)) {
+                    _appendArrToElem(elem, parser.parseHtml(value));
+                    return this;
+                }
+
+                _appendElem(elem, _stringToFrag(result));
+
+            } else if (_.isElement(result)) {
+
+                _appendElem(elem, result);
+
+            } else if (_.isNodeList(result) || result instanceof D) {
+
+                _appendArrToElem(elem, result);
+
+            } else {
+                // do nothing
+            }
+        }
+
+    },
+
+    _appendMergeArr = function(arrOne, arrTwo) {
+        var idx = 0, length = arrOne.length;
+        for (; idx < length; idx++) {
+            var i = 0, len = arrTwo.length;
+            for (; i < len; i++) {
+                _appendElem(arrOne[idx], arrTwo[i]);
+            }
+        }
+    },
+
+    _appendElemToArr = function(arr, elem) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _appendElem(arr[idx], elem);
+        }
+    },
+
+    _appendArrToElem = function(elem, arr) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _appendElem(elem, arr[idx]);
+        }
+    },
+
+    _appendElem = function(base, elem) {
+        if (!base || !elem || !_.isElement(elem)) { return; }
+        base.appendChild(elem);
     };
 
 return {
@@ -40,18 +105,60 @@ return {
             );
         },
 
-        // TODO: Append/Prepend
+        append: Overload().args(String).use(function(value) {
+                            if (utils.isHtml(value)) {
+                                _appendMergeArr(this, parser.parseHtml(value));
+                                return this;
+                            }
 
-        append: function() {
+                            _appendElemToArr(this, _stringToFrag(value));
 
-        },
+                            return this;
+                        })
+
+                        .args(Number).use(function(value) {
+                            value = '' + value; // change to a string
+                            _appendString(this, value);
+                            return this;
+                        })
+
+                        .args(Array).use(function(arr) {
+
+                            return this;
+                        })
+
+                        .args(Function).use(function(fn) {
+                            _appendFunc(this, fn);
+                            return this;
+                        })
+
+                        .fallback(function(elementOrD) {
+                            if (_.isElement(elementOrD)) {
+                                var elem = elementOrD;
+                                _appendElemToArr(this, elem);
+                            }
+
+                            if (_.isNodeList(elementOrD) || elementOrD instanceof D) {
+                                var otherArr = elementOrD;
+                                _appendMergeArr(this, otherArr);
+                            }
+
+                            return this;
+                        })
+
+                        .expose(),
+
+        // TODO: appendTo
         appendTo: function() {
 
         },
 
+        // TODO: prepend
         prepend: function() {
 
         },
+
+        // TODO: prependTo
         prependTo: function() {
 
         }
