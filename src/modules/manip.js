@@ -14,7 +14,11 @@ var _empty = function(elem) {
     };
 */
 
-var _stringToFrag = function(str) {
+var _clone = function(elem) {
+        return elem.cloneNode(true);
+    },
+
+    _stringToFrag = function(str) {
         var frag = document.createDocumentFragment();
         frag.textContent = str;
         return frag;
@@ -84,7 +88,7 @@ var _stringToFrag = function(str) {
         base.appendChild(elem);
     };
 
-return {
+module.exports = {
     fn: {
         empty: function() {
             var idx = 0, length = this.length;
@@ -98,11 +102,9 @@ return {
         // http://api.jquery.com/clone/
         // .clone( [withDataAndEvents ] [, deepWithDataAndEvents ] )
         clone: function() {
-            return D(
-                _.fastmap(this.slice(), function(elem) {
-                    _clone(this[idx]);
-                })
-            );
+            return _.fastmap(this.slice(), function(elem) {
+                return _clone(elem);
+            });
         },
 
         append: Overload().args(String).use(function(value) {

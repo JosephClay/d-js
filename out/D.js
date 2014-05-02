@@ -7,6 +7,7 @@ var _ = require('./_'),
     selectors = require('./modules/selectors'),
     transversal = require('./modules/transversal'),
     dimensions = require('./modules/dimensions'),
+    manip = require('./modules/manip'),
     css = require('./modules/css'),
     attr = require('./modules/attr'),
     classes = require('./modules/classes');
@@ -128,6 +129,7 @@ _.extend(
     array.fn,
     selectors.fn,
     transversal.fn,
+    manip.fn,
     dimensions.fn,
     css.fn,
     attr.fn,
@@ -234,7 +236,7 @@ if (typeof define === 'function' && define.amd) {
         }
     };
 */
-},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/attr":7,"./modules/classes":8,"./modules/css":9,"./modules/dimensions":10,"./modules/onready":11,"./modules/selectors":12,"./modules/transversal":13,"./utils":17}],2:[function(require,module,exports){
+},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/attr":7,"./modules/classes":8,"./modules/css":9,"./modules/dimensions":10,"./modules/manip":11,"./modules/onready":12,"./modules/selectors":13,"./modules/transversal":14,"./utils":18}],2:[function(require,module,exports){
 var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -658,7 +660,7 @@ module.exports = {
         }
     }
 };
-},{"../_":3,"../utils":17}],7:[function(require,module,exports){
+},{"../_":3,"../utils":18}],7:[function(require,module,exports){
 var _ = require('../_');
 
 var _hooks = {
@@ -927,7 +929,7 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":16,"./array":6}],9:[function(require,module,exports){
+},{"../supports":17,"./array":6}],9:[function(require,module,exports){
 var _ = require('../_'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1275,7 +1277,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../cache":4,"../nodeType":14,"../regex":15,"../supports":16}],10:[function(require,module,exports){
+},{"../_":3,"../cache":4,"../nodeType":15,"../regex":16,"../supports":17}],10:[function(require,module,exports){
 var _ = require('../_'),
     _css = require('./css');
 
@@ -1390,6 +1392,176 @@ module.exports = {
 };
 
 },{"../_":3,"./css":9}],11:[function(require,module,exports){
+var _ = require('../_'),
+    utils = require('../utils');
+
+/*
+var _empty = function(elem) {
+        var child;
+        while ((child = elem.firstChild)) {
+            elem.removeChild(child);
+        }
+    },
+
+    _clone = function(elem) {
+        return elem.cloneNode(true);
+    };
+*/
+
+var _clone = function(elem) {
+        return elem.cloneNode(true);
+    },
+
+    _stringToFrag = function(str) {
+        var frag = document.createDocumentFragment();
+        frag.textContent = str;
+        return frag;
+    },
+
+    _appendFunc = function(d, fn) {
+        var idx = 0, length = d.length,
+            elem, result;
+        for (; idx < length; idx++) {
+            elem = d[idx];
+            result = fn.call(elem, idx, elem.innerHTML);
+
+            if (!_.exists(result)) {
+
+                // do nothing
+
+            } else if (_.isString(result)) {
+
+                if (utils.isHTML(value)) {
+                    _appendArrToElem(elem, parser.parseHtml(value));
+                    return this;
+                }
+
+                _appendElem(elem, _stringToFrag(result));
+
+            } else if (_.isElement(result)) {
+
+                _appendElem(elem, result);
+
+            } else if (_.isNodeList(result) || result instanceof D) {
+
+                _appendArrToElem(elem, result);
+
+            } else {
+                // do nothing
+            }
+        }
+
+    },
+
+    _appendMergeArr = function(arrOne, arrTwo) {
+        var idx = 0, length = arrOne.length;
+        for (; idx < length; idx++) {
+            var i = 0, len = arrTwo.length;
+            for (; i < len; i++) {
+                _appendElem(arrOne[idx], arrTwo[i]);
+            }
+        }
+    },
+
+    _appendElemToArr = function(arr, elem) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _appendElem(arr[idx], elem);
+        }
+    },
+
+    _appendArrToElem = function(elem, arr) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _appendElem(elem, arr[idx]);
+        }
+    },
+
+    _appendElem = function(base, elem) {
+        if (!base || !elem || !_.isElement(elem)) { return; }
+        base.appendChild(elem);
+    };
+
+module.exports = {
+    fn: {
+        empty: function() {
+            var idx = 0, length = this.length;
+            for (; idx < length; idx++) {
+                _empty(this[idx]);
+            }
+            return this;
+        },
+
+        // TODO: should this follow jQuery API?
+        // http://api.jquery.com/clone/
+        // .clone( [withDataAndEvents ] [, deepWithDataAndEvents ] )
+        clone: function() {
+            return _.fastmap(this.slice(), function(elem) {
+                return _clone(elem);
+            });
+        },
+
+        append: Overload().args(String).use(function(value) {
+                            if (utils.isHtml(value)) {
+                                _appendMergeArr(this, parser.parseHtml(value));
+                                return this;
+                            }
+
+                            _appendElemToArr(this, _stringToFrag(value));
+
+                            return this;
+                        })
+
+                        .args(Number).use(function(value) {
+                            value = '' + value; // change to a string
+                            _appendString(this, value);
+                            return this;
+                        })
+
+                        .args(Array).use(function(arr) {
+
+                            return this;
+                        })
+
+                        .args(Function).use(function(fn) {
+                            _appendFunc(this, fn);
+                            return this;
+                        })
+
+                        .fallback(function(elementOrD) {
+                            if (_.isElement(elementOrD)) {
+                                var elem = elementOrD;
+                                _appendElemToArr(this, elem);
+                            }
+
+                            if (_.isNodeList(elementOrD) || elementOrD instanceof D) {
+                                var otherArr = elementOrD;
+                                _appendMergeArr(this, otherArr);
+                            }
+
+                            return this;
+                        })
+
+                        .expose(),
+
+        // TODO: appendTo
+        appendTo: function() {
+
+        },
+
+        // TODO: prepend
+        prepend: function() {
+
+        },
+
+        // TODO: prependTo
+        prependTo: function() {
+
+        }
+    }
+};
+
+},{"../_":3,"../utils":18}],12:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -1433,7 +1605,7 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1605,7 +1777,7 @@ module.exports = {
                     .expose()
     }
 };
-},{"../cache":4,"../nodeType":14,"../regex":15,"../supports":16,"../utils":17,"./array":6}],13:[function(require,module,exports){
+},{"../cache":4,"../nodeType":15,"../regex":16,"../supports":17,"../utils":18,"./array":6}],14:[function(require,module,exports){
 var _ = require('../_'),
 
     _array = require('./array'),
@@ -1729,7 +1901,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"./array":6,"./selectors":12}],14:[function(require,module,exports){
+},{"../_":3,"./array":6,"./selectors":13}],15:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -1744,7 +1916,7 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var _cache = require('./cache');
 
     // Matches "-ms-" so that it can be changed to "ms-"
@@ -1806,7 +1978,7 @@ module.exports = {
         }
     }
 };
-},{"./cache":4}],16:[function(require,module,exports){
+},{"./cache":4}],17:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
@@ -1824,7 +1996,7 @@ module.exports = {
     // Use a regex to work around a WebKit issue. See #5145
     opacity: (/^0.55$/).test(div.style.opacity)
 };
-},{"./div":5}],17:[function(require,module,exports){
+},{"./div":5}],18:[function(require,module,exports){
 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {
