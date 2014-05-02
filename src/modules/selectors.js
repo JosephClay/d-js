@@ -40,7 +40,6 @@ var _find = function(selector, context) {
         if (ret) { result.push(ret); }
     }
 
-    // TODO: I think this needs to be flattened, but not sure - double check
     return _array.unique(_.flatten(result));
 };
 
@@ -64,6 +63,8 @@ var _determineMethod = function(selector) {
 
 var _findQuery = function(selector, context, method) {
     context = context || document;
+
+    // TODO: What to do if ">" child selector is used @ index = 0;
 
     var nodeType;
     // Early return if context is not an element or document
@@ -126,7 +127,7 @@ module.exports = {
 
         is: Overload()
                 .args(String).use(function(selector) {
-                    return DOM(
+                    return D(
                         _.every(this, function(elem) {
                             return _isMatch(elem, selector);
                         })
@@ -134,7 +135,7 @@ module.exports = {
                 })
                 .args(Function).use(function(iterator) {
                     // TODO: Internal "every"
-                    return DOM(
+                    return D(
                         _.every(this, iterator)
                     );
                 })
@@ -146,7 +147,7 @@ module.exports = {
                 .args(String)
                 .use(function(selector) {
 
-                    return _utils.merge(DOM(), _find(selector, this));
+                    return _utils.merge(D(), _find(selector, this));
 
                 }).expose(),
 
@@ -164,7 +165,7 @@ module.exports = {
                             if (checker(this[idx])) { result.unshift(this[idx]); }
                         }
 
-                        return DOM(result);
+                        return D(result);
                     })
                     .expose()
     }

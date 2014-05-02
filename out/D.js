@@ -10,6 +10,7 @@ var _ = require('./_'),
     manip = require('./modules/manip'),
     css = require('./modules/css'),
     attr = require('./modules/attr'),
+    val = require('./modules/val'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -133,6 +134,7 @@ _.extend(
     dimensions.fn,
     css.fn,
     attr.fn,
+    val.fn,
     classes.fn,
     { constructor: DOM }
 );
@@ -236,7 +238,7 @@ if (typeof define === 'function' && define.amd) {
         }
     };
 */
-},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/attr":7,"./modules/classes":8,"./modules/css":9,"./modules/dimensions":10,"./modules/manip":11,"./modules/onready":12,"./modules/selectors":13,"./modules/transversal":14,"./utils":18}],2:[function(require,module,exports){
+},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/attr":7,"./modules/classes":8,"./modules/css":9,"./modules/dimensions":10,"./modules/manip":11,"./modules/onready":12,"./modules/selectors":13,"./modules/transversal":14,"./modules/val":15,"./utils":19}],2:[function(require,module,exports){
 var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -320,8 +322,8 @@ var _ = {
         for (; idx < length; idx++) {
             value = arr[idx];
 
-            if (_.isArray(value) || _isNodeList(value)) {
-                _flatten(value, shallow, result);
+            if (_.isArray(value) || _.isNodeList(value)) {
+                result = result.concat(_.flatten(value));
             } else {
                 result.push(value);
             }
@@ -672,7 +674,7 @@ module.exports = {
         }
     }
 };
-},{"../_":3,"../utils":18}],7:[function(require,module,exports){
+},{"../_":3,"../utils":19}],7:[function(require,module,exports){
 var _ = require('../_');
 
 var _hooks = {
@@ -941,7 +943,7 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":17,"./array":6}],9:[function(require,module,exports){
+},{"../supports":18,"./array":6}],9:[function(require,module,exports){
 var _ = require('../_'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1289,7 +1291,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../cache":4,"../nodeType":15,"../regex":16,"../supports":17}],10:[function(require,module,exports){
+},{"../_":3,"../cache":4,"../nodeType":16,"../regex":17,"../supports":18}],10:[function(require,module,exports){
 var _ = require('../_'),
     _css = require('./css');
 
@@ -1575,7 +1577,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../utils":18}],12:[function(require,module,exports){
+},{"../_":3,"../utils":19}],12:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -1662,7 +1664,6 @@ var _find = function(selector, context) {
         if (ret) { result.push(ret); }
     }
 
-    // TODO: I think this needs to be flattened, but not sure - double check
     return _array.unique(_.flatten(result));
 };
 
@@ -1686,6 +1687,8 @@ var _determineMethod = function(selector) {
 
 var _findQuery = function(selector, context, method) {
     context = context || document;
+
+    // TODO: What to do if ">" child selector is used @ index = 0;
 
     var nodeType;
     // Early return if context is not an element or document
@@ -1748,7 +1751,7 @@ module.exports = {
 
         is: Overload()
                 .args(String).use(function(selector) {
-                    return DOM(
+                    return D(
                         _.every(this, function(elem) {
                             return _isMatch(elem, selector);
                         })
@@ -1756,7 +1759,7 @@ module.exports = {
                 })
                 .args(Function).use(function(iterator) {
                     // TODO: Internal "every"
-                    return DOM(
+                    return D(
                         _.every(this, iterator)
                     );
                 })
@@ -1768,7 +1771,7 @@ module.exports = {
                 .args(String)
                 .use(function(selector) {
 
-                    return _utils.merge(DOM(), _find(selector, this));
+                    return _utils.merge(D(), _find(selector, this));
 
                 }).expose(),
 
@@ -1786,13 +1789,14 @@ module.exports = {
                             if (checker(this[idx])) { result.unshift(this[idx]); }
                         }
 
-                        return DOM(result);
+                        return D(result);
                     })
                     .expose()
     }
 };
-},{"../cache":4,"../nodeType":15,"../regex":16,"../supports":17,"../utils":18,"./array":6}],14:[function(require,module,exports){
+},{"../cache":4,"../nodeType":16,"../regex":17,"../supports":18,"../utils":19,"./array":6}],14:[function(require,module,exports){
 var _ = require('../_'),
+    _nodeType = require('../nodeType'),
 
     _array = require('./array'),
     _selectors = require('./selectors');
@@ -1819,6 +1823,25 @@ var _getSiblings = function(context) {
         }
 
         return siblings;
+    },
+
+    // Children ------
+    _getChildren = function(arr) {
+        return _.flatten(_.map(arr, _chldrn));
+    },
+    _chldrn = function(elem) {
+        var arr = [],
+            children = elem.children,
+            idx = 0, length = children.length,
+            child;
+        for (; idx < length; idx++) {
+            child = children[idx];
+            // Skip comment nodes on IE8
+            if (child.nodeType !== _nodeType.COMMENT) {
+                arr.push(child);
+            }
+        }
+        return arr;
     },
 
     // Parents ------
@@ -1915,7 +1938,29 @@ module.exports = {
     }
 };
 
-},{"../_":3,"./array":6,"./selectors":13}],15:[function(require,module,exports){
+},{"../_":3,"../nodeType":16,"./array":6,"./selectors":13}],15:[function(require,module,exports){
+var _getText = function(elem) {
+    if (!elem) { return ''; }
+    return elem.textContent || elem.innerText;
+};
+
+module.exports = {
+    fn: {
+        html: function() {},
+        val: function() {},
+        text: function() {
+            var str = '',
+                idx = 0, length = this.length;
+            for (; idx < length; idx++) {
+                str += _getText(this[idx]);
+            }
+
+            return str;
+        }
+    }
+};
+
+},{}],16:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -1930,7 +1975,7 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var _cache = require('./cache');
 
     // Matches "-ms-" so that it can be changed to "ms-"
@@ -1992,7 +2037,7 @@ module.exports = {
         }
     }
 };
-},{"./cache":4}],17:[function(require,module,exports){
+},{"./cache":4}],18:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
@@ -2010,7 +2055,7 @@ module.exports = {
     // Use a regex to work around a WebKit issue. See #5145
     opacity: (/^0.55$/).test(div.style.opacity)
 };
-},{"./div":5}],18:[function(require,module,exports){
+},{"./div":5}],19:[function(require,module,exports){
 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {

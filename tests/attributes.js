@@ -731,7 +731,7 @@
 
 
 	test('val()', function() {
-		expect(20+ (D.fn.serialize ? 6 : 0));
+		expect(20);
 
 		var checks, $button;
 		equal(D('#text1').val(), 'Test', 'Check for value of input element');
@@ -775,28 +775,6 @@
 			null,
 			'Select-one with only option disabled (#12584)'
 		);
-
-		if (D.fn.serialize) {
-			checks = D('<input type="checkbox" name="test" value="1"/><input type="checkbox" name="test" value="2"/><input type="checkbox" name="test" value=""/><input type="checkbox" name="test"/>').appendTo('#form');
-
-			deepEqual(checks.serialize(), '', 'Get unchecked values.');
-
-			equal(checks.eq(3).val(), 'on', 'Make sure a value of "on" is provided if none is specified.');
-
-			checks.val([ '2' ]);
-			deepEqual(checks.serialize(), 'test=2', 'Get a single checked value.');
-
-			checks.val([ '1', '' ]);
-			deepEqual(checks.serialize(), 'test=1&test=', 'Get multiple checked values.');
-
-			checks.val([ '', '2' ]);
-			deepEqual(checks.serialize(), 'test=2&test=', 'Get multiple checked values.');
-
-			checks.val([ '1', 'on' ]);
-			deepEqual(checks.serialize(), 'test=1&test=on', 'Get multiple checked values.');
-
-			checks.remove();
-		}
 
 		$button = D('<button value="foobar">text</button>').insertAfter('#button');
 		equal($button.val(), 'foobar', 'Value retrieval on a button does not return innerHTML');

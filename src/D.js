@@ -9,6 +9,7 @@ var _ = require('./_'),
     manip = require('./modules/manip'),
     css = require('./modules/css'),
     attr = require('./modules/attr'),
+    val = require('./modules/val'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -132,6 +133,7 @@ _.extend(
     dimensions.fn,
     css.fn,
     attr.fn,
+    val.fn,
     classes.fn,
     { constructor: DOM }
 );

@@ -1,4 +1,5 @@
 var _ = require('../_'),
+    _nodeType = require('../nodeType'),
 
     _array = require('./array'),
     _selectors = require('./selectors');
@@ -25,6 +26,25 @@ var _getSiblings = function(context) {
         }
 
         return siblings;
+    },
+
+    // Children ------
+    _getChildren = function(arr) {
+        return _.flatten(_.map(arr, _chldrn));
+    },
+    _chldrn = function(elem) {
+        var arr = [],
+            children = elem.children,
+            idx = 0, length = children.length,
+            child;
+        for (; idx < length; idx++) {
+            child = children[idx];
+            // Skip comment nodes on IE8
+            if (child.nodeType !== _nodeType.COMMENT) {
+                arr.push(child);
+            }
+        }
+        return arr;
     },
 
     // Parents ------

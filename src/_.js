@@ -58,8 +58,8 @@ var _ = {
         for (; idx < length; idx++) {
             value = arr[idx];
 
-            if (_.isArray(value) || _isNodeList(value)) {
-                _flatten(value, shallow, result);
+            if (_.isArray(value) || _.isNodeList(value)) {
+                result = result.concat(_.flatten(value));
             } else {
                 result.push(value);
             }
