@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         'rename:basic'
     ]);
     */
-   
+
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.initConfig({
