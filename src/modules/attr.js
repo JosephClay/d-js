@@ -20,6 +20,16 @@ var _hooks = {
         return elem.getAttribute(attr);
     },
 
+    _setAttributes = function(arr, attr, value) {
+        var isFn = _.isFunction(value),
+            idx = 0, length = arr.length,
+            elem, val;
+        for (; idx < length; idx++) {
+            elem = arr[idx];
+            val = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
+            _setAttribute(elem, attr, val);
+        }
+    },
     _setAttribute = function(elem, attr, value) {
         if (!elem) { return; }
 
@@ -30,6 +40,12 @@ var _hooks = {
         elem.setAttribute(attr, value);
     },
 
+    _removeAttributes = function(arr, attr) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _removeAttribute(arr[idx], attr);
+        }
+    },
     _removeAttribute = function(elem, attr) {
         if (!elem) { return; }
 
@@ -48,24 +64,20 @@ module.exports = {
 
                     .args(String, O.any(String, Number))
                     .use(function(attr, value) {
-                        var idx = 0, length = this.length;
-                        for (; idx < length; idx++) {
-                            _setAttribute(this[idx], attr, value);
-                        }
+                        _setAttributes(this, attr, value);
+                        return this;
+                    })
 
+                    .args(String, null)
+                    .use(function(attr) {
+                        _removeAttributes(this, attr);
                         return this;
                     })
 
                     .args(Object).use(function(attrs) {
-                        var idx = 0, length = this.length,
-                            attr, value;
-                        for (; idx < length; idx++) {
-                            for (attr in attrs) {
-
-                                // TODO: Support function
-                                value = '' + attrs[attr];
-                                _setAttribute(this[idx], attr, value);
-                            }
+                        var attr, value;
+                        for (attr in attrs) {
+                            _setAttributes(this, attr, attrs[attr]);
                         }
 
                         return this;
@@ -88,11 +100,7 @@ module.exports = {
                     .expose(),
 
         removeAttr: Overload().args(String).use(function(attr) {
-                        var idx = 0, length = this.length;
-                        for (; idx < length; idx++) {
-                            _removeAttribute(this[idx], attr);
-                        }
-
+                        _removeAttributes(this, attr);
                         return this;
                     })
 
