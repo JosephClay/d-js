@@ -125,7 +125,7 @@ module.exports = {
                         })
 
                         .args(Array).use(function(arr) {
-
+                            // TODO: Array
                             return this;
                         })
 
@@ -150,9 +150,10 @@ module.exports = {
 
                         .expose(),
 
-        // TODO: appendTo
-        appendTo: function() {
-
+        appendTo: function(thing) {
+            thing = (thing instanceof D) ? thing : D(thing);
+            thing.append(this);
+            return this;
         },
 
         // TODO: prepend
@@ -160,9 +161,10 @@ module.exports = {
 
         },
 
-        // TODO: prependTo
-        prependTo: function() {
-
-        }
+        prependTo: function(thing) {
+            thing = (thing instanceof D) ? thing : D(thing);
+            thing.prepend(this);
+            return this;
+        },
     }
 };

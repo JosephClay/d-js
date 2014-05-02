@@ -513,7 +513,7 @@
 	});
 
 	test('removeAttr(String)', function() {
-		expect(12);
+		expect(16);
 
 		var $first;
 
@@ -543,10 +543,6 @@
 		equal($first.attr('Case'), 'mixed', 'case of attribute doesnt matter');
 		$first.removeAttr('Case');
 		equal($first.attr('Case'), undefined, 'mixed-case attribute was removed');
-	});
-
-	test('removeAttr(Multi String, variable space width)', function() {
-		expect(8);
 
 		var div = D('<div id="a" alt="b" title="c" rel="d"></div>'),
 			tests = {
@@ -556,14 +552,8 @@
 				rel: 'd'
 			};
 
-		D.each(tests, function(key, val) {
+		D.each(tests, function(val, key) {
 			equal(div.attr(key), val, 'Attribute `' + key + '` exists, and has a value of `' + val + '`');
-		});
-
-		div.removeAttr('id   alt title  rel  ');
-
-		D.each(tests, function(key) {
-			equal(div.attr(key), undefined, 'Attribute `' + key + '` was removed');
 		});
 	});
 
