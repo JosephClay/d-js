@@ -187,15 +187,6 @@
 		strictEqual( input.clone( true ).attr( 'value', 42 )[ 0 ].value, '42', 'Value attribute should be changed on cloned element');
 	});
 
-	test('attr(String) in XML Files', function() {
-		expect(3);
-
-		var xml = createDashboardXML();
-		equal(D('locations', xml).attr('class'), 'foo', 'Check class attribute in XML document');
-		equal(D('location', xml).attr('for'), 'bar', 'Check for attribute in XML document');
-		equal(D('location', xml).attr('checked'), 'different', 'Check that hooks are not attached in XML document');
-	});
-
 	test('attr(String, Function)', function() {
 		expect(2);
 
@@ -486,30 +477,6 @@
 		ok(called, 'The boolean attrHandle does not drop custom attrHandles');
 	});
 
-	test('attr(String, Object) - Loaded via XML document', function() {
-		expect(2);
-
-		var xml = createDashboardXML(),
-			titles = [];
-		D('tab', xml ).each(function() {
-			titles.push( D( this ).attr('title'));
-		});
-		equal(titles[ 0 ], 'Location', 'attr() in XML context: Check first title');
-		equal(titles[ 1 ], 'Users', 'attr() in XML context: Check second title');
-	});
-
-	test('attr(String, Object) - Loaded via XML fragment', function() {
-		expect(2);
-
-		var frag = createXMLFragment(),
-			$frag = D( frag);
-
-		$frag.attr( 'test', 'some value');
-		equal($frag.attr('test'), 'some value', 'set attribute');
-		$frag.attr( 'test', null);
-		equal($frag.attr('test'), undefined, 'remove attribute');
-	});
-
 	test('attr("tabindex")', function() {
 		expect(8);
 
@@ -596,26 +563,6 @@
 		equal($first.attr('Case'), 'mixed', 'case of attribute doesnt matter');
 		$first.removeAttr('Case');
 		equal($first.attr( 'Case'), undefined, 'mixed-case attribute was removed');
-	});
-
-	test('removeAttr(String) in XML', function() {
-		expect(7);
-
-		var xml = createDashboardXML(),
-			iwt = D('infowindowtab', xml);
-
-		equal(iwt.attr('normal'), 'ab', 'Check initial value');
-		iwt.removeAttr('Normal');
-		equal(iwt.attr('normal'), 'ab', 'Should still be there');
-		iwt.removeAttr('normal');
-		equal(iwt.attr('normal'), undefined, 'Removed');
-
-		equal(iwt.attr('mixedCase'), 'yes', 'Check initial value');
-		equal(iwt.attr('mixedcase'), undefined, 'toLowerCase not work good');
-		iwt.removeAttr('mixedcase');
-		equal(iwt.attr('mixedCase'), 'yes', 'Should still be there');
-		iwt.removeAttr('mixedCase');
-		equal(iwt.attr('mixedCase'), undefined, 'Removed');
 	});
 
 	test('removeAttr(Multi String, variable space width)', function() {
@@ -807,7 +754,6 @@
 
 	test('val() after modification', function() {
 		expect(1);
-
 
 		document.getElementById('text1').value = 'bla';
 		equal(D('#text1').val(), 'bla', 'Check for modified value of input element');
@@ -1423,9 +1369,7 @@
 	test('hasClass correctly interprets non-space separators (#13835)', function() {
 		expect(4);
 
-
-		var
-			map = {
+		var map = {
 				tab: '&#9;',
 				'line-feed': '&#10;',
 				'form-feed': '&#12;',

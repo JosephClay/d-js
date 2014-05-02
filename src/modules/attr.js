@@ -56,6 +56,21 @@ module.exports = {
                         return this;
                     })
 
+                    .args(Object).use(function(attrs) {
+                        var idx = 0, length = this.length,
+                            attr, value;
+                        for (; idx < length; idx++) {
+                            for (attr in attrs) {
+
+                                // TODO: Support function
+                                value = '' + attrs[attr];
+                                _setAttribute(this[idx], attr, value);
+                            }
+                        }
+
+                        return this;
+                    })
+
                     .args(String, Function)
                     .use(function(attr, fn) {
                         var idx = 0, length = this.length;
