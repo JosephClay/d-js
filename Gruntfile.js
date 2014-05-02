@@ -52,6 +52,7 @@ module.exports = function(grunt) {
     */
 
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-rquirejs');
 
     grunt.initConfig({
         browserify: {
@@ -66,8 +67,24 @@ module.exports = function(grunt) {
                 //     ]
                 // }
             }
+        },
+        rquire: {
+            build: {
+                options: {
+                    globals: {
+                        '_': '_'
+                    },
+                    alias: {
+                        'underscore': '/libs/underscore.js',
+                        'overload':   '/libs/Overload.js',
+                        'signal':     '/libs/Signal.js'
+                    },
+                    main: 'D.js',
+                    dest: 'dist/D.js'
+                }
+            }
         }
     });
 
-    grunt.registerTask('default', ['browserify']);
+    grunt.registerTask('default', ['rquire']);
 };
