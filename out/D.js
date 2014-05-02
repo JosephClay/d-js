@@ -8,6 +8,7 @@ var _ = require('./_'),
     transversal = require('./modules/transversal'),
     dimensions = require('./modules/dimensions'),
     css = require('./modules/css'),
+    attr = require('./modules/attr'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -129,6 +130,7 @@ _.extend(
     transversal.fn,
     dimensions.fn,
     css.fn,
+    attr.fn,
     classes.fn,
     { constructor: DOM }
 );
@@ -232,7 +234,7 @@ if (typeof define === 'function' && define.amd) {
         }
     };
 */
-},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/classes":7,"./modules/css":8,"./modules/dimensions":9,"./modules/onready":10,"./modules/selectors":11,"./modules/transversal":12,"./utils":16}],2:[function(require,module,exports){
+},{"./D/parser":2,"./_":3,"./modules/array":6,"./modules/attr":7,"./modules/classes":8,"./modules/css":9,"./modules/dimensions":10,"./modules/onready":11,"./modules/selectors":12,"./modules/transversal":13,"./utils":17}],2:[function(require,module,exports){
 var _parse = function(htmlStr) {
     var tmp = document.implementation.createHTMLDocument();
         tmp.body.innerHTML = htmlStr;
@@ -656,7 +658,95 @@ module.exports = {
         }
     }
 };
-},{"../_":3,"../utils":16}],7:[function(require,module,exports){
+},{"../_":3,"../utils":17}],7:[function(require,module,exports){
+var _ = require('../_');
+
+var _hooks = {
+        tabindex: {
+            get: function(elem) {
+                var tabindex = elem.getAttribute('tabindex');
+                if (!_.exists(tabindex) || tabindex === '') { return; }
+                return _.parseInt(elem.getAttribute(tabindex)) || 0;
+            }
+        }
+    },
+
+    _getAttribute = function(elem, attr) {
+        if (!elem) { return; }
+
+        if (_hooks[attr] && _hooks[attr].get) {
+            return _hooks[attr].get(elem);
+        }
+
+        elem.getAttribute(attr);
+    },
+
+    _setAttribute = function(elem, attr, value) {
+        if (!elem) { return; }
+
+        if (_hooks[attr] && _hooks[attr].set) {
+            return _hooks[attr].set(elem, value);
+        }
+
+        elem.setAttribute(attr, value);
+    },
+
+    _removeAttribute = function(elem, attr) {
+        if (!elem) { return; }
+
+        if (_hooks[attr] && _hooks[attr].remove) {
+            return _hooks[attr].remove(elem);
+        }
+
+        elem.removeAttribute(attr);
+    };
+
+return {
+    fn: {
+        attr: Overload().args(String).use(function(attr) {
+                        return _getAttribute(this[0], attr);
+                    })
+
+                    .args(String, O.any(String, Number))
+                    .use(function(attr, value) {
+                        var idx = 0, length = this.length;
+                        for (; idx < length; idx++) {
+                            _setAttribute(this[idx], attr, value);
+                        }
+
+                        return this;
+                    })
+
+                    .args(String, Function)
+                    .use(function(attr, fn) {
+                        var idx = 0, length = this.length;
+                        for (; idx < length; idx++) {
+                            var elem = this[idx],
+                                oldAttr = _getAttribute(this[0], attr),
+                                result = fn.call(elem, idx, oldAttr);
+                            if (!_.exists(result)) { continue; }
+                            _setAttribute(elem, attr, result);
+                        }
+
+                        return this;
+                    })
+
+                    .expose(),
+
+        removeAttr: Overload().args(String).use(function(attr) {
+                        var idx = 0, length = this.length;
+                        for (; idx < length; idx++) {
+                            _removeAttribute(this[idx], attr);
+                        }
+
+                        return this;
+                    })
+
+                    .expose()
+    }
+};
+
+},{"../_":3}],8:[function(require,module,exports){
 var supports = require('../supports'),
     array = require('./array');
 
@@ -804,7 +894,7 @@ module.exports = _.extend({}, _classes, {
             .expose()
     }
 });
-},{"../supports":15,"./array":6}],8:[function(require,module,exports){
+},{"../supports":16,"./array":6}],9:[function(require,module,exports){
 var _ = require('../_'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1152,7 +1242,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"../cache":4,"../nodeType":13,"../regex":14,"../supports":15}],9:[function(require,module,exports){
+},{"../_":3,"../cache":4,"../nodeType":14,"../regex":15,"../supports":16}],10:[function(require,module,exports){
 var _ = require('../_'),
     _css = require('./css');
 
@@ -1266,7 +1356,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"./css":8}],10:[function(require,module,exports){
+},{"../_":3,"./css":9}],11:[function(require,module,exports){
 var _isReady = false,
     _registration = [];
 
@@ -1310,7 +1400,7 @@ module.exports = function(callback) {
     return this;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
@@ -1482,7 +1572,7 @@ module.exports = {
                     .expose()
     }
 };
-},{"../cache":4,"../nodeType":13,"../regex":14,"../supports":15,"../utils":16,"./array":6}],12:[function(require,module,exports){
+},{"../cache":4,"../nodeType":14,"../regex":15,"../supports":16,"../utils":17,"./array":6}],13:[function(require,module,exports){
 var _ = require('../_'),
 
     _array = require('./array'),
@@ -1606,7 +1696,7 @@ module.exports = {
     }
 };
 
-},{"../_":3,"./array":6,"./selectors":11}],13:[function(require,module,exports){
+},{"../_":3,"./array":6,"./selectors":12}],14:[function(require,module,exports){
 module.exports = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
@@ -1621,7 +1711,7 @@ module.exports = {
     DOCUMENT_FRAGMENT:      11,
     NOTATION:               12
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var _cache = require('./cache');
 
     // Matches "-ms-" so that it can be changed to "ms-"
@@ -1683,7 +1773,7 @@ module.exports = {
         }
     }
 };
-},{"./cache":4}],15:[function(require,module,exports){
+},{"./cache":4}],16:[function(require,module,exports){
 var div = require('./div');
 
 module.exports = {
@@ -1701,7 +1791,7 @@ module.exports = {
     // Use a regex to work around a WebKit issue. See #5145
     opacity: (/^0.55$/).test(div.style.opacity)
 };
-},{"./div":5}],16:[function(require,module,exports){
+},{"./div":5}],17:[function(require,module,exports){
 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {

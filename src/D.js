@@ -7,6 +7,7 @@ var _ = require('./_'),
     transversal = require('./modules/transversal'),
     dimensions = require('./modules/dimensions'),
     css = require('./modules/css'),
+    attr = require('./modules/attr'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -128,6 +129,7 @@ _.extend(
     transversal.fn,
     dimensions.fn,
     css.fn,
+    attr.fn,
     classes.fn,
     { constructor: DOM }
 );
