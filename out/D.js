@@ -678,7 +678,7 @@ var _hooks = {
             return _hooks[attr].get(elem);
         }
 
-        elem.getAttribute(attr);
+        return elem.getAttribute(attr);
     },
 
     _setAttribute = function(elem, attr, value) {
@@ -701,7 +701,7 @@ var _hooks = {
         elem.removeAttribute(attr);
     };
 
-return {
+module.exports = {
     fn: {
         attr: Overload().args(String).use(function(attr) {
                         return _getAttribute(this[0], attr);
