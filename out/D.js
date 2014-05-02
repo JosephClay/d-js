@@ -872,7 +872,7 @@ var _hide = function(elem) {
     _getComputedStyle = (function() {
         return _supports.currentStyle ?
             function(elem) { return elem.currentStyle; } :
-                // Avoids an "Illegal Invocation" error
+                // Avoids an 'Illegal Invocation' error
                 function(elem) { return window.getComputedStyle(elem); };
     }()),
 
@@ -919,24 +919,21 @@ var _hide = function(elem) {
         }
     };
 
-// TODO: Leaving off here
 var _getWidthOrHeight = function(elem, name) {
 
     // Start with offset property, which is equivalent to the border-box value
     var valueIsBorderBox = true,
-        val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
-        styles = getStyles( elem ),
-        isBorderBox = support.boxSizing() && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+        val = (name === 'width') ? elem.offsetWidth : elem.offsetHeight,
+        styles = _getComputedStyle(elem),
+        isBorderBox = styles.boxSizing === 'border-box';
 
     // some non-html elements return undefined for offsetWidth, so check for null/undefined
     // svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
     if (val <= 0 || !val) {
         // Fall back to computed then uncomputed css if necessary
-        val = curCSS( elem, name, styles );
-        if (val < 0 || !val) {
-            val = elem.style[ name ];
-        }
+        val = _curCSS(elem, name, styles);
+        if (val < 0 || !val) { val = elem.style[name]; }
 
         // Computed unit is not pixels. Stop here and return.
         if ( rnumnonpx.test(val) ) {
@@ -945,9 +942,9 @@ var _getWidthOrHeight = function(elem, name) {
 
         // we need the check for style in case a browser which returns unreliable values
         // for getComputedStyle silently falls back to the reliable elem.style
-        valueIsBorderBox = isBorderBox && ( support.boxSizingReliable() || val === elem.style[ name ] );
+        valueIsBorderBox = isBorderBox && val === styles[name];
 
-        // Normalize "", auto, and prepare for extra
+        // Normalize '', auto, and prepare for extra
         val = parseFloat( val ) || 0;
     }
 
@@ -956,50 +953,89 @@ var _getWidthOrHeight = function(elem, name) {
         _augmentWidthOrHeight(
             elem,
             name,
-            isBorderBox ? "border" : "content",
+            isBorderBox ? 'border' : 'content',
             valueIsBorderBox,
             styles
         )
-    ) + "px";
+    ) + 'px';
 };
 
-var _augmentWidthOrHeight = function( elem, name, extra, isBorderBox, styles ) {
-    var i = extra === ( isBorderBox ? "border" : "content" ) ?
+var _augmentWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
+    var i = isBorderBox ?
         // If we already have the right measurement, avoid augmentation
         4 :
         // Otherwise initialize for horizontal or vertical properties
-        name === "width" ? 1 : 0,
+        name === 'width' ? 1 : 0,
 
         val = 0;
 
-    for ( ; i < 4; i += 2 ) {
+    for (; i < 4; i += 2) {
         // both box models exclude margin, so add it if we want it
-        if ( extra === "margin" ) {
+        if ( extra === 'margin' ) {
             val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
         }
 
-        if ( isBorderBox ) {
+        if (isBorderBox) {
             // border-box includes padding, so remove it if we want content
-            if ( extra === "content" ) {
-                val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+            if ( extra === 'content' ) {
+                val -= jQuery.css( elem, 'padding' + cssExpand[ i ], true, styles );
             }
 
             // at this point, extra isn't border nor margin, so remove border
-            if ( extra !== "margin" ) {
-                val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+            if ( extra !== 'margin' ) {
+                val -= jQuery.css( elem, 'border' + cssExpand[ i ] + 'Width', true, styles );
             }
         } else {
             // at this point, extra isn't content, so add padding
-            val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+            val += jQuery.css( elem, 'padding' + cssExpand[ i ], true, styles );
 
             // at this point, extra isn't content nor padding, so add border
-            if ( extra !== "padding" ) {
-                val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+            if ( extra !== 'padding' ) {
+                val += jQuery.css( elem, 'border' + cssExpand[ i ] + 'Width', true, styles );
             }
         }
     }
 
     return val;
+};
+
+var _curCSS = function(elem, name, computed) {
+    var style = elem.style,
+        styles = computed || _getComputedStyle(elem),
+        ret = styles ? styles[name] : undefined;
+
+    // Avoid setting ret to empty string here
+    // so we don't default to auto
+    if (!_.exists(ret) && style && style[name]) { ret = style[name]; }
+
+    // From the awesome hack by Dean Edwards
+    // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+
+    // If we're not dealing with a regular pixel number
+    // but a number that has a weird ending, we need to convert it to pixels
+    // but not position css attributes, as those are proportional to the parent element instead
+    // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
+    if (rnumnonpx.test( ret ) && !rposition.test( name )) {
+
+        // Remember the original values
+        var left = style.left,
+            rs = elem.runtimeStyle,
+            rsLeft = rs && rs.left;
+
+        // Put in the new values to get a computed value out
+        if (rsLeft) { rs.left = elem.currentStyle.left; }
+
+        style.left = (name === 'fontSize') ? '1em' : ret;
+        ret = style.pixelLeft + 'px';
+
+        // Revert the changed values
+        style.left = left;
+        if (rsLeft) { rs.left = rsLeft; }
+    }
+
+    // Support: IE
+    // IE returns zIndex value as an integer.
+    return ret === undefined ? ret : ret + '' || 'auto';
 };
 
 var _hooks = {
@@ -1017,8 +1053,7 @@ var _hooks = {
                 currentStyle = elem.currentStyle,
                 filter = currentStyle && currentStyle.filter || style.filter || '';
 
-            // if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
-            // if value === '', then remove inline opacity #12685
+            // if setting opacity to 1, and no other filters exist - remove the filter attribute
             if (value >= 1 || value === '' && _.trim(filter.replace(_regex.alpha, '')) === '') {
 
                 // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
@@ -1039,9 +1074,9 @@ var _hooks = {
             var opacity = (_.isNumber(value) ? 'alpha(opacity=' + (value * 100) + ')' : '');
 
             style.filter = _regex.alpha.test(filter) ?
-                // replace "alpha(opacity)" in the filter definition
+                // replace 'alpha(opacity)' in the filter definition
                 filter.replace(_regex.alpha, opacity) :
-                // append "alpha(opacity)" to the current filter definition
+                // append 'alpha(opacity)' to the current filter definition
                 filter + ' ' + opacity;
         }
     }
