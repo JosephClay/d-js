@@ -36,7 +36,7 @@ var _find = function(selector, context) {
 
     var method = _determineMethod(selector);
     for (; idx < length; idx++) {
-        var ret = _findQuery(selector, context[idx], method);
+        var ret = _findWithQuery(selector, context[idx], method);
         if (ret) { result.push(ret); }
     }
 
@@ -61,7 +61,7 @@ var _determineMethod = function(selector) {
     return method;
 };
 
-var _findQuery = function(selector, context, method) {
+var _findWithQuery = function(selector, context, method) {
     context = context || document;
 
     // TODO: What to do if ">" child selector is used @ index = 0;

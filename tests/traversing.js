@@ -10,7 +10,6 @@ test('find(String) under non-elements', function() {
 	expect(1);
 
 	var j = D('#nonnodes').children();
-	debugger;
 	equal(j.find('div').length, 0, 'Check node,textnode,comment to find zero divs');
 });
 
