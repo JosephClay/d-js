@@ -168,9 +168,6 @@ if (typeof define === 'function' && define.amd) {
 
     Dom.prototype = {
 
-
-
-
         clone: function() {
             return new Dom(this.elem.cloneNode(true));
         },
@@ -204,15 +201,6 @@ if (typeof define === 'function' && define.amd) {
             return new Dom(this.elem.children);
         },
 
-        attr: function(attr, value) {
-            if (_exists(value)) {
-                this.elem.setAttribute(attr, value);
-                return this;
-            }
-
-            return this.elem.getAttribute(attr);
-        },
-
         position: function() {
             return {
                 left: this.elem.offsetLeft,
@@ -232,8 +220,6 @@ if (typeof define === 'function' && define.amd) {
         offset: function() {
             return this.elem.getBoundingClientRect();
         },
-
-
 
         on: function(eventName, callback) {
             _bind(this.elem, eventName, callback);

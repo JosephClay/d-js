@@ -1,24 +1,44 @@
 var _ = require('../_');
 
 var _hooks = {
-    tabindex: {
-        get: function(elem) {
-            var tabindex = elem.getAttribute('tabindex');
-            if (!_.exists(tabindex) || tabindex === '') { return; }
-            return _.parseInt(elem.getAttribute(tabindex)) || 0;
+        tabindex: {
+            get: function(elem) {
+                var tabindex = elem.getAttribute('tabindex');
+                if (!_.exists(tabindex) || tabindex === '') { return; }
+                return _.parseInt(elem.getAttribute(tabindex)) || 0;
+            }
         }
-    }
-};
+    },
 
-var _getAttribute = function(elem, attr) {
-    if (!elem) { return; }
+    _getAttribute = function(elem, attr) {
+        if (!elem) { return; }
 
-    if (_hooks[attr] && _hooks[attr].get) {
-        return _hooks[attr].get(elem);
-    }
+        if (_hooks[attr] && _hooks[attr].get) {
+            return _hooks[attr].get(elem);
+        }
 
-    elem.getAttribute(attr);
-};
+        elem.getAttribute(attr);
+    },
+
+    _setAttribute = function(elem, attr, value) {
+        if (!elem) { return; }
+
+        if (_hooks[attr] && _hooks[attr].set) {
+            return _hooks[attr].set(elem, value);
+        }
+
+        elem.setAttribute(attr, value);
+    },
+
+    _removeAttribute = function(elem, attr) {
+        if (!elem) { return; }
+
+        if (_hooks[attr] && _hooks[attr].remove) {
+            return _hooks[attr].remove(elem);
+        }
+
+        elem.removeAttribute(attr);
+    };
 
 return {
     fn: {
@@ -30,7 +50,7 @@ return {
                     .use(function(attr, value) {
                         var idx = 0, length = this.length;
                         for (; idx < length; idx++) {
-                            this[idx].setAttribute(attr, value);
+                            _setAttribute(this[idx], attr, value);
                         }
 
                         return this;
@@ -44,7 +64,7 @@ return {
                                 oldAttr = _getAttribute(this[0], attr),
                                 result = fn.call(elem, idx, oldAttr);
                             if (!_.exists(result)) { continue; }
-                            elem.setAttribute(attr, result);
+                            _setAttribute(elem, attr, result);
                         }
 
                         return this;
@@ -52,8 +72,15 @@ return {
 
                     .expose(),
 
-        removeAttr: function() {
+        removeAttr: Overload().args(String).use(function(attr) {
+                        var idx = 0, length = this.length;
+                        for (; idx < length; idx++) {
+                            _removeAttribute(this[idx], attr);
+                        }
 
-        }
+                        return this;
+                    })
+
+                    .expose()
     }
 };
