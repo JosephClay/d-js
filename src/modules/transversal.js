@@ -2,66 +2,67 @@ var _array = require('./array'),
     _selectors = require('./selectors');
 
 var _getSiblings = function(context) {
-    var idx = 0,
-        length = context.length,
-        result = [];
-    for (; idx < length; idx++) {
-        var sibs = _getNodeSiblings(context[idx]);
-        if (sibs.length) { result.push(sibs); }
-    }
-    return _.flatten(result);
-};
-var _getNodeSiblings = function(node) {
-    var siblings = _array.slice(node.parentNode.children),
-        idx = siblings.length;
-
-    while (idx--) {
-        if (siblings[idx] === node) {
-            siblings.splice(i, 1);
+        var idx = 0,
+            length = context.length,
+            result = [];
+        for (; idx < length; idx++) {
+            var sibs = _getNodeSiblings(context[idx]);
+            if (sibs.length) { result.push(sibs); }
         }
-    }
+        return _.flatten(result);
+    },
 
-    return siblings;
-};
+    _getNodeSiblings = function(node) {
+        var siblings = _array.slice(node.parentNode.children),
+            idx = siblings.length;
 
-// Parents ------
-var _getParents = function(context) {
-    var idx = 0,
-        length = context.length,
-        result = [];
-    for (; idx < length; idx++) {
-        var parents = _crawlUpNode(context[idx]);
-        result.push(parents);
-    }
-    return _.flatten(result);
-};
+        while (idx--) {
+            if (siblings[idx] === node) {
+                siblings.splice(i, 1);
+            }
+        }
 
-var _crawlUpNode = function(node) {
-    var result = [],
-        parent = node;
-    while ((parent = _getNodeParent(parent))) {
-        result.push(parent);
-    }
+        return siblings;
+    },
 
-    return result;
-};
+    // Parents ------
+    _getParents = function(context) {
+        var idx = 0,
+            length = context.length,
+            result = [];
+        for (; idx < length; idx++) {
+            var parents = _crawlUpNode(context[idx]);
+            result.push(parents);
+        }
+        return _.flatten(result);
+    },
 
-// Parent ------
-var _getParent = function(context) {
-    var idx = 0,
-        length = context.length,
-        result = [];
-    for (; idx < length; idx++) {
-        var parent = _getNodeParent(context[idx]);
-        if (parent) { result.push(parent); }
-    }
-    return result;
-};
+    _crawlUpNode = function(node) {
+        var result = [],
+            parent = node;
+        while ((parent = _getNodeParent(parent))) {
+            result.push(parent);
+        }
 
-// Safely get parent node
-var _getNodeParent = function(node) {
-    return node && node.parentNode;
-};
+        return result;
+    },
+
+    // Parent ------
+    _getParent = function(context) {
+        var idx = 0,
+            length = context.length,
+            result = [];
+        for (; idx < length; idx++) {
+            var parent = _getNodeParent(context[idx]);
+            if (parent) { result.push(parent); }
+        }
+        return result;
+    },
+
+    // Safely get parent node
+    _getNodeParent = function(node) {
+        return node && node.parentNode;
+    };
 
 module.exports = {
     fn: {

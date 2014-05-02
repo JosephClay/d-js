@@ -8,7 +8,6 @@ var _classMapCache = {};
 
 var _isNotEmpty = function(str) { return str !== null && str !== undefined && str !== ''; };
 
-// TODO: Implement internal cache
 var _split = function(name) {
     if (_.isArray(name)) { return name; }
     return _classArrayCache[name] || (_classArrayCache[name] = _.chain(name.split(_rspace)).filter(_isNotEmpty).uniq().value());

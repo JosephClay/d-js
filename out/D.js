@@ -916,13 +916,13 @@ var _getWidthOrHeight = function(elem, name) {
     // some non-html elements return undefined for offsetWidth, so check for null/undefined
     // svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
-    if (val <= 0 || !val) {
+    if (val <= 0 || !_.exists(val)) {
         // Fall back to computed then uncomputed css if necessary
         val = _curCSS(elem, name, styles);
         if (val < 0 || !val) { val = elem.style[name]; }
 
         // Computed unit is not pixels. Stop here and return.
-        if ( rnumnonpx.test(val) ) {
+        if (rnumnonpx.test(val)) {
             return val;
         }
 
@@ -935,7 +935,7 @@ var _getWidthOrHeight = function(elem, name) {
     }
 
     // use the active box-sizing model to add/subtract irrelevant styles
-    return ( val +
+    return (val +
         _augmentWidthOrHeight(
             elem,
             name,

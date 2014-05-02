@@ -83,7 +83,7 @@ var _unique = function(results) {
 var _map = function(arr, iterator) {
     var results = [];
     if (!arr.length || !iterator) { return results; }
-    
+
     var idx = 0, length = arr.length,
         item;
     for (; idx < length; idx++) {
@@ -96,7 +96,7 @@ var _map = function(arr, iterator) {
 
 var _each = function(arr, iterator) {
     if (!arr.length || !iterator) { return; }
-    
+
     var idx = 0, length = arr.length,
         item;
     for (; idx < length; idx++) {
@@ -136,12 +136,22 @@ module.exports = {
             return D(_slice(this.toArray(), start, end));
         },
 
-        next: function() {
-            // TODO
+        // TODO: next
+        next: function(str) {
+            if (_.isString(str)) {
+                // TODO:
+            }
+
+            return; // TODO:
         },
 
-        prev: function() {
-            // TODO
+        // TODO: prev
+        prev: function(str) {
+            if (_.isString(str)) {
+                // TODO:
+            }
+
+            return; // TODO:
         },
 
         first: function() {
@@ -159,7 +169,7 @@ module.exports = {
         map: function(iterator) {
             return D(_map(this, iterator));
         },
-        
+
         each: function(iterator) {
             _each(this, iterator);
             return this;
