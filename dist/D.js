@@ -493,8 +493,6 @@
             "/utils.js": function(require, module, exports) {
                 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
-                var overload = require('overload');
-
                 module.exports = {
                     exists: function(val) {
                         return (val !== null && val !== undefined);
