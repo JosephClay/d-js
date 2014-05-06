@@ -51,16 +51,16 @@
                 var _ = require('2'),
                     parser = require('9'),
                     utils = require('8'),
-                    array = require('10'),
-                    onready = require('19'),
-                    selectors = require('23'),
-                    transversal = require('24'),
-                    dimensions = require('15'),
-                    manip = require('18'),
-                    css = require('13'),
-                    attr = require('11'),
-                    val = require('25'),
-                    classes = require('12');
+                    array = require('13'),
+                    onready = require('22'),
+                    selectors = require('26'),
+                    transversal = require('27'),
+                    dimensions = require('18'),
+                    manip = require('21'),
+                    css = require('16'),
+                    attr = require('14'),
+                    val = require('28'),
+                    classes = require('15');
 
                 // Store previous reference
                 var _prevD = window.D;
@@ -532,7 +532,7 @@
                     }
                 };
             },
-            "10": function(require, module, exports) {
+            "13": function(require, module, exports) {
                 var _ = require('2'),
                     _utils = require('8');
 
@@ -711,7 +711,7 @@
                     }
                 };
             },
-            "19": function(require, module, exports) {
+            "22": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
@@ -755,11 +755,11 @@
                     return this;
                 };
             },
-            "23": function(require, module, exports) {
+            "26": function(require, module, exports) {
                 var _utils = require('8'),
                     _cache = require('3'),
                     _regex = require('6'),
-                    _array = require('10'),
+                    _array = require('13'),
                     _nodeType = require('5'),
                     _supports = require('7'),
 
@@ -1077,12 +1077,12 @@
                 div.cssText = 'opacity:.55';
                 module.exports = div;
             },
-            "24": function(require, module, exports) {
+            "27": function(require, module, exports) {
                 var _ = require('2'),
                     _nodeType = require('5'),
 
-                    _array = require('10'),
-                    _selectors = require('23');
+                    _array = require('13'),
+                    _selectors = require('26');
 
                 var _getSiblings = function(context) {
                         var idx = 0,
@@ -1221,9 +1221,9 @@
                     }
                 };
             },
-            "15": function(require, module, exports) {
+            "18": function(require, module, exports) {
                 var _ = require('2'),
-                    _css = require('13');
+                    _css = require('16');
 
                 var _getDocumentDimension = function(elem, name) {
                         // Either scroll[Width/Height] or offset[Width/Height] or
@@ -1335,7 +1335,7 @@
                     }
                 };
             },
-            "13": function(require, module, exports) {
+            "16": function(require, module, exports) {
                 var _ = require('2'),
                     _cache = require('3'),
                     _regex = require('6'),
@@ -1683,7 +1683,7 @@
                     }
                 };
             },
-            "18": function(require, module, exports) {
+            "21": function(require, module, exports) {
                 var _ = require('2'),
                     utils = require('8');
 
@@ -1855,7 +1855,7 @@
                     }
                 };
             },
-            "11": function(require, module, exports) {
+            "14": function(require, module, exports) {
                 var _ = require('2');
 
                 var _hooks = {
@@ -1977,7 +1977,7 @@
                     }
                 };
             },
-            "25": function(require, module, exports) {
+            "28": function(require, module, exports) {
                 var _getText = function(elem) {
                     if (!elem) { return ''; }
                     return elem.textContent || elem.innerText;
@@ -1999,9 +1999,9 @@
                     }
                 };
             },
-            "12": function(require, module, exports) {
+            "15": function(require, module, exports) {
                 var supports = require('7'),
-                    array = require('10');
+                    array = require('13');
 
                 var _rspace = /\s+/g;
 
@@ -2043,15 +2043,15 @@
                         return elem.classList.contains(name);
                     },
 
-                    addClass: function(elem, names) {
+                    addClasses: function(elem, names) {
                         elem.classList.add.apply(elem.classList, names);
                     },
 
-                    removeClass: function(elem, names) {
+                    removeClasses: function(elem, names) {
                         elem.classList.remove.apply(elem.classList, names);
                     },
 
-                    toggleClass: function(elem, names) {
+                    toggleClasses: function(elem, names) {
                         elem.classList.toggle.apply(elem.classList, names);
                     }
                 };
@@ -2070,7 +2070,7 @@
                         return false;
                     },
 
-                    addClass: function(elem, names) {
+                    addClasses: function(elem, names) {
                         var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
                             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
                             nameIdx = elemClassNameArray.length,
@@ -2090,7 +2090,7 @@
                         elem.className += append;
                     },
 
-                    removeClass: function(elem, names) {
+                    removeClasses: function(elem, names) {
                         var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
                             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
                             nameIdx = elemClassNameArray.length,
@@ -2109,7 +2109,7 @@
                         }
                     },
 
-                    toggleClass: function(elem, names) {
+                    toggleClasses: function(elem, names) {
                         var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
                             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
                             nameIdx = elemClassNameArray.length,
@@ -2137,10 +2137,10 @@
                         }
 
                         if (addClasses.length) {
-                            this.addClass(elem, addClasses);
+                            this.addClasses(elem, addClasses);
                         }
                         if (removeClasses.length) {
-                            this.addClass(elem, removeClasses);
+                            this.removeClasses(elem, removeClasses);
                         }
                     }
                 };
@@ -2194,7 +2194,7 @@
                         if (!_.isArray(names)) { names = array.slice(names); }
                         var elemIdx = elems.length;
                         while (elemIdx--) {
-                            _impl.addClass(elems[elemIdx], names);
+                            _impl.addClasses(elems[elemIdx], names);
                         }
                     },
 
@@ -2203,7 +2203,7 @@
                         if (!_.isArray(names)) { names = array.slice(names); }
                         var elemIdx = elems.length;
                         while (elemIdx--) {
-                            _impl.removeClass(elems[elemIdx], names);
+                            _impl.removeClasses(elems[elemIdx], names);
                         }
                     },
 
@@ -2219,7 +2219,7 @@
                         if (!_.isArray(names)) { names = array.slice(names); }
                         var elemIdx = elems.length;
                         while (elemIdx--) {
-                            _impl.toggleClass(elems[elemIdx], names);
+                            _impl.toggleClasses(elems[elemIdx], names);
                         }
                     }
                 };

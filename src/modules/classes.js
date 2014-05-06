@@ -41,15 +41,15 @@ var _modern = {
         return elem.classList.contains(name);
     },
 
-    addClass: function(elem, names) {
+    addClasses: function(elem, names) {
         elem.classList.add.apply(elem.classList, names);
     },
 
-    removeClass: function(elem, names) {
+    removeClasses: function(elem, names) {
         elem.classList.remove.apply(elem.classList, names);
     },
 
-    toggleClass: function(elem, names) {
+    toggleClasses: function(elem, names) {
         elem.classList.toggle.apply(elem.classList, names);
     }
 };
@@ -68,7 +68,7 @@ var _legacy = {
         return false;
     },
 
-    addClass: function(elem, names) {
+    addClasses: function(elem, names) {
         var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
             nameIdx = elemClassNameArray.length,
@@ -88,7 +88,7 @@ var _legacy = {
         elem.className += append;
     },
 
-    removeClass: function(elem, names) {
+    removeClasses: function(elem, names) {
         var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
             nameIdx = elemClassNameArray.length,
@@ -107,7 +107,7 @@ var _legacy = {
         }
     },
 
-    toggleClass: function(elem, names) {
+    toggleClasses: function(elem, names) {
         var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
             nameIdx = elemClassNameArray.length,
@@ -135,10 +135,10 @@ var _legacy = {
         }
 
         if (addClasses.length) {
-            this.addClass(elem, addClasses);
+            this.addClasses(elem, addClasses);
         }
         if (removeClasses.length) {
-            this.addClass(elem, removeClasses);
+            this.removeClasses(elem, removeClasses);
         }
     }
 };
@@ -192,7 +192,7 @@ var _classes = {
         if (!_.isArray(names)) { names = array.slice(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
-            _impl.addClass(elems[elemIdx], names);
+            _impl.addClasses(elems[elemIdx], names);
         }
     },
 
@@ -201,7 +201,7 @@ var _classes = {
         if (!_.isArray(names)) { names = array.slice(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
-            _impl.removeClass(elems[elemIdx], names);
+            _impl.removeClasses(elems[elemIdx], names);
         }
     },
 
@@ -217,7 +217,7 @@ var _classes = {
         if (!_.isArray(names)) { names = array.slice(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
-            _impl.toggleClass(elems[elemIdx], names);
+            _impl.toggleClasses(elems[elemIdx], names);
         }
     }
 };
