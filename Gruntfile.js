@@ -58,7 +58,7 @@ module.exports = function(grunt) {
         browserify: {
             build: {
                 src: ['src/D.js'],
-                dest: 'out/D.js',
+                dest: 'dist/D.browserify.js'
                 // options: {
                 //     alias: [
                 //         'src/libs/Overload.js:overload',
@@ -72,15 +72,16 @@ module.exports = function(grunt) {
             build: {
                 options: {
                     globals: {
-                        '_': '_'
+//                        '_': '_'
                     },
                     alias: {
-                        'underscore': '/libs/underscore.js',
-                        'overload':   '/libs/Overload.js',
-                        'signal':     '/libs/Signal.js'
+//                        'overload':   '/libs/Overload.js',
+//                        'signal':     '/libs/Signal.js'
                     },
                     main: 'D.js',
-                    dest: 'dist/D.js'
+                    dest: 'dist/D.js',
+                    safe_undefined: true,
+                    micro_paths: true
                 }
             }
         }
