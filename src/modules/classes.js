@@ -1,33 +1,61 @@
 var supports = require('../supports'),
-    array = require('./array');
+    array = require('./array'),
+    _ = require('../_');
 
 var _rspace = /\s+/g;
 
 var _classArrayCache = {};
 var _classMapCache = {};
 
+var _isEmpty = function(str) { return str === null || str === undefined || str === ''; };
 var _isNotEmpty = function(str) { return str !== null && str !== undefined && str !== ''; };
+
+var _splitImpl = function(name) {
+    if (_isEmpty(name)) { return []; }
+    var split = name.split(_rspace),
+        len = split.length,
+        idx = split.length,
+        names = [],
+        nameSet = {},
+        curName;
+    while (idx--) {
+        curName = split[len - (idx + 1)];
+        if (nameSet[curName]) { continue; }  // unique
+        if (_isEmpty(curName)) { continue; } // non-empty
+        names.push(curName);
+        nameSet[curName] = true;
+    }
+    return names;
+};
 
 var _split = function(name) {
     if (_.isArray(name)) { return name; }
-    return _classArrayCache[name] || (_classArrayCache[name] = _.chain(name.split(_rspace)).filter(_isNotEmpty).uniq().value());
+    return _classArrayCache[name] || (_classArrayCache[name] = _splitImpl(name));
 };
 
 var _modern = {
+    getClasses: function(elem) {
+        return array.slice(elem.classList);
+    },
+
     hasClass: function(elem, name) {
         return elem.classList.contains(name);
     },
 
     addClass: function(elem, names) {
-        elem.classList.add.apply(null, names);
+        elem.classList.add.apply(elem.classList, names);
     },
 
     removeClass: function(elem, names) {
-        elem.classList.remove.apply(null, names);
+        elem.classList.remove.apply(elem.classList, names);
     }
 };
 
 var _legacy = {
+    getClasses: function(elem) {
+        return _split(elem.className);
+    },
+
     hasClass: function(elem, name) {
         var elemClassNames = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
             idx = elemClassNames.length;
@@ -80,6 +108,25 @@ var _legacy = {
 var _impl = supports.classList ? _modern : _legacy;
 
 var _classes = {
+    getClasses: function(elems) {
+        var names = [],
+            nameSet = {},
+            elemIdx = elems.length,
+            curNames,
+            curNameIdx,
+            curName;
+        while (elemIdx--) {
+            curNames = _impl.getClasses(elems[elemIdx]);
+            curNameIdx = curNames.length;
+            while (curNameIdx--) {
+                curName = curNames[curNameIdx];
+                if (nameSet[curName]) { continue; }
+                names.push(curName);
+                nameSet[curName] = true;
+            }
+        }
+    },
+
     hasClass: function(elems, names) {
         var numElems = elems.length,
             numNames = names.length,
@@ -103,6 +150,8 @@ var _classes = {
     },
 
     addClass: function(elems, names) {
+        // Support array-like objects
+        if (!_.isArray(names)) { names = array.slice(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             _impl.addClass(elems[elemIdx], names);
@@ -110,9 +159,18 @@ var _classes = {
     },
 
     removeClass: function(elems, names) {
+        // Support array-like objects
+        if (!_.isArray(names)) { names = array.slice(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             _impl.removeClass(elems[elemIdx], names);
+        }
+    },
+
+    removeAllClasses: function(elems) {
+        var elemIdx = elems.length;
+        while (elemIdx--) {
+            elems[elemIdx].className = '';
         }
     },
 
@@ -123,22 +181,67 @@ module.exports = _.extend({}, _classes, {
     fn: {
         addClass: Overload()
             .args(String).use(function(name) {
-                // TODO: Generalize this check?
-                if (!this.length) { return this; }
+                if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 var names = _split(name);
                 if (!names.length) { return this; }
 
-                _classes.addClass(this._elems, names);
+                _classes.addClass(this, names);
 
                 return this;
             })
-            .args(Array).use(function(names) {
-                // TODO: Generalize this check?
+//            .args(Array).use(function(names) {
+            .length(1).use(function(names) {
+                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                _classes.addClass(this, names);
+
+                return this;
+            })
+            .expose(),
+        removeClass: Overload()
+            .args().use(function() {
                 if (!this.length) { return this; }
+
+                _classes.removeAllClasses(this);
+
+                return this;
+            })
+            .args(String).use(function(name) {
+                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                var names = _split(name);
                 if (!names.length) { return this; }
 
-                _classes.addClass(this._elems, names);
+                _classes.removeClass(this, names);
+
+                return this;
+            })
+//            .args(Array).use(function(names) {
+            .length(1).use(function(names) {
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                _classes.removeClass(this, names);
+
+                return this;
+            })
+            .expose(),
+        hasClass: Overload()
+            .args(String).use(function(name) {
+                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                var names = _split(name);
+                if (!names.length) { return this; }
+
+                _classes.removeClass(this, names);
+
+                return this;
+            })
+//            .args(Array).use(function(names) {
+            .length(1).use(function(names) {
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                _classes.removeClass(this, names);
 
                 return this;
             })
