@@ -1,7 +1,11 @@
-(function(_) {
+(function(undefined) {
     (function(config, definitions, undefined) {
 
         var modules = {
+
+        };
+
+        var moduleCache = {
 
         };
 
@@ -15,7 +19,7 @@
 
         var require = function(path) {
             path = aliases[path] || path;
-            return modules[path]();
+            return moduleCache[path] || (moduleCache[path] = modules[path]());
         };
 
         var define = function(path, definition) {
@@ -26,7 +30,7 @@
                     return module.exports;
                 }
                 module = { exports: {} };
-                definition.apply(null, [ require, module, module.exports ]);
+                definition(require, module, module.exports);
                 return module.exports;
             };
         };
@@ -39,24 +43,24 @@
 
     }(
         {
-            "main": "/D.js",
+            "main": 1,
             "aliases": {}
         },
         {
-            "/D.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    parser = require('/D/parser.js'),
-                    utils = require('/utils.js'),
-                    array = require('/modules/array.js'),
-                    onready = require('/modules/onready.js'),
-                    selectors = require('/modules/selectors.js'),
-                    transversal = require('/modules/transversal.js'),
-                    dimensions = require('/modules/dimensions.js'),
-                    manip = require('/modules/manip.js'),
-                    css = require('/modules/css.js'),
-                    attr = require('/modules/attr.js'),
-                    val = require('/modules/val.js'),
-                    classes = require('/modules/classes.js');
+            "1": function(require, module, exports) {
+                var _ = require('2'),
+                    parser = require('9'),
+                    utils = require('8'),
+                    array = require('13'),
+                    onready = require('22'),
+                    selectors = require('26'),
+                    transversal = require('27'),
+                    dimensions = require('18'),
+                    manip = require('21'),
+                    css = require('16'),
+                    attr = require('14'),
+                    val = require('28'),
+                    classes = require('15');
 
                 // Store previous reference
                 var _prevD = window.D;
@@ -284,7 +288,7 @@
                     };
                 */
             },
-            "/_.js": function(require, module, exports) {
+            "2": function(require, module, exports) {
                 var _id = 0,
                     _toString = Object.prototype.toString,
                     _stringProto = String.prototype,
@@ -467,7 +471,7 @@
 
                 module.exports = _;
             },
-            "/D/parser.js": function(require, module, exports) {
+            "9": function(require, module, exports) {
                 var _parse = function(htmlStr) {
                     var tmp = document.implementation.createHTMLDocument();
                         tmp.body.innerHTML = htmlStr;
@@ -490,7 +494,7 @@
                     }
                 };
             },
-            "/utils.js": function(require, module, exports) {
+            "8": function(require, module, exports) {
                 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
                 module.exports = {
@@ -526,9 +530,9 @@
                     }
                 };
             },
-            "/modules/array.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    _utils = require('/utils.js');
+            "13": function(require, module, exports) {
+                var _ = require('2'),
+                    _utils = require('8');
 
                 var _slice = (function(_slice) {
                         return function(arr, start, end) {
@@ -705,7 +709,7 @@
                     }
                 };
             },
-            "/modules/onready.js": function(require, module, exports) {
+            "22": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
@@ -749,13 +753,13 @@
                     return this;
                 };
             },
-            "/modules/selectors.js": function(require, module, exports) {
-                var _utils = require('/utils.js'),
-                    _cache = require('/cache.js'),
-                    _regex = require('/regex.js'),
-                    _array = require('/modules/array.js'),
-                    _nodeType = require('/nodeType.js'),
-                    _supports = require('/supports.js'),
+            "26": function(require, module, exports) {
+                var _utils = require('8'),
+                    _cache = require('3'),
+                    _regex = require('6'),
+                    _array = require('13'),
+                    _nodeType = require('5'),
+                    _supports = require('7'),
 
                     _selectorBlackList = ['.', '#', '', ' '];
 
@@ -923,8 +927,8 @@
                     }
                 };
             },
-            "/cache.js": function(require, module, exports) {
-                var _ = require('/_.js');
+            "3": function(require, module, exports) {
+                var _ = require('2');
 
                 var _cache = {};
 
@@ -972,8 +976,8 @@
 
                 }());
             },
-            "/regex.js": function(require, module, exports) {
-                var _cache = require('/cache.js');
+            "6": function(require, module, exports) {
+                var _cache = require('3');
 
                     // Matches "-ms-" so that it can be changed to "ms-"
                 var _TRUNCATE_MS_PREFIX = /^-ms-/,
@@ -1035,7 +1039,7 @@
                     }
                 };
             },
-            "/nodeType.js": function(require, module, exports) {
+            "5": function(require, module, exports) {
                 module.exports = {
                     ELEMENT:                1,
                     ATTRIBUTE:              2,
@@ -1051,8 +1055,8 @@
                     NOTATION:               12
                 };
             },
-            "/supports.js": function(require, module, exports) {
-                var div = require('/div.js');
+            "7": function(require, module, exports) {
+                var div = require('4');
 
                 module.exports = {
                     classList: !!div.classList,
@@ -1070,17 +1074,17 @@
                     opacity: (/^0.55$/).test(div.style.opacity)
                 };
             },
-            "/div.js": function(require, module, exports) {
+            "4": function(require, module, exports) {
                 var div = document.createElement('div');
                 div.cssText = 'opacity:.55';
                 module.exports = div;
             },
-            "/modules/transversal.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    _nodeType = require('/nodeType.js'),
+            "27": function(require, module, exports) {
+                var _ = require('2'),
+                    _nodeType = require('5'),
 
-                    _array = require('/modules/array.js'),
-                    _selectors = require('/modules/selectors.js');
+                    _array = require('13'),
+                    _selectors = require('26');
 
                 var _getSiblings = function(context) {
                         var idx = 0,
@@ -1219,9 +1223,9 @@
                     }
                 };
             },
-            "/modules/dimensions.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    _css = require('/modules/css.js');
+            "18": function(require, module, exports) {
+                var _ = require('2'),
+                    _css = require('16');
 
                 var _getDocumentDimension = function(elem, name) {
                         // Either scroll[Width/Height] or offset[Width/Height] or
@@ -1333,12 +1337,12 @@
                     }
                 };
             },
-            "/modules/css.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    _cache = require('/cache.js'),
-                    _regex = require('/regex.js'),
-                    _nodeType = require('/nodeType.js'),
-                    _supports = require('/supports.js');
+            "16": function(require, module, exports) {
+                var _ = require('2'),
+                    _cache = require('3'),
+                    _regex = require('6'),
+                    _nodeType = require('5'),
+                    _supports = require('7');
 
                 var _swapSettings = {
                     measureDisplay: {
@@ -1681,9 +1685,9 @@
                     }
                 };
             },
-            "/modules/manip.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    utils = require('/utils.js');
+            "21": function(require, module, exports) {
+                var _ = require('2'),
+                    utils = require('8');
 
                 /*
                 var _empty = function(elem) {
@@ -1853,8 +1857,8 @@
                     }
                 };
             },
-            "/modules/attr.js": function(require, module, exports) {
-                var _ = require('/_.js');
+            "14": function(require, module, exports) {
+                var _ = require('2');
 
                 var _hooks = {
                         tabindex: {
@@ -1975,7 +1979,7 @@
                     }
                 };
             },
-            "/modules/val.js": function(require, module, exports) {
+            "28": function(require, module, exports) {
                 var _getText = function(elem) {
                     if (!elem) { return ''; }
                     return elem.textContent || elem.innerText;
@@ -1997,9 +2001,9 @@
                     }
                 };
             },
-            "/modules/classes.js": function(require, module, exports) {
-                var supports = require('/supports.js'),
-                    array = require('/modules/array.js');
+            "15": function(require, module, exports) {
+                var supports = require('7'),
+                    array = require('13');
 
                 var _rspace = /\s+/g;
 
@@ -2148,4 +2152,4 @@
             }
         }
     ));
-}(_));
+}());
