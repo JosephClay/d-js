@@ -52,7 +52,7 @@
     */
 
     var testAddClass = function(valueObj) {
-        expect(9);
+        expect(7);
 
         var pass, j, i,
             div = D('#qunit-fixture div');
@@ -99,35 +99,6 @@
         testAddClass(bareObj);
     });
 
-    test('addClass(Function)', function() {
-        testAddClass(functionReturningObj);
-    });
-
-    test('addClass(Function) with incoming value', function() {
-        expect(52);
-
-        var pass, i,
-            div = D('#qunit-fixture div'),
-            old = div.map(function() {
-                return D(this).attr('class') || '';
-            });
-
-        div.addClass(function(i, val) {
-            if (this.id !== '_firebugConsole') {
-                equal(val, old[ i ], 'Make sure the incoming value is correct.');
-                return 'test';
-            }
-        });
-
-        pass = true;
-        for (i = 0; i < div.length; i++) {
-            if (div.get(i).className.indexOf('test') === -1) {
-                pass = false;
-            }
-        }
-        ok(pass, 'Add Class');
-    });
-
     var testRemoveClass = function(valueObj) {
         expect(6);
 
@@ -172,36 +143,16 @@
         testRemoveClass(bareObj);
     });
 
-    test('removeClass(Function) - simple', function() {
-        testRemoveClass(functionReturningObj);
-    });
-
-    test('removeClass(Function) with incoming value', function() {
-        expect(52);
-
-        var $divs = D('#qunit-fixture div').addClass('test'), old = $divs.map(function() {
-            return D(this).attr('class');
-        });
-
-        $divs.removeClass(function(i, val) {
-            if (this.id !== '_firebugConsole') {
-                equal(val, old[i], 'Make sure the incoming value is correct.');
-                return 'test';
-            }
-        });
-
-        ok(!$divs.is('.test'), 'Remove Class');
-    });
-
-    test('removeClass() removes duplicates', function() {
-        expect(1);
-
-        var $div = D(D.parseHTML('<div class="x x x"></div>'));
-
-        $div.removeClass('x');
-
-        ok(!$div.hasClass('x'), 'Element with multiple same classes does not escape the wrath of removeClass()');
-    });
+    // TODO: Implement?
+//    test('removeClass() removes duplicates', function() {
+//        expect(1);
+//
+//        var $div = D(D.parseHTML('<div class="x x x"></div>'));
+//
+//        $div.removeClass('x');
+//
+//        ok(!$div.hasClass('x'), 'Element with multiple same classes does not escape the wrath of removeClass()');
+//    });
 
     test('removeClass(undefined) is a no-op', function() {
         expect(1);
@@ -263,61 +214,6 @@
 
     test('toggleClass(String|boolean|undefined[, boolean])', function() {
         testToggleClass(bareObj);
-    });
-
-    test('toggleClass(Function[, boolean])', function() {
-        testToggleClass(functionReturningObj);
-    });
-
-    test('toggleClass(Function[, boolean]) with incoming value', function() {
-        expect(14);
-
-        var e = D('#firstp'),
-            old = e.attr('class') || '';
-
-        ok(!e.is('.test'), 'Assert class not present');
-
-        e.toggleClass(function(i, val) {
-            equal(old, val, 'Make sure the incoming value is correct.');
-            return 'test';
-        });
-        ok(e.is('.test'), 'Assert class present');
-
-        old = e.attr('class');
-
-        e.toggleClass(function(i, val) {
-            equal(old, val, 'Make sure the incoming value is correct.');
-            return 'test';
-        });
-        ok(!e.is('.test'), 'Assert class not present');
-
-        old = e.attr('class') || '';
-
-        // class name with a boolean
-        e.toggleClass(function(i, val, state) {
-            equal(old, val, 'Make sure the incoming value is correct.');
-            equal(state, false, 'Make sure that the state is passed in.');
-            return 'test';
-        }, false);
-        ok(!e.is('.test'), 'Assert class not present');
-
-        old = e.attr('class') || '';
-
-        e.toggleClass(function(i, val, state) {
-            equal(old, val, 'Make sure the incoming value is correct.');
-            equal(state, true, 'Make sure that the state is passed in.');
-            return 'test';
-        }, true);
-        ok(e.is('.test'), 'Assert class present');
-
-        old = e.attr('class');
-
-        e.toggleClass(function(i, val, state) {
-            equal(old, val, 'Make sure the incoming value is correct.');
-            equal(state, false, 'Make sure that the state is passed in.');
-            return 'test';
-        }, false);
-        ok(!e.is('.test'), 'Assert class not present');
     });
 
     test('addClass, removeClass, hasClass', function() {
