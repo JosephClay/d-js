@@ -51,16 +51,16 @@
                 var _ = require('2'),
                     parser = require('9'),
                     utils = require('8'),
-                    array = require('13'),
-                    onready = require('22'),
-                    selectors = require('26'),
-                    transversal = require('27'),
-                    dimensions = require('18'),
-                    manip = require('21'),
-                    css = require('16'),
-                    attr = require('14'),
-                    val = require('28'),
-                    classes = require('15');
+                    array = require('10'),
+                    onready = require('19'),
+                    selectors = require('23'),
+                    transversal = require('24'),
+                    dimensions = require('15'),
+                    manip = require('18'),
+                    css = require('13'),
+                    attr = require('11'),
+                    val = require('25'),
+                    classes = require('12');
 
                 // Store previous reference
                 var _prevD = window.D;
@@ -532,7 +532,7 @@
                     }
                 };
             },
-            "13": function(require, module, exports) {
+            "10": function(require, module, exports) {
                 var _ = require('2'),
                     _utils = require('8');
 
@@ -711,7 +711,7 @@
                     }
                 };
             },
-            "22": function(require, module, exports) {
+            "19": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
@@ -755,11 +755,11 @@
                     return this;
                 };
             },
-            "26": function(require, module, exports) {
+            "23": function(require, module, exports) {
                 var _utils = require('8'),
                     _cache = require('3'),
                     _regex = require('6'),
-                    _array = require('13'),
+                    _array = require('10'),
                     _nodeType = require('5'),
                     _supports = require('7'),
 
@@ -885,17 +885,13 @@
 
                         is: Overload()
                                 .args(String).use(function(selector) {
-                                    return D(
-                                        _.every(this, function(elem) {
-                                            return _isMatch(elem, selector);
-                                        })
-                                    );
+                                    return _.any(this, function(elem) {
+                                        return _isMatch(elem, selector);
+                                    });
                                 })
                                 .args(Function).use(function(iterator) {
                                     // TODO: Internal "every"
-                                    return D(
-                                        _.every(this, iterator)
-                                    );
+                                    return _.any(this, iterator);
                                 })
                                 .expose(),
 
@@ -1081,12 +1077,12 @@
                 div.cssText = 'opacity:.55';
                 module.exports = div;
             },
-            "27": function(require, module, exports) {
+            "24": function(require, module, exports) {
                 var _ = require('2'),
                     _nodeType = require('5'),
 
-                    _array = require('13'),
-                    _selectors = require('26');
+                    _array = require('10'),
+                    _selectors = require('23');
 
                 var _getSiblings = function(context) {
                         var idx = 0,
@@ -1225,9 +1221,9 @@
                     }
                 };
             },
-            "18": function(require, module, exports) {
+            "15": function(require, module, exports) {
                 var _ = require('2'),
-                    _css = require('16');
+                    _css = require('13');
 
                 var _getDocumentDimension = function(elem, name) {
                         // Either scroll[Width/Height] or offset[Width/Height] or
@@ -1339,7 +1335,7 @@
                     }
                 };
             },
-            "16": function(require, module, exports) {
+            "13": function(require, module, exports) {
                 var _ = require('2'),
                     _cache = require('3'),
                     _regex = require('6'),
@@ -1687,7 +1683,7 @@
                     }
                 };
             },
-            "21": function(require, module, exports) {
+            "18": function(require, module, exports) {
                 var _ = require('2'),
                     utils = require('8');
 
@@ -1859,7 +1855,7 @@
                     }
                 };
             },
-            "14": function(require, module, exports) {
+            "11": function(require, module, exports) {
                 var _ = require('2');
 
                 var _hooks = {
@@ -1981,7 +1977,7 @@
                     }
                 };
             },
-            "28": function(require, module, exports) {
+            "25": function(require, module, exports) {
                 var _getText = function(elem) {
                     if (!elem) { return ''; }
                     return elem.textContent || elem.innerText;
@@ -2003,37 +1999,68 @@
                     }
                 };
             },
-            "15": function(require, module, exports) {
+            "12": function(require, module, exports) {
                 var supports = require('7'),
-                    array = require('13');
+                    array = require('10');
 
                 var _rspace = /\s+/g;
 
                 var _classArrayCache = {};
                 var _classMapCache = {};
 
+                var _isEmpty = function(str) { return str === null || str === undefined || str === ''; };
                 var _isNotEmpty = function(str) { return str !== null && str !== undefined && str !== ''; };
+
+                var _splitImpl = function(name) {
+                    if (_isEmpty(name)) { return []; }
+                    var split = name.split(_rspace),
+                        len = split.length,
+                        idx = split.length,
+                        names = [],
+                        nameSet = {},
+                        curName;
+                    while (idx--) {
+                        curName = split[len - (idx + 1)];
+                        if (nameSet[curName]) { continue; }  // unique
+                        if (_isEmpty(curName)) { continue; } // non-empty
+                        names.push(curName);
+                        nameSet[curName] = true;
+                    }
+                    return names;
+                };
 
                 var _split = function(name) {
                     if (_.isArray(name)) { return name; }
-                    return _classArrayCache[name] || (_classArrayCache[name] = _.chain(name.split(_rspace)).filter(_isNotEmpty).uniq().value());
+                    return _classArrayCache[name] || (_classArrayCache[name] = _splitImpl(name));
                 };
 
                 var _modern = {
+                    getClasses: function(elem) {
+                        return array.slice(elem.classList);
+                    },
+
                     hasClass: function(elem, name) {
                         return elem.classList.contains(name);
                     },
 
                     addClass: function(elem, names) {
-                        elem.classList.add.apply(null, names);
+                        elem.classList.add.apply(elem.classList, names);
                     },
 
                     removeClass: function(elem, names) {
-                        elem.classList.remove.apply(null, names);
+                        elem.classList.remove.apply(elem.classList, names);
+                    },
+
+                    toggleClass: function(elem, names) {
+                        elem.classList.toggle.apply(elem.classList, names);
                     }
                 };
 
                 var _legacy = {
+                    getClasses: function(elem) {
+                        return _split(elem.className);
+                    },
+
                     hasClass: function(elem, name) {
                         var elemClassNames = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
                             idx = elemClassNames.length;
@@ -2080,13 +2107,67 @@
                                 return;
                             }
                         }
+                    },
+
+                    toggleClass: function(elem, names) {
+                        var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
+                            elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
+                            nameIdx = elemClassNameArray.length,
+                            name,
+                            addClasses = [],
+                            addClassSet = {},
+                            removeClasses = [],
+                            removeClassSet = {};
+
+                        while (nameIdx--) {
+                            name = names[nameIdx];
+
+                            // Element has this class name
+                            if (elemClassNameMap[name] !== undefined) {
+                                // Already added to the list
+                                if (addClassSet[name]) { continue; }
+                                addClasses.push(name);
+                                addClassSet[name] = true;
+                            } else {
+                                // Already added to the list
+                                if (removeClassSet[name]) { continue; }
+                                removeClasses.push(name);
+                                removeClassSet[name] = true;
+                            }
+                        }
+
+                        if (addClasses.length) {
+                            this.addClass(elem, addClasses);
+                        }
+                        if (removeClasses.length) {
+                            this.addClass(elem, removeClasses);
+                        }
                     }
                 };
 
                 var _impl = supports.classList ? _modern : _legacy;
 
                 var _classes = {
-                    hasClass: function(elems, names) {
+                    getClasses: function(elems) {
+                        var names = [],
+                            nameSet = {},
+                            elemIdx = elems.length,
+                            curNames,
+                            curNameIdx,
+                            curName;
+                        while (elemIdx--) {
+                            curNames = _impl.getClasses(elems[elemIdx]);
+                            curNameIdx = curNames.length;
+                            while (curNameIdx--) {
+                                curName = curNames[curNameIdx];
+                                if (nameSet[curName]) { continue; }
+                                names.push(curName);
+                                nameSet[curName] = true;
+                            }
+                        }
+                    },
+
+                    hasAllClasses: function(elems, names) {
                         var numElems = elems.length,
                             numNames = names.length,
                             elemIdx = numElems,
@@ -2101,50 +2182,151 @@
                             while (nameIdx--) {
                                 name = names[nameIdx];
 
-                                if (_impl.hasClass(elem, name)) { return true; }
+                                if (!_impl.hasClass(elem, name)) { return false; }
                             }
                         }
 
-                        return false;
+                        return true;
                     },
 
-                    addClass: function(elems, names) {
+                    addClasses: function(elems, names) {
+                        // Support array-like objects
+                        if (!_.isArray(names)) { names = array.slice(names); }
                         var elemIdx = elems.length;
                         while (elemIdx--) {
                             _impl.addClass(elems[elemIdx], names);
                         }
                     },
 
-                    removeClass: function(elems, names) {
+                    removeClasses: function(elems, names) {
+                        // Support array-like objects
+                        if (!_.isArray(names)) { names = array.slice(names); }
                         var elemIdx = elems.length;
                         while (elemIdx--) {
                             _impl.removeClass(elems[elemIdx], names);
                         }
                     },
 
-                    toggleClass: function() {}
+                    removeAllClasses: function(elems) {
+                        var elemIdx = elems.length;
+                        while (elemIdx--) {
+                            elems[elemIdx].className = '';
+                        }
+                    },
+
+                    toggleClasses: function(elems, names) {
+                        // Support array-like objects
+                        if (!_.isArray(names)) { names = array.slice(names); }
+                        var elemIdx = elems.length;
+                        while (elemIdx--) {
+                            _impl.toggleClass(elems[elemIdx], names);
+                        }
+                    }
                 };
 
                 module.exports = _.extend({}, _classes, {
                     fn: {
-                        addClass: Overload()
+                        hasClass: Overload()
                             .args(String).use(function(name) {
-                                // TODO: Generalize this check?
-                                if (!this.length) { return this; }
+                                if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                                 var names = _split(name);
                                 if (!names.length) { return this; }
 
-                                _classes.addClass(this._elems, names);
+                                return _classes.hasAllClasses(this, names);
+                            })
+                            .expose(),
+
+                        addClass: Overload()
+                            .args(String).use(function(name) {
+                                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                                var names = _split(name);
+                                if (!names.length) { return this; }
+
+                                _classes.addClasses(this, names);
 
                                 return this;
                             })
-                            .args(Array).use(function(names) {
-                                // TODO: Generalize this check?
+                //            .args(Array).use(function(names) {
+                            .length(1).use(function(names) {
+                                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                                _classes.addClasses(this, names);
+
+                                return this;
+                            })
+                            .expose(),
+
+                        removeClass: Overload()
+                            .args().use(function() {
                                 if (!this.length) { return this; }
+
+                                _classes.removeAllClasses(this);
+
+                                return this;
+                            })
+                            .args(String).use(function(name) {
+                                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                                var names = _split(name);
                                 if (!names.length) { return this; }
 
-                                _classes.addClass(this._elems, names);
+                                _classes.removeClasses(this, names);
+
+                                return this;
+                            })
+                //            .args(Array).use(function(names) {
+                            .length(1).use(function(names) {
+                                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                                _classes.removeClasses(this, names);
+
+                                return this;
+                            })
+                            .expose(),
+
+                        toggleClass: Overload()
+                            .args(String).use(function(name) {
+                                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                                var names = _split(name);
+                                if (!names.length) { return this; }
+
+                                _classes.toggleClasses(this, names);
+
+                                return this;
+                            })
+                            .args(String, Boolean).use(function(name, shouldAdd) {
+                                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                                var names = _split(name);
+                                if (!names.length) { return this; }
+
+                                if (shouldAdd) {
+                                    _classes.addClasses(this, names);
+                                } else {
+                                    _classes.removeClasses(this, names);
+                                }
+
+                                return this;
+                            })
+                //            .args(Array).use(function(names) {
+                            .length(1).use(function(names) {
+                                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                                _classes.toggleClasses(this, names);
+
+                                return this;
+                            })
+                            .length(2).use(function(names, shouldAdd) {
+                                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                                if (shouldAdd) {
+                                    _classes.addClasses(this, names);
+                                } else {
+                                    _classes.removeClasses(this, names);
+                                }
 
                                 return this;
                             })
