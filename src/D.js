@@ -63,7 +63,7 @@ var _hasMoreConflict = false,
     _prevjQuery,
     _prev$;
 
-_.extend(DOM, parser.fn, {
+_.extend(DOM, parser.D, {
     each:    array.each,
     map:     _.map,
     extend:  _.extend,

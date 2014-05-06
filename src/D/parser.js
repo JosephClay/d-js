@@ -13,7 +13,9 @@ var _parseHtml = function(str) {
 module.exports = {
     parseHtml: _parse,
 
-    fn: {
+    // Top-level functions attached directly to D.
+    // Invoked via `D.parseHTML('...')`, as opposed to `D('div').parseHTML('...')`.
+    D: {
         parseHtml: _parseHtml,
         // Because no one know what the case should be
         parseHTML: _parseHtml

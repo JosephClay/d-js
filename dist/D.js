@@ -113,7 +113,7 @@
                     _prevjQuery,
                     _prev$;
 
-                _.extend(DOM, parser.fn, {
+                _.extend(DOM, parser.D, {
                     each:    array.each,
                     map:     _.map,
                     extend:  _.extend,
@@ -487,7 +487,9 @@
                 module.exports = {
                     parseHtml: _parse,
 
-                    fn: {
+                    // Top-level functions attached directly to D.
+                    // Invoked via `D.parseHTML('...')`, as opposed to `D('div').parseHTML('...')`.
+                    D: {
                         parseHtml: _parseHtml,
                         // Because no one know what the case should be
                         parseHTML: _parseHtml
