@@ -127,17 +127,13 @@ module.exports = {
 
         is: Overload()
                 .args(String).use(function(selector) {
-                    return D(
-                        _.every(this, function(elem) {
-                            return _isMatch(elem, selector);
-                        })
-                    );
+                    return _.any(this, function(elem) {
+                        return _isMatch(elem, selector);
+                    });
                 })
                 .args(Function).use(function(iterator) {
                     // TODO: Internal "every"
-                    return D(
-                        _.every(this, iterator)
-                    );
+                    return _.any(this, iterator);
                 })
                 .expose(),
 
