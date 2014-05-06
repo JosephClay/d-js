@@ -45,18 +45,18 @@
         {
             "/D.js": function(require, module, exports) {
                 var _ = require('/_.js'),
-                    parser = require('/D\parser.js'),
+                    parser = require('/D/parser.js'),
                     utils = require('/utils.js'),
-                    array = require('/modules\array.js'),
-                    onready = require('/modules\onready.js'),
-                    selectors = require('/modules\selectors.js'),
-                    transversal = require('/modules\transversal.js'),
-                    dimensions = require('/modules\dimensions.js'),
-                    manip = require('/modules\manip.js'),
-                    css = require('/modules\css.js'),
-                    attr = require('/modules\attr.js'),
-                    val = require('/modules\val.js'),
-                    classes = require('/modules\classes.js');
+                    array = require('/modules/array.js'),
+                    onready = require('/modules/onready.js'),
+                    selectors = require('/modules/selectors.js'),
+                    transversal = require('/modules/transversal.js'),
+                    dimensions = require('/modules/dimensions.js'),
+                    manip = require('/modules/manip.js'),
+                    css = require('/modules/css.js'),
+                    attr = require('/modules/attr.js'),
+                    val = require('/modules/val.js'),
+                    classes = require('/modules/classes.js');
 
                 // Store previous reference
                 var _prevD = window.D;
@@ -467,7 +467,7 @@
 
                 module.exports = _;
             },
-            "/D\parser.js": function(require, module, exports) {
+            "/D/parser.js": function(require, module, exports) {
                 var _parse = function(htmlStr) {
                     var tmp = document.implementation.createHTMLDocument();
                         tmp.body.innerHTML = htmlStr;
@@ -492,6 +492,8 @@
             },
             "/utils.js": function(require, module, exports) {
                 var _BEGINNING_NEW_LINES = /^[\n]*/;
+
+                var overload = require('overload');
 
                 module.exports = {
                     exists: function(val) {
@@ -526,7 +528,7 @@
                     }
                 };
             },
-            "/modules\array.js": function(require, module, exports) {
+            "/modules/array.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     _utils = require('/utils.js');
 
@@ -705,7 +707,7 @@
                     }
                 };
             },
-            "/modules\onready.js": function(require, module, exports) {
+            "/modules/onready.js": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
@@ -749,11 +751,11 @@
                     return this;
                 };
             },
-            "/modules\selectors.js": function(require, module, exports) {
+            "/modules/selectors.js": function(require, module, exports) {
                 var _utils = require('/utils.js'),
                     _cache = require('/cache.js'),
                     _regex = require('/regex.js'),
-                    _array = require('/modules\array.js'),
+                    _array = require('/modules/array.js'),
                     _nodeType = require('/nodeType.js'),
                     _supports = require('/supports.js'),
 
@@ -1075,12 +1077,12 @@
                 div.cssText = 'opacity:.55';
                 module.exports = div;
             },
-            "/modules\transversal.js": function(require, module, exports) {
+            "/modules/transversal.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     _nodeType = require('/nodeType.js'),
 
-                    _array = require('/modules\array.js'),
-                    _selectors = require('/modules\selectors.js');
+                    _array = require('/modules/array.js'),
+                    _selectors = require('/modules/selectors.js');
 
                 var _getSiblings = function(context) {
                         var idx = 0,
@@ -1219,9 +1221,9 @@
                     }
                 };
             },
-            "/modules\dimensions.js": function(require, module, exports) {
+            "/modules/dimensions.js": function(require, module, exports) {
                 var _ = require('/_.js'),
-                    _css = require('/modules\css.js');
+                    _css = require('/modules/css.js');
 
                 var _getDocumentDimension = function(elem, name) {
                         // Either scroll[Width/Height] or offset[Width/Height] or
@@ -1333,7 +1335,7 @@
                     }
                 };
             },
-            "/modules\css.js": function(require, module, exports) {
+            "/modules/css.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     _cache = require('/cache.js'),
                     _regex = require('/regex.js'),
@@ -1681,7 +1683,7 @@
                     }
                 };
             },
-            "/modules\manip.js": function(require, module, exports) {
+            "/modules/manip.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     utils = require('/utils.js');
 
@@ -1853,7 +1855,7 @@
                     }
                 };
             },
-            "/modules\attr.js": function(require, module, exports) {
+            "/modules/attr.js": function(require, module, exports) {
                 var _ = require('/_.js');
 
                 var _hooks = {
@@ -1975,7 +1977,7 @@
                     }
                 };
             },
-            "/modules\val.js": function(require, module, exports) {
+            "/modules/val.js": function(require, module, exports) {
                 var _getText = function(elem) {
                     if (!elem) { return ''; }
                     return elem.textContent || elem.innerText;
@@ -1997,9 +1999,9 @@
                     }
                 };
             },
-            "/modules\classes.js": function(require, module, exports) {
+            "/modules/classes.js": function(require, module, exports) {
                 var supports = require('/supports.js'),
-                    array = require('/modules\array.js');
+                    array = require('/modules/array.js');
 
                 var _rspace = /\s+/g;
 
