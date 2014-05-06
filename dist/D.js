@@ -135,7 +135,7 @@
                         _hasMoreConflict = true;
                         _prevjQuery = window.jQuery;
                         _prev$ = window.$;
-                        window.jQuery = window.$ = DOM;
+                        window.jQuery = window.Zepto = window.$ = DOM;
                     }
                 });
 
