@@ -2,6 +2,8 @@ var _ = require('_'),
     supports = require('../supports'),
     array = require('./array');
 
+// TODO: Use cache module
+
 var _rspace = /\s+/g;
 
 var _classArrayCache = {};
@@ -51,7 +53,10 @@ var _modern = {
     },
 
     toggleClasses: function(elem, names) {
-        elem.classList.toggle.apply(elem.classList, names);
+        var idx = names.length;
+        while (idx--) {
+            elem.classList.toggle.call(elem.classList, names[idx]);
+        }
     }
 };
 
@@ -166,26 +171,12 @@ var _classes = {
         }
     },
 
-    hasAllClasses: function(elems, names) {
-        var numElems = elems.length,
-            numNames = names.length,
-            elemIdx = numElems,
-            nameIdx,
-            elem,
-            name;
-
+    doAnyElemsHaveClass: function(elems, name) {
+        var elemIdx = elems.length;
         while (elemIdx--) {
-            elem = elems[elemIdx];
-
-            nameIdx = numNames;
-            while (nameIdx--) {
-                name = names[nameIdx];
-
-                if (!_impl.hasClass(elem, name)) { return false; }
-            }
+            if (_impl.hasClass(elems[elemIdx], name)) { return true; }
         }
-
-        return true;
+        return false;
     },
 
     addClasses: function(elems, names) {
@@ -228,11 +219,7 @@ module.exports = _.extend({}, _classes, {
         hasClass: Overload()
             .args(String).use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
-
-                var names = _split(name);
-                if (!names.length) { return this; }
-
-                return _classes.hasAllClasses(this, names);
+                return _classes.doAnyElemsHaveClass(this, name);
             })
             .expose(),
 
@@ -247,12 +234,14 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-//            .args(Array).use(function(names) {
-            .length(1).use(function(names) {
+            .args(Array).use(function(names) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 _classes.addClasses(this, names);
 
+                return this;
+            })
+            .args(O.any(null, undefined)).use(function() {
                 return this;
             })
             .expose(),
@@ -275,12 +264,14 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-//            .args(Array).use(function(names) {
-            .length(1).use(function(names) {
+            .args(Array).use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 _classes.removeClasses(this, names);
 
+                return this;
+            })
+            .args(O.any(null, undefined)).use(function() {
                 return this;
             })
             .expose(),
@@ -310,12 +301,14 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-//            .args(Array).use(function(names) {
-            .length(1).use(function(names) {
+            .args(Array).use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 _classes.toggleClasses(this, names);
 
+                return this;
+            })
+            .args(O.any(null, undefined)).use(function() {
                 return this;
             })
             .length(2).use(function(names, shouldAdd) {

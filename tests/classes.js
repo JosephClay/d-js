@@ -130,8 +130,11 @@
 //        ok(!$set.hasClass('asdf'), 'Check node,textnode,comment for removeClass');
 
 
+        // NOTE: jQuery's .attr() normalizes `null` to `undefined`; we do not.
+        //       Therefore the test has been updated to check for a `null` return value.
+        // TODO: Should we normalize `null` to `undefined` in .attr()?
         D(div).removeClass(valueObj('foo'));
-        strictEqual(D(div).attr('class'), undefined, 'removeClass doesnt create a class attribute');
+        strictEqual(D(div).attr('class'), null, 'removeClass doesnt create a class attribute');
 
         div.className = ' test ';
 
@@ -164,7 +167,7 @@
     });
 
     var testToggleClass = function(valueObj) {
-        expect(17);
+        expect(9);
 
         var e = D('#firstp');
         ok(!e.is('.test'), 'Assert class not present');
@@ -188,25 +191,6 @@
         ok((e.is('.testA.testC') && !e.is('.testB')), 'Assert 1 class added, 1 class removed, and 1 class kept');
         e.toggleClass(valueObj('testA testC'));
         ok((!e.is('.testA') && !e.is('.testB') && !e.is('.testC')), 'Assert no class present');
-
-        // toggleClass storage
-        e.toggleClass(true);
-        ok(e[ 0 ].className === '', 'Assert class is empty (data was empty)');
-        e.addClass('testD testE');
-        ok(e.is('.testD.testE'), 'Assert class present');
-        e.toggleClass();
-        ok(!e.is('.testD.testE'), 'Assert class not present');
-        ok(D._data(e[ 0 ], '__className__') === 'testD testE', 'Assert data was stored');
-        e.toggleClass();
-        ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
-        e.toggleClass(false);
-        ok(!e.is('.testD.testE'), 'Assert class not present');
-        e.toggleClass(true);
-        ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
-        e.toggleClass();
-        e.toggleClass(false);
-        e.toggleClass();
-        ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
 
         // Cleanup
         e.removeClass('testD');
@@ -295,15 +279,16 @@
         ok(!D('<p class="hi0">p0</p><p class="hi1">p1</p><p class="hi2">p2</p>').hasClass('hi'), 'Did not find a class when not present');
     });
 
-    test('contents().hasClass() returns correct values', function() {
-        expect(2);
-
-        var $div = D('<div><span class="foo"></span><!-- comment -->text</div>'),
-        $contents = $div.contents();
-
-        ok($contents.hasClass('foo'), 'Found "foo" in $contents');
-        ok(!$contents.hasClass('undefined'), 'Did not find "undefined" in $contents (correctly)');
-    });
+    // TODO: Implement .contents()?
+//    test('contents().hasClass() returns correct values', function() {
+//        expect(2);
+//
+//        var $div = D('<div><span class="foo"></span><!-- comment -->text</div>'),
+//        $contents = $div.contents();
+//
+//        ok($contents.hasClass('foo'), 'Found "foo" in $contents');
+//        ok(!$contents.hasClass('undefined'), 'Did not find "undefined" in $contents (correctly)');
+//    });
 
     test('hasClass correctly interprets non-space separators (#13835)', function() {
         expect(4);
@@ -314,12 +299,12 @@
                 'form-feed': '&#12;',
                 'carriage-return': '&#13;'
             },
-            classes = D.map(map, function(separator, label) {
+            classes = _.map(map, function(separator, label) {
                 return ' ' + separator + label + separator + ' ';
             }),
             $div = D('<div class="' + classes + '"></div>');
 
-        D.each(map, function(label) {
+        _.each(map, function(label) {
             ok($div.hasClass(label), label.replace('-', ' '));
         });
     });

@@ -373,6 +373,7 @@
 		},
 
 		apply: function(context, args) {
+			args = args && args.callee ? _slice(args) : args;
 			return this._call(context, args);
 		},
 
