@@ -2,6 +2,8 @@ var _ = require('_'),
     supports = require('../supports'),
     array = require('./array');
 
+// TODO: Use cache module
+
 var _rspace = /\s+/g;
 
 var _classArrayCache = {};
@@ -51,7 +53,10 @@ var _modern = {
     },
 
     toggleClasses: function(elem, names) {
-        elem.classList.toggle.apply(elem.classList, names);
+        var idx = names.length;
+        while (idx--) {
+            elem.classList.toggle.call(elem.classList, names[idx]);
+        }
     }
 };
 
@@ -247,12 +252,14 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-//            .args(Array).use(function(names) {
-            .length(1).use(function(names) {
+            .args(Array).use(function(names) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 _classes.addClasses(this, names);
 
+                return this;
+            })
+            .args(O.any(null, undefined)).use(function() {
                 return this;
             })
             .expose(),
@@ -275,12 +282,14 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-//            .args(Array).use(function(names) {
-            .length(1).use(function(names) {
+            .args(Array).use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 _classes.removeClasses(this, names);
 
+                return this;
+            })
+            .args(O.any(null, undefined)).use(function() {
                 return this;
             })
             .expose(),
@@ -310,12 +319,14 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-//            .args(Array).use(function(names) {
-            .length(1).use(function(names) {
+            .args(Array).use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 _classes.toggleClasses(this, names);
 
+                return this;
+            })
+            .args(O.any(null, undefined)).use(function() {
                 return this;
             })
             .length(2).use(function(names, shouldAdd) {

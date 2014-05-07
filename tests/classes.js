@@ -167,7 +167,7 @@
     });
 
     var testToggleClass = function(valueObj) {
-        expect(17);
+        expect(9);
 
         var e = D('#firstp');
         ok(!e.is('.test'), 'Assert class not present');
@@ -191,25 +191,6 @@
         ok((e.is('.testA.testC') && !e.is('.testB')), 'Assert 1 class added, 1 class removed, and 1 class kept');
         e.toggleClass(valueObj('testA testC'));
         ok((!e.is('.testA') && !e.is('.testB') && !e.is('.testC')), 'Assert no class present');
-
-        // toggleClass storage
-        e.toggleClass(true);
-        ok(e[ 0 ].className === '', 'Assert class is empty (data was empty)');
-        e.addClass('testD testE');
-        ok(e.is('.testD.testE'), 'Assert class present');
-        e.toggleClass();
-        ok(!e.is('.testD.testE'), 'Assert class not present');
-        ok(D._data(e[ 0 ], '__className__') === 'testD testE', 'Assert data was stored');
-        e.toggleClass();
-        ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
-        e.toggleClass(false);
-        ok(!e.is('.testD.testE'), 'Assert class not present');
-        e.toggleClass(true);
-        ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
-        e.toggleClass();
-        e.toggleClass(false);
-        e.toggleClass();
-        ok(e.is('.testD.testE'), 'Assert class present (restored from data)');
 
         // Cleanup
         e.removeClass('testD');
