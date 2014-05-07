@@ -1,4 +1,4 @@
-var _ = require('../_'),
+var _ = require('_'),
     _supports = require('../supports'),
     _nodeType = require('../nodeType');
 

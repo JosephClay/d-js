@@ -67,8 +67,10 @@ test('length', function() {
 test('toArray()', function() {
     expect(4);
 
+    var isArray = function(obj) { return Object.prototype.toString.call(obj) === '[object Array]'; };
+
     deepEqual(D('#').toArray(), [], 'Convert D object to an empty Array');
-    ok(_.isArray(D('body').toArray()), 'Convert D object to an Array');
+    ok(isArray(D('body').toArray()), 'Convert D object to an Array');
     equal(D('body').toArray().length, 1, 'Convert D object to an Array with the appropriate length');
     deepEqual(D('body').toArray(), [document.body], 'Convert D object to an Array of elements');
 });

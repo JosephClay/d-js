@@ -2,14 +2,14 @@ var _isReady = false,
     _registration = [];
 
 var _bind = function(fn) {
-    if (document.readyState === "complete") {
+    if (document.readyState === 'complete') {
         return fn();
     }
 
     if (document.addEventListener) {
         return document.addEventListener('DOMContentLoaded', fn);
     }
-    
+
     document.attachEvent('onreadystatechange', function() {
         if (document.readyState === 'interactive') { fn(); }
     });

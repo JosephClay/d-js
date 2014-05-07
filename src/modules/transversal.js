@@ -1,4 +1,4 @@
-var _ = require('../_'),
+var _ = require('_'),
     _nodeType = require('../nodeType'),
 
     _array = require('./array'),

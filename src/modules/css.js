@@ -1,4 +1,4 @@
-var _ = require('../_'),
+var _ = require('_'),
     _cache = require('../cache'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),

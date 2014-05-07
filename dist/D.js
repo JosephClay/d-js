@@ -320,7 +320,9 @@
                 };
             },
             "/utils.js": function(require, module, exports) {
-                var _BEGINNING_NEW_LINES = /^[\n]*/;
+                var _ = require('_'),
+
+                    _BEGINNING_NEW_LINES = /^[\n]*/;
 
                 module.exports = {
                     exists: function(val) {
@@ -356,7 +358,7 @@
                 };
             },
             "/modules/array.js": function(require, module, exports) {
-                var _ = require('/_.js'),
+                var _ = require('_'),
                     _utils = require('/utils.js');
 
                 var _slice = (function(_slice) {
@@ -534,195 +536,12 @@
                     }
                 };
             },
-            "/_.js": function(require, module, exports) {
-                var _id = 0,
-                    _toString = Object.prototype.toString,
-                    _stringProto = String.prototype,
-                    _rtrim = /^\s+|\s+$/g;
-
-                var _ = {
-                    uniqueId: function() {
-                        return _id++;
-                    },
-
-                    exists: function(obj) {
-                        return obj !== null && obj !== undefined;
-                    },
-
-                    trim: _stringProto.trim ?
-                            function(str) { return (str + '').trim(); } :
-                                function(str) { return (str + '').replace(_rtrim, ''); },
-
-                    parseInt: function(num) {
-                        return parseInt(num, 10);
-                    },
-
-                    coerceToNum: function(val) {
-                        return _.isNumber(val) ? val : // Its a number!
-                                _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN
-                                0; // Default to zero
-                    },
-
-                    toPx: function(num) {
-                        return num + 'px';
-                    },
-
-                    isElement: function(obj) {
-                        return !!(obj && obj.nodeType === 1);
-                    },
-
-                    isArray: Array.isArray || function(obj) {
-                        return _toString.call(obj) === '[object Array]';
-                    },
-
-                    // NodeList check. For our purposes, a node list
-                    // and an HTMLCollection are the same
-                    isNodeList: function(obj) {
-                        return obj instanceof NodeList || obj instanceof HTMLCollection;
-                    },
-
-                    // Window check
-                    isWindow: function(obj) {
-                        return obj && obj === obj.window;
-                    },
-
-                    // Flatten that also checks if value is a NodeList
-                    flatten: function(arr) {
-                        var result = [];
-
-                        var idx = 0, length = arr.length,
-                            value;
-                        for (; idx < length; idx++) {
-                            value = arr[idx];
-
-                            if (_.isArray(value) || _.isNodeList(value)) {
-                                result = result.concat(_.flatten(value));
-                            } else {
-                                result.push(value);
-                            }
-                        }
-
-                        return result;
-                    },
-
-                    // Concat flat for a single array of arrays
-                    concatFlat: (function(concat) {
-
-                        return function(nestedArrays) {
-                            return concat.apply([], nestedArrays);
-                        };
-
-                    }([].concat)),
-
-                    // No-context every; strip each()
-                    every: function(arr, iterator) {
-                        if (!_.exists(arr)) { return true; }
-
-                        var idx = 0, length = arr.length;
-                        for (; idx < length; idx++) {
-                            if (!iterator(value, idx)) { return false; }
-                        }
-
-                        return true;
-                    },
-
-                    // Faster extend; strip each()
-                    extend: function() {
-                        var args = arguments,
-                            obj = args[0],
-                            idx = 1, length = args.length;
-
-                        if (!obj) { return obj; }
-
-                        for (; idx < length; idx++) {
-                            var source = args[idx];
-                            if (source) {
-                                for (var prop in source) {
-                                    obj[prop] = source[prop];
-                                }
-                            }
-                        }
-
-                        return obj;
-                    },
-
-                    // Standard map
-                    map: function(arr, iterator) {
-                        var results = [];
-                        if (!arr) { return results; }
-
-                        var idx = 0, length = arr.length;
-                        for (; idx < length; idx++) {
-                            results.push(iterator(arr[idx], idx));
-                        }
-
-                        return results;
-                    },
-
-                    // Array-perserving map
-                    // http://jsperf.com/push-map-vs-index-replacement-map
-                    fastmap: function(arr, iterator) {
-                        if (!arr) { return []; }
-
-                        var idx = 0, length = arr.length;
-                        for (; idx < length; idx++) {
-                            arr[idx] = iterator(arr[idx], idx);
-                        }
-
-                        return arr;
-                    },
-
-                    filter: function(arr, iterator) {
-                        var results = [];
-                        if (!arr) { return results; }
-
-                        var idx = 0, length = arr.length;
-                        for (; idx < length; idx++) {
-                            if (iterator(arr[idx], idx)) {
-                                results.push(value);
-                            }
-                        }
-
-                        return results;
-                    }
-                };
-
-                // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-                var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
-                    idx = types.length,
-                    generateCheck = function(name) {
-                        return function(obj) {
-                            return _toString.call(obj) === '[object ' + name + ']';
-                        };
-                    },
-                    name;
-                while (idx--) {
-                    var name = types[idx];
-                    _['is' + name] = generateCheck(name);
-                }
-
-                // Optimize `isFunction` if appropriate.
-                if (typeof (/./) !== 'function') {
-                    _.isFunction = function(obj) {
-                        return typeof obj === 'function';
-                    };
-                }
-
-                // Optimize `isString` if appropriate.
-                if (typeof ('') === 'string') {
-                    _.isString = function(obj) {
-                        return typeof obj === 'string';
-                    };
-                }
-
-                module.exports = _;
-            },
             "/modules/onready.js": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
                 var _bind = function(fn) {
-                    if (document.readyState === "complete") {
+                    if (document.readyState === 'complete') {
                         return fn();
                     }
 
@@ -762,7 +581,8 @@
                 };
             },
             "/modules/selectors.js": function(require, module, exports) {
-                var _utils = require('/utils.js'),
+                var _ = require('_'),
+                    _utils = require('/utils.js'),
                     _cache = require('/cache.js'),
                     _regex = require('/regex.js'),
                     _array = require('/modules/array.js'),
@@ -932,7 +752,7 @@
                 };
             },
             "/cache.js": function(require, module, exports) {
-                var _ = require('/_.js');
+                var _ = require('_');
 
                 var _cache = {};
 
@@ -1112,7 +932,7 @@
                 module.exports = div;
             },
             "/modules/transversal.js": function(require, module, exports) {
-                var _ = require('/_.js'),
+                var _ = require('_'),
                     _nodeType = require('/nodeType.js'),
 
                     _array = require('/modules/array.js'),
@@ -1256,7 +1076,7 @@
                 };
             },
             "/modules/dimensions.js": function(require, module, exports) {
-                var _ = require('/_.js'),
+                var _ = require('_'),
                     _css = require('/modules/css.js');
 
                 var _getDocumentDimension = function(elem, name) {
@@ -1370,7 +1190,7 @@
                 };
             },
             "/modules/css.js": function(require, module, exports) {
-                var _ = require('/_.js'),
+                var _ = require('_'),
                     _cache = require('/cache.js'),
                     _regex = require('/regex.js'),
                     _nodeType = require('/nodeType.js'),
@@ -1718,7 +1538,7 @@
                 };
             },
             "/modules/manip.js": function(require, module, exports) {
-                var _ = require('/_.js'),
+                var _ = require('_'),
                     utils = require('/utils.js');
 
                 /*
@@ -1890,7 +1710,7 @@
                 };
             },
             "/modules/attr.js": function(require, module, exports) {
-                var _ = require('/_.js');
+                var _ = require('_');
 
                 var _hooks = {
                         tabindex: {
@@ -2012,7 +1832,7 @@
                 };
             },
             "/modules/prop.js": function(require, module, exports) {
-                var _ = require('/_.js'),
+                var _ = require('_'),
                     _supports = require('/supports.js'),
                     _nodeType = require('/nodeType.js');
 
@@ -2159,7 +1979,8 @@
                 };
             },
             "/modules/classes.js": function(require, module, exports) {
-                var supports = require('/supports.js'),
+                var _ = require('_'),
+                    supports = require('/supports.js'),
                     array = require('/modules/array.js');
 
                 var _rspace = /\s+/g;
@@ -2492,6 +2313,950 @@
                             .expose()
                     }
                 });
+            },
+            "/_.js": function(require, module, exports) {
+                var _id = 0,
+                    _toString = Object.prototype.toString,
+                    _stringProto = String.prototype,
+                    _rtrim = /^\s+|\s+$/g;
+
+                var _ = {
+                    uniqueId: function() {
+                        return _id++;
+                    },
+
+                    exists: function(obj) {
+                        return obj !== null && obj !== undefined;
+                    },
+
+                    trim: _stringProto.trim ?
+                            function(str) { return (str + '').trim(); } :
+                                function(str) { return (str + '').replace(_rtrim, ''); },
+
+                    parseInt: function(num) {
+                        return parseInt(num, 10);
+                    },
+
+                    coerceToNum: function(val) {
+                        return _.isNumber(val) ? val : // Its a number!
+                                _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN
+                                0; // Default to zero
+                    },
+
+                    toPx: function(num) {
+                        return num + 'px';
+                    },
+
+                    isElement: function(obj) {
+                        return !!(obj && obj.nodeType === 1);
+                    },
+
+                    isArray: Array.isArray || function(obj) {
+                        return _toString.call(obj) === '[object Array]';
+                    },
+
+                    // NodeList check. For our purposes, a node list
+                    // and an HTMLCollection are the same
+                    isNodeList: function(obj) {
+                        return obj instanceof NodeList || obj instanceof HTMLCollection;
+                    },
+
+                    // Window check
+                    isWindow: function(obj) {
+                        return obj && obj === obj.window;
+                    },
+
+                    // Flatten that also checks if value is a NodeList
+                    flatten: function(arr) {
+                        var result = [];
+
+                        var idx = 0, length = arr.length,
+                            value;
+                        for (; idx < length; idx++) {
+                            value = arr[idx];
+
+                            if (_.isArray(value) || _.isNodeList(value)) {
+                                result = result.concat(_.flatten(value));
+                            } else {
+                                result.push(value);
+                            }
+                        }
+
+                        return result;
+                    },
+
+                    // Concat flat for a single array of arrays
+                    concatFlat: (function(concat) {
+
+                        return function(nestedArrays) {
+                            return concat.apply([], nestedArrays);
+                        };
+
+                    }([].concat)),
+
+                    // No-context every; strip each()
+                    every: function(arr, iterator) {
+                        if (!_.exists(arr)) { return true; }
+
+                        var idx = 0, length = arr.length;
+                        for (; idx < length; idx++) {
+                            if (!iterator(value, idx)) { return false; }
+                        }
+
+                        return true;
+                    },
+
+                    // Faster extend; strip each()
+                    extend: function() {
+                        var args = arguments,
+                            obj = args[0],
+                            idx = 1, length = args.length;
+
+                        if (!obj) { return obj; }
+
+                        for (; idx < length; idx++) {
+                            var source = args[idx];
+                            if (source) {
+                                for (var prop in source) {
+                                    obj[prop] = source[prop];
+                                }
+                            }
+                        }
+
+                        return obj;
+                    },
+
+                    // Standard map
+                    map: function(arr, iterator) {
+                        var results = [];
+                        if (!arr) { return results; }
+
+                        var idx = 0, length = arr.length;
+                        for (; idx < length; idx++) {
+                            results.push(iterator(arr[idx], idx));
+                        }
+
+                        return results;
+                    },
+
+                    // Array-perserving map
+                    // http://jsperf.com/push-map-vs-index-replacement-map
+                    fastmap: function(arr, iterator) {
+                        if (!arr) { return []; }
+
+                        var idx = 0, length = arr.length;
+                        for (; idx < length; idx++) {
+                            arr[idx] = iterator(arr[idx], idx);
+                        }
+
+                        return arr;
+                    },
+
+                    filter: function(arr, iterator) {
+                        var results = [];
+                        if (!arr) { return results; }
+
+                        var idx = 0, length = arr.length;
+                        for (; idx < length; idx++) {
+                            if (iterator(arr[idx], idx)) {
+                                results.push(value);
+                            }
+                        }
+
+                        return results;
+                    }
+                };
+
+                // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
+                var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
+                    idx = types.length,
+                    generateCheck = function(name) {
+                        return function(obj) {
+                            return _toString.call(obj) === '[object ' + name + ']';
+                        };
+                    },
+                    name;
+                while (idx--) {
+                    var name = types[idx];
+                    _['is' + name] = generateCheck(name);
+                }
+
+                // Optimize `isFunction` if appropriate.
+                if (typeof (/./) !== 'function') {
+                    _.isFunction = function(obj) {
+                        return typeof obj === 'function';
+                    };
+                }
+
+                // Optimize `isString` if appropriate.
+                if (typeof ('') === 'string') {
+                    _.isString = function(obj) {
+                        return typeof obj === 'string';
+                    };
+                }
+
+                module.exports = _;
+            },
+            "/libs/Overload.js": function(require, module, exports) {
+                (function(root, undefined) {
+
+                	// Variablizing the strings for consistency
+                	// and to avoid harmful dot-notation look-ups with
+                	// javascript keywords
+                	var sNull      = 'Null',
+                		sUndefined = 'Undefined',
+                		sInfinity  = 'Infinity',
+                		sDate      = 'Date',
+                		sNaN       = 'NaN',
+                		sNumber    = 'Number',
+                		sString    = 'String',
+                		sObject    = 'Object',
+                		sArray     = 'Array',
+                		sRegExp    = 'RegExp',
+                		sBoolean   = 'Boolean',
+                		sFunction  = 'Function',
+                		sElement   = 'Element';
+
+                	// Utilizing the non-standard (but available in modern browsers) Global Object names
+                	// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+                	// Provide a polyfill for items without names
+                	(function() {
+                		var globalObjects = [
+                				sDate,
+                				sNumber,
+                				sString,
+                				sObject,
+                				sArray,
+                				sRegExp,
+                				sBoolean,
+                				sFunction,
+                				sElement
+                			],
+                			idx = globalObjects.length,
+                			globalObject;
+                		while (idx--) {
+                			globalObject = globalObjects[idx];
+                			if (!root[globalObject].name) {
+                				root[globalObject].name = globalObject;
+                			}
+                		}
+                	}());
+
+                	/**
+                	 * Possible values
+                	 * @type {Object}
+                	 */
+                	var _types = {};
+                	_types[sNull]      = 0;
+                	_types[sUndefined] = 1;
+                	_types[sInfinity]  = 2;
+                	_types[sDate]      = 3;
+                	_types[sNaN]       = 4;
+                	_types[sNumber]    = 5;
+                	_types[sString]    = 6;
+                	_types[sObject]    = 7;
+                	_types[sArray]     = 8;
+                	_types[sRegExp]    = 9;
+                	_types[sBoolean]   = 10;
+                	_types[sFunction]  = 11;
+                	_types[sElement]   = 12;
+
+                	/**
+                	 * Cached reference to Object.prototype.toString
+                	 * for type checking
+                	 * @type {Function}
+                	 */
+                	var _toString = (function(toString) {
+                			return function(obj) {
+                				return toString.call(obj);
+                			};
+                		}(({}).toString)),
+
+                		/**
+                		 * Type checks
+                		 */
+                		_checkMap = (function(map) {
+
+                			var types = [
+                					// Only mapping items that need to be mapped.
+                					// Items not in this list are doing faster
+                					// (non-string) checks
+                					//
+                					// k = key, v = value
+                					{ k: sDate,     v: _types[sDate]     },
+                					{ k: sNumber,   v: _types[sNumber]   },
+                					{ k: sString,   v: _types[sString]   },
+                					{ k: sObject,   v: _types[sObject]   },
+                					{ k: sArray,    v: _types[sArray]    },
+                					{ k: sRegExp,   v: _types[sRegExp]   },
+                					{ k: sFunction, v: _types[sFunction] }
+                				],
+                				idx = types.length;
+                			while (idx--) {
+                				map['[object ' + types[idx].k + ']'] = types[idx].v;
+                			}
+
+                			return map;
+
+                		}({})),
+
+                		/**
+                		 * Changes arguments to an array
+                		 * @param  {Arguments} arraylike
+                		 * @return {Array}
+                		 */
+                		_slice = (function(slice) {
+                			return function(arraylike) {
+                				return slice.call(arraylike);
+                			};
+                		}([].slice));
+
+                	// Reference: https://gist.github.com/dhm116/1790197
+                	if (!('bind' in Function.prototype)) {
+                		Function.prototype.bind = function(owner) {
+                			var self = this;
+
+                			if (arguments.length <= 1) {
+                				return function() {
+                					return self.apply(owner, arguments);
+                				};
+                			}
+
+                			var args = _slice(arguments);
+                			return function() {
+                				return self.apply(owner, arguments.length === 0 ? args : args.concat(_slice(arguments)));
+                			};
+                		};
+                	}
+
+                	var _getConfigurationType = function(val) {
+                		if (val === null) { return _types[sNull]; }
+                		if (val === undefined) { return _types[sUndefined]; }
+
+                		// we have something, but don't know what
+                		if (val.name === undefined) {
+                			if (val !== +val) { return _types[sNaN]; } // NaN check
+                			return _types[sInfinity]; // Infinity check
+                		}
+
+                		return _types[val.name];
+                	};
+
+                	var _getParameterType = function(val) {
+                		if (val === null) { return _types[sNull]; }
+                		if (val === undefined) { return _types[sUndefined]; }
+                		if (val === true || val === false) { return _types[sBoolean]; }
+                		if (val && val.nodeType === 1) { return _types[sElement]; } // Element check from Underscore
+
+                		var typeString = _toString(val);
+                		if (_checkMap[typeString] === _types[sNumber]) {
+                			if (val !== +val) { return _types[sNaN]; } // NaN check
+                			if (!isFinite(val)) { return _types[sInfinity]; } // Finite check
+                			return _types[sNumber]; // definitely a number
+                		}
+
+                		return _checkMap[typeString];
+                	};
+
+                	var _convertConfigurationTypes = function(args) {
+                		var parameters = [],
+                			idx = 0, length = args.length,
+                			configItem;
+                		for (; idx < length; idx++) {
+                			configItem = args[idx];
+                			parameters.push(
+                				(configItem instanceof Custom) ? configItem : _getConfigurationType(configItem)
+                			);
+                		}
+                		return parameters;
+                	};
+
+                	var _convertParametersTypes = function(args) {
+                		var parameters = [],
+                			idx = 0, length = args.length;
+                		for (; idx < length; idx++) {
+                			parameters.push(_getParameterType(args[idx]));
+                		}
+                		return parameters;
+                	};
+
+                	var _doesMapMatchArgsTypes = function(map, argTypes, args) {
+                		var mapLength = map.length,
+                			argLength = argTypes.length;
+
+                		if (mapLength === 0 && argLength === 0) { return true; }
+                		if (mapLength !== argLength) { return false; }
+
+                		var idx = 0,
+                			mapItem;
+                		for (; idx < argLength; idx++) {
+                			mapItem = map[idx];
+
+                			if (mapItem instanceof Custom) {
+                				if (mapItem.check(args[idx])) {
+                					continue;
+                				} else {
+                					return false;
+                				}
+                			}
+
+                			if (argTypes[idx] !== mapItem) {
+                				return false;
+                			}
+                		}
+
+                		return true;
+                	};
+
+                	var _getArgumentMatch = function(mappings, args) {
+                		mappings = mappings || [];
+
+                		var argTypes = _convertParametersTypes(args),
+                			idx = 0, length = mappings.length;
+                		for (; idx < length; idx++) {
+                			if (_doesMapMatchArgsTypes(mappings[idx].params, argTypes, args)) {
+                				return mappings[idx];
+                			}
+                		}
+
+                		return null;
+                	};
+
+                	var _getLengthMatch = function(mappings, args) {
+                		mappings = mappings || [];
+
+                		var argLength = args.length,
+                			idx = 0, length = mappings.length;
+                		for (; idx < length; idx++) {
+                			if (mappings[idx].length === argLength) {
+                				return mappings[idx];
+                			}
+                		}
+
+                		return null;
+                	};
+
+                	var _matchAny = function(args, val) {
+                		var type = _getParameterType(val),
+                			idx = args.length,
+                			mapItem;
+
+                		while (idx--) {
+                			mapItem = args[idx];
+
+                			if (mapItem instanceof Custom) {
+                				if (mapItem.check(args[idx])) {
+                					return true;
+                				} else {
+                					return false;
+                				}
+                			}
+
+                			if (args[idx] === type) {
+                				return true;
+                			}
+                		}
+
+                		return false;
+                	};
+
+                	/**
+                	 * Custom type that validates a value
+                	 * @constructor
+                	 * @param {Function} check
+                	 */
+                	var Custom = function(check) {
+                		this.check = check;
+                	};
+
+                	var O = {
+                		truthy: new Custom(function(val) {
+                			return (!!val) === true;
+                		}),
+                		falsy: new Custom(function(val) {
+                			return (!!val) === false;
+                		}),
+                		any: function() {
+                			var args = _convertConfigurationTypes(arguments);
+                			return new Custom(function(val) {
+                				return _matchAny(args, val);
+                			});
+                		},
+                		except: function() {
+                			var args = _convertConfigurationTypes(arguments);
+                			return new Custom(function(val) {
+                				return !_matchAny(args, val);
+                			});
+                		}
+                	};
+
+                	/**
+                	 * @constructor
+                	 */
+                	var Overload = function() {
+                		if (!(this instanceof Overload)) { return new Overload(); }
+
+                		/**
+                		 * Methods mapped to argument types
+                		 * Lazily instanciated
+                		 * @type {Array}
+                		 */
+                		// this._argMaps;
+
+                		/**
+                		 * Methods mapped to argument lengths
+                		 * Lazily instanciated
+                		 * @type {Array}
+                		 */
+                		// this._lenMaps;
+
+                		/**
+                		 * A fallback function if none
+                		 * of the criteria match on a call
+                		 * @type {Function}
+                		 */
+                		// this._f;
+                	};
+
+                	Overload.defineType = function(name, check) {
+                		var custom = new Custom(check);
+                		return (O[name] = custom);
+                	};
+
+                	Overload.prototype = {
+
+                		/** @constructor */
+                		constructor: Overload,
+
+                		args: function() {
+                			var self = this,
+                				args = arguments;
+
+                			return {
+                				use: function(method) {
+                					var argMappings = self._argMaps || (self._argMaps = []);
+                					argMappings.push({
+                						params: _convertConfigurationTypes(args),
+                						method: method
+                					});
+                					return self;
+                				}
+                			};
+                		},
+
+                		length: function(num) {
+                			var self = this;
+                			return {
+                				use: function(method) {
+                					var lengthMappings = self._lenMaps || (self._lenMaps = []);
+                					lengthMappings.push({
+                						length: (num === undefined) ? method.length : num,
+                						method: method
+                					});
+                					return self;
+                				}
+                			};
+                		},
+
+                		err: function() {
+                			throw 'Overload - exception: No methods matched';
+                		},
+
+                		fallback: function(method) {
+                			this._f = method;
+                			return this;
+                		},
+
+                		call: function() {
+                			var args = _slice(arguments);
+                			return this._call(args.shift(), args);
+                		},
+
+                		apply: function(context, args) {
+                			return this._call(context, args);
+                		},
+
+                		bind: function(context) {
+                			var self = this;
+                			return function() {
+                				return self._call(context, arguments);
+                			}.bind(context);
+                		},
+
+                		expose: function() {
+                			var self = this;
+                			return function() {
+                				return self._call(this, arguments);
+                			};
+                		},
+
+                		_call: function(context, args) {
+                			args = args || [];
+
+                			// Any argument match, of course, already matches
+                			// the length match, so this should be done first
+                			var argMatch = _getArgumentMatch(this._argMaps, args);
+                			if (argMatch) {
+                				return argMatch.method.apply(context, args);
+                			}
+
+                			// Check for a length match
+                			var lengthMatch = _getLengthMatch(this._lenMaps, args);
+                			if (lengthMatch) {
+                				return lengthMatch.method.apply(context, args);
+                			}
+
+                			// Check for a fallback
+                			if (this._f) {
+                				return this._f.apply(context, args);
+                			}
+
+                			// Error
+                			return this.err(args);
+                		}
+                	};
+
+                	root.Overload = Overload;
+                	root.O = O;
+
+                }(window));
+            },
+            "/libs/Signal.js": function(require, module, exports) {
+                (function(root, undefined) {
+
+                		/**
+                		 * Quick reference to Array.prototype.splice
+                		 * for duplicating arrays (while removing the
+                		 * first parameter)
+                		 * @type {Function}
+                		 */
+                	var _ripFirstArg = (function(splice) {
+                			return function(arr) {
+                				return splice.call(arr, 0, 1)[0];
+                			};
+                		}([].splice)),
+
+                		/**
+                		 * Object merger
+                		 * @param {Objects}
+                		 * @return {Object}
+                		 */
+                		_extend = function() {
+                			var args = arguments,
+                				base = args[0],
+                				idx = 1, length = args.length,
+                				key, merger;
+                			for (; idx < length; idx += 1) {
+                				merger = args[idx];
+
+                				for (key in merger) {
+                					base[key] = merger[key];
+                				}
+                			}
+                		},
+
+                		/**
+                		 * Holds cached, parsed event keys by string
+                		 * @type {Object}
+                		 */
+                		_cache = {},
+
+                		/**
+                		 * Unique Id
+                		 * @type {Number}
+                		 */
+                		_id = 0,
+                		_uniqueId = function() {
+                			return _id++;
+                		},
+
+                		/**
+                		 * Cached regex used to parse event string
+                		 * @type {RegExp}
+                		 */
+                		_NAME_REGEX = /(?:([\w-]+):)?([\w-]*)(?:.([\w-]+))?/,
+                		_parseConfig = function(eventname) {
+                			var match = _NAME_REGEX.exec(eventname);
+                			return {
+                				// [0] : the entire match, don't care!
+                				// [1] : handle
+                				handle:    (match[1] === undefined) ? '' : match[1],
+                				// [2] : event
+                				evt:       (match[2] === undefined) ? '' : match[2],
+                				// [3] : namespace
+                				namespace: (match[3] === undefined) ? '' : match[3]
+                			};
+                		},
+
+                		_reassignEvents = function(handle, active, inactive) {
+                			inactive[handle] = inactive[handle] || {};
+                			inactive[handle] = _extend({}, active[handle]);
+                			delete active[handle];
+                		},
+
+                		_callEvents = function(events, args) {
+                			args = args || [];
+
+                			var idx = 0, length = events.length,
+                				evt;
+                			for (; idx < length; idx += 1) {
+                				evt = events[idx];
+                				if (!evt) { continue; }
+                				if (evt.apply(null, args) === false) { return; }
+                			}
+                		},
+
+                		_eventLookup = function(eventConfig, location) {
+                			var handle    = location[eventConfig.handle] || (location[eventConfig.handle] = {}),
+                				evt       = handle[eventConfig.evt]      || (handle[eventConfig.evt]      = {}),
+                				namespace = evt[eventConfig.namespace]   || (evt[eventConfig.namespace]   = []);
+
+                			return namespace;
+                		};
+
+
+                	var Signal = function() {
+                		/**
+                		 * Holds active events by handle + event + namespace
+                		 * @type {Object}
+                		 */
+                		this._active = {};
+
+                		/**
+                		 * Holds inactive events by handle - lazy creation
+                		 * @type {Object}
+                		 */
+                		// this._inactive;
+
+                		/**
+                		 * Holds subscriptions - lazy creation
+                		 * @type {Object}
+                		 */
+                		// this._subs;
+                	};
+
+                	_extend(Signal, {
+
+                		/**
+                		 * Returns a new Signal instance
+                		 * @return {Signal}
+                		 */
+                		construct: function() {
+                			return new Signal();
+                		},
+
+                		/**
+                		 * Klass extend method
+                		 * @param  {Function} constructor
+                		 * @param  {Object} extension   prototype extension
+                		 * @return {Function} constructor
+                		 */
+                		extend: function(constructor, extension) {
+                			var hasConstructor = (typeof constructor === 'function');
+                			if (!hasConstructor) { extension = constructor; }
+
+                			var self = this,
+                				fn = function() {
+                					var ret = self.apply(this, arguments);
+                					if (hasConstructor) {
+                						ret = constructor.apply(this, arguments);
+                					}
+                					return ret;
+                				};
+
+                			// Add properties to the object
+                			_extend(fn, this);
+
+                			// Duplicate the prototype
+                			var NoOp = function() {};
+                			NoOp.prototype = this.prototype;
+                			fn.prototype = new NoOp();
+
+                			// Merge the prototypes
+                			_extend(fn.prototype, this.prototype, extension);
+                			fn.prototype.constructor = constructor || fn;
+
+                			return fn;
+                		}
+                	});
+
+                	Signal.prototype = {
+
+                		constructor: Signal,
+
+                		subscribe: function(name, func) {
+                			var subscriptions = this._subs || (this._subs = {});
+
+                			var id = _uniqueId(),
+                				location = subscriptions[name] || (subscriptions[name] = []);
+
+                			func.__subid__ = id;
+                			location.push(func);
+
+                			return id;
+                		},
+
+                		unsubscribe: function(name, id) {
+                			var subscriptions = this._subs || (this._subs = {});
+
+                			var location = subscriptions[name];
+                			if (!location) { return; }
+
+                			var idx = 0, length = location.length;
+                			for (; idx < length; idx += 1) {
+                				if (location[idx].__subid__ === id) {
+                					location.splice(idx, 1);
+                					return true;
+                				}
+                			}
+
+                			return false;
+                		},
+
+                		dispatch: function() {
+                			var subscriptions = this._subs || (this._subs = {});
+
+                			var args = arguments,
+                				name = _ripFirstArg(args),
+                				location = subscriptions[name] || (subscriptions[name] = []),
+                				idx = 0, length = location.length,
+                				func;
+                			for (; idx < length; idx++) {
+                				func = location[idx];
+                				if (func) { func.apply(null, args); }
+                			}
+                		},
+
+                		// Disable | Enable *************************************
+                		disable: function(handle) {
+                			var active = this._active,
+                				inactive = this._inactive || (this._inactive = {});
+
+                			_reassignEvents(handle, active, inactive);
+
+                			return this;
+                		},
+
+                		enable: function(handle) {
+                			var active = this._active,
+                				inactive = this._inactive || (this._inactive = {});
+
+                			_reassignEvents(handle, inactive, active);
+
+                			return this;
+                		},
+
+                		// On | Off ************************************************
+                		on: function(eventname, callback) {
+                			var eventConfig = _cache[eventname] || (_cache[eventname] = _parseConfig(eventname));
+
+                			_eventLookup(eventConfig, this._active).push(callback);
+
+                			return this;
+                		},
+                		bind: function() { this.on.apply(this, arguments); },
+
+                		off: function(eventname) {
+                			var active = this._active,
+                				eventConfig = _cache[eventname] || (_cache[eventname] = _parseConfig(eventname));
+
+                			if (eventConfig.evt === '') { // Removing a namespace
+
+                				var events = active[eventConfig.handle],
+                					eventName,
+                					namespaceName;
+                				for (eventName in events) {
+                					for (namespaceName in events[eventName]) {
+                						if (namespaceName === eventConfig.namespace) {
+                							active[eventConfig.handle][eventName][namespaceName].length = 0;
+                						}
+                					}
+                				}
+
+                			} else if (eventConfig.namespace !== '') { // Has a namespace
+
+                				active[eventConfig.handle][eventConfig.evt][eventConfig.namespace].length = 0;
+
+                			} else { // Does not have a namespace
+
+                				active[eventConfig.handle][eventConfig.evt] = { '': [] };
+
+                			}
+
+                			return this;
+                		},
+                		unbind: function() { this.off.apply(this, arguments); },
+
+                		// Based on underscore's once implementation
+                		once: function(eventname, callback) {
+                			var hasRan = false,
+                				memo;
+                			return this.on(eventname, function() {
+                				return function() {
+                					if (hasRan) { return memo; }
+                					hasRan = true;
+
+                					memo = callback.apply(this, arguments);
+                					callback = null;
+
+                					return memo;
+                				};
+                			});
+                		},
+
+                		// Trigger ************************************************
+                		trigger: function() {
+                			var args = arguments,
+                				active = this._active,
+                				eventname = _ripFirstArg(args),
+                				eventConfig = _cache[eventname] || (_cache[eventname] = _parseConfig(eventname)),
+                				// Always do an event lookup. This ensures that the location
+                				// of the event has been created so that calls to trigger
+                				// for events that haven't been registered don't throw exceptions
+                				location = _eventLookup(eventConfig, active);
+
+                			if (eventConfig.namespace !== '') { // If there's a namespace, trigger only that array
+
+                				_callEvents(location, args);
+
+                			} else { // Else, trigger everything registered to the event
+
+                				var subSignal = active[eventConfig.handle][eventConfig.evt],
+                					key;
+                				for (key in subSignal) {
+                					_callEvents(subSignal[key], args);
+                				}
+
+                			}
+
+                			return this;
+                		},
+
+                		// ListenTo | StopListening ********************************
+                		listenTo: function(obj, eventname, callback) {
+                			obj.on(eventname, callback);
+                			return this;
+                		},
+                		stopListening: function(obj, eventname) {
+                			obj.off(eventname);
+                			return this;
+                		}
+                	};
+
+                	// Create a pub/sub to expose Signal as
+                	// e.g. Signal.on(), Signal.trigger()
+                	var pubSub = new Signal();
+
+                	// Attach the Signal object as a property
+                	// of the exposed object so that new instances
+                	// can be constructed/extended
+                	// e.g. Signal.core.construct(), Signal.core.extend({})
+                	pubSub.core = Signal;
+
+                	// Expose
+                	root.Signal = pubSub;
+
+                }(window));
             }
         }
     ));

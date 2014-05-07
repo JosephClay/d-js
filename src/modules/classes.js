@@ -1,4 +1,5 @@
-var supports = require('../supports'),
+var _ = require('_'),
+    supports = require('../supports'),
     array = require('./array');
 
 var _rspace = /\s+/g;

@@ -1,4 +1,5 @@
-var _utils = require('../utils'),
+var _ = require('_'),
+    _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
     _array = require('./array'),

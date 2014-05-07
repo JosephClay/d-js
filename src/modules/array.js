@@ -1,4 +1,4 @@
-var _ = require('../_'),
+var _ = require('_'),
     _utils = require('../utils');
 
 var _slice = (function(_slice) {

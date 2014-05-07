@@ -1,4 +1,4 @@
-var _ = require('../_'),
+var _ = require('_'),
     _css = require('./css');
 
 var _getDocumentDimension = function(elem, name) {

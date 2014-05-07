@@ -1,4 +1,6 @@
-var _BEGINNING_NEW_LINES = /^[\n]*/;
+var _ = require('_'),
+
+    _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {
     exists: function(val) {
