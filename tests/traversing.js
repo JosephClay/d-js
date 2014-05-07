@@ -32,10 +32,10 @@ test('is(String|undefined)', function() {
     ok(!D('#mark').is('.link'), 'Check for class: Did not expect class "link"');
     ok(D('#simon').is('.blog.link'), 'Check for multiple classes: Expected classes "blog" and "link"');
     ok(!D('#simon').is('.blogTest'), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"');
-    ok(D('#en').is('[lang=\'en\']'), 'Check for attribute: Expected attribute lang to be "en"');
-    ok(!D('#en').is('[lang=\'de\']'), 'Check for attribute: Expected attribute lang to be "en", not "de"');
-    ok(D('#text1').is('[type=\'text\']'), 'Check for attribute: Expected attribute type to be "text"');
-    ok(!D('#text1').is('[type=\'radio\']'), 'Check for attribute: Expected attribute type to be "text", not "radio"');
+    ok(D('#en').is('[lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"');
+    ok(!D('#en').is('[lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"');
+    ok(D('#text1').is('[type="text"]'), 'Check for attribute: Expected attribute type to be "text"');
+    ok(!D('#text1').is('[type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"');
 
     // TODO: look into viability of adding this
     // ok(D('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled');
@@ -50,10 +50,10 @@ test('is(String|undefined)', function() {
     ok(!D('#foo').is({ plain: 'object' }), 'Check passing invalid object');
 
     // test is() with comma-separated expressions
-    ok(D('#en').is('[lang=\'en\'],[lang=\'de\']'), 'Comma-separated; Check for lang attribute: Expect en or de');
-    ok(D('#en').is('[lang=\'de\'],[lang=\'en\']'), 'Comma-separated; Check for lang attribute: Expect en or de');
-    ok(D('#en').is('[lang=\'en\'] , [lang=\'de\']'), 'Comma-separated; Check for lang attribute: Expect en or de');
-    ok(D('#en').is('[lang=\'de\'] , [lang=\'en\']'), 'Comma-separated; Check for lang attribute: Expect en or de');
+    ok(D('#en').is('[lang="en"],[lang="de"]'), 'Comma-separated; Check for lang attribute: Expect en or de');
+    ok(D('#en').is('[lang="de"],[lang="en"]'), 'Comma-separated; Check for lang attribute: Expect en or de');
+    ok(D('#en').is('[lang="en"] , [lang="de"]'), 'Comma-separated; Check for lang attribute: Expect en or de');
+    ok(D('#en').is('[lang="de"] , [lang="en"]'), 'Comma-separated; Check for lang attribute: Expect en or de');
 });
 
 test('is() against non-elements (#10178)', function() {

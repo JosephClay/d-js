@@ -137,7 +137,7 @@ var _ = {
 
     filter: function(arr, iterator) {
         var results = [];
-        if (!arr) { return results; }
+        if (!arr || !arr.length) { return results; }
 
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
@@ -147,6 +147,18 @@ var _ = {
         }
 
         return results;
+    },
+
+    any: function(arr, iterator) {
+        var result = false;
+        if (!arr || !arr.length) { return result; }
+
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            if (result || (result = iterator(arr[idx], idx))) { break; }
+        }
+
+        return !!result;
     }
 };
 

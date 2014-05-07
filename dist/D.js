@@ -710,11 +710,18 @@
                         },
 
                         is: Overload()
+                                .args(O.any(null, undefined, Number, Object)).use(function() {
+                                    return false;
+                                })
+
                                 .args(String).use(function(selector) {
+                                    if (selector === '') { return false; }
+
                                     return _.any(this, function(elem) {
                                         return _isMatch(elem, selector);
                                     });
                                 })
+
                                 .args(Function).use(function(iterator) {
                                     // TODO: Internal "every"
                                     return _.any(this, iterator);
@@ -2454,7 +2461,7 @@
 
                     filter: function(arr, iterator) {
                         var results = [];
-                        if (!arr) { return results; }
+                        if (!arr || !arr.length) { return results; }
 
                         var idx = 0, length = arr.length;
                         for (; idx < length; idx++) {
@@ -2464,6 +2471,18 @@
                         }
 
                         return results;
+                    },
+
+                    any: function(arr, iterator) {
+                        var result = false;
+                        if (!arr || !arr.length) { return result; }
+
+                        var idx = 0, length = arr.length;
+                        for (; idx < length; idx++) {
+                            if (result || (result = iterator(arr[idx], idx))) { break; }
+                        }
+
+                        return !!result;
                     }
                 };
 

@@ -127,11 +127,18 @@ module.exports = {
         },
 
         is: Overload()
+                .args(O.any(null, undefined, Number, Object)).use(function() {
+                    return false;
+                })
+
                 .args(String).use(function(selector) {
+                    if (selector === '') { return false; }
+
                     return _.any(this, function(elem) {
                         return _isMatch(elem, selector);
                     });
                 })
+
                 .args(Function).use(function(iterator) {
                     // TODO: Internal "every"
                     return _.any(this, iterator);
