@@ -81,17 +81,17 @@ module.exports = function(grunt) {
         rquire: {
             build: {
                 options: {
-                    globals: {
-//                        '_': '_'
+                    globals: {},
+                    aliases: {
+                        '_':        '_',
+                        'overload': 'libs/Overload',
+                        'signal':   'libs/Signal'
                     },
-                    alias: {
-//                        'overload':   '/libs/Overload.js',
-//                        'signal':     '/libs/Signal.js'
-                    },
+                    src_root: 'src/',
                     main: 'D.js',
                     dest: 'dist/D.js',
-                    safe_undefined: true,
-                    micro_paths: true
+                    safe_undefined: true
+                    // micro_paths: true
                 }
             }
         }

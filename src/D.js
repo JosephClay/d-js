@@ -1,4 +1,4 @@
-var _ = require('./_'),
+var _ = require('_'),
     parser = require('./D/parser'),
     utils = require('./utils'),
     array = require('./modules/array'),

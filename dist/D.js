@@ -5,6 +5,10 @@
 
         };
 
+        var moduleCache = {
+
+        };
+
         var aliases = {
 
         };
@@ -15,7 +19,7 @@
 
         var require = function(path) {
             path = aliases[path] || path;
-            return modules[path]();
+            return moduleCache[path] || (moduleCache[path] = modules[path]());
         };
 
         var define = function(path, definition) {
@@ -26,7 +30,7 @@
                     return module.exports;
                 }
                 module = { exports: {} };
-                definition.apply(null, [ require, module, module.exports ]);
+                definition(require, module, module.exports);
                 return module.exports;
             };
         };
@@ -40,24 +44,28 @@
     }(
         {
             "main": "/D.js",
-            "aliases": {}
+            "aliases": {
+                "_": "/_.js",
+                "overload": "/libs/Overload.js",
+                "signal": "/libs/Signal.js"
+            }
         },
         {
             "/D.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    parser = require('/D\parser.js'),
+                var _ = require('_'),
+                    parser = require('/D/parser.js'),
                     utils = require('/utils.js'),
-                    array = require('/modules\array.js'),
-                    onready = require('/modules\onready.js'),
-                    selectors = require('/modules\selectors.js'),
-                    transversal = require('/modules\transversal.js'),
-                    dimensions = require('/modules\dimensions.js'),
-                    manip = require('/modules\manip.js'),
-                    css = require('/modules\css.js'),
-                    attr = require('/modules\attr.js'),
-                    prop = require('/modules\prop.js'),
-                    val = require('/modules\val.js'),
-                    classes = require('/modules\classes.js');
+                    array = require('/modules/array.js'),
+                    onready = require('/modules/onready.js'),
+                    selectors = require('/modules/selectors.js'),
+                    transversal = require('/modules/transversal.js'),
+                    dimensions = require('/modules/dimensions.js'),
+                    manip = require('/modules/manip.js'),
+                    css = require('/modules/css.js'),
+                    attr = require('/modules/attr.js'),
+                    prop = require('/modules/prop.js'),
+                    val = require('/modules/val.js'),
+                    classes = require('/modules/classes.js');
 
                 // Store previous reference
                 var _prevD = window.D;
@@ -286,6 +294,246 @@
                     };
                 */
             },
+            "/D/parser.js": function(require, module, exports) {
+                var _parse = function(htmlStr) {
+                    var tmp = document.implementation.createHTMLDocument();
+                        tmp.body.innerHTML = htmlStr;
+                    return tmp.body.children;
+                };
+
+                var _parseHtml = function(str) {
+                    var result = _parse(str);
+                    if (!result || !result.length) { return null; }
+                    return D(result);
+                };
+
+                module.exports = {
+                    parseHtml: _parse,
+
+                    // Top-level functions attached directly to D.
+                    // Invoked via `D.parseHTML('...')`, as opposed to `D('div').parseHTML('...')`.
+                    D: {
+                        parseHtml: _parseHtml,
+                        // Because no one know what the case should be
+                        parseHTML: _parseHtml
+                    }
+                };
+            },
+            "/utils.js": function(require, module, exports) {
+                var _BEGINNING_NEW_LINES = /^[\n]*/;
+
+                module.exports = {
+                    exists: function(val) {
+                        return (val !== null && val !== undefined);
+                    },
+
+                    isHtml: function(text) {
+                        if (!_.isString(text)) { return false; }
+
+                        // TODO: Using es5 native method (trim)
+                        text = text.trim();
+                        text = text.replace(_BEGINNING_NEW_LINES, '');
+
+                        return (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
+                    },
+
+                    merge: function(first, second) {
+                        var length = second.length,
+                            idx = 0,
+                            i = first.length;
+
+                        // Go through each element in the
+                        // second array and add it to the
+                        // first
+                        for (; idx < length; idx++) {
+                            first[i++] = second[idx];
+                        }
+
+                        first.length = i;
+
+                        return first;
+                    }
+                };
+            },
+            "/modules/array.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    _utils = require('/utils.js');
+
+                var _slice = (function(_slice) {
+                        return function(arr, start, end) {
+                            // Exit early for empty array
+                            if (!arr || !arr.length) { return []; }
+
+                            // End, naturally, has to be higher than 0 to matter,
+                            // so a simple existance check will do
+                            if (end) { return _slice.call(arr, start, end); }
+
+                            return _slice.call(arr, start || 0);
+                        };
+                    }([].slice)),
+
+                    // See jQuery
+                    // src\selector-native.js: 37
+                    _elementSort = (function() {
+
+                        var _hasDuplicate = false;
+                        var _sort = function(a, b) {
+                            // Flag for duplicate removal
+                            if (a === b) {
+                                _hasDuplicate = true;
+                                return 0;
+                            }
+
+                            var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
+
+                            // Not directly comparable, sort on existence of method
+                            if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
+
+                            // Disconnected nodes
+                            if (compare & 1) {
+
+                                // Choose the first element that is related to our document
+                                if (a === document || b === document) { return 1; }
+
+                                // Maintain original order
+                                return 0;
+                            }
+
+                            return compare & 4 ? -1 : 1;
+                        };
+
+                        return function(array) {
+                            _hasDuplicate = false;
+                            array.sort(_sort);
+                            return _hasDuplicate;
+                        };
+
+                    }()),
+
+                    _unique = function(results) {
+                        var hasDuplicates = _elementSort(results);
+                        if (!hasDuplicates) { return results; }
+
+                        var elem,
+                            idx = 0,
+                            // create the array here
+                            // so that a new array isn't
+                            // created/destroyed every unique call
+                            duplicates = [];
+
+                        // Go through the array and identify
+                        // the duplicates to be removed
+                        while ((elem = results[idx++])) {
+                            if (elem === results[idx]) {
+                                duplicates.push(idx);
+                            }
+                        }
+
+                        // Remove the duplicates from the results
+                        idx = duplicates.length;
+                        while (idx--) {
+                           results.splice(duplicates[idx], 1);
+                        }
+
+                        return results;
+                    },
+
+                    _map = function(arr, iterator) {
+                        var results = [];
+                        if (!arr.length || !iterator) { return results; }
+
+                        var idx = 0, length = arr.length,
+                            item;
+                        for (; idx < length; idx++) {
+                            item = arr[idx];
+                            results.push(iterator.call(item, item, idx));
+                        }
+
+                        return _.concatFlat(results);
+                    },
+
+                    _each = function(obj, iterator) {
+                        if (!obj || !iterator) { return; }
+
+                        // Array support
+                        if (obj.length === +obj.length) {
+                            var idx = 0, length = obj.length,
+                                item;
+                            for (; idx < length; idx++) {
+                                item = obj[idx];
+                                if (iterator.call(item, item, idx) === false) { return; }
+                            }
+
+                            return;
+                        }
+
+                        // Object support
+                        var key, value;
+                        for (key in obj) {
+                            value = obj[key];
+                            if (iterator.call(value, value, key) === false) { return; }
+                        }
+                    };
+
+                module.exports = {
+                    slice: _slice,
+                    elementSort: _elementSort,
+                    unique: _unique,
+                    each: _each,
+
+                    fn: {
+                        at: function(index) {
+                            return this[+index];
+                        },
+
+                        get: function(index) {
+                            // No index, return all
+                            if (!_utils.exists(index)) { return this.toArray(); }
+
+                            index = +index;
+
+                            // Looking to get an index from the end of the set
+                            if (index < 0) { index = (this.length + index); }
+
+                            return this[index];
+                        },
+
+                        eq: function(index) {
+                            return D(this.get(index));
+                        },
+
+                        slice: function(start, end) {
+                            return D(_slice(this.toArray(), start, end));
+                        },
+
+                        first: function() {
+                            return D(this[0]);
+                        },
+
+                        last: function() {
+                            return D(this[this.length - 1]);
+                        },
+
+                        toArray: function() {
+                            return _slice(this);
+                        },
+
+                        map: function(iterator) {
+                            return D(_map(this, iterator));
+                        },
+
+                        each: function(iterator) {
+                            _each(this, iterator);
+                            return this;
+                        },
+
+                        forEach: function(iterator) {
+                            _each(this, iterator);
+                            return this;
+                        }
+                    }
+                };
+            },
             "/_.js": function(require, module, exports) {
                 var _id = 0,
                     _toString = Object.prototype.toString,
@@ -469,247 +717,7 @@
 
                 module.exports = _;
             },
-            "/D\parser.js": function(require, module, exports) {
-                var _parse = function(htmlStr) {
-                    var tmp = document.implementation.createHTMLDocument();
-                        tmp.body.innerHTML = htmlStr;
-                    return tmp.body.children;
-                };
-
-                var _parseHtml = function(str) {
-                    var result = _parse(str);
-                    if (!result || !result.length) { return null; }
-                    return D(result);
-                };
-
-                module.exports = {
-                    parseHtml: _parse,
-
-                    // Top-level functions attached directly to D.
-                    // Invoked via `D.parseHTML('...')`, as opposed to `D('div').parseHTML('...')`.
-                    D: {
-                        parseHtml: _parseHtml,
-                        // Because no one know what the case should be
-                        parseHTML: _parseHtml
-                    }
-                };
-            },
-            "/utils.js": function(require, module, exports) {
-                var _BEGINNING_NEW_LINES = /^[\n]*/;
-
-                module.exports = {
-                    exists: function(val) {
-                        return (val !== null && val !== undefined);
-                    },
-
-                    isHtml: function(text) {
-                        if (!_.isString(text)) { return false; }
-
-                        // TODO: Using es5 native method (trim)
-                        text = text.trim();
-                        text = text.replace(_BEGINNING_NEW_LINES, '');
-
-                        return (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
-                    },
-
-                    merge: function(first, second) {
-                        var length = second.length,
-                            idx = 0,
-                            i = first.length;
-
-                        // Go through each element in the
-                        // second array and add it to the
-                        // first
-                        for (; idx < length; idx++) {
-                            first[i++] = second[idx];
-                        }
-
-                        first.length = i;
-
-                        return first;
-                    }
-                };
-            },
-            "/modules\array.js": function(require, module, exports) {
-                var _ = require('/_.js'),
-                    _utils = require('/utils.js');
-
-                var _slice = (function(_slice) {
-                        return function(arr, start, end) {
-                            // Exit early for empty array
-                            if (!arr || !arr.length) { return []; }
-
-                            // End, naturally, has to be higher than 0 to matter,
-                            // so a simple existance check will do
-                            if (end) { return _slice.call(arr, start, end); }
-
-                            return _slice.call(arr, start || 0);
-                        };
-                    }([].slice)),
-
-                    // See jQuery
-                    // src\selector-native.js: 37
-                    _elementSort = (function() {
-
-                        var _hasDuplicate = false;
-                        var _sort = function(a, b) {
-                            // Flag for duplicate removal
-                            if (a === b) {
-                                _hasDuplicate = true;
-                                return 0;
-                            }
-
-                            var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
-
-                            // Not directly comparable, sort on existence of method
-                            if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
-
-                            // Disconnected nodes
-                            if (compare & 1) {
-
-                                // Choose the first element that is related to our document
-                                if (a === document || b === document) { return 1; }
-
-                                // Maintain original order
-                                return 0;
-                            }
-
-                            return compare & 4 ? -1 : 1;
-                        };
-
-                        return function(array) {
-                            _hasDuplicate = false;
-                            array.sort(_sort);
-                            return _hasDuplicate;
-                        };
-
-                    }()),
-
-                    _unique = function(results) {
-                        var hasDuplicates = _elementSort(results);
-                        if (!hasDuplicates) { return results; }
-
-                        var elem,
-                            idx = 0,
-                            // create the array here
-                            // so that a new array isn't
-                            // created/destroyed every unique call
-                            duplicates = [];
-
-                        // Go through the array and identify
-                        // the duplicates to be removed
-                        while ((elem = results[idx++])) {
-                            if (elem === results[idx]) {
-                                duplicates.push(idx);
-                            }
-                        }
-
-                        // Remove the duplicates from the results
-                        idx = duplicates.length;
-                        while (idx--) {
-                           results.splice(duplicates[idx], 1);
-                        }
-
-                        return results;
-                    },
-
-                    _map = function(arr, iterator) {
-                        var results = [];
-                        if (!arr.length || !iterator) { return results; }
-
-                        var idx = 0, length = arr.length,
-                            item;
-                        for (; idx < length; idx++) {
-                            item = arr[idx];
-                            results.push(iterator.call(item, item, idx));
-                        }
-
-                        return _.concatFlat(results);
-                    },
-
-                    _each = function(obj, iterator) {
-                        if (!obj || !iterator) { return; }
-
-                        // Array support
-                        if (obj.length === +obj.length) {
-                            var idx = 0, length = obj.length,
-                                item;
-                            for (; idx < length; idx++) {
-                                item = obj[idx];
-                                if (iterator.call(item, item, idx) === false) { return; }
-                            }
-
-                            return;
-                        }
-
-                        // Object support
-                        var key, value;
-                        for (key in obj) {
-                            value = obj[key];
-                            if (iterator.call(value, value, key) === false) { return; }
-                        }
-                    };
-
-                module.exports = {
-                    slice: _slice,
-                    elementSort: _elementSort,
-                    unique: _unique,
-                    each: _each,
-
-                    fn: {
-                        at: function(index) {
-                            return this[+index];
-                        },
-
-                        get: function(index) {
-                            // No index, return all
-                            if (!_utils.exists(index)) { return this.toArray(); }
-
-                            index = +index;
-
-                            // Looking to get an index from the end of the set
-                            if (index < 0) { index = (this.length + index); }
-
-                            return this[index];
-                        },
-
-                        eq: function(index) {
-                            return D(this.get(index));
-                        },
-
-                        slice: function(start, end) {
-                            return D(_slice(this.toArray(), start, end));
-                        },
-
-                        first: function() {
-                            return D(this[0]);
-                        },
-
-                        last: function() {
-                            return D(this[this.length - 1]);
-                        },
-
-                        toArray: function() {
-                            return _slice(this);
-                        },
-
-                        map: function(iterator) {
-                            return D(_map(this, iterator));
-                        },
-
-                        each: function(iterator) {
-                            _each(this, iterator);
-                            return this;
-                        },
-
-                        forEach: function(iterator) {
-                            _each(this, iterator);
-                            return this;
-                        }
-                    }
-                };
-            },
-            "/modules\onready.js": function(require, module, exports) {
+            "/modules/onready.js": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
@@ -753,11 +761,11 @@
                     return this;
                 };
             },
-            "/modules\selectors.js": function(require, module, exports) {
+            "/modules/selectors.js": function(require, module, exports) {
                 var _utils = require('/utils.js'),
                     _cache = require('/cache.js'),
                     _regex = require('/regex.js'),
-                    _array = require('/modules\array.js'),
+                    _array = require('/modules/array.js'),
                     _nodeType = require('/nodeType.js'),
                     _supports = require('/supports.js'),
 
@@ -1103,12 +1111,12 @@
                 div.innerHTML = '<a href="/a">a</a><input type="checkbox"/>';
                 module.exports = div;
             },
-            "/modules\transversal.js": function(require, module, exports) {
+            "/modules/transversal.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     _nodeType = require('/nodeType.js'),
 
-                    _array = require('/modules\array.js'),
-                    _selectors = require('/modules\selectors.js');
+                    _array = require('/modules/array.js'),
+                    _selectors = require('/modules/selectors.js');
 
                 var _getSiblings = function(context) {
                         var idx = 0,
@@ -1247,9 +1255,9 @@
                     }
                 };
             },
-            "/modules\dimensions.js": function(require, module, exports) {
+            "/modules/dimensions.js": function(require, module, exports) {
                 var _ = require('/_.js'),
-                    _css = require('/modules\css.js');
+                    _css = require('/modules/css.js');
 
                 var _getDocumentDimension = function(elem, name) {
                         // Either scroll[Width/Height] or offset[Width/Height] or
@@ -1361,7 +1369,7 @@
                     }
                 };
             },
-            "/modules\css.js": function(require, module, exports) {
+            "/modules/css.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     _cache = require('/cache.js'),
                     _regex = require('/regex.js'),
@@ -1709,7 +1717,7 @@
                     }
                 };
             },
-            "/modules\manip.js": function(require, module, exports) {
+            "/modules/manip.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     utils = require('/utils.js');
 
@@ -1881,7 +1889,7 @@
                     }
                 };
             },
-            "/modules\attr.js": function(require, module, exports) {
+            "/modules/attr.js": function(require, module, exports) {
                 var _ = require('/_.js');
 
                 var _hooks = {
@@ -2003,7 +2011,7 @@
                     }
                 };
             },
-            "/modules\prop.js": function(require, module, exports) {
+            "/modules/prop.js": function(require, module, exports) {
                 var _ = require('/_.js'),
                     _supports = require('/supports.js'),
                     _nodeType = require('/nodeType.js');
@@ -2128,7 +2136,7 @@
                     }
                 };
             },
-            "/modules\val.js": function(require, module, exports) {
+            "/modules/val.js": function(require, module, exports) {
                 var _getText = function(elem) {
                     if (!elem) { return ''; }
                     return elem.textContent || elem.innerText;
@@ -2150,9 +2158,9 @@
                     }
                 };
             },
-            "/modules\classes.js": function(require, module, exports) {
+            "/modules/classes.js": function(require, module, exports) {
                 var supports = require('/supports.js'),
-                    array = require('/modules\array.js');
+                    array = require('/modules/array.js');
 
                 var _rspace = /\s+/g;
 
