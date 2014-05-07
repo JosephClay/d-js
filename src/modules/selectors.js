@@ -4,9 +4,63 @@ var _ = require('_'),
     _regex = require('../regex'),
     _array = require('./array'),
     _nodeType = require('../nodeType'),
-    _supports = require('../supports'),
+    _supports = require('../supports');
 
-    _selectorBlackList = ['.', '#', '', ' '];
+var _Query = (function() {
+
+    var _ID_PREFIX = 'D-uniqueId-',
+        _id = 0,
+
+        _selectorBlackList = ['.', '#', '', ' '],
+
+        _determineMethod = function(selector) {
+            var method = _cache.querySelector.get(selector);
+            if (method) { return method; }
+
+            if (_regex.selector.isStrictId(selector)) {
+                method = 'getElementById';
+            } else if (_regex.selector.isClass(selector)) {
+                method = 'getElementsByClassName';
+            } else if (_regex.selector.isTag(selector)) {
+                method = 'getElementsByTagName';
+            } else {
+                method = 'querySelectorAll';
+            }
+
+            _cache.querySelector.set(selector, method);
+            return method;
+        };
+
+    var Query = function(str) {
+        var selector = _.trim(str),
+            isBlackList = (_selectorBlackList.indexOf(selector) > -1),
+            isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
+            method = (isBlackList || isChildOrSiblingSelect) ? 'querySelectorAll' : _determineMethod(selector);
+
+        this.str = str;
+        this.selector = selector;
+        this.isBlackList = isBlackList;
+        this.isChildOrSiblingSelect = isChildOrSiblingSelect;
+        this.method = method;
+    };
+
+    Query.prototype = {
+        uniqueId: function() {
+            return _ID_PREFIX + _id++;
+        },
+
+        tailorChildSelector: function(id, selector) {
+            return '#' + id + ' ' + selector;
+        }
+    };
+
+    return function(str) {
+        return _cache.query.getOrSet(str, function() {
+            return new Query(str);
+        });
+    };
+
+}());
 
 var _isMatch = (function(matchSelector) {
     if (matchSelector) {
@@ -30,50 +84,50 @@ var _isMatch = (function(matchSelector) {
 var _find = function(selector, context) {
     var idx = 0,
         length = context.length || 1,
+        query = _Query(selector),
         result = [];
 
     // Early return if the selector is bad
-    if (_selectorBlackList.indexOf(selector) > -1) { return result; }
+    if (query.isBlackList) { return result; }
 
-    var method = _determineMethod(selector);
     for (; idx < length; idx++) {
-        var ret = _findWithQuery(selector, context[idx], method);
+        var ret = _findWithQuery(query, context[idx]);
         if (ret) { result.push(ret); }
     }
 
     return _array.unique(_.flatten(result));
 };
 
-var _determineMethod = function(selector) {
-    var method = _cache.selector.get(selector);
-    if (method) { return method; }
-
-    if (_regex.selector.isStrictId(selector)) {
-        method = 'getElementById';
-    } else if (_regex.selector.isClass(selector)) {
-        method = 'getElementsByClassName';
-    } else if (_regex.selector.isTag(selector)) {
-        method = 'getElementsByTagName';
-    } else {
-        method = 'querySelectorAll';
-    }
-
-    _cache.selector.set(selector, method);
-    return method;
-};
-
-var _findWithQuery = function(selector, context, method) {
+var _findWithQuery = function(query, context) {
     context = context || document;
-
-    // TODO: What to do if ">" child selector is used @ index = 0;
 
     var nodeType;
     // Early return if context is not an element or document
     if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
 
-    var query = context[method](selector);
-    if (!query.length) { return; }
-    return _array.slice(query);
+    // Child select - needs special help so that "> div" doesn't break
+    var id,
+        newId,
+        idApplied = false;
+        selector = query.selector;
+    if (query.isChildOrSiblingSelect) {
+        id = context.id;
+        if (!_.exists(id)) {
+            newId = query.uniqueId();
+            context.id = newId;
+            idApplied = true;
+        }
+
+        selector = query.tailorChildSelector(idApplied ? newId : id, selector);
+        context = document;
+    }
+
+    var selection = context[query.method](selector);
+    if (!selection.length) { return; }
+
+    if (idApplied) { context.id = id; }
+
+    return _array.slice(selection);
 };
 
 var _filter = function(arr, qualifier) {

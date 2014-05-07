@@ -1,5 +1,4 @@
-var _ = require('_'),
-    _utils = require('../utils');
+var _ = require('_');
 
 var _slice = (function(_slice) {
         return function(arr, start, end) {
@@ -130,7 +129,7 @@ module.exports = {
 
         get: function(index) {
             // No index, return all
-            if (!_utils.exists(index)) { return this.toArray(); }
+            if (!_.exists(index)) { return this.toArray(); }
 
             index = +index;
 

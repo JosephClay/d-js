@@ -3,10 +3,6 @@ var _ = require('_'),
     _BEGINNING_NEW_LINES = /^[\n]*/;
 
 module.exports = {
-    exists: function(val) {
-        return (val !== null && val !== undefined);
-    },
-
     isHtml: function(text) {
         if (!_.isString(text)) { return false; }
 

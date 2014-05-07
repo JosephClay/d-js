@@ -26,14 +26,21 @@ module.exports = (function() {
 
     var exp = getterSetter(''),
         caches = [
+            // Class
             'classArray',
             'classMap',
-            'selector',
+
+            // Query
+            'query',
+            'querySelector',
+
+            // Regex
             'typeTestFocusable',
             'typeTestClickable',
             'selectorTestId',
             'selectorTestTag',
             'selectorTestClass',
+
             'camelCase',
             'display',
             'csskey'
