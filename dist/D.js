@@ -5,10 +5,6 @@
 
         };
 
-        var moduleCache = {
-
-        };
-
         var aliases = {
 
         };
@@ -19,7 +15,7 @@
 
         var require = function(path) {
             path = aliases[path] || path;
-            return moduleCache[path] || (moduleCache[path] = modules[path]());
+            return modules[path]();
         };
 
         var define = function(path, definition) {
@@ -30,7 +26,7 @@
                     return module.exports;
                 }
                 module = { exports: {} };
-                definition(require, module, module.exports);
+                definition.apply(null, [ require, module, module.exports ]);
                 return module.exports;
             };
         };
@@ -43,24 +39,25 @@
 
     }(
         {
-            "main": 1,
+            "main": "/D.js",
             "aliases": {}
         },
         {
-            "1": function(require, module, exports) {
-                var _ = require('2'),
-                    parser = require('9'),
-                    utils = require('8'),
-                    array = require('13'),
-                    onready = require('22'),
-                    selectors = require('26'),
-                    transversal = require('27'),
-                    dimensions = require('18'),
-                    manip = require('21'),
-                    css = require('16'),
-                    attr = require('14'),
-                    val = require('28'),
-                    classes = require('15');
+            "/D.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    parser = require('/D\parser.js'),
+                    utils = require('/utils.js'),
+                    array = require('/modules\array.js'),
+                    onready = require('/modules\onready.js'),
+                    selectors = require('/modules\selectors.js'),
+                    transversal = require('/modules\transversal.js'),
+                    dimensions = require('/modules\dimensions.js'),
+                    manip = require('/modules\manip.js'),
+                    css = require('/modules\css.js'),
+                    attr = require('/modules\attr.js'),
+                    prop = require('/modules\prop.js'),
+                    val = require('/modules\val.js'),
+                    classes = require('/modules\classes.js');
 
                 // Store previous reference
                 var _prevD = window.D;
@@ -183,6 +180,7 @@
                     dimensions.fn,
                     css.fn,
                     attr.fn,
+                    prop.fn,
                     val.fn,
                     classes.fn,
                     { constructor: DOM }
@@ -288,7 +286,7 @@
                     };
                 */
             },
-            "2": function(require, module, exports) {
+            "/_.js": function(require, module, exports) {
                 var _id = 0,
                     _toString = Object.prototype.toString,
                     _stringProto = String.prototype,
@@ -471,7 +469,7 @@
 
                 module.exports = _;
             },
-            "9": function(require, module, exports) {
+            "/D\parser.js": function(require, module, exports) {
                 var _parse = function(htmlStr) {
                     var tmp = document.implementation.createHTMLDocument();
                         tmp.body.innerHTML = htmlStr;
@@ -496,7 +494,7 @@
                     }
                 };
             },
-            "8": function(require, module, exports) {
+            "/utils.js": function(require, module, exports) {
                 var _BEGINNING_NEW_LINES = /^[\n]*/;
 
                 module.exports = {
@@ -532,9 +530,9 @@
                     }
                 };
             },
-            "13": function(require, module, exports) {
-                var _ = require('2'),
-                    _utils = require('8');
+            "/modules\array.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    _utils = require('/utils.js');
 
                 var _slice = (function(_slice) {
                         return function(arr, start, end) {
@@ -711,7 +709,7 @@
                     }
                 };
             },
-            "22": function(require, module, exports) {
+            "/modules\onready.js": function(require, module, exports) {
                 var _isReady = false,
                     _registration = [];
 
@@ -755,13 +753,13 @@
                     return this;
                 };
             },
-            "26": function(require, module, exports) {
-                var _utils = require('8'),
-                    _cache = require('3'),
-                    _regex = require('6'),
-                    _array = require('13'),
-                    _nodeType = require('5'),
-                    _supports = require('7'),
+            "/modules\selectors.js": function(require, module, exports) {
+                var _utils = require('/utils.js'),
+                    _cache = require('/cache.js'),
+                    _regex = require('/regex.js'),
+                    _array = require('/modules\array.js'),
+                    _nodeType = require('/nodeType.js'),
+                    _supports = require('/supports.js'),
 
                     _selectorBlackList = ['.', '#', '', ' '];
 
@@ -925,8 +923,8 @@
                     }
                 };
             },
-            "3": function(require, module, exports) {
-                var _ = require('2');
+            "/cache.js": function(require, module, exports) {
+                var _ = require('/_.js');
 
                 var _cache = {};
 
@@ -957,9 +955,11 @@
                             'classArray',
                             'classMap',
                             'selector',
-                            'selectedTestId',
-                            'selectedTestTag',
-                            'selectedTestClass',
+                            'typeTestFocusable',
+                            'typeTestClickable',
+                            'selectorTestId',
+                            'selectorTestTag',
+                            'selectorTestClass',
                             'camelCase',
                             'display',
                             'csskey'
@@ -974,8 +974,8 @@
 
                 }());
             },
-            "6": function(require, module, exports) {
-                var _cache = require('3');
+            "/regex.js": function(require, module, exports) {
+                var _cache = require('/cache.js');
 
                     // Matches "-ms-" so that it can be changed to "ms-"
                 var _TRUNCATE_MS_PREFIX = /^-ms-/,
@@ -986,6 +986,11 @@
                     // Matches "none" or a table type e.g. "table",
                     // "table-cell" etc...
                     _NONE_OR_TABLE = /^(none|table(?!-c[ea]).+)/,
+
+                    _TYPE_TEST = {
+                        focusable: /^(?:input|select|textarea|button|object)$/i,
+                        clickable: /^(?:a|area)$/i
+                    },
 
                     _SELECTOR_TEST = {
                         id:    /^#([\w-]+)$/,
@@ -1015,21 +1020,36 @@
                         }
                     },
 
+                    type: {
+                        isFocusable: function(str) {
+                            _cache.typeTestFocusable.getOrSet(str, function() {
+                                var result = _TYPE_TEST.focusable.exec(str);
+                                return !!result;
+                            });
+                        },
+                        isClickable: function(str) {
+                            _cache.typeTestClickable.getOrSet(str, function() {
+                                var result = _TYPE_TEST.clickable.exec(str);
+                                return !!result;
+                            });
+                        }
+                    },
+
                     selector: {
                         isStrictId: function(str) {
-                            return _cache.selectedTestId.getOrSet(str, function() {
+                            return _cache.selectorTestId.getOrSet(str, function() {
                                 var result = _SELECTOR_TEST.id.exec(str);
                                 return result ? !result[1] : false;
                             });
                         },
                         isTag: function(str) {
-                            return _cache.selectedTestTag.getOrSet(str, function() {
+                            return _cache.selectorTestTag.getOrSet(str, function() {
                                 var result = _SELECTOR_TEST.tag.exec(str);
                                 return result ? !result[1] : false;
                             });
                         },
                         isClass: function(str) {
-                            return _cache.selectedTestClass.getOrSet(str, function() {
+                            return _cache.selectorTestClass.getOrSet(str, function() {
                                 var result = _SELECTOR_TEST.klass.exec(str);
                                 return result ? !result[1] : false;
                             });
@@ -1037,7 +1057,7 @@
                     }
                 };
             },
-            "5": function(require, module, exports) {
+            "/nodeType.js": function(require, module, exports) {
                 module.exports = {
                     ELEMENT:                1,
                     ATTRIBUTE:              2,
@@ -1053,8 +1073,9 @@
                     NOTATION:               12
                 };
             },
-            "7": function(require, module, exports) {
-                var div = require('4');
+            "/supports.js": function(require, module, exports) {
+                var div = require('/div.js'),
+                    a = div.getElementsByTagName('a')[0];
 
                 module.exports = {
                     classList: !!div.classList,
@@ -1069,20 +1090,25 @@
                     // Make sure that element opacity exists
                     // (IE uses filter instead)
                     // Use a regex to work around a WebKit issue. See #5145
-                    opacity: (/^0.55$/).test(div.style.opacity)
+                    opacity: (/^0.55$/).test(div.style.opacity),
+
+                    // Make sure that URLs aren't manipulated
+                    // (IE normalizes it by default)
+                    hrefNormalized: a.getAttribute('href') === '/a'
                 };
             },
-            "4": function(require, module, exports) {
+            "/div.js": function(require, module, exports) {
                 var div = document.createElement('div');
                 div.cssText = 'opacity:.55';
+                div.innerHTML = '<a href="/a">a</a><input type="checkbox"/>';
                 module.exports = div;
             },
-            "27": function(require, module, exports) {
-                var _ = require('2'),
-                    _nodeType = require('5'),
+            "/modules\transversal.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    _nodeType = require('/nodeType.js'),
 
-                    _array = require('13'),
-                    _selectors = require('26');
+                    _array = require('/modules\array.js'),
+                    _selectors = require('/modules\selectors.js');
 
                 var _getSiblings = function(context) {
                         var idx = 0,
@@ -1221,9 +1247,9 @@
                     }
                 };
             },
-            "18": function(require, module, exports) {
-                var _ = require('2'),
-                    _css = require('16');
+            "/modules\dimensions.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    _css = require('/modules\css.js');
 
                 var _getDocumentDimension = function(elem, name) {
                         // Either scroll[Width/Height] or offset[Width/Height] or
@@ -1335,12 +1361,12 @@
                     }
                 };
             },
-            "16": function(require, module, exports) {
-                var _ = require('2'),
-                    _cache = require('3'),
-                    _regex = require('6'),
-                    _nodeType = require('5'),
-                    _supports = require('7');
+            "/modules\css.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    _cache = require('/cache.js'),
+                    _regex = require('/regex.js'),
+                    _nodeType = require('/nodeType.js'),
+                    _supports = require('/supports.js');
 
                 var _swapSettings = {
                     measureDisplay: {
@@ -1683,9 +1709,9 @@
                     }
                 };
             },
-            "21": function(require, module, exports) {
-                var _ = require('2'),
-                    utils = require('8');
+            "/modules\manip.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    utils = require('/utils.js');
 
                 /*
                 var _empty = function(elem) {
@@ -1855,8 +1881,8 @@
                     }
                 };
             },
-            "14": function(require, module, exports) {
-                var _ = require('2');
+            "/modules\attr.js": function(require, module, exports) {
+                var _ = require('/_.js');
 
                 var _hooks = {
                         tabindex: {
@@ -1977,7 +2003,132 @@
                     }
                 };
             },
-            "28": function(require, module, exports) {
+            "/modules\prop.js": function(require, module, exports) {
+                var _ = require('/_.js'),
+                    _supports = require('/supports.js'),
+                    _nodeType = require('/nodeType.js');
+
+                var _propFix = {
+                    'for': 'htmlFor',
+                    'class': 'className'
+                };
+
+                var _propHooks = {
+                    src: (_supports.hrefNormalized) ? {} : {
+                        get: function(elem) {
+                            return elem.getAttribute('src', 4);
+                        }
+                    },
+
+                    href: (_supports.hrefNormalized) ? {} : {
+                        get: function(elem) {
+                            return elem.getAttribute('href', 4);
+                        }
+                    },
+
+                    // Support: Safari, IE9+
+                    // mis-reports the default selected property of an option
+                    // Accessing the parent's selectedIndex property fixes it
+                    selected: (_supports.optSelected) ? {} : {
+                        get: function( elem ) {
+                            var parent = elem.parentNode,
+                                fix;
+
+                            if (parent) {
+                                fix = parent.selectedIndex;
+
+                                // Make sure that it also works with optgroups, see #5701
+                                if (parent.parentNode) {
+                                    fix = parent.parentNode.selectedIndex;
+                                }
+                            }
+                            return null;
+                        }
+                    },
+
+                    tabIndex: {
+                        get: function( elem ) {
+                            // elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+                            // http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+                            // Use proper attribute retrieval(#12072)
+                            var tabindex = elem.getAttribute('tabindex');
+
+                            if (tabindex) { return _.parseInt(tabindex); }
+
+                            var nodeName = elem.nodeName;
+                            return (_regex.type.isFocusable(nodeName) || (_regex.type.isClickable(nodeName) && elem.href)) ? 0 : -1;
+                        }
+                    }
+                };
+
+                var _getOrSetProp = function(elem, name, value) {
+                    var nodeType = elem.nodeType;
+
+                    // don't get/set properties on text, comment and attribute nodes
+                    if (!elem || nodeType === _nodeType.TEXT || nodeType === _nodeType.COMMENT || nodeType === _nodeType.ATTRIBUTE) {
+                        return;
+                    }
+
+                    // Fix name and attach hooks
+                    name = _propFix[name] || name;
+                    var hooks = _propHooks[name];
+
+                    var result;
+                    if (value !== undefined) {
+                        return hooks && ('set' in hooks) && (result = hooks.set(elem, value, name)) !== undefined ?
+                            result :
+                            (elem[name] = value);
+
+                    }
+
+                    return hooks && ('get' in hooks) && (result = hooks.get(elem, name)) !== null ?
+                        result :
+                        elem[name];
+                };
+
+                module.exports = {
+                    fn: {
+                        prop: Overload().args(String).use(function(prop) {
+                                var first = this[0];
+                                if (!first) { return; }
+
+                                return _getOrSetProp(prop);
+                            })
+
+                            .args(String, O.any(String, Number, Boolean)).use(function(prop, value) {
+                                var idx = 0, length = this.length;
+                                for (; idx < length; idx++) {
+                                    _getOrSetProp(this[idx], prop, value);
+                                }
+                                return this;
+                            })
+
+                            .args(String, Function).use(function(prop, fn) {
+                                var idx = 0, length = this.length,
+                                    elem, result;
+                                for (; idx < length; idx++) {
+                                    elem = this[idx];
+                                    result = fn.call(elem, idx, _getOrSetProp(elem, prop));
+                                    _getOrSetProp(elem, prop, result);
+                                }
+                                return this;
+                            })
+
+                            .expose(),
+
+                        removeProp: Overload().args(String).use(function(prop) {
+                                var name = _propFix[prop] || prop,
+                                    idx = 0, length = this.length;
+                                for (; idx < length; idx++) {
+                                    delete this[idx][name];
+                                }
+                                return this;
+                            })
+                            .expose()
+                    }
+                };
+            },
+            "/modules\val.js": function(require, module, exports) {
                 var _getText = function(elem) {
                     if (!elem) { return ''; }
                     return elem.textContent || elem.innerText;
@@ -1999,9 +2150,9 @@
                     }
                 };
             },
-            "15": function(require, module, exports) {
-                var supports = require('7'),
-                    array = require('13');
+            "/modules\classes.js": function(require, module, exports) {
+                var supports = require('/supports.js'),
+                    array = require('/modules\array.js');
 
                 var _rspace = /\s+/g;
 

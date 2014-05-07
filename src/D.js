@@ -9,6 +9,7 @@ var _ = require('./_'),
     manip = require('./modules/manip'),
     css = require('./modules/css'),
     attr = require('./modules/attr'),
+    prop = require('./modules/prop'),
     val = require('./modules/val'),
     classes = require('./modules/classes');
 
@@ -133,6 +134,7 @@ _.extend(
     dimensions.fn,
     css.fn,
     attr.fn,
+    prop.fn,
     val.fn,
     classes.fn,
     { constructor: DOM }
