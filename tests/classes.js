@@ -279,15 +279,16 @@
         ok(!D('<p class="hi0">p0</p><p class="hi1">p1</p><p class="hi2">p2</p>').hasClass('hi'), 'Did not find a class when not present');
     });
 
-    test('contents().hasClass() returns correct values', function() {
-        expect(2);
-
-        var $div = D('<div><span class="foo"></span><!-- comment -->text</div>'),
-        $contents = $div.contents();
-
-        ok($contents.hasClass('foo'), 'Found "foo" in $contents');
-        ok(!$contents.hasClass('undefined'), 'Did not find "undefined" in $contents (correctly)');
-    });
+    // TODO: Implement .contents()?
+//    test('contents().hasClass() returns correct values', function() {
+//        expect(2);
+//
+//        var $div = D('<div><span class="foo"></span><!-- comment -->text</div>'),
+//        $contents = $div.contents();
+//
+//        ok($contents.hasClass('foo'), 'Found "foo" in $contents');
+//        ok(!$contents.hasClass('undefined'), 'Did not find "undefined" in $contents (correctly)');
+//    });
 
     test('hasClass correctly interprets non-space separators (#13835)', function() {
         expect(4);
@@ -298,12 +299,12 @@
                 'form-feed': '&#12;',
                 'carriage-return': '&#13;'
             },
-            classes = D.map(map, function(separator, label) {
+            classes = _.map(map, function(separator, label) {
                 return ' ' + separator + label + separator + ' ';
             }),
             $div = D('<div class="' + classes + '"></div>');
 
-        D.each(map, function(label) {
+        _.each(map, function(label) {
             ok($div.hasClass(label), label.replace('-', ' '));
         });
     });
