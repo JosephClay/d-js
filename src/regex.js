@@ -10,6 +10,11 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
     // "table-cell" etc...
     _NONE_OR_TABLE = /^(none|table(?!-c[ea]).+)/,
 
+    _TYPE_TEST = {
+        focusable: /^(?:input|select|textarea|button|object)$/i,
+        clickable: /^(?:a|area)$/i
+    },
+
     _SELECTOR_TEST = {
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
@@ -38,21 +43,36 @@ module.exports = {
         }
     },
 
+    type: {
+        isFocusable: function(str) {
+            _cache.typeTestFocusable.getOrSet(str, function() {
+                var result = _TYPE_TEST.focusable.exec(str);
+                return !!result;
+            });
+        },
+        isClickable: function(str) {
+            _cache.typeTestClickable.getOrSet(str, function() {
+                var result = _TYPE_TEST.clickable.exec(str);
+                return !!result;
+            });
+        }
+    },
+
     selector: {
         isStrictId: function(str) {
-            return _cache.selectedTestId.getOrSet(str, function() {
+            return _cache.selectorTestId.getOrSet(str, function() {
                 var result = _SELECTOR_TEST.id.exec(str);
                 return result ? !result[1] : false;
             });
         },
         isTag: function(str) {
-            return _cache.selectedTestTag.getOrSet(str, function() {
+            return _cache.selectorTestTag.getOrSet(str, function() {
                 var result = _SELECTOR_TEST.tag.exec(str);
                 return result ? !result[1] : false;
             });
         },
         isClass: function(str) {
-            return _cache.selectedTestClass.getOrSet(str, function() {
+            return _cache.selectorTestClass.getOrSet(str, function() {
                 var result = _SELECTOR_TEST.klass.exec(str);
                 return result ? !result[1] : false;
             });
