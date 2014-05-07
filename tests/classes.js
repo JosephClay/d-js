@@ -130,8 +130,11 @@
 //        ok(!$set.hasClass('asdf'), 'Check node,textnode,comment for removeClass');
 
 
+        // NOTE: jQuery's .attr() normalizes `null` to `undefined`; we do not.
+        //       Therefore the test has been updated to check for a `null` return value.
+        // TODO: Should we normalize `null` to `undefined` in .attr()?
         D(div).removeClass(valueObj('foo'));
-        strictEqual(D(div).attr('class'), undefined, 'removeClass doesnt create a class attribute');
+        strictEqual(D(div).attr('class'), null, 'removeClass doesnt create a class attribute');
 
         div.className = ' test ';
 
