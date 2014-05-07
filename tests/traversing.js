@@ -83,6 +83,7 @@ test('is() against non-elements (#10178)', function() {
 
 test('is(D)', function() {
     expect(19);
+
     ok(D('#form').is(D('form')), 'Check for element: A form is a form');
     ok(!D('#form').is(D('div')), 'Check for element: A form is not a div');
     ok(D('#mark').is(D('.blog')), 'Check for class: Expected class "blog"');
