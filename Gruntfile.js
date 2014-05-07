@@ -84,8 +84,8 @@ module.exports = function(grunt) {
                     globals: {},
                     aliases: {
                         '_':        '/_.js',
-                        'overload': '/libs/Overload.js',
-                        'signal':   '/libs/Signal.js'
+                        'overload': '/libs/overload.js',
+                        'signal':   '/libs/signal.js'
                     },
                     src_root: 'src/',
                     main: 'D.js',
@@ -97,7 +97,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['watch']);
+    grunt.registerTask('default', ['rquire', 'watch']);
     grunt.registerTask('build', ['rquire']);
 
     grunt.event.on('watch', function(action, filepath, target) {
