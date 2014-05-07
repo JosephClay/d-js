@@ -52,6 +52,7 @@ module.exports = function(grunt) {
     */
 
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-rquirejs');
 
     grunt.initConfig({
@@ -67,6 +68,15 @@ module.exports = function(grunt) {
                 //     ]
                 // }
             }
+        },
+        watch: {
+            scripts: {
+                files: ['**/*.js'],
+                tasks: ['rquire'],
+                options: {
+                    spawn: false,
+                }
+            },
         },
         rquire: {
             build: {
@@ -87,5 +97,10 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['rquire']);
+    grunt.registerTask('default', ['watch']);
+    grunt.registerTask('build', ['rquire']);
+
+    grunt.event.on('watch', function(action, filepath, target) {
+        grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
+    });
 };
