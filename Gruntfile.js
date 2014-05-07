@@ -83,9 +83,9 @@ module.exports = function(grunt) {
                 options: {
                     globals: {},
                     aliases: {
-                        '_':        '_',
-                        'overload': 'libs/Overload',
-                        'signal':   'libs/Signal'
+                        '_':        '/_.js',
+                        'overload': '/libs/Overload.js',
+                        'signal':   '/libs/Signal.js'
                     },
                     src_root: 'src/',
                     main: 'D.js',
