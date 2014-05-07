@@ -1,4 +1,5 @@
-var div = require('./div');
+var div = require('./div'),
+    a = div.getElementsByTagName('a')[0];
 
 module.exports = {
     classList: !!div.classList,
@@ -13,5 +14,9 @@ module.exports = {
     // Make sure that element opacity exists
     // (IE uses filter instead)
     // Use a regex to work around a WebKit issue. See #5145
-    opacity: (/^0.55$/).test(div.style.opacity)
+    opacity: (/^0.55$/).test(div.style.opacity),
+
+    // Make sure that URLs aren't manipulated
+    // (IE normalizes it by default)
+    hrefNormalized: a.getAttribute('href') === '/a'
 };
