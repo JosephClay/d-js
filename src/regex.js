@@ -28,6 +28,10 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
     _SELECTOR = {
         // TODO: This regex fails on "a, #id, [some-attr], .class, [some-attr=a,b,c\],d,e,f]" (attribute value containing an escaped right square bracket
         commandSplit: /\[(?:.+?(?!\\\]))\]|[^\[,\s]+(?=\s*(?:,|$))/g,
+
+        // TODO: Test this regex
+        pseudoSplit: /(:[^\s]+)/g,
+
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
         klass: /^\.([\w-]+)$/
