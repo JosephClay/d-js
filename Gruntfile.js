@@ -99,8 +99,4 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', ['rquire', 'watch']);
     grunt.registerTask('build', ['rquire']);
-
-    grunt.event.on('watch', function(action, filepath, target) {
-        grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
-    });
 };
