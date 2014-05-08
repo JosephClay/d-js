@@ -13,7 +13,7 @@ var _ = require('_'),
 var Is = function(str) {
     str = _normalizeSelector(str);
 
-    this._selectors = _.fastmap(_regex.selector.commandSplit(str), function(selector) {
+    this._selectors = _.map(_regex.selector.commandSplit(str), function(selector) {
         return new Selector(selector);
     });
 };
