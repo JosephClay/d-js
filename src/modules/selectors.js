@@ -31,6 +31,11 @@ var _find = function(selector, isNew) {
     return _array.unique(query.exec(this, isNew));
 };
 
+var _findWithin = function(selector, context) {
+    var query = Query(selector);
+    return _array.unique(query.exec(context));
+};
+
 var _filter = function(arr, qualifier) {
     // Early return, no qualifier. Everything matches
     if (!qualifier) { return arr; }
@@ -106,7 +111,7 @@ module.exports = {
                 .args(String)
                 .use(function(selector) {
 
-                    return _utils.merge(D(), _find(selector, this));
+                    return _utils.merge(D(), _findWithin(selector, this));
 
                 }).expose(),
 

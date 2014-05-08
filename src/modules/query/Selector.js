@@ -52,8 +52,10 @@ Selector.prototype = {
     exec: function(context) {
         context = context || document;
 
+        var selection = [];
+
         // Early return if the selector is bad
-        if (this.isBlackList) { return []; }
+        if (this.isBlackList) { return selection; }
 
         var nodeType;
         // Early return if context is not an element or document
@@ -76,8 +78,8 @@ Selector.prototype = {
             context = document;
         }
 
-        var selection = context[this.method](selector);
-        if (!selection.length) { return; }
+        selection = context[this.method](selector);
+        if (!selection.length) { return selection; }
 
         if (idApplied) { context.id = id; }
 
