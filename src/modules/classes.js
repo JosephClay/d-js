@@ -4,36 +4,10 @@ var _ = require('_'),
 
 // TODO: Use cache module
 
-var _rspace = /\s+/g;
-
-var _classArrayCache = {};
 var _classMapCache = {};
 
-var _isEmpty = function(str) { return str === null || str === undefined || str === ''; };
-var _isNotEmpty = function(str) { return str !== null && str !== undefined && str !== ''; };
-
-var _splitImpl = function(name) {
-    if (_isEmpty(name)) { return []; }
-    var split = name.split(_rspace),
-        len = split.length,
-        idx = split.length,
-        names = [],
-        nameSet = {},
-        curName;
-    while (idx--) {
-        curName = split[len - (idx + 1)];
-        if (nameSet[curName]) { continue; }  // unique
-        if (_isEmpty(curName)) { continue; } // non-empty
-        names.push(curName);
-        nameSet[curName] = true;
-    }
-    return names;
-};
-
-var _split = function(name) {
-    if (_.isArray(name)) { return name; }
-    return _classArrayCache[name] || (_classArrayCache[name] = _splitImpl(name));
-};
+var _split   = _.string.split;
+var _isEmpty = _.string.isEmpty;
 
 var _modern = {
     getClasses: function(elem) {
@@ -66,7 +40,7 @@ var _legacy = {
     },
 
     hasClass: function(elem, name) {
-        var elemClassNames = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
+        var elemClassNames = _split(elem.className),
             idx = elemClassNames.length;
         while (idx--) {
             if (elemClassNames[idx] === name) { return true; }
@@ -75,7 +49,7 @@ var _legacy = {
     },
 
     addClasses: function(elem, names) {
-        var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
+        var elemClassNameArray = _split(elem.className),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
             nameIdx = elemClassNameArray.length,
             name,
@@ -95,7 +69,7 @@ var _legacy = {
     },
 
     removeClasses: function(elem, names) {
-        var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
+        var elemClassNameArray = _split(elem.className),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
             nameIdx = elemClassNameArray.length,
             name,
@@ -114,7 +88,7 @@ var _legacy = {
     },
 
     toggleClasses: function(elem, names) {
-        var elemClassNameArray = _classArrayCache[elem.className] || (_classArrayCache[elem.className] = _split(elem.className)),
+        var elemClassNameArray = _split(elem.className),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
             nameIdx = elemClassNameArray.length,
             name,
