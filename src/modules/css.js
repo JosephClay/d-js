@@ -2,7 +2,9 @@ var _ = require('_'),
     _cache = require('../cache'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),
-    _supports = require('../supports');
+    _supports = require('../supports'),
+
+    _cssKeyCache = _cache();
 
 var _swapSettings = {
     measureDisplay: {
@@ -253,7 +255,7 @@ var _hooks = {
 };
 
 var _normalizeCssKey = function(name) {
-    return _cache.csskey.get(name) || _cache.csskey.set(name, _regex.camelCase(name));
+    return _cssKeyCache.get(name) || _cssKeyCache.set(name, _regex.camelCase(name));
 };
 
 var _setStyle = function(elem, name, value) {

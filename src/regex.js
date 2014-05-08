@@ -1,4 +1,12 @@
-var _cache = require('./cache');
+var _cache = require('./cache'),
+
+    _camelCache     = _cache(),
+    _displayCache   = _cache(),
+    _focusableCache = _cache(),
+    _clickableCache = _cache(),
+    _idCache        = _cache(),
+    _tagCache       = _cache(),
+    _classCache     = _cache();
 
     // Matches "-ms-" so that it can be changed to "ms-"
 var _TRUNCATE_MS_PREFIX = /^-ms-/,
@@ -30,14 +38,14 @@ module.exports = {
     opacity: /opacity\s*=\s*([^)]*)/,
 
     camelCase: function(str) {
-        return _cache.camelCase.getOrSet(str, function() {
+        return _camelCache.getOrSet(str, function() {
             return str.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
         });
     },
 
     display: {
         isNoneOrTable: function(str) {
-            return _cache.display.getOrSet(str, function() {
+            return _displayCache.getOrSet(str, function() {
                 return !!_NONE_OR_TABLE.exec(str);
             });
         }
@@ -45,13 +53,13 @@ module.exports = {
 
     type: {
         isFocusable: function(str) {
-            _cache.typeTestFocusable.getOrSet(str, function() {
+            _focusableCache.getOrSet(str, function() {
                 var result = _TYPE_TEST.focusable.exec(str);
                 return !!result;
             });
         },
         isClickable: function(str) {
-            _cache.typeTestClickable.getOrSet(str, function() {
+            _clickableCache.getOrSet(str, function() {
                 var result = _TYPE_TEST.clickable.exec(str);
                 return !!result;
             });
@@ -60,19 +68,19 @@ module.exports = {
 
     selector: {
         isStrictId: function(str) {
-            return _cache.selectorTestId.getOrSet(str, function() {
+            return _idCache.getOrSet(str, function() {
                 var result = _SELECTOR_TEST.id.exec(str);
                 return result ? !result[1] : false;
             });
         },
         isTag: function(str) {
-            return _cache.selectorTestTag.getOrSet(str, function() {
+            return _tagCache.getOrSet(str, function() {
                 var result = _SELECTOR_TEST.tag.exec(str);
                 return result ? !result[1] : false;
             });
         },
         isClass: function(str) {
-            return _cache.selectorTestClass.getOrSet(str, function() {
+            return _classCache.getOrSet(str, function() {
                 var result = _SELECTOR_TEST.klass.exec(str);
                 return result ? !result[1] : false;
             });

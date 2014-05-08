@@ -4,7 +4,10 @@ var _ = require('_'),
     _regex = require('../regex'),
     _array = require('./array'),
     _nodeType = require('../nodeType'),
-    _supports = require('../supports');
+    _supports = require('../supports'),
+
+    _queryCache = _cache(),
+    _querySelectorCache = _cache();
 
 var _Query = (function() {
 
@@ -14,7 +17,7 @@ var _Query = (function() {
         _selectorBlackList = ['.', '#', '', ' '],
 
         _determineMethod = function(selector) {
-            var method = _cache.querySelector.get(selector);
+            var method = _querySelectorCache.get(selector);
             if (method) { return method; }
 
             if (_regex.selector.isStrictId(selector)) {
@@ -27,7 +30,7 @@ var _Query = (function() {
                 method = 'querySelectorAll';
             }
 
-            _cache.querySelector.set(selector, method);
+            _querySelectorCache.set(selector, method);
             return method;
         };
 
@@ -55,7 +58,7 @@ var _Query = (function() {
     };
 
     return function(str) {
-        return _cache.query.getOrSet(str, function() {
+        return _queryCache.getOrSet(str, function() {
             return new Query(str);
         });
     };
