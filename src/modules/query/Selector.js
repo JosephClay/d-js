@@ -78,7 +78,12 @@ Selector.prototype = {
             context = document;
         }
 
-        selection = context[this.method](selector);
+        try {
+            selection = context[this.method](selector);
+        } catch (e) {
+            // Probably an invalid query
+            console.warn && console.warn(e);
+        }
         if (!selection.length) { return selection; }
 
         if (idApplied) { context.id = id; }
