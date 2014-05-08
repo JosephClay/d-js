@@ -1,6 +1,6 @@
 var _ = require('_'),
 
-    _array = require('../../array'),
+    _array = require('../array'),
     _regex = require('../../regex'),
     _cache = require('../../cache'),
 
