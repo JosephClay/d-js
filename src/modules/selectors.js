@@ -1,69 +1,11 @@
 var _ = require('_'),
     _utils = require('../utils'),
-    _cache = require('../cache'),
     _regex = require('../regex'),
     _array = require('./array'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports'),
 
-    _queryCache = _cache(),
-    _querySelectorCache = _cache();
-
-var _Query = (function() {
-
-    var _ID_PREFIX = 'D-uniqueId-',
-        _id = 0,
-
-        _selectorBlackList = ['.', '#', '', ' '],
-
-        _determineMethod = function(selector) {
-            var method = _querySelectorCache.get(selector);
-            if (method) { return method; }
-
-            if (_regex.selector.isStrictId(selector)) {
-                method = 'getElementById';
-            } else if (_regex.selector.isClass(selector)) {
-                method = 'getElementsByClassName';
-            } else if (_regex.selector.isTag(selector)) {
-                method = 'getElementsByTagName';
-            } else {
-                method = 'querySelectorAll';
-            }
-
-            _querySelectorCache.set(selector, method);
-            return method;
-        };
-
-    var Query = function(str) {
-        var selector = _.trim(str),
-            isBlackList = (_selectorBlackList.indexOf(selector) > -1),
-            isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
-            method = (isBlackList || isChildOrSiblingSelect) ? 'querySelectorAll' : _determineMethod(selector);
-
-        this.str = str;
-        this.selector = selector;
-        this.isBlackList = isBlackList;
-        this.isChildOrSiblingSelect = isChildOrSiblingSelect;
-        this.method = method;
-    };
-
-    Query.prototype = {
-        uniqueId: function() {
-            return _ID_PREFIX + _id++;
-        },
-
-        tailorChildSelector: function(id, selector) {
-            return '#' + id + ' ' + selector;
-        }
-    };
-
-    return function(str) {
-        return _queryCache.getOrSet(str, function() {
-            return new Query(str);
-        });
-    };
-
-}());
+    Query = require('./query/Query');
 
 var _isMatch = (function(matchSelector) {
     if (matchSelector) {
@@ -87,7 +29,7 @@ var _isMatch = (function(matchSelector) {
 var _find = function(selector, context) {
     var idx = 0,
         length = context.length || 1,
-        query = _Query(selector),
+        query = Query(selector),
         result = [];
 
     // Early return if the selector is bad
