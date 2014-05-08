@@ -1,9 +1,7 @@
 var _ = require('_');
 
-var _cache = {},
-
-    _getterSetter = function(key) {
-        var ref = (_cache[key] = {});
+var _getterSetter = function() {
+        var ref = {};
 
         return {
             get: function(key) {
@@ -21,8 +19,8 @@ var _cache = {},
         };
     },
 
-    _biLevelGetterSetter = function(key) {
-        var ref = (_cache[key] = {});
+    _biLevelGetterSetter = function() {
+        var ref = {};
 
         return {
             get: function(key1, key2) {
@@ -43,10 +41,10 @@ var _cache = {},
         };
     };
 
-var api = function(name) {
-    return _getterSetter(name || _.uniqueId());
+var api = function() {
+    return _getterSetter();
 };
-api.biLevel = function(name) {
-    return _biLevelGetterSetter(name || _.uniqueId());
+api.biLevel = function() {
+    return _biLevelGetterSetter();
 };
 module.exports = api;
