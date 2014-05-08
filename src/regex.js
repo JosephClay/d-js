@@ -1,4 +1,6 @@
-var _cache = require('./cache'),
+var _ = require('_'),
+
+    _cache = require('./cache'),
 
     _camelCache     = _cache(),
     _displayCache   = _cache(),
@@ -74,7 +76,7 @@ module.exports = {
 
         commandSplit: function(str) {
             return _commandCache.getOrSet(str, function() {
-                return str.match(_SELECTOR.commandSplit);
+                return _.filter(_.fastmap(str.match(_SELECTOR.commandSplit), _.string.trim));
             });
         },
         isStrictId: function(str) {
