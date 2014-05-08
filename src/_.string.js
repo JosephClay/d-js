@@ -2,17 +2,10 @@ var _ = require('_'),
     _stringProto = String.prototype,
     _rtrim = /^\s+|\s+$/g,
     _rspace = /\s+/g,
-    _emptyArray = [];
+    _emptyArray = [],
+    _splitCache = require('cache').biLevel();
 
 var _string = {
-    _splitArrayCache: {
-        /*
-         ' ': {
-         'some string': [ 'some', 'string' ]
-         }
-         */
-    },
-
     isEmpty: function(str) { return str === null || str === undefined || str === ''; },
     isNotEmpty: function(str) { return str !== null && str !== undefined && str !== ''; },
 
@@ -39,8 +32,7 @@ var _string = {
         if (_string.isEmpty(name)) { return _emptyArray; }
         if (_.isArray(name)) { return name; }
         delim = delim === undefined ? _rspace : delim;
-        var cache = _string._splitArrayCache[delim] || (_string._splitArrayCache[delim] = []);
-        return cache[name] || (cache[name] = _string._splitImpl(name, delim));
+        return _splitCache.getOrSet(delim, name, function() { return _string._splitImpl(name, delim); });
     }
 };
 
