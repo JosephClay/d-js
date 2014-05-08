@@ -116,7 +116,7 @@ var _ = {
         return results;
     },
 
-    // Array-perserving map
+    // Array-preserving map
     // http://jsperf.com/push-map-vs-index-replacement-map
     fastmap: function(arr, iterator) {
         if (!arr) { return []; }
