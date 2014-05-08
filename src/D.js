@@ -1,5 +1,8 @@
-var _ = require('_'),
-    parser = require('./D/parser'),
+var _ = require('_');
+
+require('_.string');
+
+var parser = require('./D/parser'),
     utils = require('./utils'),
     array = require('./modules/array'),
     onready = require('./modules/onready'),
