@@ -3,28 +3,28 @@ var _ = require('_'),
     _cache = require('../../cache'),
 
     _queryCache = _cache(),
-    _querySelectorCache = _cache();
+    _querySelectorCache = _cache(),
 
-var _ID_PREFIX = 'D-uniqueId-',
-    _selectorBlackList = ['.', '#', '', ' '],
+    _ID_PREFIX = 'D-uniqueId-',
+    _selectorBlackList = ['.', '#', '', ' '];
 
-    _determineMethod = function(selector) {
-        var method = _querySelectorCache.get(selector);
-        if (method) { return method; }
+var _determineMethod = function(selector) {
+    var method = _querySelectorCache.get(selector);
+    if (method) { return method; }
 
-        if (_regex.selector.isStrictId(selector)) {
-            method = 'getElementById';
-        } else if (_regex.selector.isClass(selector)) {
-            method = 'getElementsByClassName';
-        } else if (_regex.selector.isTag(selector)) {
-            method = 'getElementsByTagName';
-        } else {
-            method = 'querySelectorAll';
-        }
+    if (_regex.selector.isStrictId(selector)) {
+        method = 'getElementById';
+    } else if (_regex.selector.isClass(selector)) {
+        method = 'getElementsByClassName';
+    } else if (_regex.selector.isTag(selector)) {
+        method = 'getElementsByTagName';
+    } else {
+        method = 'querySelectorAll';
+    }
 
-        _querySelectorCache.set(selector, method);
-        return method;
-    };
+    _querySelectorCache.set(selector, method);
+    return method;
+};
 
 var Query = function(str) {
     var selector = _.trim(str),
@@ -37,6 +37,8 @@ var Query = function(str) {
     this.isBlackList = isBlackList;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
     this.method = method;
+
+    this._operations = [];
 };
 
 Query.prototype = {
@@ -49,8 +51,15 @@ Query.prototype = {
     }
 };
 
+var _generateQuery = function(str) {
+    var queries = _regex.selector.commandSplit(str);
+    return _.fastmap(queries, function(query) {
+        return new Query(query);
+    });
+};
+
 module.exports = function(str) {
     return _queryCache.getOrSet(str, function() {
-        return new Query(str);
+        return _generateQuery(str);
     });
 };

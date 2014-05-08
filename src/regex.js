@@ -23,7 +23,8 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
         clickable: /^(?:a|area)$/i
     },
 
-    _SELECTOR_TEST = {
+    _SELECTOR = {
+        commandSplit: /(\[.*?\]|[^\[,\s]+)(?=\s*,|\s*$)/g,
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
         klass: /^\.([\w-]+)$/
@@ -67,21 +68,26 @@ module.exports = {
     },
 
     selector: {
+        commandSplit: function(str) {
+            _selectorSplitCache.getOrSet(str, function() {
+                return str.split(_SELECTOR.commandSplit);
+            });
+        },
         isStrictId: function(str) {
             return _idCache.getOrSet(str, function() {
-                var result = _SELECTOR_TEST.id.exec(str);
+                var result = _SELECTOR.id.exec(str);
                 return result ? !result[1] : false;
             });
         },
         isTag: function(str) {
             return _tagCache.getOrSet(str, function() {
-                var result = _SELECTOR_TEST.tag.exec(str);
+                var result = _SELECTOR.tag.exec(str);
                 return result ? !result[1] : false;
             });
         },
         isClass: function(str) {
             return _classCache.getOrSet(str, function() {
-                var result = _SELECTOR_TEST.klass.exec(str);
+                var result = _SELECTOR.klass.exec(str);
                 return result ? !result[1] : false;
             });
         }
