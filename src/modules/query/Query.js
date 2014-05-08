@@ -13,7 +13,7 @@ var Query = function(str) {
     str = _normalizeSelector(str);
 
     var result = _regex.selector.commandSplit(str);
-    this._selectors = _.fastmap(result, function(selector) {
+    this._selectors = _.map(result, function(selector) {
         console.log('result: ', result);
         console.log('str: ', str);
         return new Selector(selector);
