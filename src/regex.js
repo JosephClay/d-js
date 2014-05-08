@@ -75,16 +75,9 @@ module.exports = {
     selector: {
 
         commandSplit: function(str) {
-            var result = _commandCache.getOrSet(str, function() {
-                var foo = _.filter(_.fastmap(str.match(_SELECTOR.commandSplit), _.string.trim));
-                return foo;
+            return _commandCache.getOrSet(str, function() {
+                return _.filter(_.fastmap(str.match(_SELECTOR.commandSplit), _.string.trim));
             });
-
-            var result = _commandCache.getOrSet(str, function() {
-                var foo = _.filter(_.fastmap(str.match(_SELECTOR.commandSplit), _.string.trim));
-                return foo;
-            });
-            return result;
         },
         isStrictId: function(str) {
             return _idCache.getOrSet(str, function() {
