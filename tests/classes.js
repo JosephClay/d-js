@@ -304,7 +304,7 @@
             }),
             $div = D('<div class="' + classes + '"></div>');
 
-        _.each(map, function(label) {
+        _.each(map, function(separator, label) {
             ok($div.hasClass(label), label.replace('-', ' '));
         });
     });
