@@ -138,7 +138,7 @@ var _ = {
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
             if (iterator(arr[idx], idx)) {
-                results.push(value);
+                results.push(arr[idx]);
             }
         }
 
