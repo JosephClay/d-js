@@ -33,7 +33,7 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
         pseudoSplit: /(:[^\s]+)/g,
 
         //
-        attributeSelector: /\[\s*[\w-]+\s*=\s*(['"]?).*?[^\\]|[^\\]*\2\s*\]/g,
+        attributeSelector: /\[\s*[\w-]+\s*[!$^*]?=\s*(['"]?)(.*?[^\\]|[^\\]*)\1\s*\]/g,
 
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
