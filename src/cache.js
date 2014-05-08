@@ -35,7 +35,7 @@ var _cache = {},
                 return value;
             },
             getOrSet: function(key1, key2, fn) {
-                var ref1 = ref[key1],
+                var ref1 = ref[key1] || (ref[key1] = {}),
                     cachedVal = ref1[key2];
                 if (cachedVal !== undefined) { return cachedVal; }
                 return (ref1[key2] = fn());
