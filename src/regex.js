@@ -73,8 +73,10 @@ module.exports = {
 
     selector: {
         commandSplit: function(str) {
-            _selectorSplitCache.getOrSet(str, function() {
-                return str.split(_SELECTOR.commandSplit);
+            return _commandCache.getOrSet(str, function() {
+                return str.match(_SELECTOR.commandSplit);
+            });
+        },
         pseudoSplit: function(str) {
             return _pseudoCache.getOrSet(str, function() {
                 return str.split(_SELECTOR.pseudoSplit);
