@@ -32,6 +32,9 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
         // TODO: Test this regex
         pseudoSplit: /(:[^\s]+)/g,
 
+        //
+        attributeSelector: /\[\s*[\w-]+\s*=\s*(['"]?).*?[^\\]|[^\\]*\2\s*\]/g,
+
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
         klass: /^\.([\w-]+)$/
