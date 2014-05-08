@@ -226,7 +226,7 @@ var _hooks = {
                 filter = currentStyle && currentStyle.filter || style.filter || '';
 
             // if setting opacity to 1, and no other filters exist - remove the filter attribute
-            if (value >= 1 || value === '' && _.trim(filter.replace(_regex.alpha, '')) === '') {
+            if (value >= 1 || value === '' && _.string.trim(filter.replace(_regex.alpha, '')) === '') {
 
                 // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
                 // if 'filter:' is present at all, clearType is disabled, we want to avoid this

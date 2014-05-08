@@ -41,7 +41,7 @@ var _formatSelectorString = function(selector) {
 };
 
 var Selector = function(str) {
-    var selector = _.trim(str),
+    var selector = _.string.trim(str),
         isBlackList = (_selectorBlackList.indexOf(selector) > -1),
         isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
         method = (isBlackList || isChildOrSiblingSelect) ? 'querySelectorAll' : _determineMethod(selector);
