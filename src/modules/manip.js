@@ -1,4 +1,5 @@
 var _ = require('_'),
+    parser = require('../D/parser'),
     utils = require('../utils');
 
 /*
