@@ -58,13 +58,13 @@ module.exports = {
 
     type: {
         isFocusable: function(str) {
-            _focusableCache.getOrSet(str, function() {
+            return _focusableCache.getOrSet(str, function() {
                 var result = _TYPE_TEST.focusable.exec(str);
                 return !!result;
             });
         },
         isClickable: function(str) {
-            _clickableCache.getOrSet(str, function() {
+            return _clickableCache.getOrSet(str, function() {
                 var result = _TYPE_TEST.clickable.exec(str);
                 return !!result;
             });
