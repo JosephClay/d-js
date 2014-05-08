@@ -32,47 +32,12 @@ var _find = function(selector, context) {
         query = Query(selector),
         result = [];
 
-    // Early return if the selector is bad
-    if (query.isBlackList) { return result; }
-
     for (; idx < length; idx++) {
-        var ret = _findWithQuery(query, context[idx]);
+        var ret = query.exec(context[idx]);
         if (ret) { result.push(ret); }
     }
 
     return _array.unique(_.flatten(result));
-};
-
-var _findWithQuery = function(query, context) {
-    context = context || document;
-
-    var nodeType;
-    // Early return if context is not an element or document
-    if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
-
-    // Child select - needs special help so that "> div" doesn't break
-    var id,
-        newId,
-        idApplied = false;
-        selector = query.selector;
-    if (query.isChildOrSiblingSelect) {
-        id = context.id;
-        if (!_.exists(id)) {
-            newId = query.uniqueId();
-            context.id = newId;
-            idApplied = true;
-        }
-
-        selector = query.tailorChildSelector(idApplied ? newId : id, selector);
-        context = document;
-    }
-
-    var selection = context[query.method](selector);
-    if (!selection.length) { return; }
-
-    if (idApplied) { context.id = id; }
-
-    return _array.slice(selection);
 };
 
 var _filter = function(arr, qualifier) {
