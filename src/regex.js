@@ -5,7 +5,6 @@ var _cache = require('./cache'),
     _focusableCache = _cache(),
     _clickableCache = _cache(),
     _commandCache   = _cache(),
-    _pseudoCache    = _cache(),
     _idCache        = _cache(),
     _tagCache       = _cache(),
     _classCache     = _cache();
@@ -28,12 +27,6 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
     _SELECTOR = {
         // TODO: This regex fails on "a, #id, [some-attr], .class, [some-attr=a,b,c\],d,e,f]" (attribute value containing an escaped right square bracket
         commandSplit: /\[(?:.+?(?!\\\]))\]|[^\[,\s]+(?=\s*(?:,|$))/g,
-
-        // TODO: Test this regex
-        pseudoSplit: /(:[^\s]+)/g,
-
-        //
-        attributeSelector: /\[\s*[\w-]+\s*[!$^*]?=\s*(['"]?)(.*?[^\\]|[^\\]*)\1\s*\]/g,
 
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
@@ -78,14 +71,10 @@ module.exports = {
     },
 
     selector: {
+
         commandSplit: function(str) {
             return _commandCache.getOrSet(str, function() {
                 return str.match(_SELECTOR.commandSplit);
-            });
-        },
-        pseudoSplit: function(str) {
-            return _pseudoCache.getOrSet(str, function() {
-                return str.split(_SELECTOR.pseudoSplit);
             });
         },
         isStrictId: function(str) {

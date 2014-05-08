@@ -27,17 +27,8 @@ var _isMatch = (function(matchSelector) {
 }(_supports.matchesSelector));
 
 var _find = function(selector, context) {
-    var idx = 0,
-        length = context.length || 1,
-        query = Query(selector),
-        result = [];
-
-    for (; idx < length; idx++) {
-        var ret = query.exec(context[idx]);
-        if (ret) { result.push(ret); }
-    }
-
-    return _array.unique(_.flatten(result));
+    var query = Query(selector);
+    return _array.unique(query.exec(this));
 };
 
 var _filter = function(arr, qualifier) {

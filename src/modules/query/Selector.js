@@ -7,7 +7,6 @@ var _ = require('_'),
     _querySelectorCache = _cache(),
 
     _ID_PREFIX = 'D-uniqueId-',
-    _proxySelectors = require('./proxySelectors');
     _selectorBlackList = require('./selectorBlackList');
 
 var _determineMethod = function(selector) {
@@ -31,15 +30,6 @@ var _determineMethod = function(selector) {
         return _ID_PREFIX + _.uniqueId();
     };
 
-var _getDataAttrPositions = function(selector) {
-    var positions = [];
-
-};
-
-var _formatSelectorString = function(selector) {
-    _regex.
-};
-
 var Selector = function(str) {
     var selector = _.string.trim(str),
         isBlackList = (_selectorBlackList.indexOf(selector) > -1),
@@ -47,7 +37,7 @@ var Selector = function(str) {
         method = (isBlackList || isChildOrSiblingSelect) ? 'querySelectorAll' : _determineMethod(selector);
 
     this.str = str;
-    this.selector = _formatSelectorString(selector);
+    this.selector = selector;
     this.isBlackList = isBlackList;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
     this.method = method;
@@ -55,20 +45,13 @@ var Selector = function(str) {
 
 Selector.prototype = {
 
-    tailorChildSelector: function(id, selector) {
+    _tailorChildSelector: function(id, selector) {
         return '#' + id + ' ' + selector;
     },
 
     exec: function(context) {
-        var ops = this._operations,
-            idx = 0, length = ops.length;
-        for (; idx < length; idx++) {
-            ops(context);
-        }
-    },
+        context = context || document;
 
-    _find: function(context) {
-        if (!context) { return []; }
         // Early return if the selector is bad
         if (this.isBlackList) { return []; }
 
@@ -89,7 +72,7 @@ Selector.prototype = {
                 idApplied = true;
             }
 
-            selector = this.tailorChildSelector(idApplied ? newId : id, selector);
+            selector = this._tailorChildSelector(idApplied ? newId : id, selector);
             context = document;
         }
 
