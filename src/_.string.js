@@ -3,7 +3,7 @@ var _ = require('_'),
     _rtrim = /^\s+|\s+$/g,
     _rspace = /\s+/g,
     _emptyArray = [],
-    _splitCache = require('cache').biLevel();
+    _splitCache = require('./cache').biLevel();
 
 var _string = {
     isEmpty: function(str) { return str === null || str === undefined || str === ''; },
