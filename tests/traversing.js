@@ -38,11 +38,10 @@ test('is(String|undefined)', function() {
     ok(D('#text1').is('[type="text"]'), 'Check for attribute: Expected attribute type to be "text"');
     ok(!D('#text1').is('[type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"');
 
-    // TODO: look into viability of adding this
-    // ok(D('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled');
-    // ok(!D('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled');
-    // ok(D('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked');
-    // ok(!D('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked');
+    ok(D('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled');
+    ok(!D('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled');
+    ok(D('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked');
+    ok(!D('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked');
 
     ok(!D('#foo').is(0), 'Expected false for an invalid expression - 0');
     ok(!D('#foo').is(null), 'Expected false for an invalid expression - null');

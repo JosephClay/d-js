@@ -2,29 +2,9 @@ var _ = require('_'),
     _utils = require('../utils'),
     _regex = require('../regex'),
     _array = require('./array'),
-    _nodeType = require('../nodeType'),
-    _supports = require('../supports'),
 
-    Query = require('./query/Query');
-
-var _isMatch = (function(matchSelector) {
-    if (matchSelector) {
-        return function(elem, selector) {
-            return matchSelector.call(elem, selector);
-        };
-    }
-
-    return function(elem, selector) {
-        var nodes = elem.parentNode.querySelectorAll(selector),
-            idx = nodes.length;
-        while (idx--) {
-            if (nodes[idx] === elem) {
-                return true;
-            }
-        }
-        return false;
-    };
-}(_supports.matchesSelector));
+    Query = require('./query/Query'),
+    Is = require('./query/Is');
 
 var _find = function(selector, isNew) {
     var query = Query(selector);
@@ -67,7 +47,10 @@ var _filter = function(arr, qualifier) {
 
 module.exports = {
     find: _find,
-    is: _isMatch,
+    is: function() {
+        // TODO: Implement?
+        debugger;
+    },
     filter: _filter,
 
     fn: {
@@ -94,14 +77,14 @@ module.exports = {
                 .args(String).use(function(selector) {
                     if (selector === '') { return false; }
 
-                    return _.any(this, function(elem) {
-                        return _isMatch(elem, selector);
-                    });
+                    var is = Is(selector);
+                    return is.exec(this);
                 })
 
                 .args(Function).use(function(iterator) {
-                    // TODO: Internal "every"
+
                     return _.any(this, iterator);
+
                 })
                 .expose(),
 

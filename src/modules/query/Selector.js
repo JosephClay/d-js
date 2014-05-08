@@ -4,10 +4,10 @@ var _ = require('_'),
     _nodeType = require('../../nodeType'),
     _cache = require('../../cache'),
     _regex = require('../../regex'),
-    _querySelectorCache = _cache(),
 
     _ID_PREFIX = 'D-uniqueId-',
-    _selectorBlackList = require('./selectorBlackList');
+    _querySelectorCache = _cache(),
+    _selectorBlackList = require('./list/selectorBlackList');
 
 var _determineMethod = function(selector) {
         var method = _querySelectorCache.get(selector);
