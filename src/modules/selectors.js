@@ -26,9 +26,9 @@ var _isMatch = (function(matchSelector) {
     };
 }(_supports.matchesSelector));
 
-var _find = function(selector, context) {
+var _find = function(selector, isNew) {
     var query = Query(selector);
-    return _array.unique(query.exec(this));
+    return _array.unique(query.exec(this, isNew));
 };
 
 var _filter = function(arr, qualifier) {

@@ -47,7 +47,7 @@ var DOM = function(arg) {
         }
 
         // Selector: perform a find without creating a new DOM
-        utils.merge(this, selectors.find(arg, this));
+        utils.merge(this, selectors.find(arg, true));
         return;
     }
 
