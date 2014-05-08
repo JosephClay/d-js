@@ -1,5 +1,6 @@
 var _id = 0,
-    _toString = Object.prototype.toString;
+    _toString = Object.prototype.toString,
+    _isTruthy = function(arg) { return !!arg; };
 
 var _ = {
     uniqueId: function() {
@@ -132,6 +133,7 @@ var _ = {
     filter: function(arr, iterator) {
         var results = [];
         if (!arr || !arr.length) { return results; }
+        iterator = iterator || _isTruthy;
 
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
