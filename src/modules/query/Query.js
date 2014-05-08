@@ -58,9 +58,9 @@ var Query = function(str) {
     });
 };
 Query.prototype = {
-    exec: function(arr) {
+    exec: function(arr, isNew) {
         var result = [],
-            idx = 0, length = arr.length || 1;
+            idx = 0, length = isNew ? 1 : arr.length;
         for (; idx < length; idx++) {
             result.push(this._find(arr[idx]));
         }
