@@ -84,6 +84,7 @@ module.exports = function(grunt) {
                     globals: {},
                     aliases: {
                         '_':        '/_.js',
+                        '_.string': '/_.string.js',
                         'overload': '/libs/overload.js',
                         'signal':   '/libs/signal.js'
                     },
