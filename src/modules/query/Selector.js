@@ -64,7 +64,7 @@ Selector.prototype = {
         // Child select - needs special help so that "> div" doesn't break
         var id,
             newId,
-            idApplied = false;
+            idApplied = false,
             selector = this.selector;
         if (this.isChildOrSiblingSelect) {
             id = context.id;
