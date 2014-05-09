@@ -203,7 +203,6 @@ var _tokenize = function(selector, parseOnly) {
         if ((match = rcombinators.exec(soFar))) {
             matched = match.shift();
             subquery += matched;
-//            type = match[0].replace(rtrim, ' ');
             soFar = soFar.slice(matched.length);
         }
 
