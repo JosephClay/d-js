@@ -92,7 +92,7 @@ Selector.prototype = {
             selection = context[this.method](selector);
         } catch (e) {
             // Probably an invalid query
-            console.warn && console.warn(e.message, selector);
+            console && console.error && console.error(e.message, selector);
         }
         if (!selection.length) { return selection; }
 
