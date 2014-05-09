@@ -167,9 +167,6 @@ var preFilter = {
     }
 };
 
-var _mapToken = function(token)  { return token.value; };
-var _mapGroup = function(tokens) { return _.fastmap(tokens, _mapToken).join(''); };
-
 /**
  * Splits the given comma-separated CSS selector into separate sub-queries.
  * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
@@ -189,8 +186,8 @@ var _tokenize = function(selector, parseOnly) {
         regex,
         match,
         matched,
-        groups = [],
-        tokens = [];
+        subqueries = [],
+        subquery = '';
 
     while (soFar) {
         // Comma and first run
@@ -199,7 +196,8 @@ var _tokenize = function(selector, parseOnly) {
                 // Don't consume trailing commas as valid
                 soFar = soFar.slice(match[0].length) || soFar;
             }
-            groups.push((tokens = []));
+            if (subquery) { subqueries.push(subquery); }
+            subquery = '';
         }
 
         matched = null;
@@ -207,12 +205,8 @@ var _tokenize = function(selector, parseOnly) {
         // Combinators
         if ((match = rcombinators.exec(soFar))) {
             matched = match.shift();
-            tokens.push({
-                value: matched,
-                match: match,
-                // Cast descendant combinators to space
-                type: match[0].replace(rtrim, ' ')
-            });
+            subquery += matched;
+//            type = match[0].replace(rtrim, ' ');
             soFar = soFar.slice(matched.length);
         }
 
@@ -223,11 +217,7 @@ var _tokenize = function(selector, parseOnly) {
 
             if (match && (!preFilter[type] || (match = preFilter[type](match)))) {
                 matched = match.shift();
-                tokens.push({
-                    value: matched,
-                    match: match,
-                    type: type
-                });
+                subquery += matched;
                 soFar = soFar.slice(matched.length);
 
                 break;
@@ -239,7 +229,7 @@ var _tokenize = function(selector, parseOnly) {
         }
     }
 
-    _.fastmap(groups, _mapGroup);
+    if (subquery) { subqueries.push(subquery); }
 
     // Return the length of the invalid excess
     // if we're just parsing
@@ -249,7 +239,7 @@ var _tokenize = function(selector, parseOnly) {
         soFar ?
             _throwError(selector) :
             // Cache the tokens
-            _tokenCache.set(selector, groups).slice();
+            _tokenCache.set(selector, subqueries).slice();
 };
 
 module.exports = {
