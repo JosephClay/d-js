@@ -177,14 +177,26 @@ var _tokenize = function(selector, parseOnly) {
         return parseOnly ? 0 : cached.slice(0);
     }
 
-    var soFar = selector;
+    var /** @type {String} */
+        type,
 
-    var type,
+        /** @type {RegExp} */
         regex,
+
+        /** @type {Array} */
         match,
+
+        /** @type {String} */
         matched,
+
+        /** @type {String[]} */
         subqueries = [],
-        subquery = '';
+
+        /** @type {String} */
+        subquery = '',
+
+        /** @type {String} */
+        soFar = selector;
 
     while (soFar) {
         // Comma and first run
