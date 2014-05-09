@@ -21,7 +21,7 @@ var _ = require('_'),
     _subqueryCache = _cache();
 
 var _throwError = function(selector) {
-    throw new Error(selector);
+    throw new Error('Invalid query selector: ' + selector);
 };
 
 var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
