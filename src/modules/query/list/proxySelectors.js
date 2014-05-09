@@ -16,4 +16,6 @@ module.exports = {
     ':disabled': '[disabled]',
     ':selected': '[selected]',
     ':checked' : '[checked="checked"]'
+
+    // TODO: In IE8 is :before or ::before the valid selector?
 };

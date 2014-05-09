@@ -22,6 +22,7 @@ var parser = require('./D/parser'),
     attr = require('./modules/attr'),
     prop = require('./modules/prop'),
     val = require('./modules/val'),
+    position = require('./modules/position'),
     classes = require('./modules/classes');
 
 // Store previous reference
@@ -143,6 +144,7 @@ _.extend(
     prop.fn,
     val.fn,
     classes.fn,
+    position.fn,
     { constructor: DOM }
 );
 
@@ -176,13 +178,6 @@ if (typeof define === 'function' && define.amd) {
             }
 
             elem.detachEvent('on' + eventName, callback);
-        },
-
-        position: function() {
-            return {
-                left: this.elem.offsetLeft,
-                top: this.elem.offsetTop
-            };
         },
 
         html: function(str) {
