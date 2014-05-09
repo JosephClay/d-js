@@ -668,7 +668,7 @@ test('index(no arg) #10977', function() {
 test('traversing non-elements with attribute filters (#12523)', function() {
     expect(5);
 
-    var nonnodes = D('#nonnodes').contents();
+    var nonnodes = D('#nonnodes').children();
 
     equal(nonnodes.filter('[id]').length, 1, '.filter');
     equal(nonnodes.find('[id]').length, 0, '.find');
