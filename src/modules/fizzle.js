@@ -50,9 +50,6 @@ var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disable
         ".*" +
         ")\\)|)",
 
-    // Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
-    rtrim = new RegExp("^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g"),
-
     rcomma = new RegExp("^" + whitespace + "*," + whitespace + "*"),
     rcombinators = new RegExp("^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*"),
 
