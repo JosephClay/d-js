@@ -24,7 +24,7 @@ var _getterSetter = function() {
 
         return {
             get: function(key1, key2) {
-                var ref1 = ref[key];
+                var ref1 = ref[key1];
                 return ref1 !== undefined ? ref1[key2] : ref1;
             },
             set: function(key1, key2, value) {
