@@ -1,7 +1,7 @@
 var _ = require('_');
 
 module.exports = {
-    isPartOfDocument: function(elem) {
+    isAttached: function(elem) {
         return (elem.ownerDocument === document);
     },
 
