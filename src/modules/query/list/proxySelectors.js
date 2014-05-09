@@ -12,8 +12,8 @@ module.exports = {
     ':button'  : '[type="button"]',
     ':image'   : '[type="image"]',
     ':file'    : '[type="file"]',
-    ':enabled' : '[type="image"]',
-    ':disabled': ':not([disabled])',
+    ':enabled' : ':not([disabled])',
+    ':disabled': '[disabled]',
     ':selected': '[selected]',
     ':checked' : '[checked="checked"]'
 };
