@@ -169,8 +169,6 @@ var preFilter = {
     }
 };
 
-var DEBUG = false;
-
 /**
  * Splits the given comma-separated CSS query into separate sub-queries.
  * @param  {String} query Full CSS query (e.g., 'a, input:focus, div[attr="value"]').
@@ -188,8 +186,6 @@ var tokenize = function(query) {
         tokens = [];
 
     while (soFar) {
-        DEBUG && console.log(soFar);
-
         // Comma and first run
         if (!matched || (match = rcomma.exec(soFar))) {
             if (match) {
@@ -203,8 +199,6 @@ var tokenize = function(query) {
 
         // Combinators
         if ((match = rcombinators.exec(soFar))) {
-            DEBUG && console.log('rcombinators', match);
-
             matched = match.shift();
             tokens.push({
                 value: matched,
@@ -221,8 +215,6 @@ var tokenize = function(query) {
             match = regex.exec(soFar);
 
             if (match && (!preFilter[type] || (match = preFilter[type](match)))) {
-                DEBUG && console.log(type, match);
-
                 matched = match.shift();
                 tokens.push({
                     value: matched,
@@ -235,8 +227,6 @@ var tokenize = function(query) {
             }
         }
 
-        DEBUG && console.log('~~~');
-
         if (!matched) {
             break;
         }
@@ -244,125 +234,3 @@ var tokenize = function(query) {
 
     return groups;
 };
-
-var Q = function(str) {
-    return '"' + str + '"';
-};
-
-var QUERIES = [
-    '#a > div, :first, #id:first, .class:first, [attr], #id[attr], .class[attr], .class[attr]:first, [attr="value"], :not([attr="value"])',
-
-    // "a, #id, [some-attr], .class, [some-attr=a,b,c]",                // Invalid query
-    // "a, #id, [some-attr], .class, [some-attr=a,b,c\\],d,e,f]",       // Invalid query
-    // "a, #id, [some-attr], .class, [some-attr=a,b,c\\',d,e,f]",       // Invalid query
-    "a, #id, [some-attr], .class, [some-attr='a,b,c']",
-    "a, #id, [some-attr], .class, [some-attr='a,b,c\\],d,e,f']",
-    "a, #id, [some-attr], .class, [some-attr='a,b,c\\',d,e,f']",
-    "a, #id, [some-attr], .class, [some-attr='a,b,c\\]\\',d,e,f']",
-    "a, #id, [some-attr], .class, [some-attr='a,b,c\\]\\',d,e,f']",
-    'a, #id, [some-attr], .class, [some-attr="a,b,c"]',
-    'a, #id, [some-attr], .class, [some-attr="a,b,c\\],d,e,f"]',
-    'a, #id, [some-attr], .class, [some-attr="a,b,c\\",d,e,f"]',
-    'a, #id, [some-attr], .class, [some-attr="a,b,c\\]\\",d,e,f"]',
-    'a, #id, [some-attr], .class, [some-attr="a,b,c\\]\\",d,e,f"]',
-    'a, #id, [some-attr], .class, [some-attr=""]',
-
-    // "a, #id, [some-attr], .class, [ some-attr = a,b,c ]",                // Invalid query
-    // "a, #id, [some-attr], .class, [ some-attr = a,b,c\\],d,e,f ]",       // Invalid query
-    // "a, #id, [some-attr], .class, [ some-attr = a,b,c\\',d,e,f ]",       // Invalid query
-    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c' ]",
-    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\],d,e,f' ]",
-    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\',d,e,f' ]",
-    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\]\\',d,e,f' ]",
-    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\]\\',d,e,f' ]",
-    'a, #id, [some-attr], .class, [ some-attr = "a,b,c" ]',
-    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\],d,e,f" ]',
-    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\",d,e,f" ]',
-    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\]\\",d,e,f" ]',
-    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\]\\",d,e,f" ]',
-
-    // "a, #id, input[some-attr], .class, input[some-attr=a,b,c]",              // Invalid query
-    // "a, #id, input[some-attr], .class, input[some-attr=a,b,c\\],d,e,f]",     // Invalid query
-    // "a, #id, input[some-attr], .class, input[some-attr=a,b,c\\',d,e,f]",     // Invalid query
-    "a, #id, input[some-attr], .class, input[some-attr='a,b,c']",
-    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\],d,e,f']",
-    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\',d,e,f']",
-    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\]\\',d,e,f']",
-    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\]\\',d,e,f']",
-    'a, #id, input[some-attr], .class, input[some-attr="a,b,c"]',
-    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\],d,e,f"]',
-    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\",d,e,f"]',
-    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\]\\",d,e,f"]',
-    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\]\\",d,e,f"]',
-    'a, #id, input[some-attr], .class, input[some-attr=""]',
-
-    // "a, #id, input[some-attr], .class, input[ some-attr = a,b,c ]",              // Invalid query
-    // "a, #id, input[some-attr], .class, input[ some-attr = a,b,c\\],d,e,f ]",     // Invalid query
-    // "a, #id, input[some-attr], .class, input[ some-attr = a,b,c\\',d,e,f ]",     // Invalid query
-    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c' ]",
-    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\],d,e,f' ]",
-    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\',d,e,f' ]",
-    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\]\\',d,e,f' ]",
-    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\]\\',d,e,f' ]",
-    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c" ]',
-    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\],d,e,f" ]',
-    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\",d,e,f" ]',
-    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\]\\",d,e,f" ]',
-    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\]\\",d,e,f" ]',
-
-    "a, #id, [some-attr], .class, [asdf\\]]",
-
-    ":not([disabled])",
-    "input:not([disabled])",
-    "a :not([disabled])",
-    "a input:not([disabled])",
-    "a, input:not([disabled])",
-
-    ':not([disabled="\\]"])',
-    'input:not([disabled="\\]"])',
-    'a :not([disabled="\\]"])',
-    'a input:not([disabled="\\]"])',
-    'a, input:not([disabled="\\]"])',
-
-    ':not([disabled="()"])',
-    'input:not([disabled="()"])',
-    'a :not([disabled="()"])',
-    'a input:not([disabled="()"])',
-    'a, input:not([disabled="()"])',
-
-    '#TestDiv p'
-];
-
-for (var qidx = 0; qidx < QUERIES.length; qidx++) {
-    var query = QUERIES[qidx];
-    var groups = tokenize(query);
-
-    console.log('Query:', query);
-
-    var subqueries = [];
-
-    for (var i = 0; i < groups.length; i++) {
-        var group = groups[i];
-        var subquery = [];
-
-        DEBUG && console.log('Group ' + (i + 1) + ':');
-
-        for (var j = 0; j < group.length; j++) {
-            var token = group[j];
-
-            DEBUG && console.log('\t', Q(token.value), '\t\t=>', Q(token.type));
-
-            subquery.push(token.value);
-        }
-
-        subqueries.push(subquery.join(''));
-    }
-
-    console.log('Parse:', subqueries);
-
-    console.log(' ');
-    console.log(' ');
-    console.log('============================================================================');
-    console.log(' ');
-    console.log(' ');
-}
