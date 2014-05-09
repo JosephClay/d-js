@@ -10,7 +10,7 @@
  * Date: 2014-04-21
  */
 
-/**
+/*
  * Fizzle.js
  * Adapted from Sizzle.js
  */
@@ -169,6 +169,7 @@ var preFilter = {
  * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
  * @param  {Boolean} [parseOnly=false]
  * @return {String[]|Number} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]').
+ * @private
  */
 var _tokenize = function(selector, parseOnly) {
     var cached = _tokenCache.get(selector);
