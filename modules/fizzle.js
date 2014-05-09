@@ -176,6 +176,7 @@ var preFilter = {
  */
 var tokenize = function(query) {
     // TODO: Use utils
+    // TODO: Use cache
     var soFar = query.trim();
 
     var type,
