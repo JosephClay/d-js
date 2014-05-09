@@ -1,4 +1,5 @@
-var _ = require('_');
+var _ = require('_'),
+    _utils = require('../utils');
 
 var _slice = (function(_slice) {
         return function(arr, start, end) {
@@ -131,7 +132,8 @@ module.exports = {
             if (!elem) {
                 var first = this[0],
                     parent;
-                return (first && (parent = first.parentNode)) ? _slice(parent.children).indexOf(first) : -1;
+                // Note: _utils.isAttached check to pass test "Node without parent returns -1"
+                return (first && (parent = first.parentNode) && _utils.isAttached(parent)) ? _slice(parent.children).indexOf(first) : -1;
             }
 
             // index in selector
