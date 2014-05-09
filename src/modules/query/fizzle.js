@@ -1,4 +1,4 @@
-// TODO: Move into "query" dir and rename "query" to "fizzle". Make those scripts all one engine
+// TODO: Rename "query" to "fizzle" and make those scripts all one engine.
 /*!
  * Sizzle CSS Selector Engine v1.10.20-pre
  * http://sizzlejs.com/
