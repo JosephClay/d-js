@@ -1,13 +1,19 @@
-var _supports = require('../../supports');
+var _supports = require('../../supports'),
+    _nodeType = require('../../nodeType'),
 
-module.exports = (function(matchSelector) {
-    if (matchSelector) {
-        return function(elem, selector) {
-            return matchSelector.call(elem, selector);
-        };
-    }
+    _matchesSelector = _supports.matchesSelector;
 
-    return function(elem, selector) {
+var matches;
+if (_matchesSelector) {
+    matches = function(elem, selector) {
+        if (elem.nodeType !== _nodeType.ELEMENT) { return false; }
+        
+        return _matchesSelector.call(elem, selector);
+    };
+} else {
+    matches = function(elem, selector) {
+        if (elem.nodeType !== _nodeType.ELEMENT) { return false; }
+
         var nodes = elem.parentNode.querySelectorAll(selector),
             idx = nodes.length;
         while (idx--) {
@@ -17,4 +23,6 @@ module.exports = (function(matchSelector) {
         }
         return false;
     };
-}(_supports.matchesSelector));
+}
+
+module.exports = matches;
