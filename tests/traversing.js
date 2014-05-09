@@ -656,7 +656,7 @@ test('index(no arg) #10977', function() {
 
     $list = D('<ul id="indextest"><li class="zero">THIS ONE</li><li class="one">a</li><li class="two">b</li><li class="three">c</li></ul>');
     D('#qunit-fixture').append($list);
-    strictEqual (D('#indextest li.zero').first().index() , 0, 'No Argument Index Check');
+    strictEqual(D('#indextest li.zero').first().index() , 0, 'No Argument Index Check');
     $list.remove();
 
     fragment = document.createDocumentFragment();

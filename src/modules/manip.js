@@ -1,21 +1,31 @@
 var _ = require('_'),
+    _selector = require('./selectors'),
+
     parser = require('../D/parser'),
     utils = require('../utils');
 
-/*
-var _empty = function(elem) {
-        var child;
-        while ((child = elem.firstChild)) {
-            elem.removeChild(child);
+var _empty = function(arr) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            var child = arr[idx];
+            while (elem && (child = elem.firstChild)) {
+                elem.removeChild(child);
+            }
+        }
+    },
+
+    _remove = function(arr) {
+        var idx = 0, length = arr.length,
+            elem, parent;
+        for (; idx < length; idx++) {
+            elem = arr[idx];
+            if (elem && (parent = elem.parentNode)) {
+                parent.removeChild(elem);
+            }
         }
     },
 
     _clone = function(elem) {
-        return elem.cloneNode(true);
-    };
-*/
-
-var _clone = function(elem) {
         return elem.cloneNode(true);
     },
 
@@ -91,14 +101,6 @@ var _clone = function(elem) {
 
 module.exports = {
     fn: {
-        empty: function() {
-            var idx = 0, length = this.length;
-            for (; idx < length; idx++) {
-                _empty(this[idx]);
-            }
-            return this;
-        },
-
         // TODO: should this follow jQuery API?
         // http://api.jquery.com/clone/
         // .clone( [withDataAndEvents ] [, deepWithDataAndEvents ] )
@@ -167,5 +169,21 @@ module.exports = {
             thing.prepend(this);
             return this;
         },
+
+        empty: function() {
+            _empty(this);
+            return this;
+        },
+
+        // TODO: Overload
+        remove: function(selector) {
+            var arr = this;
+            if (_.isString(selector)) {
+                arr = _selector.filter(this, selector);
+            }
+
+            _remove(this);
+            return this;
+        }
     }
 };
