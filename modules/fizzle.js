@@ -235,3 +235,7 @@ var tokenize = function(query) {
 
     return groups;
 };
+
+module.exports = {
+    subqueries: tokenize
+};
