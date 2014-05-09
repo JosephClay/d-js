@@ -16,7 +16,7 @@
  */
 
 var _ = require('_'),
-    _cache = require('../cache'),
+    _cache = require('../../cache'),
     _tokenCache = _cache(),
     _subqueryCache = _cache();
 
