@@ -162,11 +162,9 @@ test('filter(Selector|undefined)', function() {
 test('filter(Function)', function() {
     expect(2);
 
-    deepEqual(D('#qunit-fixture p').filter(function() {
-        return !D('a', this).length;
-    }).get(), q('sndp', 'first'), 'filter(Function)');
+    deepEqual(D('#qunit-fixture p').filter(function() { return !jQuery('a', this).length; }).get(), q('sndp', 'first'), 'filter(Function)');
 
-    deepEqual(D('#qunit-fixture p').filter(function(i, elem) { return !D('a', elem).length; }).get(), q('sndp', 'first'), 'filter(Function) using arg');
+    deepEqual(D('#qunit-fixture p').filter(function(i, elem) { return !jQuery('a', elem).length; }).get(), q('sndp', 'first'), 'filter(Function) using arg');
 });
 
 test('filter(Element)', function() {

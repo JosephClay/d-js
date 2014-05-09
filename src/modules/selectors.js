@@ -135,18 +135,37 @@ module.exports = {
                 );
 
             })
-            .args(O.any(null, undefined, Number)).use(function() {
-                return D();
+            .args(Element).use(function(context) {
+
+                return D(
+                    _.filter(this, function(elem) {
+                        return (elem === context);
+                    })
+                );
+
+            })
+            .args(O.D).use(function(d) {
+
+                return D(
+                    _.filter(this, function(elem) {
+                        return (d.indexOf(elem) !== -1);
+                    })
+                );
+
             })
             // TODO: Filter with object? see _.find/_.findWhere
             .args(Function).use(function(checker) {
 
                 return D(
-                    _.filter(this, function(elem) {
-                        return checker.call(this[idx]);
+                    _.filter(this, function(elem, idx) {
+                        // TODO: This is backwards from forEach and _.each, change?
+                        return checker.call(elem, idx, elem);
                     })
                 );
 
+            })
+            .args(O.any(null, undefined, Number)).use(function() {
+                return D();
             })
             .expose()
     }
