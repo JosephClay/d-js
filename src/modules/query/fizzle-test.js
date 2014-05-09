@@ -23,7 +23,7 @@ var QUERIES = {
                 [ 'a', '#id', '[some-attr]', '.class', '[some-attr="a,b,c\\",d,e,f"]' ],
                 [ 'a', '#id', '[some-attr]', '.class', '[some-attr="a,b,c\\]\\",d,e,f"]' ],
                 [ 'a', '#id', '[some-attr]', '.class', '[some-attr="a,b,c\\]\\",d,e,f"]' ],
-                [ 'a', '#id', '[some-attr]', '.class', '[some-attr="\\"]' ],
+                [ 'a', '#id', '[some-attr]', '.class', '[some-attr="\\""]' ],
             ],
 
             'Single quotes': [
@@ -33,7 +33,7 @@ var QUERIES = {
                 [ "a", "#id", "[some-attr]", ".class", "[some-attr='a,b,c\\',d,e,f']" ],
                 [ "a", "#id", "[some-attr]", ".class", "[some-attr='a,b,c\\]\\',d,e,f']" ],
                 [ "a", "#id", "[some-attr]", ".class", "[some-attr='a,b,c\\]\\',d,e,f']" ],
-                [ "a", "#id", "[some-attr]", ".class", "[some-attr='\\']" ],
+                [ "a", "#id", "[some-attr]", ".class", "[some-attr='\\'']" ],
             ],
         },
 
@@ -45,7 +45,7 @@ var QUERIES = {
                 [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="a,b,c\\",d,e,f"]' ],
                 [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="a,b,c\\]\\",d,e,f"]' ],
                 [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="a,b,c\\]\\",d,e,f"]' ],
-                [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="\\"]' ],
+                [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="\\""]' ],
             ],
 
             'Single quotes': [
@@ -55,7 +55,7 @@ var QUERIES = {
                 [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='a,b,c\\',d,e,f']" ],
                 [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='a,b,c\\]\\',d,e,f']" ],
                 [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='a,b,c\\]\\',d,e,f']" ],
-                [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='\\']" ],
+                [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='\\'']" ],
             ],
         },
     },
@@ -69,7 +69,7 @@ var QUERIES = {
                 [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "a,b,c\\",d,e,f" ]' ],
                 [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
                 [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
-                [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "\\" ]' ],
+                [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "\\"" ]' ],
             ],
 
             'Single quotes': [
@@ -79,7 +79,7 @@ var QUERIES = {
                 [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = 'a,b,c\\',d,e,f' ]" ],
                 [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
                 [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
-                [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = '\\' ]" ],
+                [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = '\\'' ]" ],
             ],
         },
 
@@ -91,7 +91,7 @@ var QUERIES = {
                 [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "a,b,c\\",d,e,f" ]' ],
                 [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
                 [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
-                [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "\\" ]' ],
+                [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "\\"" ]' ],
             ],
 
             'Single quotes': [
@@ -101,7 +101,7 @@ var QUERIES = {
                 [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = 'a,b,c\\',d,e,f' ]" ],
                 [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
                 [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
-                [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = '\\' ]" ],
+                [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = '\\'' ]" ],
             ],
         },
     },
