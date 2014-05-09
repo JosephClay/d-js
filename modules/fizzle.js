@@ -1,0 +1,368 @@
+/*!
+ * Sizzle CSS Selector Engine v1.10.20-pre
+ * http://sizzlejs.com/
+ *
+ * Copyright 2013 jQuery Foundation, Inc. and other contributors
+ * Released under the MIT license
+ * http://jquery.org/license
+ *
+ * Date: 2014-04-21
+ */
+
+/**
+ * Fizzle.js
+ * Adapted from Sizzle.js
+ */
+
+var booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+
+    // http://www.w3.org/TR/css3-selectors/#whitespace
+    whitespace = "[\\x20\\t\\r\\n\\f]",
+
+    // http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+    identifier = "(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",
+
+    // Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
+    attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
+        // Operator (capture 2)
+        "*([*^$|!~]?=)" + whitespace +
+        // "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
+        "*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace +
+        "*\\]",
+
+    pseudos = ":(" + identifier + ")(?:\\((" +
+        // To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
+        // 1. quoted (capture 3; capture 4 or capture 5)
+        "('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
+        // 2. simple (capture 6)
+        "((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
+        // 3. anything else (capture 2)
+        ".*" +
+        ")\\)|)",
+
+    // Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
+    rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g" ),
+
+    rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
+    rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*" ),
+
+    rattributeQuotes = new RegExp( "=" + whitespace + "*([^\\]'\"]*?)" + whitespace + "*\\]", "g" ),
+
+    rpseudo = new RegExp( pseudos ),
+    ridentifier = new RegExp( "^" + identifier + "$" ),
+
+    matchExpr = {
+        "ID": new RegExp( "^#(" + identifier + ")" ),
+        "CLASS": new RegExp( "^\\.(" + identifier + ")" ),
+        "TAG": new RegExp( "^(" + identifier + "|[*])" ),
+        "ATTR": new RegExp( "^" + attributes ),
+        "PSEUDO": new RegExp( "^" + pseudos ),
+        "CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace +
+            "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace +
+            "*(\\d+)|))" + whitespace + "*\\)|)", "i" ),
+        "bool": new RegExp( "^(?:" + booleans + ")$", "i" ),
+        // For use in libraries implementing .is()
+        // We use this for POS matching in `select`
+        "needsContext": new RegExp( "^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
+            whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
+    },
+
+    rinputs = /^(?:input|select|textarea|button)$/i,
+    rheader = /^h\d$/i,
+
+    rnative = /^[^{]+\{\s*\[native \w/,
+
+    // Easily-parseable/retrievable ID or TAG or CLASS selectors
+    rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,
+
+    rsibling = /[+~]/,
+    rescape = /'|\\/g,
+
+    // CSS escapes http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
+    runescape = new RegExp( "\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig" ),
+    funescape = function( _, escaped, escapedWhitespace ) {
+        var high = "0x" + escaped - 0x10000;
+        // NaN means non-codepoint
+        // Support: Firefox<24
+        // Workaround erroneous numeric interpretation of +"0x"
+        return high !== high || escapedWhitespace ?
+            escaped :
+            high < 0 ?
+                // BMP codepoint
+                String.fromCharCode( high + 0x10000 ) :
+                // Supplemental Plane codepoint (surrogate pair)
+                String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
+    };
+
+var preFilter = {
+    "ATTR": function( match ) {
+        match[1] = match[1].replace( runescape, funescape );
+
+        // Move the given value to match[3] whether quoted or unquoted
+        match[3] = ( match[3] || match[4] || match[5] || "" ).replace( runescape, funescape );
+
+        if ( match[2] === "~=" ) {
+            match[3] = " " + match[3] + " ";
+        }
+
+        return match.slice( 0, 4 );
+    },
+
+    "CHILD": function( match ) {
+        /* matches from matchExpr["CHILD"]
+            1 type (only|nth|...)
+            2 what (child|of-type)
+            3 argument (even|odd|\d*|\d*n([+-]\d+)?|...)
+            4 xn-component of xn+y argument ([+-]?\d*n|)
+            5 sign of xn-component
+            6 x of xn-component
+            7 sign of y-component
+            8 y of y-component
+        */
+        match[1] = match[1].toLowerCase();
+
+        if ( match[1].slice( 0, 3 ) === "nth" ) {
+            // nth-* requires argument
+            if ( !match[3] ) {
+                throw new Error( match[0] );
+            }
+
+            // numeric x and y parameters for Expr.filter.CHILD
+            // remember that false/true cast respectively to 0/1
+            match[4] = +( match[4] ? match[5] + (match[6] || 1) : 2 * ( match[3] === "even" || match[3] === "odd" ) );
+            match[5] = +( ( match[7] + match[8] ) || match[3] === "odd" );
+
+        // other types prohibit arguments
+        } else if ( match[3] ) {
+            throw new Error( match[0] );
+        }
+
+        return match;
+    },
+
+    "PSEUDO": function( match ) {
+        var excess,
+            unquoted = !match[6] && match[2];
+
+        if ( matchExpr["CHILD"].test( match[0] ) ) {
+            return null;
+        }
+
+        // Accept quoted arguments as-is
+        if ( match[3] ) {
+            match[2] = match[4] || match[5] || "";
+
+        // Strip excess characters from unquoted arguments
+        } else if ( unquoted && rpseudo.test( unquoted ) &&
+            // Get excess from tokenize (recursively)
+            (excess = tokenize( unquoted, true )) &&
+            // advance to the next closing parenthesis
+            (excess = unquoted.indexOf( ")", unquoted.length - excess ) - unquoted.length) ) {
+
+            // excess is a negative index
+            match[0] = match[0].slice( 0, excess );
+            match[2] = unquoted.slice( 0, excess );
+        }
+
+        // Return only captures needed by the pseudo filter method (type and argument)
+        return match.slice( 0, 3 );
+    }
+};
+
+var DEBUG = false;
+
+/**
+ * Splits the given comma-separated CSS query into separate sub-queries.
+ * @param  {String} query Full CSS query (e.g., 'a, input:focus, div[attr="value"]').
+ * @return {String[]} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]').
+ */
+var tokenize = function(query) {
+    // TODO: Use utils
+    var soFar = query.trim();
+
+    var type,
+        regex,
+        match,
+        matched,
+        groups = [],
+        tokens = [];
+
+    while (soFar) {
+        DEBUG && console.log(soFar);
+
+        // Comma and first run
+        if (!matched || (match = rcomma.exec(soFar))) {
+            if (match) {
+                // Don't consume trailing commas as valid
+                soFar = soFar.slice(match[0].length) || soFar;
+            }
+            groups.push((tokens = []));
+        }
+
+        matched = null;
+
+        // Combinators
+        if ((match = rcombinators.exec(soFar))) {
+            DEBUG && console.log('rcombinators', match);
+
+            matched = match.shift();
+            tokens.push({
+                value: matched,
+                match: match,
+                // Cast descendant combinators to space
+                type: match[0].replace(rtrim, ' ')
+            });
+            soFar = soFar.slice(matched.length);
+        }
+
+        // Filters
+        for (type in matchExpr) {
+            regex = matchExpr[type];
+            match = regex.exec(soFar);
+
+            if (match && (!preFilter[type] || (match = preFilter[type](match)))) {
+                DEBUG && console.log(type, match);
+
+                matched = match.shift();
+                tokens.push({
+                    value: matched,
+                    match: match,
+                    type: type
+                });
+                soFar = soFar.slice(matched.length);
+
+                break;
+            }
+        }
+
+        DEBUG && console.log('~~~');
+
+        if (!matched) {
+            break;
+        }
+    }
+
+    return groups;
+};
+
+var Q = function(str) {
+    return '"' + str + '"';
+};
+
+var QUERIES = [
+    '#a > div, :first, #id:first, .class:first, [attr], #id[attr], .class[attr], .class[attr]:first, [attr="value"], :not([attr="value"])',
+
+    // "a, #id, [some-attr], .class, [some-attr=a,b,c]",                // Invalid query
+    // "a, #id, [some-attr], .class, [some-attr=a,b,c\\],d,e,f]",       // Invalid query
+    // "a, #id, [some-attr], .class, [some-attr=a,b,c\\',d,e,f]",       // Invalid query
+    "a, #id, [some-attr], .class, [some-attr='a,b,c']",
+    "a, #id, [some-attr], .class, [some-attr='a,b,c\\],d,e,f']",
+    "a, #id, [some-attr], .class, [some-attr='a,b,c\\',d,e,f']",
+    "a, #id, [some-attr], .class, [some-attr='a,b,c\\]\\',d,e,f']",
+    "a, #id, [some-attr], .class, [some-attr='a,b,c\\]\\',d,e,f']",
+    'a, #id, [some-attr], .class, [some-attr="a,b,c"]',
+    'a, #id, [some-attr], .class, [some-attr="a,b,c\\],d,e,f"]',
+    'a, #id, [some-attr], .class, [some-attr="a,b,c\\",d,e,f"]',
+    'a, #id, [some-attr], .class, [some-attr="a,b,c\\]\\",d,e,f"]',
+    'a, #id, [some-attr], .class, [some-attr="a,b,c\\]\\",d,e,f"]',
+    'a, #id, [some-attr], .class, [some-attr=""]',
+
+    // "a, #id, [some-attr], .class, [ some-attr = a,b,c ]",                // Invalid query
+    // "a, #id, [some-attr], .class, [ some-attr = a,b,c\\],d,e,f ]",       // Invalid query
+    // "a, #id, [some-attr], .class, [ some-attr = a,b,c\\',d,e,f ]",       // Invalid query
+    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c' ]",
+    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\],d,e,f' ]",
+    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\',d,e,f' ]",
+    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\]\\',d,e,f' ]",
+    "a, #id, [some-attr], .class, [ some-attr = 'a,b,c\\]\\',d,e,f' ]",
+    'a, #id, [some-attr], .class, [ some-attr = "a,b,c" ]',
+    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\],d,e,f" ]',
+    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\",d,e,f" ]',
+    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\]\\",d,e,f" ]',
+    'a, #id, [some-attr], .class, [ some-attr = "a,b,c\\]\\",d,e,f" ]',
+
+    // "a, #id, input[some-attr], .class, input[some-attr=a,b,c]",              // Invalid query
+    // "a, #id, input[some-attr], .class, input[some-attr=a,b,c\\],d,e,f]",     // Invalid query
+    // "a, #id, input[some-attr], .class, input[some-attr=a,b,c\\',d,e,f]",     // Invalid query
+    "a, #id, input[some-attr], .class, input[some-attr='a,b,c']",
+    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\],d,e,f']",
+    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\',d,e,f']",
+    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\]\\',d,e,f']",
+    "a, #id, input[some-attr], .class, input[some-attr='a,b,c\\]\\',d,e,f']",
+    'a, #id, input[some-attr], .class, input[some-attr="a,b,c"]',
+    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\],d,e,f"]',
+    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\",d,e,f"]',
+    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\]\\",d,e,f"]',
+    'a, #id, input[some-attr], .class, input[some-attr="a,b,c\\]\\",d,e,f"]',
+    'a, #id, input[some-attr], .class, input[some-attr=""]',
+
+    // "a, #id, input[some-attr], .class, input[ some-attr = a,b,c ]",              // Invalid query
+    // "a, #id, input[some-attr], .class, input[ some-attr = a,b,c\\],d,e,f ]",     // Invalid query
+    // "a, #id, input[some-attr], .class, input[ some-attr = a,b,c\\',d,e,f ]",     // Invalid query
+    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c' ]",
+    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\],d,e,f' ]",
+    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\',d,e,f' ]",
+    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\]\\',d,e,f' ]",
+    "a, #id, input[some-attr], .class, input[ some-attr = 'a,b,c\\]\\',d,e,f' ]",
+    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c" ]',
+    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\],d,e,f" ]',
+    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\",d,e,f" ]',
+    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\]\\",d,e,f" ]',
+    'a, #id, input[some-attr], .class, input[ some-attr = "a,b,c\\]\\",d,e,f" ]',
+
+    "a, #id, [some-attr], .class, [asdf\\]]",
+
+    ":not([disabled])",
+    "input:not([disabled])",
+    "a :not([disabled])",
+    "a input:not([disabled])",
+    "a, input:not([disabled])",
+
+    ':not([disabled="\\]"])',
+    'input:not([disabled="\\]"])',
+    'a :not([disabled="\\]"])',
+    'a input:not([disabled="\\]"])',
+    'a, input:not([disabled="\\]"])',
+
+    ':not([disabled="()"])',
+    'input:not([disabled="()"])',
+    'a :not([disabled="()"])',
+    'a input:not([disabled="()"])',
+    'a, input:not([disabled="()"])',
+
+    '#TestDiv p'
+];
+
+for (var qidx = 0; qidx < QUERIES.length; qidx++) {
+    var query = QUERIES[qidx];
+    var groups = tokenize(query);
+
+    console.log('Query:', query);
+
+    var subqueries = [];
+
+    for (var i = 0; i < groups.length; i++) {
+        var group = groups[i];
+        var subquery = [];
+
+        DEBUG && console.log('Group ' + (i + 1) + ':');
+
+        for (var j = 0; j < group.length; j++) {
+            var token = group[j];
+
+            DEBUG && console.log('\t', Q(token.value), '\t\t=>', Q(token.type));
+
+            subquery.push(token.value);
+        }
+
+        subqueries.push(subquery.join(''));
+    }
+
+    console.log('Parse:', subqueries);
+
+    console.log(' ');
+    console.log(' ');
+    console.log('============================================================================');
+    console.log(' ');
+    console.log(' ');
+}
