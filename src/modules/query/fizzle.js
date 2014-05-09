@@ -56,25 +56,25 @@ var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disable
     rpseudo = new RegExp(pseudos),
 
     matchExpr = {
-        ID:     new RegExp("^#(" + identifier + ")"),
+        ID:     new RegExp("^#("   + identifier + ")"),
         CLASS:  new RegExp("^\\.(" + identifier + ")"),
-        TAG:    new RegExp("^(" + identifier + "|[*])"),
-        ATTR:   new RegExp("^" + attributes),
-        PSEUDO: new RegExp("^" + pseudos),
+        TAG:    new RegExp("^("    + identifier + "|[*])"),
+        ATTR:   new RegExp("^"     + attributes),
+        PSEUDO: new RegExp("^"     + pseudos),
         CHILD:  new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace +
             "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace +
-            "*(\\d+)|))" + whitespace + "*\\)|)", "i"),
+            "*(\\d+)|))" + whitespace + "*\\)|)", 'i'),
 
-        bool:   new RegExp("^(?:" + booleans + ")$", "i"),
+        bool:   new RegExp("^(?:"  + booleans + ")$", 'i'),
 
         // For use in libraries implementing .is()
         // We use this for POS matching in `select`
         needsContext: new RegExp("^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
-            whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i")
+            whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", 'i')
     },
 
     // CSS escapes http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-    runescape = new RegExp("\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig"),
+    runescape = new RegExp("\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", 'ig'),
     funescape = function(_, escaped, escapedWhitespace) {
         var high = '0x' + escaped - 0x10000;
         // NaN means non-codepoint
@@ -84,9 +84,9 @@ var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disable
             escaped :
             high < 0 ?
                 // BMP codepoint
-                String.fromCharCode( high + 0x10000 ) :
+                String.fromCharCode(high + 0x10000) :
                 // Supplemental Plane codepoint (surrogate pair)
-                String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
+                String.fromCharCode(high >> 10 | 0xD800, high & 0x3FF | 0xDC00);
     };
 
 var preFilter = {
