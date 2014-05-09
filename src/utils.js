@@ -1,6 +1,10 @@
 var _ = require('_');
 
 module.exports = {
+    isPartOfDocument: function(elem) {
+        return (elem.ownerDocument === document);
+    },
+
     isHtml: function(text) {
         if (!_.isString(text)) { return false; }
 
