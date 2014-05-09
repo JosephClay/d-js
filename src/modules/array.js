@@ -1,5 +1,4 @@
-var _ = require('_'),
-    _utils = require('../utils');
+var _ = require('_');
 
 var _slice = (function(_slice) {
         return function(arr, start, end) {
@@ -124,27 +123,6 @@ module.exports = {
     each: _each,
 
     fn: {
-        // Determine the position of an element within
-        // the matched set of elements
-        index: function(elem) {
-
-            // No argument, return index in parent
-            if (!elem) {
-                var first = this[0],
-                    parent;
-                // Note: _utils.isAttached check to pass test "Node without parent returns -1"
-                return (first && (parent = first.parentNode) && _utils.isAttached(parent)) ? _slice(parent.children).indexOf(first) : -1;
-            }
-
-            // index in selector
-            /*if (_.isString(elem)) {
-                return this.indexOf(this[0], jQuery( elem ) );
-            }*/
-
-            // Locate the position of the desired element
-            return this.indexOf(elem instanceof D ? elem[0] : elem);
-        },
-
         at: function(index) {
             return this[+index];
         },
