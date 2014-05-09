@@ -1,8 +1,10 @@
 module('core');
 
 test('Basic requirements', function() {
-    expect(7);
+    expect(8);
+
     ok(Array.prototype.push, 'Array.push()');
+    ok(Array.prototype.indexOf, 'Array.indexOf()');
     ok(Function.prototype.apply, 'Function.apply()');
     ok(document.querySelectorAll, 'querySelectorAll');
     ok(document.getElementById, 'getElementById');
@@ -12,7 +14,6 @@ test('Basic requirements', function() {
 });
 
 test('D()', function() {
-
     expect(13);
 
     // Basic constructor's behavior

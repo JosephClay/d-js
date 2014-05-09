@@ -1,4 +1,5 @@
 var _ = require('_'),
+    _utils = require('../utils'),
     _nodeType = require('../nodeType'),
 
     _array = require('./array'),
@@ -61,10 +62,13 @@ var _getSiblings = function(context) {
 
     _crawlUpNode = function(node) {
         var result = [],
-            parent = node;
+            parent = node,
+            nodeType;
 
-        while ((parent = _getNodeParent(parent)) && parent.nodeType !== _nodeType.DOCUMENT) {
-            result.push(parent);
+        while ((parent = _getNodeParent(parent)) && (nodeType = parent.nodeType) !== _nodeType.DOCUMENT) {
+            if (nodeType === _nodeType.ELEMENT) {
+                result.push(parent);
+            }
         }
 
         return result;
@@ -93,6 +97,28 @@ var _getSiblings = function(context) {
 
 module.exports = {
     fn: {
+        // TODO: Overload
+        index: function(elem) {
+
+            var first = this[0],
+                parent;
+
+            // No argument, return index in parent
+            if (!elem) {
+                // Note: _utils.isAttached check to pass test "Node without parent returns -1"
+                return (first && (parent = first.parentNode) && _utils.isAttached(parent)) ? _array.slice(parent.children).indexOf(first) : -1;
+            }
+
+            // index in selector
+            if (_.isString(elem)) {
+                var selector = elem;
+                return D(selector).indexOf(first); // TODO: Can this be optimized?
+            }
+
+            // Locate the position of the desired element
+            return this.indexOf(elem instanceof D ? elem[0] : elem);
+        },
+
         // TODO: Filter by selector
         closest: function(selector) {
 
