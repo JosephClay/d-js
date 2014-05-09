@@ -167,6 +167,9 @@ var preFilter = {
     }
 };
 
+var _mapToken = function(token)  { return token.value; };
+var _mapGroup = function(tokens) { return _.fastmap(tokens, _mapToken).join(''); };
+
 /**
  * Splits the given comma-separated CSS selector into separate sub-queries.
  * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
@@ -236,10 +239,7 @@ var _tokenize = function(selector, parseOnly) {
         }
     }
 
-    var mapToken = function(token) { return token.value; };
-    var mapGroup = function(tokens) { return _.fastmap(tokens, mapToken).join(''); };
-
-    _.fastmap(groups, mapGroup);
+    _.fastmap(groups, _mapGroup);
 
     // Return the length of the invalid excess
     // if we're just parsing
