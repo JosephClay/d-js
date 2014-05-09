@@ -1,5 +1,7 @@
 var _ = require('_'),
     _selector = require('./selectors'),
+    _array = require('./array'),
+    _utils = require('../utils'),
 
     parser = require('../D/parser'),
     utils = require('../utils');
@@ -175,8 +177,51 @@ module.exports = {
             return this;
         },
 
+        add: Overload()
+            .args(String).use(function(selector) {
+                _array.unique(
+                    _utils.merge(this, D(selector))
+                );
+                
+                return this;
+            })
+            .args(O.D).use(function(d) {
+                _array.unique(
+                    _utils.merge(this, d)
+                );
+                
+                return this;  
+            })
+            // TODO: merge this method with O.D when Overload bug is fixed
+            .args(Array).use(function(arr) {
+                _array.unique(
+                    _utils.merge(this, arr)
+                );
+                
+                return this;  
+            })
+            .args(O.any(window, Element)).use(function(elem) {
+                this.push(elem);
+                _array.unique(this);
+                
+                return this;  
+            })
+            .expose(),
+
         // TODO: Overload
         remove: function(selector) {
+            var arr = this;
+            if (_.isString(selector)) {
+                arr = _selector.filter(this, selector);
+            }
+
+            _remove(this);
+            return this;
+        },
+
+        // TODO: Overload
+        // TODO: This is the same a remove atm. Abstract?
+        detach: function(selector) {
             var arr = this;
             if (_.isString(selector)) {
                 arr = _selector.filter(this, selector);
