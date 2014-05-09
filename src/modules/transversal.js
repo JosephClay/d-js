@@ -61,10 +61,13 @@ var _getSiblings = function(context) {
 
     _crawlUpNode = function(node) {
         var result = [],
-            parent = node;
+            parent = node,
+            nodeType;
 
-        while ((parent = _getNodeParent(parent)) && parent.nodeType !== _nodeType.DOCUMENT) {
-            result.push(parent);
+        while ((parent = _getNodeParent(parent)) && (nodeType = parent.nodeType) !== _nodeType.DOCUMENT) {
+            if (nodeType === _nodeType.ELEMENT) {
+                result.push(parent);
+            }
         }
 
         return result;
