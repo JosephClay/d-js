@@ -178,42 +178,6 @@ if (typeof define === 'function' && define.amd) {
             elem.detachEvent('on' + eventName, callback);
         },
 
-
-    Dom.prototype = {
-
-        clone: function() {
-            return new Dom(this.elem.cloneNode(true));
-        },
-
-        empty: function() {
-            while (this.elem.firstChild) {
-                this.elem.removeChild(this.elem.firstChild);
-            }
-            return this;
-        },
-
-        remove: function() {
-            this.elem.parentNode.removeChild(this.elem);
-            return this;
-        },
-
-        text: function(str) {
-            if (_.exists(str)) {
-                this.elem.textContent = ('' + str);
-                return this;
-            }
-
-            return this.elem.textContent;
-        },
-
-        parent: function() {
-            return new Dom(this.elem.parentNode);
-        },
-
-        children: function() {
-            return new Dom(this.elem.children);
-        },
-
         position: function() {
             return {
                 left: this.elem.offsetLeft,
