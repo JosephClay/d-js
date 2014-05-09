@@ -51,6 +51,10 @@ Selector.prototype = {
     },
 
     match: function(context) {
+        // No neeed to check, a match will fail if it's
+        // child or sibling
+        if (this.isChildOrSiblingSelect) { return false; }
+
         return _isMatch(context, this.selector);
     },
 

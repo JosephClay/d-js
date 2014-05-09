@@ -70,50 +70,55 @@ module.exports = {
         },
 
         is: Overload()
-                .args(O.any(null, undefined, Number, Object)).use(function() {
-                    return false;
-                })
+            .args(String).use(function(selector) {
+                if (selector === '') { return false; }
 
-                .args(String).use(function(selector) {
-                    if (selector === '') { return false; }
+                var is = Is(selector);
+                return is.exec(this);
+            })
+            .args(Function).use(function(iterator) {
 
-                    var is = Is(selector);
-                    return is.exec(this);
-                })
+                return _.any(this, function(elem, idx) {
+                    if (iterator.call(elem, idx)) {
+                        return true;
+                    }
+                });
 
-                .args(Function).use(function(iterator) {
-
-                    return _.any(this, iterator);
-
-                })
-                .expose(),
+            })
+            .args(O.any(null, undefined, Number, Object)).use(function() {
+                return false;
+            })
+            .expose(),
 
         not: function() {},
 
         find: Overload()
-                .args(String)
-                .use(function(selector) {
+            .args(String).use(function(selector) {
 
-                    return _utils.merge(D(), _findWithin(selector, this));
+                return _utils.merge(D(), _findWithin(selector, this));
 
-                }).expose(),
+            })
+            .expose(),
 
         filter: Overload()
-                    .args(String)
-                    .use(function(selector) {
-                        return this.is(selector);
-                    })
-                    .args(Function)
-                    .use(function(checker) {
-                        var result = [],
-                            idx = this.length;
+            .args(String).use(function(selector) {
+                if (selector === '') { return d; }
 
-                        while (idx--) {
-                            if (checker(this[idx])) { result.unshift(this[idx]); }
-                        }
-
-                        return D(result);
+                var is = Is(selector);
+                return D(
+                    _.filter(this, function(elem) {
+                        is.match(elem);
                     })
-                    .expose()
+                );
+
+            })
+            .args(Function).use(function(checker) {
+                return D(
+                    _.filter(this, function(elem) {
+                        return checker.call(this[idx]);
+                    })
+                );
+            })
+            .expose()
     }
 };

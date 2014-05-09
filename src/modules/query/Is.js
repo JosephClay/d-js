@@ -17,15 +17,21 @@ var Is = function(str) {
     });
 };
 Is.prototype = {
-    exec: function(arr) {
+    match: function(context) {
         var selectors = this._selectors,
-            idx, length = selectors.length;
+            idx = selectors.length;
 
+        while (idx--) {
+            if (selectors[idx].match(context)) { return true; }
+        }
+
+        return false;
+    },
+
+    exec: function(arr) {
+        var self = this;
          return _.any(arr, function(elem) {
-            idx = length;
-            while (idx--) {
-                if (selectors[idx].match(elem)) { return true; }
-            }
+            if (self.match(elem)) { return true; }
         });
     }
 };
