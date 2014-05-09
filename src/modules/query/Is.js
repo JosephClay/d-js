@@ -7,7 +7,6 @@ var _ = require('_'),
 
     Selector = require('./Selector'),
 
-    _isMatch = require('./match'),
     _normalizeSelector = require('./normalizeSelector');
 
 var Is = function(str) {
@@ -19,8 +18,14 @@ var Is = function(str) {
 };
 Is.prototype = {
     exec: function(arr) {
+        var selectors = this._selectors,
+            idx, length = selectors.length;
+
          return _.any(arr, function(elem) {
-            return _isMatch(elem, selector);
+            idx = length;
+            while (idx--) {
+                if (selectors[idx].match(elem)) { return true; }
+            }
         });
     }
 };

@@ -14,8 +14,6 @@ var Query = function(str) {
 
     var result = _regex.selector.commandSplit(str);
     this._selectors = _.map(result, function(selector) {
-        console.log('result: ', result);
-        console.log('str: ', str);
         return new Selector(selector);
     });
 };

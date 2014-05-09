@@ -7,6 +7,7 @@ var _ = require('_'),
 
     _ID_PREFIX = 'D-uniqueId-',
     _querySelectorCache = _cache(),
+    _isMatch = require('./match'),
     _selectorBlackList = require('./list/selectorBlackList');
 
 var _determineMethod = function(selector) {
@@ -49,6 +50,10 @@ Selector.prototype = {
         return '#' + id + ' ' + selector;
     },
 
+    match: function(context) {
+        return _isMatch(context, this.selector);
+    },
+
     exec: function(context) {
         context = context || document;
 
@@ -78,11 +83,12 @@ Selector.prototype = {
             context = document;
         }
 
+        // TODO: Remove try-catch when this is working correctly
         try {
             selection = context[this.method](selector);
         } catch (e) {
             // Probably an invalid query
-            console.warn && console.warn(e);
+            console.warn && console.warn(e.message, selector);
         }
         if (!selection.length) { return selection; }
 
