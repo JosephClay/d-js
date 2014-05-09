@@ -377,7 +377,7 @@ test('children([String]) - D only', function() {
 });
 
 test('parent([String])', function() {
-    expect(6);
+    expect(5);
 
     var $el;
 
@@ -386,15 +386,13 @@ test('parent([String])', function() {
     equal(D('#groups').parent('div').length, 0, 'Filtered parent check, no match');
     equal(D('#groups').parent('div, p')[0].id, 'ap', 'Check for multiple filters');
     deepEqual(D('#en, #sndp').parent().get(), q('foo'), 'Check for unique results from parent');
-
-    $el = D('<div>text</div>');
-    deepEqual($el.contents().parent().get(), $el.get(), 'Check for parent of text node (#13265)');
 });
 
 test('parents([String])', function() {
     expect(6);
+
     equal(D('#groups').parents()[0].id, 'ap', 'Simple parents check');
-    deepEqual(D('#nonnodes').contents().eq(1).parents().eq(0).get(), q('nonnodes'), 'Text node parents check');
+    deepEqual(D(jQuery('#nonnodes').contents().eq(1).toArray()).parents().eq(0).get(), q('nonnodes'), 'Text node parents check');
     equal(D('#groups').parents('p')[0].id, 'ap', 'Filtered parents check');
     equal(D('#groups').parents('div')[0].id, 'qunit-fixture', 'Filtered parents check2');
     deepEqual(D('#groups').parents('p, div').get(), q('ap', 'qunit-fixture'), 'Check for multiple filters');

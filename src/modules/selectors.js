@@ -34,8 +34,10 @@ var _filter = function(arr, qualifier) {
 
     // Selector
     if (_.isString(qualifier)) {
+
+        var is = Is(qualifier);
         return _.filter(arr, function(elem) {
-            return elem.nodeType === 1 && _isMatch(elem, qualifier);
+            return is.match(elem);
         });
     }
 
@@ -126,7 +128,18 @@ module.exports = {
                 );
 
             })
+            // TODO: I think there's a bug in Overload where this doesn't work
+            // .args(O.any(Array, O.D)).use(function(arr) {
             .args(Array).use(function(arr) {
+
+                return D(
+                    _.filter(this, function(elem) {
+                        if (arr.indexOf(elem) !== -1) { return true; }
+                    })
+                );
+
+            })
+            .args(O.D).use(function(arr) {
 
                 return D(
                     _.filter(this, function(elem) {
@@ -140,15 +153,6 @@ module.exports = {
                 return D(
                     _.filter(this, function(elem) {
                         return (elem === context);
-                    })
-                );
-
-            })
-            .args(O.D).use(function(d) {
-
-                return D(
-                    _.filter(this, function(elem) {
-                        return (d.indexOf(elem) !== -1);
                     })
                 );
 

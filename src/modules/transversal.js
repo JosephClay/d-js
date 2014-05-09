@@ -62,7 +62,8 @@ var _getSiblings = function(context) {
     _crawlUpNode = function(node) {
         var result = [],
             parent = node;
-        while ((parent = _getNodeParent(parent))) {
+
+        while ((parent = _getNodeParent(parent)) && parent.nodeType !== _nodeType.DOCUMENT) {
             result.push(parent);
         }
 
@@ -99,25 +100,33 @@ module.exports = {
 
         siblings: function(selector) {
             return D(
-                _selectors.filter(_getSiblings(this), selector)
+                _array.unique(
+                    _selectors.filter(_getSiblings(this), selector)
+                )
             );
         },
 
         parents: function(selector) {
             return D(
-                _selectors.filter(_getParents(this), selector)
+                _array.unique(
+                    _selectors.filter(_getParents(this), selector)
+                )
             );
         },
 
         parent: function(selector) {
             return D(
-                _selectors.filter(_getParent(this), selector)
+                _array.unique(
+                    _selectors.filter(_getParent(this), selector)
+                )
             );
         },
 
         children: function(selector) {
             return D(
-                _selectors.filter(_getChildren(this), selector)
+                _array.unique(
+                    _selectors.filter(_getChildren(this), selector)
+                )
             );
         },
 
