@@ -222,7 +222,7 @@ test('attributes', function() {
     t('input[type=text]', '#form input[type=text]', ['text1', 'text2', 'hidden2', 'name']);
     t('input[type=search]', '#form input[type=search]', ['search']);
 
-    withScript = supportD('<div><span><script src=""/></span></div>');
+    withScript = D('<div><span><script src=""/></span></div>');
     ok(withScript.find('#moretests script[src]').has('script'), 'script[src] (D #13777)');
 
     div = document.getElementById('foo');
