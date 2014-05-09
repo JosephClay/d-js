@@ -1,3 +1,11 @@
+// Configure overload to throw type errors
+Overload.prototype.err = function() {
+    throw new TypeError();
+};
+Overload.defineType('D', function(val) {
+    return val instanceof D;
+});
+
 var _ = require('_');
 
 require('_.string');
@@ -18,11 +26,6 @@ var parser = require('./D/parser'),
 
 // Store previous reference
 var _prevD = window.D;
-
-// Configure overload to throw type errors
-Overload.prototype.err = function() {
-    throw new TypeError();
-};
 
 var DOM = function(arg) {
     // Wasn't created with "new"
