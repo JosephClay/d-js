@@ -20,8 +20,8 @@ var _ = require('_'),
     _tokenCache = _cache(),
     _subqueryCache = _cache();
 
-var _throwError = function(selector) {
-    throw new Error('Invalid query selector: ' + selector);
+var _logError = function(selector) {
+    console.warn('Invalid query selector: ' + selector);
 };
 
 var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
@@ -241,14 +241,12 @@ var _tokenize = function(selector, parseOnly) {
     if (subquery) { subqueries.push(subquery); }
 
     // Return the length of the invalid excess
-    // if we're just parsing
-    // Otherwise, throw an error or return tokens
-    return parseOnly ?
-        soFar.length :
-        soFar ?
-            _throwError(selector) :
-            // Cache the tokens
-            _tokenCache.set(selector, subqueries).slice();
+    // if we're just parsing.
+    if (parseOnly) { return soFar.length; }
+
+    if (soFar) { _logError(selector); }
+
+    return _tokenCache.set(selector, subqueries).slice();
 };
 
 module.exports = {
