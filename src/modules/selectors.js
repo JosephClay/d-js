@@ -85,6 +85,20 @@ module.exports = {
                 });
 
             })
+            .args(O.D).use(function(d) {
+
+                return _.any(this, function(elem) {
+                    if (d.indexOf(elem) !== -1) { return true; }
+                });
+
+            })
+            .args(Element).use(function(context) {
+
+                return _.any(this, function(elem) {
+                    return (elem === context);
+                });
+
+            })
             .args(O.any(null, undefined, Number, Object)).use(function() {
                 return false;
             })
