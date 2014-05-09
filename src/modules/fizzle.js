@@ -15,37 +15,14 @@
  * Adapted from Sizzle.js
  */
 
+var _ = require('_'),
+    _cache = require('../cache'),
+    _tokenCache = _cache(),
+    _subqueryCache = _cache();
+
 var _throwError = function(selector) {
     throw new Error(selector);
 };
-
-var _CACHE_SIZE = 50;
-
-/**
- * Create key-value caches of limited size
- * @returns {Function(string, Object)} Returns the Object data after storing it on itself with
- *	property name the (space-suffixed) string and (if the cache is larger than Expr.cacheLength)
- *	deleting the oldest entry
- */
-var createCache = function() {
-    var keys = [];
-
-    function cache(key, value) {
-        // Use (key + ' ') to avoid collision with native prototype properties (see Issue #157)
-        if ( keys.push(key + ' ') > _CACHE_SIZE ) {
-            // Only keep the most recent entries
-            delete cache[keys.shift()];
-        }
-        return (cache[key + ' '] = value);
-    }
-
-    return {
-        get: function(key) { return cache[key + ' ']; },
-        set: function(key, value) { return cache(key, value); }
-    };
-};
-
-var tokenCache = createCache();
 
 var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
 
@@ -64,7 +41,7 @@ var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disable
         "*\\]",
 
     pseudos = ":(" + identifier + ")(?:\\((" +
-        // To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
+        // To reduce the number of selectors needing _tokenize in the preFilter, prefer arguments:
         // 1. quoted (capture 3; capture 4 or capture 5)
         "('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
         // 2. simple (capture 6)
@@ -175,8 +152,8 @@ var preFilter = {
 
         // Strip excess characters from unquoted arguments
         } else if (unquoted && rpseudo.test(unquoted) &&
-            // Get excess from tokenize (recursively)
-            (excess = tokenize(unquoted, true)) &&
+            // Get excess from _tokenize (recursively)
+            (excess = _tokenize(unquoted, true)) &&
             // advance to the next closing parenthesis
             (excess = unquoted.indexOf(')', unquoted.length - excess) - unquoted.length)) {
 
@@ -193,19 +170,17 @@ var preFilter = {
 /**
  * Splits the given comma-separated CSS selector into separate sub-queries.
  * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
- * @param  {Boolean} [parseOnly]
+ * @param  {Boolean} [parseOnly=false]
  * @return {String[]|Number} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]').
  */
-var tokenize = function(selector, parseOnly) {
-    var cached = tokenCache.get(selector);
+var _tokenize = function(selector, parseOnly) {
+    var cached = _tokenCache.get(selector);
 
     if (cached) {
-        return parseOnly ? 0 : cached.slice( 0 );
+        return parseOnly ? 0 : cached.slice(0);
     }
 
-    // TODO: Use utils
-    // TODO: Use cache
-    var soFar = selector.trim();
+    var soFar = selector;
 
     var type,
         regex,
@@ -261,17 +236,31 @@ var tokenize = function(selector, parseOnly) {
         }
     }
 
+    var mapToken = function(token) { return token.value; };
+    var mapGroup = function(tokens) { return _.fastmap(tokens, mapToken).join(''); };
+
+    _.fastmap(groups, mapGroup);
+
     // Return the length of the invalid excess
     // if we're just parsing
     // Otherwise, throw an error or return tokens
     return parseOnly ?
         soFar.length :
         soFar ?
-            _throwError( selector ) :
+            _throwError(selector) :
             // Cache the tokens
-            tokenCache.set(selector, groups).slice();
+            _tokenCache.set(selector, groups).slice();
 };
 
 module.exports = {
-    subqueries: tokenize
+    /**
+     * Splits the given comma-separated CSS selector into separate sub-queries.
+     * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
+     * @return {String[]} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]').
+     */
+    subqueries: function(selector) {
+        return _subqueryCache.getOrSet(selector, function() {
+            return _tokenize(selector);
+        });
+    }
 };
