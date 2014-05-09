@@ -126,12 +126,23 @@ module.exports = {
                 );
 
             })
+            .args(Array).use(function(arr) {
+
+                return D(
+                    _.filter(this, function(elem) {
+                        if (arr.indexOf(elem) !== -1) { return true; }
+                    })
+                );
+
+            })
             .args(Function).use(function(checker) {
+
                 return D(
                     _.filter(this, function(elem) {
                         return checker.call(this[idx]);
                     })
                 );
+
             })
             .expose()
     }
