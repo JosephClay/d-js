@@ -73,9 +73,9 @@ test('is() against non-elements (#10178)', function() {
         };
 
     for (label in nonelements) {
-        collection[ 0 ] = nonelements[ label ];
+        collection[0] = nonelements[label];
         for (i = 0; i < tests.length; i++) {
-            test = tests[ i ];
+            test = tests[i];
             ok(!collection.is(test), label + ' does not match \'' + test + '\'');
         }
     }
@@ -147,7 +147,8 @@ test('index(Object|String|undefined)', function() {
 });
 
 test('filter(Selector|undefined)', function() {
-    expect(9);
+    expect(7);
+
     deepEqual(D('#form input').filter(':checked').get(), q('radio2', 'check1'), 'filter(String)');
     deepEqual(D('p').filter('#ap, #sndp').get(), q('ap', 'sndp'), 'filter(String, String)');
     deepEqual(D('p').filter('#ap,#sndp').get(), q('ap', 'sndp'), 'filter(String, String)');
@@ -156,11 +157,6 @@ test('filter(Selector|undefined)', function() {
     deepEqual(D('p').filter(undefined).get(), [], 'filter(undefined) should return an empty D object');
     deepEqual(D('p').filter(0).get(),         [], 'filter(0) should return an empty D object');
     deepEqual(D('p').filter('').get(),        [], 'filter("") should return an empty D object');
-
-    // using contents will get comments regular, text, and comment nodes
-    var j = D('#nonnodes').contents();
-    equal(j.filter('span').length, 1, 'Check node,textnode,comment to filter the one span');
-    equal(j.filter('[name]').length, 0, 'Check node,textnode,comment to filter the one span');
 });
 
 test('filter(Function)', function() {

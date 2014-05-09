@@ -116,12 +116,12 @@ module.exports = {
 
         filter: Overload()
             .args(String).use(function(selector) {
-                if (selector === '') { return d; }
+                if (selector === '') { return D(); }
 
                 var is = Is(selector);
                 return D(
                     _.filter(this, function(elem) {
-                        is.match(elem);
+                        return is.match(elem);
                     })
                 );
 
@@ -135,6 +135,10 @@ module.exports = {
                 );
 
             })
+            .args(O.any(null, undefined, Number)).use(function() {
+                return D();
+            })
+            // TODO: Filter with object? see _.find/_.findWhere
             .args(Function).use(function(checker) {
 
                 return D(
