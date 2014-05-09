@@ -1,7 +1,3 @@
-// TODO: Remove
-var t = function() {};
-var q = function() {};
-
 module('selector');
 
 /**

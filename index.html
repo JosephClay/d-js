@@ -245,6 +245,30 @@
             <area shape="rect" coords="0,0,200,50">
         </map>
 
+
+        <script>
+            var t = function(a, b, c) {
+                var f = jQuery(b).get(),
+                    s = "",
+                    i = 0;
+
+                for (; i < f.length; i++) {
+                    s += (s && ",") + '"' + f[i].id + '"';
+                }
+
+                deepEqual(f, q.apply(q, c), a + " (" + b + ")" );
+            };
+
+            var q = function() {
+                var r = [],
+                    i = 0;
+
+                for (; i < arguments.length; i++) {
+                    r.push(document.getElementById(arguments[i]));
+                }
+                return r;
+            };
+        </script>
         <script src="tests/core.js"></script>
         <script src="tests/ready.js"></script>
         <script src="tests/traversing.js"></script>
