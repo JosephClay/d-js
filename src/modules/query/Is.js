@@ -1,18 +1,18 @@
 var _ = require('_'),
 
-    _regex = require('../../regex'),
     _cache = require('../../cache'),
 
     _isCache = _cache(),
 
     Selector = require('./Selector'),
 
+    _fizzle = require('./fizzle'),
     _normalizeSelector = require('./normalizeSelector');
 
 var Is = function(str) {
     str = _normalizeSelector(str);
 
-    this._selectors = _.map(_regex.selector.commandSplit(str), function(selector) {
+    this._selectors = _.map(_fizzle.subqueries(str), function(selector) {
         return new Selector(selector);
     });
 };

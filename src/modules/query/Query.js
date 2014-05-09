@@ -1,19 +1,19 @@
 var _ = require('_'),
 
     _array = require('../array'),
-    _regex = require('../../regex'),
     _cache = require('../../cache'),
 
     _queryCache = _cache(),
 
     Selector = require('./Selector'),
+
+    _fizzle = require('./fizzle'),
     _normalizeSelector = require('./normalizeSelector');
 
 var Query = function(str) {
     str = _normalizeSelector(str);
 
-    var result = _regex.selector.commandSplit(str);
-    this._selectors = _.map(result, function(selector) {
+    this._selectors = _.map(_fizzle.subqueries(str), function(selector) {
         return new Selector(selector);
     });
 };
