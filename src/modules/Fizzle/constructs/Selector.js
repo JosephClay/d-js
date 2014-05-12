@@ -1,9 +1,9 @@
 var _ = require('_'),
 
-    _array = require('../array'),
-    _nodeType = require('../../nodeType'),
-    _cache = require('../../cache'),
-    _regex = require('../../regex'),
+    _array = require('../../array'),
+    _nodeType = require('../../../nodeType'),
+    _cache = require('../../../cache'),
+    _regex = require('../../../regex'),
 
     _ID_PREFIX = 'D-uniqueId-',
     _querySelectorCache = _cache(),

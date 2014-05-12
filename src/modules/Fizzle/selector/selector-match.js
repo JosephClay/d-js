@@ -1,5 +1,5 @@
-var _supports = require('../../supports'),
-    _nodeType = require('../../nodeType'),
+var _supports = require('../../../supports'),
+    _nodeType = require('../../../nodeType'),
 
     _matchesSelector = _supports.matchesSelector;
 

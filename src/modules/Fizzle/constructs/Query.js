@@ -1,5 +1,5 @@
 var _ = require('_'),
-    _array = require('../array');
+    _array = require('../../array');
 
 var Query = module.exports = function(str) {
     str = _normalizeSelector(str);
