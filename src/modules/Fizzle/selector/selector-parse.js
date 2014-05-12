@@ -73,12 +73,12 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
 
         // For use in libraries implementing .is()
         // We use this for POS matching in `select`
-        needsContext: new RegExp("^" + _whitespace + "*[>+~]|:(even|odd|nth|eq|gt|lt|first|last)(?:\\(" +
-            _whitespace + "*((?:-\\d)?\\d*)" + _whitespace + "*\\)|)(?=[^-]|$)", 'i')
+        needsContext: new RegExp('^' + _whitespace + '*[>+~]|:(even|odd|nth|eq|gt|lt|first|last)(?:\\(' +
+            _whitespace + '*((?:-\\d)?\\d*)' + _whitespace + '*\\)|)(?=[^-]|$)', 'i')
     },
 
     // CSS escapes http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-    _runescape = new RegExp("\\\\([\\da-f]{1,6}" + _whitespace + "?|(" + _whitespace + ")|.)", 'ig'),
+    _runescape = new RegExp('\\\\([\\da-f]{1,6}' + _whitespace + '?|(' + _whitespace + ')|.)', 'ig'),
     _funescape = function(_, escaped, escapedWhitespace) {
         var high = '0x' + (escaped - 0x10000);
         // NaN means non-codepoint

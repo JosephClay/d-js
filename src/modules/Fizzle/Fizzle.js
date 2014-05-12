@@ -34,7 +34,7 @@ module.exports = {
             return new Query(_toSelectors(str));
         });
     },
-    is: function() {
+    is: function(str) {
         return _isCache.getOrSet(str, function() {
             return new Is(_toSelectors(str));
         });

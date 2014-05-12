@@ -74,7 +74,7 @@ module.exports = {
             .args(String).use(function(selector) {
                 if (selector === '') { return false; }
 
-                var is = Is(selector);
+                var is = Fizzle.is(selector);
                 return is.exec(this);
             })
             .args(Function).use(function(iterator) {
