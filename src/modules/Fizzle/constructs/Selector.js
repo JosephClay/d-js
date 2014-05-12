@@ -34,7 +34,7 @@ var _determineMethod = function(selector) {
 var Selector = function(str) {
     var selector = _.string.trim(str),
         isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
-        method = (isBlackList || isChildOrSiblingSelect) ? 'querySelectorAll' : _determineMethod(selector);
+        method = isChildOrSiblingSelect ? 'querySelectorAll' : _determineMethod(selector);
 
     this.str = str;
     this.selector = selector;
