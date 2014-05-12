@@ -8,6 +8,13 @@ var _hooks = {
                 return _.parseInt(tabindex) || 0;
             }
         },
+        // Set contenteditable to false on removals(#10429)
+        // Setting to empty string throws an error as an invalid value
+        contenteditable: {
+            set: function(elem, value, name) {
+                elem.setAttribute('contenteditable', value === '' ? false : value);
+            }
+        },
         /* TODO: These hooks
         type: {
             set: function( elem, value ) {
@@ -35,13 +42,6 @@ var _hooks = {
                 set: nodeHook.set
             };
 
-            // Set contenteditable to false on removals(#10429)
-            // Setting to empty string throws an error as an invalid value
-            jQuery.attrHooks.contenteditable = {
-                set: function( elem, value, name ) {
-                    nodeHook.set( elem, value === "" ? false : value, name );
-                }
-            };
 
             // Set width and height to auto instead of 0 on empty string( Bug #8150 )
             // This is for removals
