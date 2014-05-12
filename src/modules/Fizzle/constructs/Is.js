@@ -17,7 +17,7 @@ Is.prototype = {
 
     exec: function(arr) {
         var self = this;
-         return _.any(arr, function(elem) {
+        return _.any(arr, function(elem) {
             if (self.match(elem)) { return true; }
         });
     }
