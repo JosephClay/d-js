@@ -120,63 +120,65 @@ var _hooks = {
 
 module.exports = {
     fn: {
-        attr: Overload().args(String).use(function(attr) {
-                        return _getAttribute(this[0], attr);
-                    })
+        attr: Overload()
+            .args(String).use(function(attr) {
+                return _getAttribute(this[0], attr);
+            })
 
-                    .args(String, O.any(String, Number))
-                    .use(function(attr, value) {
-                        _setAttributes(this, attr, value);
-                        return this;
-                    })
+            .args(String, O.any(String, Number))
+            .use(function(attr, value) {
+                _setAttributes(this, attr, value);
+                return this;
+            })
 
-                    .args(String, null)
-                    .use(function(attr) {
-                        _removeAttributes(this, attr);
-                        return this;
-                    })
+            .args(String, null)
+            .use(function(attr) {
+                _removeAttributes(this, attr);
+                return this;
+            })
 
-                    .args(String, Boolean)
-                    .use(function(attr, bool) {
-                        if (bool) {
-                            _setAttributes(this, attr, bool);
-                            return this;
-                        }
+            .args(String, Boolean)
+            .use(function(attr, bool) {
+                if (bool) {
+                    _setAttributes(this, attr, bool);
+                    return this;
+                }
 
-                        _removeAttributes(this, attr);
-                        return this;
-                    })
+                _removeAttributes(this, attr);
+                return this;
+            })
 
-                    .args(Object).use(function(attrs) {
-                        var attr, value;
-                        for (attr in attrs) {
-                            _setAttributes(this, attr, attrs[attr]);
-                        }
+            .args(Object).use(function(attrs) {
+                var attr, value;
+                for (attr in attrs) {
+                    _setAttributes(this, attr, attrs[attr]);
+                }
 
-                        return this;
-                    })
+                return this;
+            })
 
-                    .args(String, Function)
-                    .use(function(attr, fn) {
-                        var idx = 0, length = this.length;
-                        for (; idx < length; idx++) {
-                            var elem = this[idx],
-                                oldAttr = _getAttribute(this[0], attr),
-                                result = fn.call(elem, idx, oldAttr);
-                            if (!_.exists(result)) { continue; }
-                            _setAttribute(elem, attr, result);
-                        }
+            .args(String, Function)
+            .use(function(attr, fn) {
+                var idx = 0, length = this.length;
+                for (; idx < length; idx++) {
+                    var elem = this[idx],
+                        oldAttr = _getAttribute(this[0], attr),
+                        result = fn.call(elem, idx, oldAttr);
+                    if (!_.exists(result)) { continue; }
+                    _setAttribute(elem, attr, result);
+                }
 
-                        return this;
-                    })
+                return this;
+            })
 
-                    .expose(),
+            .expose(),
 
-        removeAttr: Overload().args(String).use(function(attr) {
-                        _removeAttributes(this, attr);
-                        return this;
-                    })
+        removeAttr: Overload()
+            .args(String).use(function(attr) {
+                _removeAttributes(this, attr);
+                return this;
+            })
 
-                    .expose()
+            .expose()
     }
 };
