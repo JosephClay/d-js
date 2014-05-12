@@ -1,12 +1,8 @@
 var _ = require('_'),
     _array = require('../../array');
 
-var Query = module.exports = function(str) {
-    str = _normalizeSelector(str);
-
-    this._selectors = _.map(_fizzle.subqueries(str), function(selector) {
-        return new Selector(selector);
-    });
+var Query = module.exports = function(selectors) {
+    this._selectors = selectors;
 };
 Query.prototype = {
     exec: function(arr, isNew) {
