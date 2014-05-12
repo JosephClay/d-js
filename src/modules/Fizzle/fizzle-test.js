@@ -1,14 +1,9 @@
 var _ = require('_'),
-    _utils = require('/utils.js'),
-    _fizzle = require('/modules/query/fizzle.js');
+    _fizzle = require('./fizzle.js');
 
-var _isArray = Array.isArray || function(obj) { return Object.prototype.toString.apply(arr) === '[object Array]'; }
+var _isArray = Array.isArray || function(obj) { return Object.prototype.toString.apply(obj) === '[object Array]'; }
 
-var Q = function(str) {
-    return '"' + str + '"';
-};
-
-var I = function(str, i) {
+var _indent = function(str, i) {
     var indent = new Array((i * 4) + 1).join(' ');
     return indent + str;
 };
@@ -138,30 +133,29 @@ var testQuery = function(expected, level) {
     try {
         actual = _fizzle.subqueries(query);
     } catch (e) {
-        return console.error(I('', level), e);
+        return console.error(_indent('', level), e);
     }
 
     if (query !== actual.join(', ')) {
-        console.error(I(query, level));
+        console.error(_indent(query, level));
     } else {
-        console.log(I('Pass!', level));
+        console.log(_indent('Pass!', level));
     }
 };
 
 var testQueries = function(queries, level) {
     var len = queries.length,
-        idx = 0,
-        subquery;
+        idx = 0;
     for (; idx < len; idx++) {
         testQuery(queries[idx], level);
     }
 };
 
 var walk = function(node, key, level) {
-    console.log(I(key + ':', level))
+    console.log(_indent(key + ':', level));
 
     if (_isArray(node)) {
-        testQueries(node, level + 1)
+        testQueries(node, level + 1);
     } else {
         for (var k in node) {
             walk(node[k], k, level + 1);
