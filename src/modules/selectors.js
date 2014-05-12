@@ -75,7 +75,14 @@ module.exports = {
                 if (selector === '') { return false; }
 
                 var is = Fizzle.is(selector);
-                return is.exec(this);
+                return is.any(this);
+            })
+            .args(O.any(Array, O.D)).use(function(arr) {
+
+                return _.any(this, function(elem) {
+                    if (arr.indexOf(elem) !== -1) { return true; }
+                });
+
             })
             .args(Function).use(function(iterator) {
 
@@ -83,13 +90,6 @@ module.exports = {
                     if (iterator.call(elem, idx)) {
                         return true;
                     }
-                });
-
-            })
-            .args(O.D).use(function(d) {
-
-                return _.any(this, function(elem) {
-                    if (d.indexOf(elem) !== -1) { return true; }
                 });
 
             })
@@ -105,7 +105,45 @@ module.exports = {
             })
             .expose(),
 
-        not: function() {},
+        not: Overload()
+            .args(String).use(function(selector) {
+                if (selector === '') { return this; }
+
+                var is = Fizzle.is(selector);
+                return D(
+                    is.not(this)
+                );
+            })
+            .args(O.any(Array, O.D)).use(function(arr) {
+
+                return D(
+                    _.filter(this, function(elem) {
+                        if (arr.indexOf(elem) === -1) { return true; }
+                    })
+                );
+
+            })
+            .args(Function).use(function(iterator) {
+
+                return _.filter(this, function(elem, idx) {
+                    return iterator.call(elem, idx);
+                });
+
+            })
+            .args(Element).use(function(context) {
+
+                return D(
+                    _.filter(this, function(elem) {
+                        return (elem !== context);
+                    })
+                );
+
+            })
+
+            .args(O.any(null, undefined, Number, Object)).use(function() {
+                return this;
+            })
+            .expose(),
 
         find: Overload()
             .args(String).use(function(selector) {
@@ -127,18 +165,7 @@ module.exports = {
                 );
 
             })
-            // TODO: I think there's a bug in Overload where this doesn't work
-            // .args(O.any(Array, O.D)).use(function(arr) {
-            .args(Array).use(function(arr) {
-
-                return D(
-                    _.filter(this, function(elem) {
-                        if (arr.indexOf(elem) !== -1) { return true; }
-                    })
-                );
-
-            })
-            .args(O.D).use(function(arr) {
+            .args(O.any(Array, O.D)).use(function(arr) {
 
                 return D(
                     _.filter(this, function(elem) {
