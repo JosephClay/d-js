@@ -14,7 +14,7 @@ var _ = require('_'),
         };
 
 var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
-    
+
     _fromCharCode = String.fromCharCode,
 
     // http://www.w3.org/TR/css3-selectors/#whitespace
