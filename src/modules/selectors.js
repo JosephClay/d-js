@@ -3,7 +3,7 @@ var _ = require('_'),
     _regex = require('../regex'),
     _array = require('./array'),
 
-    Fizzle = require('./query/Fizzle');
+    Fizzle = require('./Fizzle/Fizzle');
 
 var _find = function(selector, isNew) {
     var query = Fizzle.query(selector);
