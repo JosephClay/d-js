@@ -1,16 +1,7 @@
 var _ = require('_'),
+    _array = require('../array');
 
-    _array = require('../array'),
-    _cache = require('../../cache'),
-
-    _queryCache = _cache(),
-
-    Selector = require('./Selector'),
-
-    _fizzle = require('./fizzle'),
-    _normalizeSelector = require('./normalizeSelector');
-
-var Query = function(str) {
+var Query = module.exports = function(str) {
     str = _normalizeSelector(str);
 
     this._selectors = _.map(_fizzle.subqueries(str), function(selector) {
@@ -39,10 +30,4 @@ Query.prototype = {
 
         return result;
     }
-};
-
-module.exports = function(str) {
-    return _queryCache.getOrSet(str, function() {
-        return new Query(str);
-    });
 };

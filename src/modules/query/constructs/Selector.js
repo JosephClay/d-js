@@ -7,8 +7,8 @@ var _ = require('_'),
 
     _ID_PREFIX = 'D-uniqueId-',
     _querySelectorCache = _cache(),
-    _isMatch = require('./match'),
-    _selectorBlackList = require('./list/selectorBlackList');
+    
+    _isMatch = require('../selector/selector-match');
 
 var _determineMethod = function(selector) {
         var method = _querySelectorCache.get(selector);
@@ -33,13 +33,11 @@ var _determineMethod = function(selector) {
 
 var Selector = function(str) {
     var selector = _.string.trim(str),
-        isBlackList = (_selectorBlackList.indexOf(selector) > -1),
         isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
         method = (isBlackList || isChildOrSiblingSelect) ? 'querySelectorAll' : _determineMethod(selector);
 
     this.str = str;
     this.selector = selector;
-    this.isBlackList = isBlackList;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
     this.method = method;
 };
@@ -62,9 +60,6 @@ Selector.prototype = {
         context = context || document;
 
         var selection = [];
-
-        // Early return if the selector is bad
-        if (this.isBlackList) { return selection; }
 
         var nodeType;
         // Early return if context is not an element or document
@@ -94,6 +89,7 @@ Selector.prototype = {
             // Probably an invalid query
             console && console.error && console.error(e.message, selector);
         }
+        
         if (!selection.length) { return selection; }
 
         if (idApplied) { context.id = id; }

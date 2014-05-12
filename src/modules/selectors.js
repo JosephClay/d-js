@@ -3,16 +3,15 @@ var _ = require('_'),
     _regex = require('../regex'),
     _array = require('./array'),
 
-    Query = require('./query/Query'),
-    Is = require('./query/Is');
+    Fizzle = require('./query/Fizzle');
 
 var _find = function(selector, isNew) {
-    var query = Query(selector);
+    var query = Fizzle.query(selector);
     return _array.unique(query.exec(this, isNew));
 };
 
 var _findWithin = function(selector, context) {
-    var query = Query(selector);
+    var query = Fizzle.query(selector);
     return _array.unique(query.exec(context));
 };
 
@@ -35,7 +34,7 @@ var _filter = function(arr, qualifier) {
     // Selector
     if (_.isString(qualifier)) {
 
-        var is = Is(qualifier);
+        var is = Fizzle.is(qualifier);
         return _.filter(arr, function(elem) {
             return is.match(elem);
         });

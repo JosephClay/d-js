@@ -1,20 +1,7 @@
-var _ = require('_'),
+var _ = require('_');
 
-    _cache = require('../../cache'),
-
-    _isCache = _cache(),
-
-    Selector = require('./Selector'),
-
-    _fizzle = require('./fizzle'),
-    _normalizeSelector = require('./normalizeSelector');
-
-var Is = function(str) {
-    str = _normalizeSelector(str);
-
-    this._selectors = _.map(_fizzle.subqueries(str), function(selector) {
-        return new Selector(selector);
-    });
+var Is = module.exports = function(selectors) {
+    this._selectors = selectors;
 };
 Is.prototype = {
     match: function(context) {
@@ -36,8 +23,3 @@ Is.prototype = {
     }
 };
 
-module.exports = function(str) {
-    return _isCache.getOrSet(str, function() {
-        return new Is(str);
-    });
-};

@@ -1,4 +1,3 @@
-// TODO: Rename "query" to "fizzle" and make those scripts all one engine.
 /*!
  * Sizzle CSS Selector Engine v1.10.20-pre
  * http://sizzlejs.com/
@@ -20,9 +19,9 @@ var _ = require('_'),
     _tokenCache = _cache(),
     _subqueryCache = _cache();
 
-var _logError = function(selector) {
-    console && console.error && console.error('Invalid query selector: ' + selector);
-};
+var _logError = (!console || !console.error) ?
+    _.noop :
+        function(selector) { console.error('Invalid query selector: ' + selector); };
 
 var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
 
@@ -69,7 +68,8 @@ var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disable
 
         // For use in libraries implementing .is()
         // We use this for POS matching in `select`
-        needsContext: new RegExp("^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
+        // NOTE: Removed eq|gt|lt| from this regex as they're not valid css3 selectors
+        needsContext: new RegExp("^" + whitespace + "*[>+~]|:(even|odd|nth|first|last)(?:\\(" +
             whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", 'i')
     },
 
