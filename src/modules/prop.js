@@ -82,11 +82,12 @@ var _getOrSetProp = function(elem, name, value) {
 
 module.exports = {
     fn: {
-        prop: Overload().args(String).use(function(prop) {
+        prop: Overload()
+            .args(String).use(function(prop) {
                 var first = this[0];
                 if (!first) { return; }
 
-                return _getOrSetProp(prop);
+                return _getOrSetProp(first, prop);
             })
 
             .args(String, O.any(String, Number, Boolean)).use(function(prop, value) {
@@ -110,7 +111,8 @@ module.exports = {
 
             .expose(),
 
-        removeProp: Overload().args(String).use(function(prop) {
+        removeProp: Overload()
+            .args(String).use(function(prop) {
                 var name = _propFix[prop] || prop,
                     idx = 0, length = this.length;
                 for (; idx < length; idx++) {
