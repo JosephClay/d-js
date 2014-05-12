@@ -1,4 +1,6 @@
-var _ = require('_');
+var _ = require('_'),
+    _cache = require('./cache'),
+    _nodeNameCache = _cache();
 
 module.exports = {
     isAttached: function(elem) {
@@ -11,6 +13,23 @@ module.exports = {
         text = _.string.trim(text);
 
         return (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
+    },
+
+    normalNodeName: function(elem) {
+        return _nodeNameCache.getOrSet(elem.nodeName, function() {
+            return nodeName.toLowerCase();
+        });
+    },
+
+    isNodeName: function(elem, name) {
+        var nodeName = _nodeNameCache.getOrSet(elem.nodeName, function() {
+                return nodeName.toLowerCase();
+            }),
+            compareName = _nodeNameCache.getOrSet(elem.nodeName, function() {
+                return nodeName.toLowerCase();
+            });
+
+        return nodeName === compareName;
     },
 
     merge: function(first, second) {

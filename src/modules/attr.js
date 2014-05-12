@@ -1,13 +1,27 @@
-var _ = require('_');
+var _ = require('_'),
+    _utils = require('../utils'),
+    _supports = require('../supports');
+
+var _boolHook = {
+    set: function(elem, value, name) {
+        if (value === false) {
+            // Remove boolean attributes when set to false
+            return elem.removeAttribute(name);
+        }
+
+        elem.setAttribute(name, name);
+    }
+};
 
 var _hooks = {
         tabindex: {
             get: function(elem) {
                 var tabindex = elem.getAttribute('tabindex');
-                if (!_.exists(tabindex) || tabindex === '') { return; }
+                if (!_.exists(tabindex) || tabindex === '') { return 0; }
                 return _.parseInt(tabindex) || 0;
             }
         },
+
         // Set contenteditable to false on removals(#10429)
         // Setting to empty string throws an error as an invalid value
         contenteditable: {
@@ -15,61 +29,19 @@ var _hooks = {
                 elem.setAttribute('contenteditable', value === '' ? false : value);
             }
         },
-        /* TODO: These hooks
+
         type: {
-            set: function( elem, value ) {
-                if ( !support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+            set: function(elem, value) {
+                if (!_supports.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
                     // Setting the type on a radio button after the value resets the value in IE6-9
                     // Reset value to default in case type is set after value during creation
                     var val = elem.value;
-                    elem.setAttribute( "type", value );
-                    if ( val ) {
-                        elem.value = val;
-                    }
+                    elem.setAttribute('type', value);
+                    if (val) { elem.value = val; }
                     return value;
                 }
             }
-        },
-
-            // Fixing value retrieval on a button requires this module
-            jQuery.valHooks.button = {
-                get: function( elem, name ) {
-                    var ret = elem.getAttributeNode( name );
-                    if ( ret && ret.specified ) {
-                        return ret.value;
-                    }
-                },
-                set: nodeHook.set
-            };
-
-
-            // Set width and height to auto instead of 0 on empty string( Bug #8150 )
-            // This is for removals
-            jQuery.each([ "width", "height" ], function( i, name ) {
-                jQuery.attrHooks[ name ] = {
-                    set: function( elem, value ) {
-                        if ( value === "" ) {
-                            elem.setAttribute( name, "auto" );
-                            return value;
-                        }
-                    }
-                };
-            });
         }
-
-        if ( !support.style ) {
-            jQuery.attrHooks.style = {
-                get: function( elem ) {
-                    // Return undefined in the case of empty string
-                    // Note: IE uppercases css property names, but if we were to .toLowerCase()
-                    // .cssText, that would destroy case senstitivity in URL's, like in "background"
-                    return elem.style.cssText || undefined;
-                },
-                set: function( elem, value ) {
-                    return ( elem.style.cssText = value + "" );
-                }
-            };
-        }*/
     },
 
     _getAttribute = function(elem, attr) {
@@ -94,6 +66,10 @@ var _hooks = {
     },
     _setAttribute = function(elem, attr, value) {
         if (!elem) { return; }
+
+        if (value === true || value === false) {
+            return _boolHook.set(elem, value, attr);
+        }
 
         if (_hooks[attr] && _hooks[attr].set) {
             return _hooks[attr].set(elem, value);

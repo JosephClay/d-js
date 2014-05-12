@@ -1,5 +1,6 @@
 var div = require('./div'),
-    a = div.getElementsByTagName('a')[0];
+    a = div.getElementsByTagName('a')[0],
+    input = document.createElement('input');
 
 module.exports = {
     classList: !!div.classList,
@@ -18,5 +19,12 @@ module.exports = {
 
     // Make sure that URLs aren't manipulated
     // (IE normalizes it by default)
-    hrefNormalized: a.getAttribute('href') === '/a'
+    hrefNormalized: a.getAttribute('href') === '/a',
+
+    // Check the default checkbox/radio value ('' on WebKit; 'on' elsewhere)
+    checkOn: !!input.value,
+
+    // Check if an input maintains its value after becoming a radio
+    // Support: IE9, IE10
+    radioValue: input.value === 't'
 };
