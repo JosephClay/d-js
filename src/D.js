@@ -154,7 +154,6 @@ DOM.fn = DOM.prototype;
 
 module.exports = window.D = DOM;
 
-
 if (typeof define === 'function' && define.amd) {
     define('D', [], function() {
         return DOM;
