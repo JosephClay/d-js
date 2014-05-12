@@ -1,14 +1,3 @@
-/*!
- * Sizzle CSS Selector Engine v1.10.20-pre
- * http://sizzlejs.com/
- *
- * Copyright 2013 jQuery Foundation, Inc. and other contributors
- * Released under the MIT license
- * http://jquery.org/license
- *
- * Date: 2014-04-21
- */
-
 /*
  * Fizzle.js
  * Adapted from Sizzle.js
@@ -68,7 +57,8 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
             '*(even|odd|(([+-]|)(\\d*)n|)' + _whitespace + '*(?:([+-]|)' + _whitespace +
             '*(\\d+)|))' + _whitespace + '*\\)|)', 'i'),
 
-        bool:   new RegExp('^(?:' + _booleans + ')$', 'i'),
+        // Note: Using double quotes due to parsing weirdness
+        bool:   new RegExp("^(?:" + _booleans + ")$", "i"),
 
         // For use in libraries implementing .is()
         // We use this for POS matching in `select`
