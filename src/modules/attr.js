@@ -22,14 +22,6 @@ var _hooks = {
             }
         },
 
-        // Set contenteditable to false on removals(#10429)
-        // Setting to empty string throws an error as an invalid value
-        contenteditable: {
-            set: function(elem, value, name) {
-                elem.setAttribute('contenteditable', value === '' ? false : value);
-            }
-        },
-
         type: {
             set: function(elem, value) {
                 if (!_supports.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
