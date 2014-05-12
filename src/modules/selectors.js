@@ -119,7 +119,7 @@ module.exports = {
             .args(String).use(function(selector) {
                 if (selector === '') { return D(); }
 
-                var is = Is(selector);
+                var is = Fizzle.is(selector);
                 return D(
                     _.filter(this, function(elem) {
                         return is.match(elem);
