@@ -69,8 +69,7 @@ var booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disable
 
         // For use in libraries implementing .is()
         // We use this for POS matching in `select`
-        // NOTE: Removed eq|gt|lt| from this regex as they're not valid css3 selectors
-        needsContext: new RegExp("^" + whitespace + "*[>+~]|:(even|odd|nth|first|last)(?:\\(" +
+        needsContext: new RegExp("^" + whitespace + "*[>+~]|:(even|odd|nth|eq|gt|lt|first|last)(?:\\(" +
             whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", 'i')
     },
 
