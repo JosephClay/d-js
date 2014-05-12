@@ -15,10 +15,17 @@ Is.prototype = {
         return false;
     },
 
-    exec: function(arr) {
+    any: function(arr) {
         var self = this;
         return _.any(arr, function(elem) {
             if (self.match(elem)) { return true; }
+        });
+    },
+
+    not: function(arr) {
+        var self = this;
+        return _.filter(arr, function(elem) {
+            if (!self.match(elem)) { return true; }
         });
     }
 };
