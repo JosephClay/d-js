@@ -112,48 +112,40 @@ module.exports = {
             });
         },
 
-        append: Overload().args(String).use(function(value) {
-                            if (utils.isHtml(value)) {
-                                _appendMergeArr(this, parser.parseHtml(value));
-                                return this;
-                            }
+        append: Overload()
+            .args(String).use(function(value) {
+                if (utils.isHtml(value)) {
+                    _appendMergeArr(this, parser.parseHtml(value));
+                    return this;
+                }
 
-                            _appendElemToArr(this, _stringToFrag(value));
+                _appendElemToArr(this, _stringToFrag(value));
 
-                            return this;
-                        })
+                return this;
+            })
 
-                        .args(Number).use(function(value) {
-                            value = '' + value; // change to a string
-                            _appendString(this, value);
-                            return this;
-                        })
+            .args(Number).use(function(value) {
+                value = '' + value; // change to a string
+                _appendString(this, value);
+                return this;
+            })
 
-                        .args(Array).use(function(arr) {
-                            // TODO: Array
-                            return this;
-                        })
+            .args(Function).use(function(fn) {
+                _appendFunc(this, fn);
+                return this;
+            })
 
-                        .args(Function).use(function(fn) {
-                            _appendFunc(this, fn);
-                            return this;
-                        })
+            .args(Element).use(function(elem) {
+                _appendElemToArr(this, elem);
+                return this;
+            })
 
-                        .fallback(function(elementOrD) {
-                            if (_.isElement(elementOrD)) {
-                                var elem = elementOrD;
-                                _appendElemToArr(this, elem);
-                            }
+            .args(O.any(Array, O.nodeList, O.D)).use(function(arr) {
+                _appendMergeArr(this, arr);
+                return this;
+            })
 
-                            if (_.isNodeList(elementOrD) || elementOrD instanceof D) {
-                                var otherArr = elementOrD;
-                                _appendMergeArr(this, otherArr);
-                            }
-
-                            return this;
-                        })
-
-                        .expose(),
+            .expose(),
 
         // TODO: These methods
         before: function() {},
@@ -173,6 +165,7 @@ module.exports = {
 
         },
 
+        // TODO: Overload
         prependTo: function(thing) {
             thing = (thing instanceof D) ? thing : D(thing);
             thing.prepend(this);
