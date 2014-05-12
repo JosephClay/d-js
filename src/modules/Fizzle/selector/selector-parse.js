@@ -15,8 +15,9 @@
  */
 
 var _ = require('_'),
-    _cache = require('../../../cache'),
-    _tokenCache = _cache(),
+
+    _cache         = require('../../../cache'),
+    _tokenCache    = _cache(),
     _subqueryCache = _cache();
 
 var _logError = (!console || !console.error) ?
@@ -244,7 +245,7 @@ var _tokenize = function(selector, parseOnly) {
     // if we're just parsing.
     if (parseOnly) { return soFar.length; }
 
-    if (soFar) { _logError(selector); }
+    if (soFar) { _logError(selector); return null; }
 
     return _tokenCache.set(selector, subqueries).slice();
 };
