@@ -185,15 +185,7 @@ module.exports = {
                 
                 return this;
             })
-            .args(O.D).use(function(d) {
-                _array.unique(
-                    _utils.merge(this, d)
-                );
-                
-                return this;  
-            })
-            // TODO: merge this method with O.D when Overload bug is fixed
-            .args(Array).use(function(arr) {
+            .args(O.any(Array, O.nodeList, O.D)).use(function(arr) {
                 _array.unique(
                     _utils.merge(this, arr)
                 );
