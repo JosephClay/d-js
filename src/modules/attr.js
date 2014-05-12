@@ -43,7 +43,8 @@ var _hooks = {
             return _hooks[attr].get(elem);
         }
 
-        return elem.getAttribute(attr);
+        var ret = elem.getAttribute(attr);
+        return _.exists(ret) ? ret : undefined;
     },
 
     _setAttributes = function(arr, attr, value) {
