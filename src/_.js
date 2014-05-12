@@ -3,6 +3,8 @@ var _id = 0,
     _isTruthy = function(arg) { return !!arg; };
 
 var _ = {
+    noop: function() {},
+    
     uniqueId: function() {
         return _id++;
     },
