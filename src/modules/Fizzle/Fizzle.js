@@ -13,9 +13,17 @@ var _ = require('_'),
     _normalize = require('./selector/selector-normalize');
 
 var _toSelectors = function(str) {
-    var selector = _normalize(str),
-        selectors = _parse.subqueries(selector);
-    return _.map(selectors, function(selector) {
+    // Selectors will return null if the query was invalid.
+    // Not returning early or doing extra checks as this will
+    // noop on the Query and Is level and is the exception
+    // instead of the rule
+    var selectors = _parse.subqueries(str) || [];
+    
+    // Normalize each of the selectors...
+    selectors = _.map(selectors, _normalize);
+
+    // ...and map them to Selector objects
+    return _.fastmap(selectors, function(selector) {
         return new Selector(selector);
     });
 };
