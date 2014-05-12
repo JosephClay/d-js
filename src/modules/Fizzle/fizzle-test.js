@@ -1,7 +1,7 @@
 var _ = require('_'),
     _fizzle = require('./fizzle.js');
 
-var _isArray = Array.isArray || function(obj) { return Object.prototype.toString.apply(obj) === '[object Array]'; }
+var _isArray = Array.isArray || function(obj) { return Object.prototype.toString.apply(obj) === '[object Array]'; };
 
 var _indent = function(str, i) {
     var indent = new Array((i * 4) + 1).join(' ');
@@ -18,7 +18,7 @@ var QUERIES = {
                 [ 'a', '#id', '[some-attr]', '.class', '[some-attr="a,b,c\\",d,e,f"]' ],
                 [ 'a', '#id', '[some-attr]', '.class', '[some-attr="a,b,c\\]\\",d,e,f"]' ],
                 [ 'a', '#id', '[some-attr]', '.class', '[some-attr="a,b,c\\]\\",d,e,f"]' ],
-                [ 'a', '#id', '[some-attr]', '.class', '[some-attr="\\""]' ],
+                [ 'a', '#id', '[some-attr]', '.class', '[some-attr="\\""]' ]
             ],
 
             'Single quotes': [
@@ -28,8 +28,8 @@ var QUERIES = {
                 [ "a", "#id", "[some-attr]", ".class", "[some-attr='a,b,c\\',d,e,f']" ],
                 [ "a", "#id", "[some-attr]", ".class", "[some-attr='a,b,c\\]\\',d,e,f']" ],
                 [ "a", "#id", "[some-attr]", ".class", "[some-attr='a,b,c\\]\\',d,e,f']" ],
-                [ "a", "#id", "[some-attr]", ".class", "[some-attr='\\'']" ],
-            ],
+                [ "a", "#id", "[some-attr]", ".class", "[some-attr='\\'']" ]
+            ]
         },
 
         'With tag names': {
@@ -40,7 +40,7 @@ var QUERIES = {
                 [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="a,b,c\\",d,e,f"]' ],
                 [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="a,b,c\\]\\",d,e,f"]' ],
                 [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="a,b,c\\]\\",d,e,f"]' ],
-                [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="\\""]' ],
+                [ 'a', '#id', 'input[some-attr]', '.class', 'input[some-attr="\\""]' ]
             ],
 
             'Single quotes': [
@@ -50,9 +50,9 @@ var QUERIES = {
                 [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='a,b,c\\',d,e,f']" ],
                 [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='a,b,c\\]\\',d,e,f']" ],
                 [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='a,b,c\\]\\',d,e,f']" ],
-                [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='\\'']" ],
-            ],
-        },
+                [ "a", "#id", "input[some-attr]", ".class", "input[some-attr='\\'']" ]
+            ]
+        }
     },
 
     'With spaces': {
@@ -64,7 +64,7 @@ var QUERIES = {
                 [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "a,b,c\\",d,e,f" ]' ],
                 [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
                 [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
-                [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "\\"" ]' ],
+                [ 'a', '#id', '[ some-attr ]', '.class', '[ some-attr = "\\"" ]' ]
             ],
 
             'Single quotes': [
@@ -74,8 +74,8 @@ var QUERIES = {
                 [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = 'a,b,c\\',d,e,f' ]" ],
                 [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
                 [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
-                [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = '\\'' ]" ],
-            ],
+                [ "a", "#id", "[ some-attr ]", ".class", "[ some-attr = '\\'' ]" ]
+            ]
         },
 
         'With tag names': {
@@ -86,7 +86,7 @@ var QUERIES = {
                 [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "a,b,c\\",d,e,f" ]' ],
                 [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
                 [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "a,b,c\\]\\",d,e,f" ]' ],
-                [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "\\"" ]' ],
+                [ 'a', '#id', 'input[ some-attr ]', '.class', 'input[ some-attr = "\\"" ]' ]
             ],
 
             'Single quotes': [
@@ -96,15 +96,15 @@ var QUERIES = {
                 [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = 'a,b,c\\',d,e,f' ]" ],
                 [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
                 [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = 'a,b,c\\]\\',d,e,f' ]" ],
-                [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = '\\'' ]" ],
-            ],
-        },
+                [ "a", "#id", "input[ some-attr ]", ".class", "input[ some-attr = '\\'' ]" ]
+            ]
+        }
     },
 
     'Other': [
         [ '#TestDiv p' ],
         [ "a", "#id", "[some-attr]", ".class", "[asdf\\]]" ],
-        [ '#a > div', ':first', '#id:first', '.class:first', '[attr]', '#id[attr]', '.class[attr]', '.class[attr]:first', '[attr="value"]', ':not([attr="value"])' ],
+        [ '#a > div', ':first', '#id:first', '.class:first', '[attr]', '#id[attr]', '.class[attr]', '.class[attr]:first', '[attr="value"]', ':not([attr="value"])' ]
     ],
 
     'Pseudo': [
@@ -122,7 +122,7 @@ var QUERIES = {
         [ 'input:not([disabled="()"])' ],
         [ 'a :not([disabled="()"])' ],
         [ 'a input:not([disabled="()"])' ],
-        [ 'a', 'input:not([disabled="()"])' ],
+        [ 'a', 'input:not([disabled="()"])' ]
     ]
 };
 
