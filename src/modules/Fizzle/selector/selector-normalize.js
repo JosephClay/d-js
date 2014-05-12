@@ -1,6 +1,9 @@
 var _ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?=\s*(['"]?)(.*?[^\\]|[^\\]*)\1\s*\]/g,
     _PSEUDO_SELECT = /(:[^\s]+)/g,
 
+    _cache       = require('../../../cache'),
+    _pseudoCache = _cache(),
+
     _proxySelectors = require('../list/selectors-proxy');
 
 var _getAttributePositions = function(str) {
@@ -32,6 +35,7 @@ var _pseudoReplace = function(str, positions) {
 };
 
 module.exports = function(str) {
-    var attributePositions = _getAttributePositions(str);
-    return _pseudoReplace(str, attributePositions);
+    return _pseudoCache.getOrSet(str, function() {
+        return _pseudoReplace(str, _getAttributePositions(str));
+    });
 };
