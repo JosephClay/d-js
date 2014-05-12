@@ -155,6 +155,13 @@ module.exports = {
 
                         .expose(),
 
+        // TODO: These methods
+        before: function() {},
+        after: function() {},
+        insertBefore: function() {},
+        insertAfter: function() {},
+
+        // TODO: Overload
         appendTo: function(thing) {
             thing = (thing instanceof D) ? thing : D(thing);
             thing.append(this);
