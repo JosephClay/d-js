@@ -245,10 +245,10 @@
 			mapItem = args[idx];
 
 			if (mapItem instanceof Custom) {
-				if (mapItem.check(args[idx])) {
+				if (mapItem.check(val)) {
 					return true;
 				} else {
-					return false;
+					continue;
 				}
 			}
 
@@ -373,7 +373,7 @@
 		},
 
 		apply: function(context, args) {
-			args = args && args.callee ? _slice(args) : args;
+			args = (args && args.callee) ? _slice(args) : args;
 			return this._call(context, args);
 		},
 
@@ -420,4 +420,4 @@
 	root.Overload = Overload;
 	root.O = O;
 
-}(window));
+}(this));
