@@ -2,8 +2,11 @@
 Overload.prototype.err = function() {
     throw new TypeError();
 };
-Overload.defineType('D', function(val) {
-    return val instanceof D;
+Overload.defineType('D', function(obj) {
+    return obj && obj instanceof D;
+});
+Overload.defineType('nodeList', function(obj) {
+    return obj && (obj instanceof NodeList || obj instanceof HTMLCollection);
 });
 
 var _ = require('_');
