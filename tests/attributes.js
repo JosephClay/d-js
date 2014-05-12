@@ -355,13 +355,13 @@
         textNode = document.createTextNode('some text');
         obj = {};
 
-        D.each([ commentNode, textNode, attributeNode ], function(i, elem) {
+        D.each([ commentNode, textNode, attributeNode ], function(elem, i) {
             var $elem = D(elem);
             $elem.attr('nonexisting', 'foo');
             strictEqual($elem.attr('nonexisting'), undefined, 'attr(name, value) works correctly on comment and text nodes (bug #7500).');
         });
 
-        D.each([ window, document, obj, '#firstp' ], function(i, elem) {
+        D.each([ window, document, obj, '#firstp' ], function(elem, i) {
             var oldVal = elem.nonexisting,
                 $elem = D(elem);
             strictEqual($elem.attr('nonexisting'), undefined, 'attr works correctly for non existing attributes (bug #7500).');
@@ -553,6 +553,7 @@
             };
 
         D.each(tests, function(val, key) {
+            debugger;
             equal(div.attr(key), val, 'Attribute `' + key + '` exists, and has a value of `' + val + '`');
         });
     });
@@ -615,12 +616,12 @@
         commentNode = document.createComment('some comment');
         textNode = document.createTextNode('some text');
         obj = {};
-        D.each([ document, attributeNode, commentNode, textNode, obj, '#firstp' ], function(i, ele) {
+        D.each([ document, attributeNode, commentNode, textNode, obj, '#firstp' ], function(ele, i) {
             strictEqual(D(ele).prop('nonexisting'), undefined, 'prop works correctly for non existing attributes (bug #7500).');
         });
 
         obj = {};
-        D.each([ document, obj ], function(i, ele) {
+        D.each([ document, obj ], function(ele, i) {
             var $ele = D(ele);
             $ele.prop('nonexisting', 'foo');
             equal($ele.prop('nonexisting'), 'foo', 'prop(name, value) works correctly for non existing attributes (bug #7500).');

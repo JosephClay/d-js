@@ -489,7 +489,7 @@ test('sort direction', function() {
             contents: false
         };
 
-    D.each(methodDirections, function(method, reversed) {
+    D.each(methodDirections, function(reversed, method) {
         var actual = elems[ method ]().get(),
             forward = D.unique([].concat(actual));
         deepEqual(actual, reversed ? forward.reverse() : forward, 'Correct sort direction for ' + method);

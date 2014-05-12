@@ -345,7 +345,7 @@ test('D.unique', function() {
         }
     };
 
-    D.each(tests, function(label, test) {
+    D.each(tests, function(test, label) {
         var length = test.length || test.input.length;
         deepEqual(D.unique(test.input).slice(0, length), test.expected, label + ' (array)');
         deepEqual(D.unique(new Arrayish(test.input)).slice(0, length), test.expected, label + ' (quasi-array)');
