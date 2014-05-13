@@ -164,32 +164,47 @@ module.exports = {
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
             // Remove single key
-            .args(_ELEM_TYPE, String)
-            .use(function(elem, key) {
-                var id;
-                if (!(id = _getId(elem))) { return this; }
-                _dataCache.remove(id, key);
+            .args(String)
+            .use(function(key) {
+                var idx = this.length,
+                    elem,
+                    id;
+                while (idx--) {
+                    elem = this[idx];
+                    if (!(id = _getId(elem))) { continue; }
+                    _dataCache.remove(id, key);
+                }
                 return this;
             })
 
             // Remove multiple keys
-            .args(_ELEM_TYPE, Array)
-            .use(function(elem, array) {
-                var id;
-                if (!(id = _getId(elem))) { return this; }
-                var idx = array.length;
-                while (idx--) {
-                    _dataCache.remove(id, array[idx]);
+            .args(Array)
+            .use(function(array) {
+                var elemIdx = this.length,
+                    elem,
+                    id;
+                while (elemIdx--) {
+                    elem = this[elemIdx];
+                    if (!(id = _getId(elem))) { continue; }
+                    var arrIdx = array.length;
+                    while (arrIdx--) {
+                        _dataCache.remove(id, array[arrIdx]);
+                    }
                 }
                 return this;
             })
 
             // Remove all data
-            .args(_ELEM_TYPE)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return this; }
-                _dataCache.remove(id);
+            .args()
+            .use(function() {
+                var idx = this.length,
+                    elem,
+                    id;
+                while (idx--) {
+                    elem = this[idx];
+                    if (!(id = _getId(elem))) { continue; }
+                    _dataCache.remove(id);
+                }
                 return this;
             })
 

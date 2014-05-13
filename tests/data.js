@@ -162,7 +162,7 @@ test('.data()', function() {
 });
 
 function testDataTypes($obj) {
-    D.each({
+    _.each({
         'null': null,
         'true': true,
         'false': false,
@@ -176,7 +176,7 @@ function testDataTypes($obj) {
         'date': new Date(),
         'regex': /test/,
         'function': function() {}
-    }, function(type, value) {
+    }, function(value, type) {
         strictEqual($obj.data('test', value).data('test'), value, 'Data set to ' + type);
     });
 }
@@ -298,83 +298,6 @@ test('JSON serialization (#8108)', function () {
     equal(JSON.stringify(obj), '{\'foo\':\'bar\'}', 'Expando is hidden from JSON.stringify');
 });
 
-test('.data should follow html5 specification regarding camel casing', function() {
-    expect(12);
-
-    var div = D('<div id="myObject" data-w-t-f="ftw" data-big-a-little-a="bouncing-b" data-foo="a" data-foo-bar="b" data-foo-bar-baz="c"></div>')
-        .prependTo('body');
-
-    equal(div.data().wTF, 'ftw', 'Verify single letter data-* key');
-    equal(div.data().bigALittleA, 'bouncing-b', 'Verify single letter mixed data-* key');
-
-    equal(div.data().foo, 'a', 'Verify single word data-* key');
-    equal(div.data().fooBar, 'b', 'Verify multiple word data-* key');
-    equal(div.data().fooBarBaz, 'c', 'Verify multiple word data-* key');
-
-    equal(div.data('foo'), 'a', 'Verify single word data-* key');
-    equal(div.data('fooBar'), 'b', 'Verify multiple word data-* key');
-    equal(div.data('fooBarBaz'), 'c', 'Verify multiple word data-* key');
-
-    div.data('foo-bar', 'd');
-
-    equal(div.data('fooBar'), 'd', 'Verify updated data-* key');
-    equal(div.data('foo-bar'), 'd', 'Verify updated data-* key');
-
-    equal(div.data('fooBar'), 'd', 'Verify updated data-* key (fooBar)');
-    equal(div.data('foo-bar'), 'd', 'Verify updated data-* key (foo-bar)');
-
-    div.remove();
-});
-
-test('.data should not miss preset data-* w/ hyphenated property names', function() {
-
-    expect(2);
-
-    var div = D('<div/>', { id: 'hyphened' }).appendTo('#qunit-fixture'),
-        test = {
-            'camelBar': 'camelBar',
-            'hyphen-foo': 'hyphen-foo'
-        };
-
-    div.data(test);
-
-    D.each(test , function(i, k) {
-        equal(div.data(k), k, 'data with property "'+k+'" was correctly found');
-    });
-});
-
-test('D.data should not miss data-* w/ hyphenated property names #14047', function() {
-
-    expect(1);
-
-    var div = D('<div/>');
-
-    div.data('foo-bar', 'baz');
-
-    equal(D.data(div[0], 'foo-bar'), 'baz', 'data with property "foo-bar" was correctly found');
-});
-
-test('.data should not miss attr() set data-* with hyphenated property names', function() {
-    expect(2);
-
-    var a, b;
-
-    a = D('<div/>').appendTo('#qunit-fixture');
-
-    a.attr('data-long-param', 'test');
-    a.data('long-param', { a: 2 });
-
-    deepEqual(a.data('long-param'), { a: 2 }, 'data with property long-param was found, 1');
-
-    b = D('<div/>').appendTo('#qunit-fixture');
-
-    b.attr('data-long-param', 'test');
-    b.data('long-param');
-    b.data('long-param', { a: 2 });
-
-    deepEqual(b.data('long-param'), { a: 2 }, 'data with property long-param was found, 2');
-});
-
 test('.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values', function() {
 
     var div = D('<div/>', { id: 'hyphened' }).appendTo('#qunit-fixture'),
@@ -398,7 +321,7 @@ test('.data supports interoperable hyphenated/camelCase get/set of properties wi
 
     expect(24);
 
-    D.each(datas, function(key, val) {
+    _.each(datas, function(val, key) {
         div.data(key, val);
 
         deepEqual(div.data(key), val, 'get: ' + key);
@@ -425,7 +348,7 @@ test('.data supports interoperable removal of hyphenated/camelCase properties', 
 
     expect(27);
 
-    D.each(datas, function(key, val) {
+    _.each(datas, function(val, key) {
         div.data(key, val);
 
         deepEqual(div.data(key), val, 'get: ' + key);
@@ -457,7 +380,7 @@ test('.data supports interoperable removal of properties SET TWICE #13850', func
 
     expect(9);
 
-    D.each(datas, function(key, val) {
+    _.each(datas, function(val, key) {
         div.data(key, val);
         div.data(key, val);
 
