@@ -46,7 +46,7 @@ var _getterSetter = function() {
                 key1 = _safe(key1);
                 key2 = _safe(key2);
                 var ref1 = ref[key1];
-                return ref1 !== undefined ? ref1[key2] : ref1;
+                return arguments.length === 1 ? ref1 : (ref1 !== undefined ? ref1[key2] : ref1);
             },
             set: function(key1, key2, value) {
                 key1 = _safe(key1);
