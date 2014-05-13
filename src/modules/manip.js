@@ -3,20 +3,42 @@ var _ = require('_'),
     _array = require('./array'),
     _utils = require('../utils'),
 
+    _data = require('./data'),
+
     parser = require('../D/parser'),
     utils = require('../utils');
 
 var _empty = function(arr) {
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
-            var child = arr[idx];
-            while (elem && (child = elem.firstChild)) {
-                elem.removeChild(child);
+
+            var elem = arr[idx],
+                descendants = elem.querySelectorAll('*'),
+                i = descendants.length,
+                desc;
+            while (i--) {
+                desc = descendants[i];
+                _data.destroyData(desc);
             }
+
+            elem.innerHTML = '';
+
         }
     },
 
     _remove = function(arr) {
+        var idx = 0, length = arr.length,
+            elem, parent;
+        for (; idx < length; idx++) {
+            elem = arr[idx];
+            if (elem && (parent = elem.parentNode)) {
+                _data.destroyData(elem);
+                parent.removeChild(elem);
+            }
+        }
+    },
+
+    _detach = function(arr) {
         var idx = 0, length = arr.length,
             elem, parent;
         for (; idx < length; idx++) {
@@ -69,7 +91,6 @@ var _empty = function(arr) {
                 // do nothing
             }
         }
-
     },
 
     _appendMergeArr = function(arrOne, arrTwo) {
@@ -103,9 +124,6 @@ var _empty = function(arr) {
 
 module.exports = {
     fn: {
-        // TODO: should this follow jQuery API?
-        // http://api.jquery.com/clone/
-        // .clone( [withDataAndEvents ] [, deepWithDataAndEvents ] )
         clone: function() {
             return _.fastmap(this.slice(), function(elem) {
                 return _clone(elem);
@@ -182,45 +200,48 @@ module.exports = {
                 _array.unique(
                     _utils.merge(this, D(selector))
                 );
-                
+
                 return this;
             })
             .args(O.any(Array, O.nodeList, O.D)).use(function(arr) {
                 _array.unique(
                     _utils.merge(this, arr)
                 );
-                
-                return this;  
+
+                return this;
             })
             .args(O.any(window, Element)).use(function(elem) {
                 this.push(elem);
                 _array.unique(this);
-                
-                return this;  
+
+                return this;
             })
             .expose(),
 
-        // TODO: Overload
-        remove: function(selector) {
-            var arr = this;
-            if (_.isString(selector)) {
-                arr = _selector.filter(this, selector);
-            }
+        remove: Overload()
+            .args(String).use(function() {
+                if (selector === '') { return; }
+                var arr = _selector.filter(this, selector);
+                _remove(arr);
+                return this;
+            })
+            .fallback(function() {
+                _remove(this);
+                return this;
+            })
+            .expose(),
 
-            _remove(this);
-            return this;
-        },
-
-        // TODO: Overload
-        // TODO: This is the same a remove atm. Abstract?
-        detach: function(selector) {
-            var arr = this;
-            if (_.isString(selector)) {
-                arr = _selector.filter(this, selector);
-            }
-
-            _remove(this);
-            return this;
-        }
+        detach: Overload()
+            .args(String).use(function() {
+                if (selector === '') { return; }
+                var arr = _selector.filter(this, selector);
+                _detach(arr);
+                return this;
+            })
+            .fallback(function() {
+                _detach(this);
+                return this;
+            })
+            .expose()
     }
 };
