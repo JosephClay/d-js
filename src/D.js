@@ -15,6 +15,12 @@ overload.defineType('D', function(obj) {
 overload.defineType('nodeList', function(obj) {
     return obj && (obj instanceof NodeList || obj instanceof HTMLCollection);
 });
+Overload.defineType('window', function(val) {
+    return val && val.window === window;
+});
+Overload.defineType('document', function(val) {
+    return val && val === document;
+});
 
 var parser = require('./D/parser'),
     utils = require('./utils'),

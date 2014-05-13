@@ -23,37 +23,16 @@ test('D.data & removeData, expected returns', function() {
 
 });
 
-test('D._data & _removeData, expected returns', function() {
-    expect(4);
-    var elem = document.body;
-
-    equal(
-        D._data(elem, 'hello', 'world'), 'world',
-        'D._data(elem, key, value) returns value'
-   );
-    equal(
-        D._data(elem, 'hello'), 'world',
-        'D._data(elem, key) returns value'
-   );
-    deepEqual(
-        D._data(elem, { goodnight: 'moon' }), { goodnight: 'moon' },
-        'D._data(elem, obj) returns obj'
-   );
-    equal(
-        D._removeData(elem, 'hello'), undefined,
-        'D._removeData(elem, key, value) returns undefined'
-   );
-});
-
 test('D.hasData no side effects', function() {
     expect(1);
 
-    var obj = {};
+    var obj = document.createElement('div'),
+        numNames = Object.getOwnPropertyNames(obj);
     D.hasData(obj);
 
-    equal(Object.getOwnPropertyNames(obj).length, 0,
+    equal(Object.getOwnPropertyNames(obj).length, numNames,
         'No data expandos where added when calling D.hasData(o)'
-   );
+    );
 });
 
 function dataTests(elem) {
@@ -89,11 +68,13 @@ function dataTests(elem) {
     strictEqual(D.data(elem, 'foo'), 'foo1', 'Passing an object extends the data object instead of replacing it');
     equal(D.data(elem, 'boom'), 'bloz', 'Extending the data object works');
 
-    D._data(elem, 'foo', 'foo2', true);
-    equal(D._data(elem, 'foo'), 'foo2', 'Setting internal data works');
+    // INTERNAL _data ---
+
+    D.data(elem, 'foo', 'foo2', true);
+    equal(D.data(elem, 'foo'), 'foo2', 'Setting internal data works');
     equal(D.data(elem, 'foo'), 'foo1', 'Setting internal data does not override user data');
 
-    internalDataObj = D._data(elem);
+    internalDataObj = D.data(elem);
     ok(internalDataObj, 'Internal data object exists');
     notStrictEqual(dataObj, internalDataObj, 'Internal data object is not the same as user data object');
 
@@ -103,21 +84,21 @@ function dataTests(elem) {
     strictEqual(D.data(elem, 'foo'), undefined, 'D.removeData removes single properties');
 
     D.removeData(elem);
-    strictEqual(D._data(elem), internalDataObj, 'D.removeData does not remove internal data if it exists');
+    strictEqual(D.data(elem), internalDataObj, 'D.removeData does not remove internal data if it exists');
 
     D.data(elem, 'foo', 'foo1');
-    D._data(elem, 'foo', 'foo2');
+    D.data(elem, 'foo', 'foo2');
 
     equal(D.data(elem, 'foo'), 'foo1', '(sanity check) Ensure data is set in user data object');
-    equal(D._data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
+    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
 
-    strictEqual(D._data(elem, D.expando), undefined, 'Removing the last item in internal data destroys the internal data object');
+    strictEqual(D.data(elem, D.expando), undefined, 'Removing the last item in internal data destroys the internal data object');
 
-    D._data(elem, 'foo', 'foo2');
-    equal(D._data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
+    D.data(elem, 'foo', 'foo2');
+    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
 
     D.removeData(elem, 'foo');
-    equal(D._data(elem, 'foo'), 'foo2', '(sanity check) D.removeData for user data does not remove internal data');
+    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) D.removeData for user data does not remove internal data');
 }
 
 test('D.data(div)', 25, function() {

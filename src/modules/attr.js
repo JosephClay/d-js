@@ -93,7 +93,8 @@ var _hooks = {
 module.exports = {
     fn: {
         attr: overload()
-            .args(String).use(function(attr) {
+            .args(String)
+            .use(function(attr) {
                 return _getAttribute(this[0], attr);
             })
 
@@ -120,7 +121,8 @@ module.exports = {
                 return this;
             })
 
-            .args(Object).use(function(attrs) {
+            .args(Object)
+            .use(function(attrs) {
                 var attr, value;
                 for (attr in attrs) {
                     _setAttributes(this, attr, attrs[attr]);
@@ -146,7 +148,8 @@ module.exports = {
             .expose(),
 
         removeAttr: overload()
-            .args(String).use(function(attr) {
+            .args(String)
+            .use(function(attr) {
                 _removeAttributes(this, attr);
                 return this;
             })

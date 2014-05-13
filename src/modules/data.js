@@ -37,19 +37,42 @@ module.exports = {
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(Element, String, O.wild).use(function(elem, key, value) {
+            .args(O.any(Element, O.window, O.document, Object), String, O.wild)
+            .use(function(elem, key, value) {
                 var id = _getOrSetId(elem);
                 return _dataCache.set(id, key, value);
             })
-            .args(Element, String).use(function(elem, key) {
+
+            .args(O.any(Element, O.window, O.document, Object), String)
+            .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 return _dataCache.get(id, key);
             })
+
+            .args(O.any(Element, O.window, O.document, Object), Object)
+            .use(function(elem, map) {
+                var id;
+                if (!(id = _getId(elem))) { return; }
+                var key;
+                for (key in map) {
+                    _dataCache.set(id, key, map[key]);
+                }
+                return _dataCache.get(id);
+            })
+
+            .args(O.any(Element, O.window, O.document, Object))
+            .use(function(elem) {
+                var id;
+                if (!(id = _getId(elem))) { return; }
+                return _dataCache.get(id);
+            })
+
             .expose(),
 
-        hasData: overload()
-            .args(Element).use(function(elem) {
+        hasData: overload
+            .args(O.any(Element, O.window, O.document, Object))
+            .use(function(elem) {
                 var id;
                 if ((id = _getId(elem))) { return false; }
                 return _dataCache.has(id);
@@ -58,24 +81,30 @@ module.exports = {
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(Element, String).use(function(elem, key) {
+            .args(O.any(Element, O.window, O.document, Object), String)
+            .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return DOM; }
                 _dataCache.remove(id, key);
                 return DOM;
             })
-            .args(Element).use(function(elem) {
+
+            .args(O.any(Element, O.window, O.document, Object))
+            .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return DOM; }
                 _dataCache.remove(id);
                 return DOM;
             })
+
             .expose()
     },
 
     fn: {
-        data: overload()
-            .args(String, O.wild).use(function(key, value) {
+        data: overload
+            // Set key's value
+            .args(String, O.wild)
+            .use(function(key, value) {
                 var idx = this.length, id;
                 while (idx--) {
                     id = _getOrSetId(this[idx]);
@@ -83,12 +112,40 @@ module.exports = {
                 }
                 return this;
             })
-            .args(String).use(function(key) {
+
+            // Set values from hash map
+            .args(Object)
+            .use(function(map) {
+                var idx = this.length,
+                    id,
+                    key;
+                while (idx--) {
+                    id = _getOrSetId(this[idx]);
+                    for (key in map) {
+                        _dataCache.set(id, key, map[key]);
+                    }
+                }
+                return this;
+            })
+
+            // Get key
+            .args(String)
+            .use(function(key) {
                 var first = this[0],
                     id;
                 if (!first || !(id = _getId(first))) { return; }
                 return _dataCache.get(id, key);
             })
+
+            // Get all data
+            .args()
+            .use(function() {
+                var first = this[0],
+                    id;
+                if (!first || !(id = _getId(first))) { return; }
+                return _dataCache.get(id);
+            })
+
             .expose()
     }
 };
