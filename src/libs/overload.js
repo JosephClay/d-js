@@ -325,6 +325,13 @@ Overload.defineType = function(name, check) {
 	var custom = new Custom(check);
 	return (O[name] = custom);
 };
+Overload.defineTypes = function(obj) {
+	var key;
+	for (key in obj) {
+		O[key] = new Custom(obj[key]);
+	}
+	return Overload;
+};
 
 Overload.prototype = {
 
