@@ -27,10 +27,10 @@ test('D.hasData no side effects', function() {
     expect(1);
 
     var obj = document.createElement('div'),
-        numNames = Object.getOwnPropertyNames(obj).length;
+        numNames = _.keys(obj).length;
     D.hasData(obj);
 
-    equal(Object.getOwnPropertyNames(obj).length, numNames,
+    equal(_.keys(obj).length, numNames,
         'No data expandos where added when calling D.hasData(o)'
     );
 });
