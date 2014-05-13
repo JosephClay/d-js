@@ -86,17 +86,15 @@ module.exports = {
             .args(_ELEM_TYPE, String)
             .use(function(elem, key) {
                 var id;
-                if (!(id = _getId(elem))) { return DOM; }
+                if (!(id = _getId(elem))) { return; }
                 _dataCache.remove(id, key);
-                return DOM;
             })
 
             .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
-                if (!(id = _getId(elem))) { return DOM; }
+                if (!(id = _getId(elem))) { return; }
                 _dataCache.remove(id);
-                return DOM;
             })
 
             .expose()
