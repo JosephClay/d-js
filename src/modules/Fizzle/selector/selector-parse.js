@@ -165,7 +165,7 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
  * Splits the given comma-separated CSS selector into separate sub-queries.
  * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
  * @param  {Boolean} [parseOnly=false]
- * @return {String[]|Number|unll} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing.
+ * @return {String[]|Number|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing.
  * @private
  */
 var _tokenize = function(selector, parseOnly) {
