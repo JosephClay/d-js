@@ -3,11 +3,12 @@ var _ = require('_');
 /**
  * From Sizzle.js `createCache()`:
  * Use (key + ' ') to avoid collision with native prototype properties.
+ * NOTE: The space has been removed to allow .data() to return objects with "normal" keys.
  * @param {String} key
  * @returns {String}
  * @private
  */
-var _safe = function(key) { return key + ' '; };
+var _safe = function(key) { return key; };
 
 var _getterSetter = function() {
         var ref = {};
