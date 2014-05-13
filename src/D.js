@@ -1,27 +1,9 @@
-var _ = require('_');
-    overload = require('overload');
-    O = overload.O;
-
 // Configure _ with string methods
-require('_.string');
+require('./_.string');
+// Configure O with string custom types
+require('./o.custom');
 
-// Configure overload to throw type errors
-overload.prototype.err = function() {
-    throw new TypeError();
-};
-overload.defineType('D', function(obj) {
-    return obj && obj instanceof D;
-});
-overload.defineType('nodeList', function(obj) {
-    return obj && (obj instanceof NodeList || obj instanceof HTMLCollection);
-});
-overload.defineType('window', function(val) {
-    return val && val.window === window;
-});
-overload.defineType('document', function(val) {
-    return val && val === document;
-});
-
+var _ = require('_');
 var parser = require('./D/parser'),
     utils = require('./utils'),
     array = require('./modules/array'),
@@ -86,7 +68,8 @@ var _hasMoreConflict = false,
 
 _.extend(DOM,
     parser.D,
-    data.D, {
+    data.D,
+{
     each:    array.each,
     map:     _.map,
     extend:  _.extend,
