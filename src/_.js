@@ -179,6 +179,32 @@ var _ = {
             r = parseFloat(val);
         }
         return r;
+    },
+
+    toArray: function(obj) {
+        if (!obj) {
+            return [];
+        }
+        if (_.isArray(obj)) {
+            return Array.prototype.slice.call(obj);
+        }
+
+        var arr,
+            len = +obj.length,
+            idx = 0;
+
+        if (obj.length === +obj.length) {
+            arr = new Array(obj.length);
+            for (; idx < len; idx++) {
+                arr[idx] = obj[idx];
+            }
+            return arr;
+        }
+
+        for (var key in obj) {
+            arr.push(obj[key]);
+        }
+        return arr;
     }
 };
 
