@@ -162,7 +162,7 @@ test('.data()', function() {
 });
 
 function testDataTypes($obj) {
-    D.each({
+    _.each({
         'null': null,
         'true': true,
         'false': false,
@@ -176,7 +176,7 @@ function testDataTypes($obj) {
         'date': new Date(),
         'regex': /test/,
         'function': function() {}
-    }, function(type, value) {
+    }, function(value, type) {
         strictEqual($obj.data('test', value).data('test'), value, 'Data set to ' + type);
     });
 }
@@ -289,155 +289,6 @@ test('.removeData()', function() {
     equal(div.data('test.foo'), undefined, 'Make sure data is intact');
 });
 
-test('JSON serialization (#8108)', function () {
-    expect(1);
-
-    var obj = { 'foo': 'bar' };
-    D.data(obj, 'hidden', true);
-
-    equal(JSON.stringify(obj), '{\'foo\':\'bar\'}', 'Expando is hidden from JSON.stringify');
-});
-
-test('.data should follow html5 specification regarding camel casing', function() {
-    expect(12);
-
-    var div = D('<div id="myObject" data-w-t-f="ftw" data-big-a-little-a="bouncing-b" data-foo="a" data-foo-bar="b" data-foo-bar-baz="c"></div>')
-        .prependTo('body');
-
-    equal(div.data().wTF, 'ftw', 'Verify single letter data-* key');
-    equal(div.data().bigALittleA, 'bouncing-b', 'Verify single letter mixed data-* key');
-
-    equal(div.data().foo, 'a', 'Verify single word data-* key');
-    equal(div.data().fooBar, 'b', 'Verify multiple word data-* key');
-    equal(div.data().fooBarBaz, 'c', 'Verify multiple word data-* key');
-
-    equal(div.data('foo'), 'a', 'Verify single word data-* key');
-    equal(div.data('fooBar'), 'b', 'Verify multiple word data-* key');
-    equal(div.data('fooBarBaz'), 'c', 'Verify multiple word data-* key');
-
-    div.data('foo-bar', 'd');
-
-    equal(div.data('fooBar'), 'd', 'Verify updated data-* key');
-    equal(div.data('foo-bar'), 'd', 'Verify updated data-* key');
-
-    equal(div.data('fooBar'), 'd', 'Verify updated data-* key (fooBar)');
-    equal(div.data('foo-bar'), 'd', 'Verify updated data-* key (foo-bar)');
-
-    div.remove();
-});
-
-test('.data should not miss preset data-* w/ hyphenated property names', function() {
-
-    expect(2);
-
-    var div = D('<div/>', { id: 'hyphened' }).appendTo('#qunit-fixture'),
-        test = {
-            'camelBar': 'camelBar',
-            'hyphen-foo': 'hyphen-foo'
-        };
-
-    div.data(test);
-
-    D.each(test , function(i, k) {
-        equal(div.data(k), k, 'data with property "'+k+'" was correctly found');
-    });
-});
-
-test('D.data should not miss data-* w/ hyphenated property names #14047', function() {
-
-    expect(1);
-
-    var div = D('<div/>');
-
-    div.data('foo-bar', 'baz');
-
-    equal(D.data(div[0], 'foo-bar'), 'baz', 'data with property "foo-bar" was correctly found');
-});
-
-test('.data should not miss attr() set data-* with hyphenated property names', function() {
-    expect(2);
-
-    var a, b;
-
-    a = D('<div/>').appendTo('#qunit-fixture');
-
-    a.attr('data-long-param', 'test');
-    a.data('long-param', { a: 2 });
-
-    deepEqual(a.data('long-param'), { a: 2 }, 'data with property long-param was found, 1');
-
-    b = D('<div/>').appendTo('#qunit-fixture');
-
-    b.attr('data-long-param', 'test');
-    b.data('long-param');
-    b.data('long-param', { a: 2 });
-
-    deepEqual(b.data('long-param'), { a: 2 }, 'data with property long-param was found, 2');
-});
-
-test('.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values', function() {
-
-    var div = D('<div/>', { id: 'hyphened' }).appendTo('#qunit-fixture'),
-        datas = {
-            'non-empty': 'a string',
-            'empty-string': '',
-            'one-value': 1,
-            'zero-value': 0,
-            'an-array': [],
-            'an-object': {},
-            'bool-true': true,
-            'bool-false': false,
-            // JSHint enforces double quotes,
-            // but JSON strings need double quotes to parse
-            // so we need escaped double quotes here
-            'some-json': '{ \'foo\': \'bar\' }',
-            'num-1-middle': true,
-            'num-end-2': true,
-            '2-num-start': true
-        };
-
-    expect(24);
-
-    D.each(datas, function(key, val) {
-        div.data(key, val);
-
-        deepEqual(div.data(key), val, 'get: ' + key);
-        deepEqual(div.data(D.camelCase(key)), val, 'get: ' + D.camelCase(key));
-    });
-});
-
-test('.data supports interoperable removal of hyphenated/camelCase properties', function() {
-    var div = D('<div/>', { id: 'hyphened' }).appendTo('#qunit-fixture'),
-        datas = {
-            'non-empty': 'a string',
-            'empty-string': '',
-            'one-value': 1,
-            'zero-value': 0,
-            'an-array': [],
-            'an-object': {},
-            'bool-true': true,
-            'bool-false': false,
-            // JSHint enforces double quotes,
-            // but JSON strings need double quotes to parse
-            // so we need escaped double quotes here
-            'some-json': '{ \'foo\': \'bar\' }'
-        };
-
-    expect(27);
-
-    D.each(datas, function(key, val) {
-        div.data(key, val);
-
-        deepEqual(div.data(key), val, 'get: ' + key);
-        deepEqual(div.data(D.camelCase(key)), val, 'get: ' + D.camelCase(key));
-
-        div.removeData(key);
-
-        equal(div.data(key), undefined, 'get: ' + key);
-
-    });
-});
-
 test('.data supports interoperable removal of properties SET TWICE #13850', function() {
     var div = D('<div>').appendTo('#qunit-fixture'),
         datas = {
@@ -457,7 +308,7 @@ test('.data supports interoperable removal of properties SET TWICE #13850', func
 
     expect(9);
 
-    D.each(datas, function(key, val) {
+    _.each(datas, function(val, key) {
         div.data(key, val);
         div.data(key, val);
 
@@ -468,12 +319,11 @@ test('.data supports interoperable removal of properties SET TWICE #13850', func
 });
 
 test('.removeData supports removal of hyphenated properties via array (#12786)', function() {
-    expect(4);
+    expect(2);
 
     var div, plain, compare;
 
     div = D('<div>').appendTo('#qunit-fixture');
-    plain = D({});
 
     // When data is batch assigned (via plain object), the properties
     // are not camel cased as they are with (property, value) calls
@@ -481,63 +331,19 @@ test('.removeData supports removal of hyphenated properties via array (#12786)',
         // From batch assignment .data({ 'a-a': 1 })
         'a-a': 1,
         // From property, value assignment .data('b-b', 1)
-        'bB': 1
+        'b-b': 1
     };
 
     // Mixed assignment
-    div.data({ 'a-a': 1 }).data('b-b', 1);
-    plain.data({ 'a-a': 1 }).data('b-b', 1);
+    div.data({ 'a-a': 1 });
+    div.data('b-b', 1);
 
     deepEqual(div.data(), compare, 'Data appears as expected. (div)');
-    deepEqual(plain.data(), compare, 'Data appears as expected. (plain)');
 
     div.removeData(['a-a', 'b-b']);
-    plain.removeData(['a-a', 'b-b']);
 
     // NOTE: Timo's proposal for 'propEqual' (or similar) would be nice here
     deepEqual(div.data(), {}, 'Data is empty. (div)');
-    deepEqual(plain.data(), {}, 'Data is empty. (plain)');
-});
-
-// Test originally by Moschel
-test('.removeData should not throw exceptions. (#10080)', function() {
-    expect(1);
-    stop();
-    var frame = D('#loadediframe');
-    D(frame[0].contentWindow).on('unload', function() {
-        ok(true, 'called unload');
-        start();
-    });
-    // change the url to trigger unload
-    frame.attr('src', 'data/iframe.html?param=true');
-});
-
-test('.data only checks element attributes once. #8909', function() {
-    expect(2);
-    var testing = {
-            'test': 'testing',
-            'test2': 'testing'
-        },
-        element = D('<div data-test="testing">'),
-        node = element[0];
-
-    // set an attribute using attr to ensure it
-    node.setAttribute('data-test2', 'testing');
-    deepEqual(element.data(), testing, 'Sanity Check');
-
-    node.setAttribute('data-test3', 'testing');
-    deepEqual(element.data(), testing, 'The data didnt change even though the data-* attrs did');
-
-    // clean up data cache
-    element.remove();
-});
-
-test('data-* with JSON value can have newlines', function() {
-    expect(1);
-
-    var x = D('<div data-some="{\n\"foo\":\n\t\"bar\"\n}"></div>');
-    equal(x.data('some').foo, 'bar', 'got a JSON data- attribute with spaces');
-    x.remove();
 });
 
 test('.data doesnt throw when calling selection is empty. #13551', function() {
@@ -554,6 +360,7 @@ test('.data doesnt throw when calling selection is empty. #13551', function() {
 test('Check proper data removal of non-element descendants nodes (#8335)', function() {
     expect(1);
 
+    // TODO: Implement .contents()?
     var div = D('<div>text</div>'),
         text = div.contents();
 
