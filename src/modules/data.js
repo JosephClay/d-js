@@ -83,6 +83,7 @@ module.exports = {
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
+            // Remove single key
             .args(_ELEM_TYPE, String)
             .use(function(elem, key) {
                 var id;
@@ -90,6 +91,7 @@ module.exports = {
                 _dataCache.remove(id, key);
             })
 
+            // Remove multiple keys
             .args(_ELEM_TYPE, Array)
             .use(function(elem, array) {
                 var id;
@@ -100,6 +102,7 @@ module.exports = {
                 }
             })
 
+            // Remove all data
             .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
@@ -154,6 +157,40 @@ module.exports = {
                     id;
                 if (!first || !(id = _getId(first))) { return; }
                 return _dataCache.get(id);
+            })
+
+            .expose(),
+
+        removeData: overload()
+            // NOTE: NodeList || HtmlCollection support?
+            // Remove single key
+            .args(_ELEM_TYPE, String)
+            .use(function(elem, key) {
+                var id;
+                if (!(id = _getId(elem))) { return this; }
+                _dataCache.remove(id, key);
+                return this;
+            })
+
+            // Remove multiple keys
+            .args(_ELEM_TYPE, Array)
+            .use(function(elem, array) {
+                var id;
+                if (!(id = _getId(elem))) { return this; }
+                var idx = array.length;
+                while (idx--) {
+                    _dataCache.remove(id, array[idx]);
+                }
+                return this;
+            })
+
+            // Remove all data
+            .args(_ELEM_TYPE)
+            .use(function(elem) {
+                var id;
+                if (!(id = _getId(elem))) { return this; }
+                _dataCache.remove(id);
+                return this;
             })
 
             .expose()
