@@ -1,7 +1,7 @@
 var _parse = function(htmlStr) {
-    var tmp = document.implementation.createHTMLDocument(''); // empty string to make IE 11 happy
-        tmp.body.innerHTML = htmlStr;
-    return tmp.body.children;
+    var tmp = document.createElement('div');
+    tmp.innerHTML = htmlStr;
+    return tmp.children;
 };
 
 var _parseHtml = function(str) {
