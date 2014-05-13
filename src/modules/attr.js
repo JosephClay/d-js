@@ -2,8 +2,37 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
+    _cache = require('../cache'),
     _utils = require('../utils'),
-    _supports = require('../supports');
+    _supports = require('../supports'),
+
+    _isDataKeyCache = _cache(),
+    _sanitizeDataKeyCache = _cache();
+
+var _isDataKey = function(key) {
+        return _isDataKeyCache.getOrSet(key, function() {
+            return (key || '').substr(0, 5) === 'data-';
+        });
+    },
+
+    _sanitizeDataKey = function(key) {
+        return _sanitizeDataKeyCache(key, function() {
+            return _isDataKey(key) ? key : 'data-' + key.toLowerCase();
+        });
+    },
+
+    _getDataAttrKeys = function(elem) {
+        var attrs = first.attributes,
+            idx = attr.length, keys = [];
+        while (idx--) {
+            key = attrs[idx];
+            if (_isDataKey(key)) {
+                keys.push(key);
+            }
+        }
+
+        return keys;
+    };
 
 var _boolHook = {
     set: function(elem, value, name) {
@@ -152,6 +181,46 @@ module.exports = {
             .use(function(attr) {
                 _removeAttributes(this, attr);
                 return this;
+            })
+
+            .expose(),
+
+        attrData: overload()
+            .args(Object)
+            .use(function(obj) {
+                var idx = this.length,
+                    key;
+                while (idx--) {
+                    for (key in obj) {
+                        this[idx].setAttribute(_sanitizeDataKey(key), '' + obj[key]);
+                    }
+                }
+                return this;
+            })
+
+            .args(String, O.wild)
+            .use(function(key, value) {
+                var idx = this.length;
+                while (idx--) {
+                    this[idx].setAttribute(_sanitizeDataKey(key), '' + value);
+                }
+                return this;
+            })
+
+            .args()
+            .use(function() {
+                var first = this[0];
+                if (!first) { return; }
+
+                var map = {},
+                    keys = _getDataAttrKeys(first),
+                    idx = keys.length, key;
+                while (idx--) {
+                    key = keys[idx];
+                    map[key] = _.typecast(first.getAttribute(key));
+                }
+
+                return map;
             })
 
             .expose()
