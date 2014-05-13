@@ -26,7 +26,8 @@ var parser = require('./D/parser'),
     prop = require('./modules/prop'),
     val = require('./modules/val'),
     position = require('./modules/position'),
-    classes = require('./modules/classes');
+    classes = require('./modules/classes'),
+    data = require('./modules/data');
 
 // Store previous reference
 var _prevD = window.D;
@@ -74,7 +75,9 @@ var _hasMoreConflict = false,
     _prevjQuery,
     _prev$;
 
-_.extend(DOM, parser.D, {
+_.extend(DOM,
+    parser.D,
+    data.D, {
     each:    array.each,
     map:     _.map,
     extend:  _.extend,
@@ -136,6 +139,7 @@ var arrayProto = (function() {
 
 _.extend(
     DOM.prototype,
+    { constructor: DOM },
     arrayProto,
     array.fn,
     selectors.fn,
@@ -148,7 +152,7 @@ _.extend(
     val.fn,
     classes.fn,
     position.fn,
-    { constructor: DOM }
+    data.fn
 );
 
 // Expose the prototype so that
