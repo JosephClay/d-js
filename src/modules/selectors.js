@@ -51,10 +51,6 @@ var _filter = function(arr, qualifier) {
 
 module.exports = {
     find: _find,
-    is: function() {
-        // TODO: Implement?
-        debugger;
-    },
     filter: _filter,
 
     fn: {
