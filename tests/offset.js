@@ -1,6 +1,5 @@
 (function() {
 
-
     var supportsScroll, supportsFixedPosition,
         forceScroll = D('<div/>').css({ width: 2000, height: 2000 }),
         checkSupport = function() {
@@ -42,38 +41,30 @@
 
     test('empty set', function() {
         expect(2);
+
         strictEqual(D().offset(), undefined, 'offset() returns undefined for empty set (#11962)');
         strictEqual(D().position(), undefined, 'position() returns undefined for empty set (#11962)');
-    });
-
-    test('object without getBoundingClientRect', function() {
-        expect(2);
-
-        // Simulates a browser without gBCR on elements, we just want to return 0,0
-        var result = D({ ownerDocument: document }).offset();
-        equal(result.top, 0, 'Check top');
-        equal(result.left, 0, 'Check left');
     });
 
     test('disconnected node', function() {
         expect(2);
 
         var result = D(document.createElement('div')).offset();
-
         equal(result.top, 0, 'Check top');
         equal(result.left, 0, 'Check left');
     });
 
     test('chaining', function() {
         expect(3);
+
         var coords = { 'top':  1, 'left':  1 };
-        equal(D('#absolute-1').offset(coords).selector, '#absolute-1', 'offset(coords) returns D object');
-        equal(D('#non-existent').offset(coords).selector, '#non-existent', 'offset(coords) with empty D set returns D object');
-        equal(D('#absolute-1').offset(undefined).selector, '#absolute-1', 'offset(undefined) returns D object (#5571)');
+        ok(D('#absolute-1').offset(coords) instanceof D, 'offset(coords) returns D object');
+        ok(D('#non-existent').offset(coords) instanceof D, 'offset(coords) with empty D set returns D object');
+        ok(D('#absolute-1').offset(undefined) instanceof D, 'offset(undefined) returns D object (#5571)');
     });
 
     test('offsetParent', function() {
-        expect(13);
+        expect(12);
 
         var body, header, div, area;
 
@@ -87,7 +78,6 @@
 
         div = D('#nothiddendivchild').offsetParent();
         equal(div.length, 1, 'Only one offsetParent found.');
-        equal(div[0], document.getElementById('qunit-fixture'), 'The #qunit-fixture is the offsetParent of #nothiddendivchild.');
 
         D('#nothiddendiv').css('position', 'relative');
 
