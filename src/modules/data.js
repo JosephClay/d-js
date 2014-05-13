@@ -60,7 +60,7 @@ module.exports = {
                 for (key in map) {
                     _dataCache.set(id, key, map[key]);
                 }
-                return _dataCache.get(id);
+                return map;
             })
 
             .args(_ELEM_TYPE)
