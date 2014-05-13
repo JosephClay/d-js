@@ -4,7 +4,9 @@ var _id = 0,
 
 var _ = {
     noop: function() {},
-    
+
+    now: Date.now || function() { return new Date().getTime(); },
+
     uniqueId: function() {
         return _id++;
     },
