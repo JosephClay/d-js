@@ -159,6 +159,26 @@ var _ = {
         }
 
         return !!result;
+    },
+
+    typecast: function(val) {
+        var r;
+        if (val === null || val === 'null') {
+            r = null;
+        } else if (val === 'true') {
+            r = true;
+        } else if (val === 'false') {
+            r = false;
+        } else if (val === undefined || val === 'undefined') {
+            r = undefined;
+        } else if (val === '' || isNaN(val)) {
+            // isNaN('') returns false
+            r = val;
+        } else {
+            // parseFloat(null || '') returns NaN
+            r = parseFloat(val);
+        }
+        return r;
     }
 };
 
