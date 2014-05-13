@@ -59,7 +59,7 @@ function dataTests(elem) {
     equal(dataObj.foo, 'baz', 'Changes made through D.data propagate to referenced data object');
 
     D.data(elem, 'foo', undefined);
-    equal(D.data(elem, 'foo'), 'baz', 'Data is not unset by passing undefined to D.data');
+    strictEqual(D.data(elem, 'foo'), undefined, 'Data is unset by passing undefined to D.data');
 
     D.data(elem, 'foo', null);
     strictEqual(D.data(elem, 'foo'), null, 'Setting null using D.data works OK');
@@ -70,40 +70,12 @@ function dataTests(elem) {
     strictEqual(D.data(elem, 'foo'), 'foo1', 'Passing an object extends the data object instead of replacing it');
     equal(D.data(elem, 'boom'), 'bloz', 'Extending the data object works');
 
-    // INTERNAL _data ---
-
-    D.data(elem, 'foo', 'foo2', true);
-    equal(D.data(elem, 'foo'), 'foo2', 'Setting internal data works');
-    equal(D.data(elem, 'foo'), 'foo1', 'Setting internal data does not override user data');
-
-    internalDataObj = D.data(elem);
-    ok(internalDataObj, 'Internal data object exists');
-    notStrictEqual(dataObj, internalDataObj, 'Internal data object is not the same as user data object');
-
-    strictEqual(elem.boom, undefined, 'Data is never stored directly on the object');
-
-    D.removeData(elem, 'foo');
-    strictEqual(D.data(elem, 'foo'), undefined, 'D.removeData removes single properties');
-
-    D.removeData(elem);
-    strictEqual(D.data(elem), internalDataObj, 'D.removeData does not remove internal data if it exists');
-
-    D.data(elem, 'foo', 'foo1');
-    D.data(elem, 'foo', 'foo2');
-
-    equal(D.data(elem, 'foo'), 'foo1', '(sanity check) Ensure data is set in user data object');
-    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
-
-    strictEqual(D.data(elem, D.expando), undefined, 'Removing the last item in internal data destroys the internal data object');
-
-    D.data(elem, 'foo', 'foo2');
-    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
-
-    D.removeData(elem, 'foo');
-    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) D.removeData for user data does not remove internal data');
+    // TODO: Test internal event data?
 }
 
-test('D.data(div)', 25, function() {
+test('D.data(div)', function() {
+    expect(13);
+
     var div = document.createElement('div');
 
     dataTests(div);
@@ -111,36 +83,51 @@ test('D.data(div)', 25, function() {
     // We stored one key in the private data
     // assert that nothing else was put in there, and that that
     // one stayed there.
-    QUnit.expectJqData(div, 'foo');
+
+    // Stupid jQuery test
+//    QUnit.expectJqData(div, 'foo');
 });
 
-test('D.data({})', 25, function() {
+test('D.data({})', function() {
+    expect(13);
+
     dataTests({});
 });
 
-test('D.data(window)', 25, function() {
+test('D.data(window)', function() {
+    expect(13);
+
     // remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
     // transports/xhr.js
-    D(window ).off('unload');
+    D(window).off('unload');
 
     dataTests(window);
 });
 
-test('D.data(document)', 25, function() {
+test('D.data(document)', function() {
+    expect(13);
+
     dataTests(document);
 
-    QUnit.expectJqData(document, 'foo');
+    // Stupid jQuery test
+//    QUnit.expectJqData(document, 'foo');
 });
 
-test('D.data(<embed>)', 25, function() {
+test('D.data(<embed>)', function() {
+    expect(13);
+
     dataTests(document.createElement('embed'));
 });
 
-test('D.data(<applet>)', 25, function() {
+test('D.data(<applet>)', function() {
+    expect(13);
+
     dataTests(document.createElement('applet'));
 });
 
-test('D.data(object/flash)', 25, function() {
+test('D.data(object/flash)', function() {
+    expect(13);
+
     var flash = document.createElement('object');
     flash.setAttribute('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000');
 
