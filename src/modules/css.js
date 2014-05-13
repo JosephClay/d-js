@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _cache = require('../cache'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),
@@ -287,43 +290,44 @@ module.exports = {
     height: _width,
 
     fn: {
-        css: Overload().args(String, O.any(String, Number)).use(function(name, value) {
-                            var idx = 0, length = this.length;
-                            for (; idx < length; idx++) {
-                                _setStyle(this[idx], name, value);
-                            }
-                            return this;
-                        })
+        css: overload()
+            .args(String, O.any(String, Number)).use(function(name, value) {
+                var idx = 0, length = this.length;
+                for (; idx < length; idx++) {
+                    _setStyle(this[idx], name, value);
+                }
+                return this;
+            })
 
-                        .args(Object).use(function(obj) {
-                            var idx = 0, length = this.length,
-                                key;
-                            for (; idx < length; idx++) {
-                                for (key in obj) {
-                                    _setStyle(this[idx], key, obj[key]);
-                                }
-                            }
-                            return this;
-                        })
+            .args(Object).use(function(obj) {
+                var idx = 0, length = this.length,
+                    key;
+                for (; idx < length; idx++) {
+                    for (key in obj) {
+                        _setStyle(this[idx], key, obj[key]);
+                    }
+                }
+                return this;
+            })
 
-                        .args(Array).use(function(arr) {
-                            var first = this[0];
-                            if (!first) { return; }
+            .args(Array).use(function(arr) {
+                var first = this[0];
+                if (!first) { return; }
 
-                            var ret = {},
-                                idx = arr.length,
-                                value;
-                            if (!idx) { return ret; } // return early
+                var ret = {},
+                    idx = arr.length,
+                    value;
+                if (!idx) { return ret; } // return early
 
-                            while (idx--) {
-                                value = arr[idx];
-                                if (!_.isString(value)) { return; }
-                                ret[value] = _getStyle(first);
-                            }
+                while (idx--) {
+                    value = arr[idx];
+                    if (!_.isString(value)) { return; }
+                    ret[value] = _getStyle(first);
+                }
 
-                            return ret;
-                        })
-                        .expose(),
+                return ret;
+            })
+            .expose(),
 
         hide: function() {
             var idx = 0, length = this.length;

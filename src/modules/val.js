@@ -1,4 +1,8 @@
-var _div = require('../div'),
+var overload = require('overload'),
+    O = overload.O,
+
+    _div = require('../div'),
+
     _supports = require('../supports');
 
 var _text = {
@@ -111,8 +115,8 @@ _.each(['radio', 'checkbox'], function(type) {
 module.exports = {
     fn: {
         // TODO: OuterHtml getter?
-        
-        html: Overload()
+
+        html: overload()
             .args(String).use(function(html) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
@@ -137,14 +141,14 @@ module.exports = {
             })
             .expose(),
 
-        val: Overload()
+        val: overload()
             .args(O.any(String, Number)).use(function(value) {
                 value = '' + value;
 
                 var idx = 0, length = this.length,
                     elem, hook;
                 for (; idx < length; idx++) {
-                    
+
                     elem = this[idx];
                     if (elem.nodeType !== _nodeType.ELEMENT) { continue; }
 
@@ -179,7 +183,7 @@ module.exports = {
                 }
 
                 return this;
-            })            
+            })
             .fallback(function() {
                 var first = this[0];
                 if (!first) { return; }
@@ -195,7 +199,7 @@ module.exports = {
             })
             .expose(),
 
-        text: Overload()
+        text: overload()
             .args(String).use(function(str) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {

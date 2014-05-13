@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _cache = require('../cache'),
 
     _dataCache = _cache.biLevel(),
@@ -32,7 +35,7 @@ module.exports = {
     destroyData: _destroyData,
 
     D: {
-        data: Overload()
+        data: overload()
             // NOTE: NodeList || HtmlCollection support?
             .args(Element, String, O.wild).use(function(elem, key, value) {
                 var id = _getOrSetId(elem);
@@ -45,7 +48,7 @@ module.exports = {
             })
             .expose(),
 
-        hasData: Overload()
+        hasData: overload()
             .args(Element).use(function(elem) {
                 var id;
                 if ((id = _getId(elem))) { return false; }
@@ -53,7 +56,7 @@ module.exports = {
             })
             .expose(),
 
-        removeData: Overload()
+        removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
             .args(Element, String).use(function(elem, key) {
                 var id;
@@ -71,7 +74,7 @@ module.exports = {
     },
 
     fn: {
-        data: Overload()
+        data: overload()
             .args(String, O.wild).use(function(key, value) {
                 var idx = this.length, id;
                 while (idx--) {

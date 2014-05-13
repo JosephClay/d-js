@@ -1,17 +1,20 @@
+var _ = require('_');
+    overload = require('overload');
+    O = overload.O;
+
+// Configure _ with string methods
+require('_.string');
+
 // Configure overload to throw type errors
-Overload.prototype.err = function() {
+overload.prototype.err = function() {
     throw new TypeError();
 };
-Overload.defineType('D', function(obj) {
+overload.defineType('D', function(obj) {
     return obj && obj instanceof D;
 });
-Overload.defineType('nodeList', function(obj) {
+overload.defineType('nodeList', function(obj) {
     return obj && (obj instanceof NodeList || obj instanceof HTMLCollection);
 });
-
-var _ = require('_');
-
-require('_.string');
 
 var parser = require('./D/parser'),
     utils = require('./utils'),

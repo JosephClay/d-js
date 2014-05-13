@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _selector = require('./selectors'),
     _array = require('./array'),
     _utils = require('../utils'),
@@ -130,7 +133,7 @@ module.exports = {
             });
         },
 
-        append: Overload()
+        append: overload()
             .args(String).use(function(value) {
                 if (utils.isHtml(value)) {
                     _appendMergeArr(this, parser.parseHtml(value));
@@ -171,7 +174,7 @@ module.exports = {
         insertBefore: function() {},
         insertAfter: function() {},
 
-        // TODO: Overload
+        // TODO: overload
         appendTo: function(thing) {
             thing = (thing instanceof D) ? thing : D(thing);
             thing.append(this);
@@ -183,7 +186,7 @@ module.exports = {
 
         },
 
-        // TODO: Overload
+        // TODO: overload
         prependTo: function(thing) {
             thing = (thing instanceof D) ? thing : D(thing);
             thing.prepend(this);
@@ -195,7 +198,7 @@ module.exports = {
             return this;
         },
 
-        add: Overload()
+        add: overload()
             .args(String).use(function(selector) {
                 _array.unique(
                     _utils.merge(this, D(selector))
@@ -218,7 +221,7 @@ module.exports = {
             })
             .expose(),
 
-        remove: Overload()
+        remove: overload()
             .args(String).use(function() {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
@@ -231,7 +234,7 @@ module.exports = {
             })
             .expose(),
 
-        detach: Overload()
+        detach: overload()
             .args(String).use(function() {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);

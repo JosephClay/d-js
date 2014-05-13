@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _utils = require('../utils'),
     _supports = require('../supports');
 
@@ -89,7 +92,7 @@ var _hooks = {
 
 module.exports = {
     fn: {
-        attr: Overload()
+        attr: overload()
             .args(String).use(function(attr) {
                 return _getAttribute(this[0], attr);
             })
@@ -142,7 +145,7 @@ module.exports = {
 
             .expose(),
 
-        removeAttr: Overload()
+        removeAttr: overload()
             .args(String).use(function(attr) {
                 _removeAttributes(this, attr);
                 return this;

@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _supports = require('../supports'),
     _nodeType = require('../nodeType');
 
@@ -82,7 +85,7 @@ var _getOrSetProp = function(elem, name, value) {
 
 module.exports = {
     fn: {
-        prop: Overload()
+        prop: overload()
             .args(String).use(function(prop) {
                 var first = this[0];
                 if (!first) { return; }
@@ -111,7 +114,7 @@ module.exports = {
 
             .expose(),
 
-        removeProp: Overload()
+        removeProp: overload()
             .args(String).use(function(prop) {
                 var name = _propFix[prop] || prop,
                     idx = 0, length = this.length;

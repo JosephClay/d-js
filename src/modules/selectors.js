@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _utils = require('../utils'),
     _regex = require('../regex'),
     _array = require('./array'),
@@ -70,7 +73,7 @@ module.exports = {
             });*/
         },
 
-        is: Overload()
+        is: overload()
             .args(String).use(function(selector) {
                 if (selector === '') { return false; }
 
@@ -105,7 +108,7 @@ module.exports = {
             })
             .expose(),
 
-        not: Overload()
+        not: overload()
             .args(String).use(function(selector) {
                 if (selector === '') { return this; }
 
@@ -145,7 +148,7 @@ module.exports = {
             })
             .expose(),
 
-        find: Overload()
+        find: overload()
             .args(String).use(function(selector) {
 
                 return _utils.merge(D(), _findWithin(selector, this));
@@ -153,7 +156,7 @@ module.exports = {
             })
             .expose(),
 
-        filter: Overload()
+        filter: overload()
             .args(String).use(function(selector) {
                 if (selector === '') { return D(); }
 

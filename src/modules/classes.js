@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     supports = require('../supports'),
     array = require('./array');
 
@@ -190,14 +193,14 @@ var _classes = {
 
 module.exports = _.extend({}, _classes, {
     fn: {
-        hasClass: Overload()
+        hasClass: overload()
             .args(String).use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
                 return _classes.doAnyElemsHaveClass(this, name);
             })
             .expose(),
 
-        addClass: Overload()
+        addClass: overload()
             .args(String).use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
@@ -220,7 +223,7 @@ module.exports = _.extend({}, _classes, {
             })
             .expose(),
 
-        removeClass: Overload()
+        removeClass: overload()
             .args().use(function() {
                 if (!this.length) { return this; }
 
@@ -250,7 +253,7 @@ module.exports = _.extend({}, _classes, {
             })
             .expose(),
 
-        toggleClass: Overload()
+        toggleClass: overload()
             .args(String).use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 

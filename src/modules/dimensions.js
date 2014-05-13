@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _css = require('./css');
 
 var _getDocumentDimension = function(elem, name) {
@@ -52,35 +55,37 @@ var _getDocumentDimension = function(elem, name) {
 
 module.exports = {
     fn: {
-        width: Overload().args(Number).use(function(val) {
-                    var elem = this[0]; // The first elem
-                    if (!elem) { return this; }
+        width: overload()
+            .args(Number).use(function(val) {
+                var elem = this[0]; // The first elem
+                if (!elem) { return this; }
 
-                    _css.width.set(elem, val);
-                    return this;
-                })
-                .fallback(function() {
-                    var elem = this[0]; // The first elem
-                    if (!elem) { return null; }
+                _css.width.set(elem, val);
+                return this;
+            })
+            .fallback(function() {
+                var elem = this[0]; // The first elem
+                if (!elem) { return null; }
 
-                    return _css.width.get(elem);
-                })
-                .expose(),
+                return _css.width.get(elem);
+            })
+            .expose(),
 
-        height: Overload().args(Number).use(function(val) {
-                    var elem = this[0]; // The first elem
-                    if (!elem) { return this; }
+        height: overload()
+            .args(Number).use(function(val) {
+                var elem = this[0]; // The first elem
+                if (!elem) { return this; }
 
-                    _css.height.set(elem, val);
-                    return this;
-                })
-                .fallback(function() {
-                    var elem = this[0]; // The first elem
-                    if (!elem) { return null; }
+                _css.height.set(elem, val);
+                return this;
+            })
+            .fallback(function() {
+                var elem = this[0]; // The first elem
+                if (!elem) { return null; }
 
-                    return _css.height.get(elem);
-                })
-                .expose(),
+                return _css.height.get(elem);
+            })
+            .expose(),
 
         innerWidth: function() {
             var elem = this[0];
