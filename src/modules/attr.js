@@ -7,7 +7,8 @@ var _ = require('_'),
     _supports = require('../supports'),
 
     _isDataKeyCache = _cache(),
-    _sanitizeDataKeyCache = _cache();
+    _sanitizeDataKeyCache = _cache(),
+    _trimDataKeyCache = _cache();
 
 var _isDataKey = function(key) {
         return _isDataKeyCache.getOrSet(key, function() {
@@ -16,8 +17,14 @@ var _isDataKey = function(key) {
     },
 
     _sanitizeDataKey = function(key) {
-        return _sanitizeDataKeyCache(key, function() {
+        return _sanitizeDataKeyCache.getOrSet(key, function() {
             return _isDataKey(key) ? key : 'data-' + key.toLowerCase();
+        });
+    },
+
+    _trimDataKey = function(key) {
+        return _trimDataKeyCache.getOrSet(key, function() {
+            return key.substr(0, 5);
         });
     },
 
@@ -217,7 +224,7 @@ module.exports = {
                     idx = keys.length, key;
                 while (idx--) {
                     key = keys[idx];
-                    map[key] = _.typecast(first.getAttribute(key));
+                    map[_trimDataKey(key)] = _.typecast(first.getAttribute(key));
                 }
 
                 return map;
