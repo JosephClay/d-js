@@ -29,7 +29,9 @@ var _ = require('_'),
         if (!id) { return; }
 
         _dataCache.remove(id);
-    };
+    },
+
+    _ELEM_TYPE = O.any(Element, O.window, O.document, Object);
 
 module.exports = {
     destroyData: _destroyData,
@@ -37,20 +39,20 @@ module.exports = {
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(O.any(Element, O.window, O.document, Object), String, O.wild)
+            .args(_ELEM_TYPE, String, O.wild)
             .use(function(elem, key, value) {
                 var id = _getOrSetId(elem);
                 return _dataCache.set(id, key, value);
             })
 
-            .args(O.any(Element, O.window, O.document, Object), String)
+            .args(_ELEM_TYPE, String)
             .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 return _dataCache.get(id, key);
             })
 
-            .args(O.any(Element, O.window, O.document, Object), Object)
+            .args(_ELEM_TYPE, Object)
             .use(function(elem, map) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -58,10 +60,10 @@ module.exports = {
                 for (key in map) {
                     _dataCache.set(id, key, map[key]);
                 }
-                return _dataCache.get(id);
+                return map;
             })
 
-            .args(O.any(Element, O.window, O.document, Object))
+            .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -71,30 +73,41 @@ module.exports = {
             .expose(),
 
         hasData: overload()
-            .args(O.any(Element, O.window, O.document, Object))
+            .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
-                if ((id = _getId(elem))) { return false; }
+                if (!(id = _getId(elem))) { return false; }
                 return _dataCache.has(id);
             })
             .expose(),
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(O.any(Element, O.window, O.document, Object), String)
+            // Remove single key
+            .args(_ELEM_TYPE, String)
             .use(function(elem, key) {
                 var id;
-                if (!(id = _getId(elem))) { return DOM; }
+                if (!(id = _getId(elem))) { return; }
                 _dataCache.remove(id, key);
-                return DOM;
             })
 
-            .args(O.any(Element, O.window, O.document, Object))
+            // Remove multiple keys
+            .args(_ELEM_TYPE, Array)
+            .use(function(elem, array) {
+                var id;
+                if (!(id = _getId(elem))) { return; }
+                var idx = array.length;
+                while (idx--) {
+                    _dataCache.remove(id, array[idx]);
+                }
+            })
+
+            // Remove all data
+            .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
-                if (!(id = _getId(elem))) { return DOM; }
+                if (!(id = _getId(elem))) { return; }
                 _dataCache.remove(id);
-                return DOM;
             })
 
             .expose()
@@ -144,6 +157,40 @@ module.exports = {
                     id;
                 if (!first || !(id = _getId(first))) { return; }
                 return _dataCache.get(id);
+            })
+
+            .expose(),
+
+        removeData: overload()
+            // NOTE: NodeList || HtmlCollection support?
+            // Remove single key
+            .args(_ELEM_TYPE, String)
+            .use(function(elem, key) {
+                var id;
+                if (!(id = _getId(elem))) { return this; }
+                _dataCache.remove(id, key);
+                return this;
+            })
+
+            // Remove multiple keys
+            .args(_ELEM_TYPE, Array)
+            .use(function(elem, array) {
+                var id;
+                if (!(id = _getId(elem))) { return this; }
+                var idx = array.length;
+                while (idx--) {
+                    _dataCache.remove(id, array[idx]);
+                }
+                return this;
+            })
+
+            // Remove all data
+            .args(_ELEM_TYPE)
+            .use(function(elem) {
+                var id;
+                if (!(id = _getId(elem))) { return this; }
+                _dataCache.remove(id);
+                return this;
             })
 
             .expose()

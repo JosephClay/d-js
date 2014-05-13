@@ -27,7 +27,7 @@ test('D.hasData no side effects', function() {
     expect(1);
 
     var obj = document.createElement('div'),
-        numNames = Object.getOwnPropertyNames(obj);
+        numNames = Object.getOwnPropertyNames(obj).length;
     D.hasData(obj);
 
     equal(Object.getOwnPropertyNames(obj).length, numNames,
@@ -41,11 +41,13 @@ function dataTests(elem) {
     equal(D.data(elem, 'foo'), undefined, 'No data exists initially');
     strictEqual(D.hasData(elem), false, 'D.hasData agrees no data exists initially');
 
-    dataObj = D.data(elem);
-    equal(typeof dataObj, 'object', 'Calling data with no args gives us a data object reference');
-    strictEqual(D.data(elem), dataObj, 'Calling D.data returns the same data object when called multiple times');
+    strictEqual(D.data(elem), undefined, 'Calling data with no args returns undefined when no data has been set');
 
     strictEqual(D.hasData(elem), false, 'D.hasData agrees no data exists even when an empty data obj exists');
+
+    D.data(elem, 'bar', 'baz');
+    dataObj = D.data(elem);
+    deepEqual(dataObj, { bar: 'baz' }, 'TODO: Describe me');
 
     dataObj.foo = 'bar';
     equal(D.data(elem, 'foo'), 'bar', 'Data is readable by D.data when set directly on a returned data object');
@@ -57,7 +59,7 @@ function dataTests(elem) {
     equal(dataObj.foo, 'baz', 'Changes made through D.data propagate to referenced data object');
 
     D.data(elem, 'foo', undefined);
-    equal(D.data(elem, 'foo'), 'baz', 'Data is not unset by passing undefined to D.data');
+    strictEqual(D.data(elem, 'foo'), undefined, 'Data is unset by passing undefined to D.data');
 
     D.data(elem, 'foo', null);
     strictEqual(D.data(elem, 'foo'), null, 'Setting null using D.data works OK');
@@ -68,40 +70,12 @@ function dataTests(elem) {
     strictEqual(D.data(elem, 'foo'), 'foo1', 'Passing an object extends the data object instead of replacing it');
     equal(D.data(elem, 'boom'), 'bloz', 'Extending the data object works');
 
-    // INTERNAL _data ---
-
-    D.data(elem, 'foo', 'foo2', true);
-    equal(D.data(elem, 'foo'), 'foo2', 'Setting internal data works');
-    equal(D.data(elem, 'foo'), 'foo1', 'Setting internal data does not override user data');
-
-    internalDataObj = D.data(elem);
-    ok(internalDataObj, 'Internal data object exists');
-    notStrictEqual(dataObj, internalDataObj, 'Internal data object is not the same as user data object');
-
-    strictEqual(elem.boom, undefined, 'Data is never stored directly on the object');
-
-    D.removeData(elem, 'foo');
-    strictEqual(D.data(elem, 'foo'), undefined, 'D.removeData removes single properties');
-
-    D.removeData(elem);
-    strictEqual(D.data(elem), internalDataObj, 'D.removeData does not remove internal data if it exists');
-
-    D.data(elem, 'foo', 'foo1');
-    D.data(elem, 'foo', 'foo2');
-
-    equal(D.data(elem, 'foo'), 'foo1', '(sanity check) Ensure data is set in user data object');
-    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
-
-    strictEqual(D.data(elem, D.expando), undefined, 'Removing the last item in internal data destroys the internal data object');
-
-    D.data(elem, 'foo', 'foo2');
-    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) Ensure data is set in internal data object');
-
-    D.removeData(elem, 'foo');
-    equal(D.data(elem, 'foo'), 'foo2', '(sanity check) D.removeData for user data does not remove internal data');
+    // TODO: Test internal event data?
 }
 
-test('D.data(div)', 25, function() {
+test('D.data(div)', function() {
+    expect(13);
+
     var div = document.createElement('div');
 
     dataTests(div);
@@ -109,36 +83,51 @@ test('D.data(div)', 25, function() {
     // We stored one key in the private data
     // assert that nothing else was put in there, and that that
     // one stayed there.
-    QUnit.expectJqData(div, 'foo');
+
+    // Stupid jQuery test
+//    QUnit.expectJqData(div, 'foo');
 });
 
-test('D.data({})', 25, function() {
+test('D.data({})', function() {
+    expect(13);
+
     dataTests({});
 });
 
-test('D.data(window)', 25, function() {
+test('D.data(window)', function() {
+    expect(13);
+
     // remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
     // transports/xhr.js
-    D(window ).off('unload');
+    D(window).off('unload');
 
     dataTests(window);
 });
 
-test('D.data(document)', 25, function() {
+test('D.data(document)', function() {
+    expect(13);
+
     dataTests(document);
 
-    QUnit.expectJqData(document, 'foo');
+    // Stupid jQuery test
+//    QUnit.expectJqData(document, 'foo');
 });
 
-test('D.data(<embed>)', 25, function() {
+test('D.data(<embed>)', function() {
+    expect(13);
+
     dataTests(document.createElement('embed'));
 });
 
-test('D.data(<applet>)', 25, function() {
+test('D.data(<applet>)', function() {
+    expect(13);
+
     dataTests(document.createElement('applet'));
 });
 
-test('D.data(object/flash)', 25, function() {
+test('D.data(object/flash)', function() {
+    expect(13);
+
     var flash = document.createElement('object');
     flash.setAttribute('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000');
 
@@ -152,7 +141,7 @@ test('D().data() === undefined (#14101)', 2, function() {
 });
 
 test('.data()', function() {
-    expect(5);
+    expect(4);
 
     var div, dataObj, nodiv, obj;
 
@@ -170,10 +159,6 @@ test('.data()', function() {
 
     obj = { foo: 'bar' };
     D(obj).data('foo', 'baz');
-
-    dataObj = D.extend(true, {}, D(obj).data());
-
-    deepEqual(dataObj, { 'foo': 'baz' }, 'Retrieve data object from a wrapped JS object (#7524)');
 });
 
 function testDataTypes($obj) {
@@ -204,25 +189,11 @@ test('D(Element).data(String, Object).data(String)', function() {
     strictEqual(div.data('test'), undefined, 'No data exists initially');
     strictEqual(div.data('test', 'success').data('test'), 'success', 'Data added');
     strictEqual(div.data('test', 'overwritten').data('test'), 'overwritten', 'Data overwritten');
-    strictEqual(div.data('test', undefined).data('test'), 'overwritten', '.data(key,undefined) does nothing but is chainable (#5571)');
+    strictEqual(div.data('test', undefined).data('test'), undefined, '.data(key, undefined) sets value and is is chainable');
     strictEqual(div.data('notexist'), undefined, 'No data exists for unset key');
     testDataTypes(div);
 
     parent.remove();
-});
-
-test('D(plain Object).data(String, Object).data(String)', function() {
-    expect(16);
-
-    // #3748
-    var $obj = D({ exists: true });
-    strictEqual($obj.data('nothing'), undefined, 'Non-existent data returns undefined');
-    strictEqual($obj.data('exists'), undefined, 'Object properties are not returned as data');
-    testDataTypes($obj);
-
-    // Clean up
-    $obj.removeData();
-    deepEqual($obj[0], { exists: true }, 'removeData does not clear the object');
 });
 
 test('.data(object) does not retain references. #13815', function() {
@@ -237,173 +208,14 @@ test('.data(object) does not retain references. #13815', function() {
     equal($divs.eq(1).data('type'), 'foo', 'Original value retained');
 });
 
-test('data-* attributes', function() {
-    expect(43);
-
-    var prop, i, l, metadata, elem,
-        obj, obj2, check, num, num2,
-        parseJSON = D.parseJSON,
-        div = D('<div>'),
-        child = D('<div data-myobj="old data" data-ignored="DOM" data-other="test"></div>'),
-        dummy = D('<div data-myobj="old data" data-ignored="DOM" data-other="test"></div>');
-
-    equal(div.data('attr'), undefined, 'Check for non-existing data-attr attribute');
-
-    div.attr('data-attr', 'exists');
-    equal(div.data('attr'), 'exists', 'Check for existing data-attr attribute');
-
-    div.attr('data-attr', 'exists2');
-    equal(div.data('attr'), 'exists', 'Check that updates to data- dont update .data()');
-
-    div.data('attr', 'internal').attr('data-attr', 'external');
-    equal(div.data('attr'), 'internal', 'Check for .data("attr") precedence (internal > external data-* attribute)');
-
-    div.remove();
-
-    child.appendTo('#qunit-fixture');
-    equal(child.data('myobj'), 'old data', 'Value accessed from data-* attribute');
-
-    child.data('myobj', 'replaced');
-    equal(child.data('myobj'), 'replaced', 'Original data overwritten');
-
-    child.data('ignored', 'cache');
-    equal(child.data('ignored'), 'cache', 'Cached data used before DOM data-* fallback');
-
-    obj = child.data();
-    obj2 = dummy.data();
-    check = ['myobj', 'ignored', 'other'];
-    num = 0;
-    num2 = 0;
-
-    dummy.remove();
-
-    for (i = 0, l = check.length; i < l; i++) {
-        ok(obj[check[i]], 'Make sure data- property exists when calling data-.');
-        ok(obj2[check[i]], 'Make sure data- property exists when calling data-.');
-    }
-
-    for (prop in obj) {
-        num++;
-    }
-
-    equal(num, check.length, 'Make sure that the right number of properties came through.');
-
-    for (prop in obj2) {
-        num2++;
-    }
-
-    equal(num2, check.length, 'Make sure that the right number of properties came through.');
-
-    child.attr('data-other', 'newvalue');
-
-    equal(child.data('other'), 'test', 'Make sure value was pulled in properly from a .data().');
-
-    // attribute parsing
-    i = 0;
-    D.parseJSON = function() {
-        i++;
-        return parseJSON.apply(this, arguments);
-    };
-
-    child
-        .attr('data-true', 'true')
-        .attr('data-false', 'false')
-        .attr('data-five', '5')
-        .attr('data-point', '5.5')
-        .attr('data-pointe', '5.5E3')
-        .attr('data-grande', '5.574E9')
-        .attr('data-hexadecimal', '0x42')
-        .attr('data-pointbad', '5..5')
-        .attr('data-pointbad2', '-.')
-        .attr('data-bigassnum', '123456789123456789123456789')
-        .attr('data-badjson', '{123}')
-        .attr('data-badjson2', '[abc]')
-        .attr('data-notjson', ' {}')
-        .attr('data-notjson2', '[] ')
-        .attr('data-empty', '')
-        .attr('data-space', ' ')
-        .attr('data-null', 'null')
-        .attr('data-string', 'test');
-
-    strictEqual(child.data('true'), true, 'Primitive true read from attribute');
-    strictEqual(child.data('false'), false, 'Primitive false read from attribute');
-    strictEqual(child.data('five'), 5, 'Integer read from attribute');
-    strictEqual(child.data('point'), 5.5, 'Floating-point number read from attribute');
-    strictEqual(child.data('pointe'), '5.5E3',
-        'Exponential-notation number read from attribute as string');
-    strictEqual(child.data('grande'), '5.574E9',
-        'Big exponential-notation number read from attribute as string');
-    strictEqual(child.data('hexadecimal'), '0x42',
-        'Hexadecimal number read from attribute as string');
-    strictEqual(child.data('pointbad'), '5..5',
-        'Extra-point non-number read from attribute as string');
-    strictEqual(child.data('pointbad2'), '-.',
-        'No-digit non-number read from attribute as string');
-    strictEqual(child.data('bigassnum'), '123456789123456789123456789',
-        'Bad bigass number read from attribute as string');
-    strictEqual(child.data('badjson'), '{123}', 'Bad JSON object read from attribute as string');
-    strictEqual(child.data('badjson2'), '[abc]', 'Bad JSON array read from attribute as string');
-    strictEqual(child.data('notjson'), ' {}',
-        'JSON object with leading non-JSON read from attribute as string');
-    strictEqual(child.data('notjson2'), '[] ',
-        'JSON array with trailing non-JSON read from attribute as string');
-    strictEqual(child.data('empty'), '', 'Empty string read from attribute');
-    strictEqual(child.data('space'), ' ', 'Whitespace string read from attribute');
-    strictEqual(child.data('null'), null, 'Primitive null read from attribute');
-    strictEqual(child.data('string'), 'test', 'Typical string read from attribute');
-    equal(i, 2, 'Correct number of JSON parse attempts when reading from attributes');
-
-    D.parseJSON = parseJSON;
-    child.remove();
-
-    // tests from metadata plugin
-    function testData(index, elem) {
-        switch (index) {
-        case 0:
-            equal(D(elem).data('foo'), 'bar', 'Check foo property');
-            equal(D(elem).data('bar'), 'baz', 'Check baz property');
-            break;
-        case 1:
-            equal(D(elem).data('test'), 'bar', 'Check test property');
-            equal(D(elem).data('bar'), 'baz', 'Check bar property');
-            break;
-        case 2:
-            equal(D(elem).data('zoooo'), 'bar', 'Check zoooo property');
-            deepEqual(D(elem).data('bar'), {'test':'baz'}, 'Check bar property');
-            break;
-        case 3:
-            equal(D(elem).data('number'), true, 'Check number property');
-            deepEqual(D(elem).data('stuff'), [2,8], 'Check stuff property');
-            break;
-        default:
-            ok(false, ['Assertion failed on index ', index, ', with data'].join(''));
-        }
-    }
-
-    metadata = '<ol><li class="test test2" data-foo="bar" data-bar="baz" data-arr="[1,2]">Some stuff</li><li class="test test2" data-test="bar" data-bar="baz">Some stuff</li><li class="test test2" data-zoooo="bar" data-bar="{\"test\":\"baz\"}">Some stuff</li><li class="test test2" data-number=true data-stuff="[2,8]">Some stuff</li></ol>';
-    elem = D(metadata).appendTo('#qunit-fixture');
-
-    elem.find('li').each(testData);
-    elem.remove();
-});
-
 test('.data(Object)', function() {
-    expect(4);
+    expect(2);
 
-    var obj, jqobj,
-        div = D('<div/>');
+    var div = D('<div/>');
 
     div.data({ 'test': 'in', 'test2': 'in2' });
     equal(div.data('test'), 'in', 'Verify setting an object in data');
     equal(div.data('test2'), 'in2', 'Verify setting an object in data');
-
-    obj = {test:'unset'};
-    jqobj = D(obj);
-
-    jqobj.data('test', 'unset');
-    jqobj.data({ 'test': 'in', 'test2': 'in2' });
-    equal(D.data(obj).test, 'in', 'Verify setting an object on an object extends the data object');
-    equal(obj.test2, undefined, 'Verify setting an object on an object does not extend the object');
 
     // manually clean up detached elements
     div.remove();
@@ -447,7 +259,7 @@ test('D.removeData', function() {
 
     obj = {};
     D.data(obj, 'test', 'testing');
-    equal(D(obj).data('test'), 'testing', 'verify data on plain object');
+    equal(D.data(obj, 'test'), 'testing', 'Verify data on plain object');
     D.removeData(obj, 'test');
     equal(D.data(obj, 'test'), undefined, 'Check removal of data on plain object');
 
