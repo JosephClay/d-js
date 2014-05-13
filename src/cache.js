@@ -29,7 +29,7 @@ var _getterSetter = function() {
                 return (ref[key] = fn());
             },
             remove: function(key) {
-                delete ref[key];
+                delete ref[_safe(key)];
             }
         };
     },
@@ -38,6 +38,9 @@ var _getterSetter = function() {
         var ref = {};
 
         return {
+            has: function(key1) {
+                return ref[_safe(key1)] !== undefined;
+            },
             get: function(key1, key2) {
                 key1 = _safe(key1);
                 key2 = _safe(key2);
@@ -60,6 +63,9 @@ var _getterSetter = function() {
                 return (ref1[key2] = fn());
             },
             remove: function(key1, key2) {
+                key1 = _safe(key1);
+                key2 = _safe(key2);
+
                 // Easy removal
                 if (arguments.length === 1) {
                     delete ref[key1];
