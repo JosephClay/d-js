@@ -194,14 +194,16 @@ var _classes = {
 module.exports = _.extend({}, _classes, {
     fn: {
         hasClass: overload()
-            .args(String).use(function(name) {
+            .args(String)
+            .use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
                 return _classes.doAnyElemsHaveClass(this, name);
             })
             .expose(),
 
         addClass: overload()
-            .args(String).use(function(name) {
+            .args(String)
+            .use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 var names = _split(name);
@@ -211,27 +213,34 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-            .args(Array).use(function(names) {
+
+            .args(Array)
+            .use(function(names) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 _classes.addClasses(this, names);
 
                 return this;
             })
-            .args(O.any(null, undefined)).use(function() {
+
+            .args(O.any(null, undefined))
+            .use(function() {
                 return this;
             })
             .expose(),
 
         removeClass: overload()
-            .args().use(function() {
+            .args()
+            .use(function() {
                 if (!this.length) { return this; }
 
                 _classes.removeAllClasses(this);
 
                 return this;
             })
-            .args(String).use(function(name) {
+
+            .args(String)
+            .use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 var names = _split(name);
@@ -241,20 +250,25 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-            .args(Array).use(function(names) {
+
+            .args(Array)
+            .use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 _classes.removeClasses(this, names);
 
                 return this;
             })
-            .args(O.any(null, undefined)).use(function() {
+
+            .args(O.any(null, undefined))
+            .use(function() {
                 return this;
             })
             .expose(),
 
         toggleClass: overload()
-            .args(String).use(function(name) {
+            .args(String)
+            .use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 var names = _split(name);
@@ -264,7 +278,9 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-            .args(String, Boolean).use(function(name, shouldAdd) {
+
+            .args(String, Boolean)
+            .use(function(name, shouldAdd) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 var names = _split(name);
@@ -278,17 +294,23 @@ module.exports = _.extend({}, _classes, {
 
                 return this;
             })
-            .args(Array).use(function(names) {
+
+            .args(Array)
+            .use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 _classes.toggleClasses(this, names);
 
                 return this;
             })
-            .args(O.any(null, undefined)).use(function() {
+
+            .args(O.any(null, undefined))
+            .use(function() {
                 return this;
             })
-            .length(2).use(function(names, shouldAdd) {
+
+            .length(2)
+            .use(function(names, shouldAdd) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 if (shouldAdd) {

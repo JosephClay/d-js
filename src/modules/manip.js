@@ -134,7 +134,8 @@ module.exports = {
         },
 
         append: overload()
-            .args(String).use(function(value) {
+            .args(String)
+            .use(function(value) {
                 if (utils.isHtml(value)) {
                     _appendMergeArr(this, parser.parseHtml(value));
                     return this;
@@ -145,23 +146,27 @@ module.exports = {
                 return this;
             })
 
-            .args(Number).use(function(value) {
+            .args(Number)
+            .use(function(value) {
                 value = '' + value; // change to a string
                 _appendString(this, value);
                 return this;
             })
 
-            .args(Function).use(function(fn) {
+            .args(Function)
+            .use(function(fn) {
                 _appendFunc(this, fn);
                 return this;
             })
 
-            .args(Element).use(function(elem) {
+            .args(Element)
+            .use(function(elem) {
                 _appendElemToArr(this, elem);
                 return this;
             })
 
-            .args(O.any(Array, O.nodeList, O.D)).use(function(arr) {
+            .args(O.any(Array, O.nodeList, O.D))
+            .use(function(arr) {
                 _appendMergeArr(this, arr);
                 return this;
             })
@@ -199,21 +204,26 @@ module.exports = {
         },
 
         add: overload()
-            .args(String).use(function(selector) {
+            .args(String)
+            .use(function(selector) {
                 _array.unique(
                     _utils.merge(this, D(selector))
                 );
 
                 return this;
             })
-            .args(O.any(Array, O.nodeList, O.D)).use(function(arr) {
+
+            .args(O.any(Array, O.nodeList, O.D))
+            .use(function(arr) {
                 _array.unique(
                     _utils.merge(this, arr)
                 );
 
                 return this;
             })
-            .args(O.any(window, Element)).use(function(elem) {
+
+            .args(O.any(window, Element))
+            .use(function(elem) {
                 this.push(elem);
                 _array.unique(this);
 
@@ -222,12 +232,14 @@ module.exports = {
             .expose(),
 
         remove: overload()
-            .args(String).use(function() {
+            .args(String)
+            .use(function() {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
                 _remove(arr);
                 return this;
             })
+
             .fallback(function() {
                 _remove(this);
                 return this;
@@ -235,12 +247,14 @@ module.exports = {
             .expose(),
 
         detach: overload()
-            .args(String).use(function() {
+            .args(String)
+            .use(function() {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
                 _detach(arr);
                 return this;
             })
+
             .fallback(function() {
                 _detach(this);
                 return this;

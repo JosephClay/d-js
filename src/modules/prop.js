@@ -86,14 +86,16 @@ var _getOrSetProp = function(elem, name, value) {
 module.exports = {
     fn: {
         prop: overload()
-            .args(String).use(function(prop) {
+            .args(String)
+            .use(function(prop) {
                 var first = this[0];
                 if (!first) { return; }
 
                 return _getOrSetProp(first, prop);
             })
 
-            .args(String, O.any(String, Number, Boolean)).use(function(prop, value) {
+            .args(String, O.any(String, Number, Boolean))
+            .use(function(prop, value) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
                     _getOrSetProp(this[idx], prop, value);
@@ -101,7 +103,8 @@ module.exports = {
                 return this;
             })
 
-            .args(String, Function).use(function(prop, fn) {
+            .args(String, Function)
+            .use(function(prop, fn) {
                 var idx = 0, length = this.length,
                     elem, result;
                 for (; idx < length; idx++) {
@@ -115,7 +118,8 @@ module.exports = {
             .expose(),
 
         removeProp: overload()
-            .args(String).use(function(prop) {
+            .args(String)
+            .use(function(prop) {
                 var name = _propFix[prop] || prop,
                     idx = 0, length = this.length;
                 for (; idx < length; idx++) {
