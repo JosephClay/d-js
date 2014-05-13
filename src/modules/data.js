@@ -29,7 +29,9 @@ var _ = require('_'),
         if (!id) { return; }
 
         _dataCache.remove(id);
-    };
+    },
+
+    _ELEM_TYPE = O.any(Element, O.window, O.document, Object);
 
 module.exports = {
     destroyData: _destroyData,
@@ -37,20 +39,20 @@ module.exports = {
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(O.any(Element, O.window, O.document, Object), String, O.wild)
+            .args(_ELEM_TYPE, String, O.wild)
             .use(function(elem, key, value) {
                 var id = _getOrSetId(elem);
                 return _dataCache.set(id, key, value);
             })
 
-            .args(O.any(Element, O.window, O.document, Object), String)
+            .args(_ELEM_TYPE, String)
             .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 return _dataCache.get(id, key);
             })
 
-            .args(O.any(Element, O.window, O.document, Object), Object)
+            .args(_ELEM_TYPE, Object)
             .use(function(elem, map) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -61,7 +63,7 @@ module.exports = {
                 return _dataCache.get(id);
             })
 
-            .args(O.any(Element, O.window, O.document, Object))
+            .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -71,7 +73,7 @@ module.exports = {
             .expose(),
 
         hasData: overload()
-            .args(O.any(Element, O.window, O.document, Object))
+            .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
                 if ((id = _getId(elem))) { return false; }
@@ -81,7 +83,7 @@ module.exports = {
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(O.any(Element, O.window, O.document, Object), String)
+            .args(_ELEM_TYPE, String)
             .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return DOM; }
@@ -89,7 +91,7 @@ module.exports = {
                 return DOM;
             })
 
-            .args(O.any(Element, O.window, O.document, Object))
+            .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return DOM; }
