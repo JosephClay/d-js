@@ -39,8 +39,25 @@ module.exports = {
                 _dataCache.set(id, key, value);
             })
             .args(Element, String).use(function(elem, key) {
-                var id = _getOrSetId(elem);
+                var id;
+                if ((id = _getId(elem))) { return; }
                 return _dataCache.get(id, key);
+            })
+            .expose(),
+
+        removeData: Overload()
+            // NOTE: NodeList || HtmlCollection support?
+            .args(Element, String).use(function(elem, key) {
+                var id;
+                if ((id = _getId(elem))) { return DOM; }
+                _dataCache.remove(id, key);
+                return DOM;
+            })
+            .args(Element).use(function(elem) {
+                var id;
+                if ((id = _getId(elem))) { return DOM; }
+                _dataCache.remove(id);
+                return DOM;
             })
             .expose()
     },
