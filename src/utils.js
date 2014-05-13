@@ -16,17 +16,18 @@ module.exports = {
     },
 
     normalNodeName: function(elem) {
-        return _nodeNameCache.getOrSet(elem.nodeName, function() {
+        var nodeName = elem.nodeName;
+        return _nodeNameCache.getOrSet(nodeName, function() {
             return nodeName.toLowerCase();
         });
     },
 
     isNodeName: function(elem, name) {
         var nodeName = _nodeNameCache.getOrSet(elem.nodeName, function() {
-                return nodeName.toLowerCase();
+                return elem.nodeName.toLowerCase();
             }),
-            compareName = _nodeNameCache.getOrSet(elem.nodeName, function() {
-                return nodeName.toLowerCase();
+            compareName = _nodeNameCache.getOrSet(name, function() {
+                return name.toLowerCase();
             });
 
         return nodeName === compareName;
