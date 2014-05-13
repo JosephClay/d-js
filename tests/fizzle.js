@@ -120,11 +120,11 @@ var QUERIES = {
 
 var parser = D.__INTERNAL.fizzle.selector.parser;
 
-var testQuery = function(expected) {
-    var query = expected.join(', '),
-        actual = parser.subqueries(query).join(', ');
+var testQuery = function(expectedArray) {
+    var expected = expectedArray.join(', '),
+        actual   = parser.subqueries(expected).join(', ');
 
-    strictEqual(query, actual);
+    strictEqual(expected, actual);
 };
 
 var testQueries = function(queries, name) {
