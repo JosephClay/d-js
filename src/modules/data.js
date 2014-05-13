@@ -36,11 +36,11 @@ module.exports = {
             // NOTE: NodeList || HtmlCollection support?
             .args(Element, String, O.wild).use(function(elem, key, value) {
                 var id = _getOrSetId(elem);
-                _dataCache.set(id, key, value);
+                return _dataCache.set(id, key, value);
             })
             .args(Element, String).use(function(elem, key) {
                 var id;
-                if ((id = _getId(elem))) { return; }
+                if (!(id = _getId(elem))) { return; }
                 return _dataCache.get(id, key);
             })
             .expose(),
@@ -57,13 +57,13 @@ module.exports = {
             // NOTE: NodeList || HtmlCollection support?
             .args(Element, String).use(function(elem, key) {
                 var id;
-                if ((id = _getId(elem))) { return DOM; }
+                if (!(id = _getId(elem))) { return DOM; }
                 _dataCache.remove(id, key);
                 return DOM;
             })
             .args(Element).use(function(elem) {
                 var id;
-                if ((id = _getId(elem))) { return DOM; }
+                if (!(id = _getId(elem))) { return DOM; }
                 _dataCache.remove(id);
                 return DOM;
             })
