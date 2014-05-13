@@ -59,8 +59,16 @@ var _getterSetter = function() {
                 if (cachedVal !== undefined) { return cachedVal; }
                 return (ref1[key2] = fn());
             },
-            remove: function(key1) {
-                delete ref[key1];
+            remove: function(key1, key2) {
+                // Easy removal
+                if (arguments.length === 1) {
+                    delete ref[key1];
+                    return;
+                }
+
+                // Deep removal
+                var ref1 = ref[key1] || (ref[key1] = {});
+                delete ref1[key2];
             }
         };
     };
