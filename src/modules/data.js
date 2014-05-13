@@ -76,7 +76,7 @@ module.exports = {
             .args(_ELEM_TYPE)
             .use(function(elem) {
                 var id;
-                if ((id = _getId(elem))) { return false; }
+                if (!(id = _getId(elem))) { return false; }
                 return _dataCache.has(id);
             })
             .expose(),
@@ -88,6 +88,16 @@ module.exports = {
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 _dataCache.remove(id, key);
+            })
+
+            .args(_ELEM_TYPE, Array)
+            .use(function(elem, array) {
+                var id;
+                if (!(id = _getId(elem))) { return; }
+                var idx = array.length;
+                while (idx--) {
+                    _dataCache.remove(id, array[idx]);
+                }
             })
 
             .args(_ELEM_TYPE)
