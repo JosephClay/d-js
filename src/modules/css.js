@@ -291,7 +291,8 @@ module.exports = {
 
     fn: {
         css: overload()
-            .args(String, O.any(String, Number)).use(function(name, value) {
+            .args(String, O.any(String, Number))
+            .use(function(name, value) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
                     _setStyle(this[idx], name, value);
@@ -299,7 +300,8 @@ module.exports = {
                 return this;
             })
 
-            .args(Object).use(function(obj) {
+            .args(Object)
+            .use(function(obj) {
                 var idx = 0, length = this.length,
                     key;
                 for (; idx < length; idx++) {
@@ -310,7 +312,8 @@ module.exports = {
                 return this;
             })
 
-            .args(Array).use(function(arr) {
+            .args(Array)
+            .use(function(arr) {
                 var first = this[0];
                 if (!first) { return; }
 

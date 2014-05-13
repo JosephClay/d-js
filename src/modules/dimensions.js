@@ -56,13 +56,15 @@ var _getDocumentDimension = function(elem, name) {
 module.exports = {
     fn: {
         width: overload()
-            .args(Number).use(function(val) {
+            .args(Number)
+            .use(function(val) {
                 var elem = this[0]; // The first elem
                 if (!elem) { return this; }
 
                 _css.width.set(elem, val);
                 return this;
             })
+
             .fallback(function() {
                 var elem = this[0]; // The first elem
                 if (!elem) { return null; }
@@ -72,13 +74,15 @@ module.exports = {
             .expose(),
 
         height: overload()
-            .args(Number).use(function(val) {
+            .args(Number)
+            .use(function(val) {
                 var elem = this[0]; // The first elem
                 if (!elem) { return this; }
 
                 _css.height.set(elem, val);
                 return this;
             })
+
             .fallback(function() {
                 var elem = this[0]; // The first elem
                 if (!elem) { return null; }

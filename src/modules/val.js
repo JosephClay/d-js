@@ -117,7 +117,8 @@ module.exports = {
         // TODO: OuterHtml getter?
 
         html: overload()
-            .args(String).use(function(html) {
+            .args(String)
+            .use(function(html) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
                     this[idx].innerHTML = html;
@@ -125,7 +126,9 @@ module.exports = {
 
                 return this;
             })
-            .args(Function).use(function(iterator) {
+
+            .args(Function)
+            .use(function(iterator) {
                 var idx = 0, length = this.length, elem;
                 for (; idx < length; idx++) {
                     elem = this[idx];
@@ -134,6 +137,7 @@ module.exports = {
 
                 return this;
             })
+
             .fallback(function() {
                 var first = this[0];
                 if (!first) { return; }
@@ -142,7 +146,8 @@ module.exports = {
             .expose(),
 
         val: overload()
-            .args(O.any(String, Number)).use(function(value) {
+            .args(O.any(String, Number))
+            .use(function(value) {
                 value = '' + value;
 
                 var idx = 0, length = this.length,
@@ -163,7 +168,9 @@ module.exports = {
 
                 return this;
             })
-            .args(Function).use(function(iterator) {
+
+            .args(Function)
+            .use(function(iterator) {
                 var idx = 0, length = this.length,
                     elem, value, hook;
                 for (; idx < length; idx++) {
@@ -184,6 +191,7 @@ module.exports = {
 
                 return this;
             })
+
             .fallback(function() {
                 var first = this[0];
                 if (!first) { return; }
@@ -200,7 +208,8 @@ module.exports = {
             .expose(),
 
         text: overload()
-            .args(String).use(function(str) {
+            .args(String)
+            .use(function(str) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
                     _text.set(this[idx], str);
@@ -208,7 +217,9 @@ module.exports = {
 
                 return this;
             })
-            .args(Function).use(function(iterator) {
+
+            .args(Function)
+            .use(function(iterator) {
                 var idx = 0, length = this.length, elem;
                 for (; idx < length; idx++) {
                     elem = this[idx];
@@ -217,6 +228,7 @@ module.exports = {
 
                 return this;
             })
+
             .fallback(function() {
                 var str = '',
                     idx = 0, length = this.length;

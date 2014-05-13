@@ -70,20 +70,25 @@ module.exports = {
         },
 
         is: overload()
-            .args(String).use(function(selector) {
+            .args(String)
+            .use(function(selector) {
                 if (selector === '') { return false; }
 
                 var is = Fizzle.is(selector);
                 return is.any(this);
             })
-            .args(O.any(Array, O.D)).use(function(arr) {
+
+            .args(O.any(Array, O.D))
+            .use(function(arr) {
 
                 return _.any(this, function(elem) {
                     if (arr.indexOf(elem) !== -1) { return true; }
                 });
 
             })
-            .args(Function).use(function(iterator) {
+
+            .args(Function)
+            .use(function(iterator) {
 
                 return _.any(this, function(elem, idx) {
                     if (iterator.call(elem, idx)) {
@@ -92,20 +97,25 @@ module.exports = {
                 });
 
             })
-            .args(Element).use(function(context) {
+
+            .args(Element)
+            .use(function(context) {
 
                 return _.any(this, function(elem) {
                     return (elem === context);
                 });
 
             })
-            .args(O.any(null, undefined, Number, Object)).use(function() {
+
+            .args(O.any(null, undefined, Number, Object))
+            .use(function() {
                 return false;
             })
             .expose(),
 
         not: overload()
-            .args(String).use(function(selector) {
+            .args(String)
+            .use(function(selector) {
                 if (selector === '') { return this; }
 
                 var is = Fizzle.is(selector);
@@ -113,7 +123,9 @@ module.exports = {
                     is.not(this)
                 );
             })
-            .args(O.any(Array, O.D)).use(function(arr) {
+
+            .args(O.any(Array, O.D))
+            .use(function(arr) {
 
                 return D(
                     _.filter(this, function(elem) {
@@ -122,14 +134,18 @@ module.exports = {
                 );
 
             })
-            .args(Function).use(function(iterator) {
+
+            .args(Function)
+            .use(function(iterator) {
 
                 return _.filter(this, function(elem, idx) {
                     return iterator.call(elem, idx);
                 });
 
             })
-            .args(Element).use(function(context) {
+
+            .args(Element)
+            .use(function(context) {
 
                 return D(
                     _.filter(this, function(elem) {
@@ -139,13 +155,15 @@ module.exports = {
 
             })
 
-            .args(O.any(null, undefined, Number, Object)).use(function() {
+            .args(O.any(null, undefined, Number, Object))
+            .use(function() {
                 return this;
             })
             .expose(),
 
         find: overload()
-            .args(String).use(function(selector) {
+            .args(String)
+            .use(function(selector) {
 
                 return _utils.merge(D(), _findWithin(selector, this));
 
@@ -153,7 +171,8 @@ module.exports = {
             .expose(),
 
         filter: overload()
-            .args(String).use(function(selector) {
+            .args(String)
+            .use(function(selector) {
                 if (selector === '') { return D(); }
 
                 var is = Fizzle.is(selector);
@@ -164,7 +183,9 @@ module.exports = {
                 );
 
             })
-            .args(O.any(Array, O.D)).use(function(arr) {
+
+            .args(O.any(Array, O.D))
+            .use(function(arr) {
 
                 return D(
                     _.filter(this, function(elem) {
@@ -173,7 +194,9 @@ module.exports = {
                 );
 
             })
-            .args(Element).use(function(context) {
+
+            .args(Element)
+            .use(function(context) {
 
                 return D(
                     _.filter(this, function(elem) {
@@ -182,8 +205,10 @@ module.exports = {
                 );
 
             })
+
             // TODO: Filter with object? see _.find/_.findWhere
-            .args(Function).use(function(checker) {
+            .args(Function)
+            .use(function(checker) {
 
                 return D(
                     _.filter(this, function(elem, idx) {
@@ -193,7 +218,9 @@ module.exports = {
                 );
 
             })
-            .args(O.any(null, undefined, Number)).use(function() {
+
+            .args(O.any(null, undefined, Number))
+            .use(function() {
                 return D();
             })
             .expose()
