@@ -1,11 +1,5 @@
 module('data');
 
-test('expando', function(){
-    expect(1);
-
-    equal(D.expando !== undefined, true, 'D is exposing the expando');
-});
-
 test('D.data & removeData, expected returns', function() {
     expect(4);
     var elem = document.body;
