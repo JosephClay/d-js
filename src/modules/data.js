@@ -70,7 +70,7 @@ module.exports = {
 
             .expose(),
 
-        hasData: overload
+        hasData: overload()
             .args(O.any(Element, O.window, O.document, Object))
             .use(function(elem) {
                 var id;
@@ -101,7 +101,7 @@ module.exports = {
     },
 
     fn: {
-        data: overload
+        data: overload()
             // Set key's value
             .args(String, O.wild)
             .use(function(key, value) {
@@ -125,7 +125,7 @@ module.exports = {
                         _dataCache.set(id, key, map[key]);
                     }
                 }
-                return this;
+                return map;
             })
 
             // Get key
