@@ -250,7 +250,7 @@ module.exports = {
     /**
      * Splits the given comma-separated CSS selector into separate sub-queries.
      * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
-     * @return {String[]} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]').
+     * @return {String[]|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing the selector.
      */
     subqueries: function(selector) {
         return _subqueryCache.getOrSet(selector, function() {
