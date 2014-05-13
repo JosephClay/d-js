@@ -94,6 +94,22 @@ module.exports = function(grunt) {
                     safe_undefined: true
                     // micro_paths: true
                 }
+            },
+            buildInternal: {
+                options: {
+                    globals: {},
+                    aliases: {
+                        '_':        '/_.js',
+                        '_.string': '/_.string.js',
+                        'overload': '/libs/overload.js',
+                        'signal':   '/libs/signal.js'
+                    },
+                    src_root: 'src/',
+                    main: 'D.internal.js',
+                    dest: 'dist/D.internal.js',
+                    safe_undefined: true,
+                    micro_paths: false,
+                }
             }
         }
     });

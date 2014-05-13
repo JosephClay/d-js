@@ -1,12 +1,4 @@
-var _ = require('_'),
-    _fizzle = require('./fizzle.js');
-
-var _isArray = Array.isArray || function(obj) { return Object.prototype.toString.apply(obj) === '[object Array]'; };
-
-var _indent = function(str, i) {
-    var indent = new Array((i * 4) + 1).join(' ');
-    return indent + str;
-};
+module('fizzle');
 
 var QUERIES = {
     'Without spaces': {
@@ -126,41 +118,37 @@ var QUERIES = {
     ]
 };
 
-var testQuery = function(expected, level) {
+var parser = D.__INTERNAL.fizzle.selector.parser;
+
+var testQuery = function(expected) {
     var query = expected.join(', '),
-        actual;
+        actual = parser.subqueries(query).join(', ');
 
-    try {
-        actual = _fizzle.subqueries(query);
-    } catch (e) {
-        return console.error(_indent('', level), e);
-    }
-
-    if (query !== actual.join(', ')) {
-        console.error(_indent(query, level));
-    } else {
-        console.log(_indent('Pass!', level));
-    }
+    strictEqual(query, actual);
 };
 
-var testQueries = function(queries, level) {
+var testQueries = function(queries, name) {
     var len = queries.length,
         idx = 0;
-    for (; idx < len; idx++) {
-        testQuery(queries[idx], level);
-    }
+
+    test(name, function() {
+        expect(len);
+
+        for (; idx < len; idx++) {
+            testQuery(queries[idx]);
+        }
+    });
 };
 
-var walk = function(node, key, level) {
-    console.log(_indent(key + ':', level));
-
-    if (_isArray(node)) {
-        testQueries(node, level + 1);
+var walk = function(node, name) {
+    if (_.isArray(node)) {
+        testQueries(node, name);
     } else {
-        for (var k in node) {
-            walk(node[k], k, level + 1);
+        for (var prop in node) {
+            var newName = name ? (name + ': ' + prop) : prop;
+            walk(node[prop], newName);
         }
     }
 };
 
-walk(QUERIES, 'root', 0);
+walk(QUERIES, 'Selector parser');
