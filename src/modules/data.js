@@ -45,6 +45,14 @@ module.exports = {
             })
             .expose(),
 
+        hasData: Overload()
+            .args(Element).use(function(elem) {
+                var id;
+                if ((id = _getId(elem))) { return false; }
+                return _dataCache.has(id);
+            })
+            .expose(),
+
         removeData: Overload()
             // NOTE: NodeList || HtmlCollection support?
             .args(Element, String).use(function(elem, key) {
