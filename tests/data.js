@@ -27,7 +27,7 @@ test('D.hasData no side effects', function() {
     expect(1);
 
     var obj = document.createElement('div'),
-        numNames = Object.getOwnPropertyNames(obj);
+        numNames = Object.getOwnPropertyNames(obj).length;
     D.hasData(obj);
 
     equal(Object.getOwnPropertyNames(obj).length, numNames,
@@ -41,11 +41,13 @@ function dataTests(elem) {
     equal(D.data(elem, 'foo'), undefined, 'No data exists initially');
     strictEqual(D.hasData(elem), false, 'D.hasData agrees no data exists initially');
 
-    dataObj = D.data(elem);
-    equal(typeof dataObj, 'object', 'Calling data with no args gives us a data object reference');
-    strictEqual(D.data(elem), dataObj, 'Calling D.data returns the same data object when called multiple times');
+    strictEqual(D.data(elem), undefined, 'Calling data with no args returns undefined when no data has been set');
 
     strictEqual(D.hasData(elem), false, 'D.hasData agrees no data exists even when an empty data obj exists');
+
+    D.data(elem, 'bar', 'baz');
+    dataObj = D.data(elem);
+    deepEqual(dataObj, { bar: 'baz' }, 'TODO: Describe me');
 
     dataObj.foo = 'bar';
     equal(D.data(elem, 'foo'), 'bar', 'Data is readable by D.data when set directly on a returned data object');
