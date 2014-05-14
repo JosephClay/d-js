@@ -1,4 +1,5 @@
-var overload = require('overload'),
+var _ = require('_'),
+    overload = require('overload'),
     O = overload.O,
 
     _div = require('../div'),
@@ -112,6 +113,17 @@ _.each(['radio', 'checkbox'], function(type) {
     }
 });
 
+var _getVal = function(elem) {
+    if (!elem || (elem.nodeType !== _nodeType.ELEMENT)) { return; }
+
+    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
+    if (hook && hook.get) {
+        return hook.get(elem);
+    }
+
+    return elem.getAttribute('value');
+};
+
 module.exports = {
     fn: {
         // TODO: OuterHtml getter?
@@ -119,29 +131,25 @@ module.exports = {
         html: overload()
             .args(String)
             .use(function(html) {
-                var idx = 0, length = this.length;
-                for (; idx < length; idx++) {
-                    this[idx].innerHTML = html;
-                }
+                _.each(this, function(elem) {
+                    elem.innerHTML = html;
+                });
 
                 return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                var idx = 0, length = this.length, elem;
-                for (; idx < length; idx++) {
-                    elem = this[idx];
+                _.each(this, function(elem) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
-                }
+                });
 
                 return this;
             })
 
             .fallback(function() {
                 var first = this[0];
-                if (!first) { return; }
-                return first.innerHTML;
+                return (!first) ? undefined : first.innerHTML;
             })
             .expose(),
 
@@ -150,12 +158,8 @@ module.exports = {
             .use(function(value) {
                 value = '' + value;
 
-                var idx = 0, length = this.length,
-                    elem, hook;
-                for (; idx < length; idx++) {
-
-                    elem = this[idx];
-                    if (elem.nodeType !== _nodeType.ELEMENT) { continue; }
+                _.each(this, function(elem) {
+                    if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
                     if (hook || hook.set) {
@@ -163,22 +167,17 @@ module.exports = {
                     } else {
                         elem.setAttribute('value', value);
                     }
-
-                }
+                });
 
                 return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                var idx = 0, length = this.length,
-                    elem, value, hook;
-                for (; idx < length; idx++) {
+                _.each(this, function(elem) {
+                    if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
-                    elem = this[idx];
-                    if (elem.nodeType !== _nodeType.ELEMENT) { continue; }
-
-                    value = iterator.call(elem, idx, jQuery( this ).val());
+                    value = iterator.call(elem, idx, _getVal(elem));
                     hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
 
                     if (hook || hook.set) {
@@ -186,55 +185,40 @@ module.exports = {
                     } else {
                         elem.setAttribute('value', value);
                     }
-
-                }
+                });
 
                 return this;
             })
 
             .fallback(function() {
-                var first = this[0];
-                if (!first) { return; }
-
-                if (first.nodeType !== _nodeType.ELEMENT) { return; }
-
-                var hook = _valHooks[first.type] || _valHooks[_utils.normalNodeName(first)];
-                if (hook && hook.get) {
-                    return hook.get(first);
-                }
-
-                return first.getAttribute('value');
+                return _getVal(this[0]);
             })
             .expose(),
 
         text: overload()
             .args(String)
             .use(function(str) {
-                var idx = 0, length = this.length;
-                for (; idx < length; idx++) {
-                    _text.set(this[idx], str);
-                }
+                _.each(this, function(elem) {
+                    _text.set(elem, str);
+                });
 
                 return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                var idx = 0, length = this.length, elem;
-                for (; idx < length; idx++) {
-                    elem = this[idx];
+                _.each(this, function(elem) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
-                }
+                });
 
                 return this;
             })
 
             .fallback(function() {
-                var str = '',
-                    idx = 0, length = this.length;
-                for (; idx < length; idx++) {
-                    str += _text.get(this[idx]);
-                }
+                var str = '';
+                _.each(this, function(elem) {
+                    str += _text.get(elem);
+                });
 
                 return str;
             })
