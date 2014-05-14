@@ -49,7 +49,7 @@ module.exports = {
     display: {
         isNoneOrTable: function(str) {
             return _displayCache.getOrSet(str, function() {
-                return !!_NONE_OR_TABLE.exec(str);
+                return _NONE_OR_TABLE.test(str);
             });
         }
     },
@@ -57,14 +57,12 @@ module.exports = {
     type: {
         isFocusable: function(str) {
             return _focusableCache.getOrSet(str, function() {
-                var result = _TYPE_TEST.focusable.exec(str);
-                return !!result;
+                return _TYPE_TEST.focusable.test(str);
             });
         },
         isClickable: function(str) {
             return _clickableCache.getOrSet(str, function() {
-                var result = _TYPE_TEST.clickable.exec(str);
-                return !!result;
+                return _TYPE_TEST.clickable.test(str);
             });
         }
     },
@@ -72,20 +70,17 @@ module.exports = {
     selector: {
         isStrictId: function(str) {
             return _idCache.getOrSet(str, function() {
-                var result = _SELECTOR.id.exec(str);
-                return result ? !!result[1] : false;
+                return _SELECTOR.id.test(str);
             });
         },
         isTag: function(str) {
             return _tagCache.getOrSet(str, function() {
-                var result = _SELECTOR.tag.exec(str);
-                return result ? !!result[1] : false;
+                return _SELECTOR.tag.test(str);
             });
         },
         isClass: function(str) {
             return _classCache.getOrSet(str, function() {
-                var result = _SELECTOR.klass.exec(str);
-                return result ? !!result[1] : false;
+                return _SELECTOR.klass.test(str);
             });
         }
     }
