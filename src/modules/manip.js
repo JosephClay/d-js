@@ -222,11 +222,14 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(window, Element))
+            .args(O.any(window, Element, O.nodeList))
             .use(function(elem) {
                 this.push(elem);
                 _array.unique(this);
 
+                return this;
+            })
+            .fallback(function() {
                 return this;
             })
             .expose(),

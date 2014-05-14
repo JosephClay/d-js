@@ -105,12 +105,14 @@ module.exports = {
 
             // No argument, return index in parent
             if (!elem) {
-                // Note: _utils.isAttached check to pass test "Node without parent returns -1"
+                // _utils.isAttached check to pass test "Node without parent returns -1"
+                // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
                 return (first &&
                     (parent = first.parentNode) &&
-                        _utils.isAttached(parent)) ?
-                            _array.slice(parent.children).indexOf(first) :
-                                -1;
+                        _utils.isAttached(parent) ||
+                            parent.nodeType === _nodeType.DOCUMENT_FRAGMENT) ?
+                                _array.slice(parent.children).indexOf(first) :
+                                    -1;
             }
 
             // index in selector
