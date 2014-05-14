@@ -179,24 +179,34 @@ module.exports = {
         insertBefore: function() {},
         insertAfter: function() {},
 
-        // TODO: overload
-        appendTo: function(thing) {
-            thing = (thing instanceof D) ? thing : D(thing);
-            thing.append(this);
-            return this;
-        },
+        appendTo: overload()
+            .args(O.D)
+            .use(function(d) {
+                d.append(this);
+                return this;
+            })
+            .fallback(function(obj) {
+                D(obj).append(this);
+                return this;
+            })
+            .expose(),
 
         // TODO: prepend
         prepend: function() {
 
         },
 
-        // TODO: overload
-        prependTo: function(thing) {
-            thing = (thing instanceof D) ? thing : D(thing);
-            thing.prepend(this);
-            return this;
-        },
+        prependTo: overload()
+            .args(O.D)
+            .use(function(d) {
+                d.prepend(this);
+                return this;
+            })
+            .fallback(function(obj) {
+                D(obj).prepend(this);
+                return this;
+            })
+            .expose(),
 
         empty: function() {
             _empty(this);
