@@ -244,10 +244,11 @@ test('closest(D)', function() {
 });
 
 test('not(Selector|undefined)', function() {
-    expect(11);
+    expect(10);
+
     equal(D('#qunit-fixture > p#ap > a').not('#google').length, 2, 'not("selector")');
-    deepEqual(D('p').not('.result').get(), q('firstp', 'ap', 'sndp', 'en', 'sap', 'first'), 'not(".class")');
-    deepEqual(D('p').not('#ap, #sndp, .result').get(), q('firstp', 'en', 'sap', 'first'), 'not("selector, selector")');
+    deepEqual(D('#not-testing li').not('.not-second-li').get(), q('not-first-li', 'not-third-li', 'not-last-li'), 'not(".class")');
+    deepEqual(D('#not-testing li').not('#not-second-li, .not-third-li').get(), q('not-first-li', 'not-last-li'), 'not("selector, selector")');
 
     deepEqual(D('#ap *').not('code').get(), q('google', 'groups', 'anchor1', 'mark'), 'not("tag selector")');
     deepEqual(D('#ap *').not('code, #mark').get(), q('google', 'groups', 'anchor1'), 'not("tag, ID selector")');
@@ -259,11 +260,12 @@ test('not(Selector|undefined)', function() {
     deepEqual(D('p').not(0).get(),         all, 'not(0) should have no effect');
     deepEqual(D('p').not('').get(),        all, 'not("") should have no effect');
 
-    deepEqual(
+    // TODO: Make sure :contains in an invalid selector and caught by the parser
+    /*deepEqual(
         D('#form option').not('option.emptyopt:contains("Nothing"),optgroup *,[value="1"]').get(),
         q('option1c', 'option1d', 'option2c', 'option2d', 'option3c', 'option3d', 'option3e', 'option4d', 'option4e', 'option5a', 'option5b'),
         'not("complex selector")'
-    );
+    );*/
 });
 
 test('not(Element)', function() {
