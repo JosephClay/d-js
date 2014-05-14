@@ -1,6 +1,7 @@
 var _ = require('_'),
     _cache = require('./cache'),
-    _nodeNameCache = _cache();
+    _nodeNameCache = _cache(),
+    _supports = require('./supports');
 
 module.exports = {
     isAttached: function(elem) {
@@ -48,5 +49,9 @@ module.exports = {
         first.length = i;
 
         return first;
+    },
+
+    normalizeNewlines: function(str) {
+        return str && _supports.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
     }
 };

@@ -54,7 +54,7 @@ var _valHooks = {
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
                         (_supports.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
-                        (!option.parentNode.disabled || !_utils.isNodeName.nodeName(option.parentNode, 'optgroup'))) {
+                        (!option.parentNode.disabled || !_utils.isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
                     value = _valHooks.option.get(option);
@@ -123,8 +123,7 @@ var _getVal = function(elem) {
         return hook.get(elem);
     }
 
-    var val = elem.value;
-    return val ? val.replace(/\r\n/g, '\n') : val;
+    return _utils.normalizeNewlines(elem.value);
 };
 
 module.exports = {
@@ -165,7 +164,7 @@ module.exports = {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
-                    if (hook || hook.set) {
+                    if (hook && hook.set) {
                         hook.set(elem, value);
                     } else {
                         elem.setAttribute('value', value);
@@ -183,7 +182,7 @@ module.exports = {
                     var value = iterator.call(elem, idx, _getVal(elem));
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
 
-                    if (hook || hook.set) {
+                    if (hook && hook.set) {
                         hook.set(elem, value);
                     } else {
                         elem.setAttribute('value', value);

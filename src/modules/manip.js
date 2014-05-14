@@ -168,10 +168,10 @@ module.exports = {
             .expose(),
 
         // TODO: These methods
-        before: function() {},
-        after: function() {},
-        insertBefore: function() {},
-        insertAfter: function() {},
+        before: function() { return this; },
+        after: function() { return this; },
+        insertBefore: function() { return this; },
+        insertAfter: function() { return this; },
 
         appendTo: overload()
             .args(O.D)

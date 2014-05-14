@@ -75,7 +75,7 @@ var _hooks = {
         },
 
         value: {
-            get: function(elem) { return elem.value ? elem.value.replace(/\r\n/g, '\n') : elem.value; },
+            get: function(elem) { return _utils.normalizeNewlines(elem.value); },
             set: function(elem, value) { elem.value = value; }
         }
     },

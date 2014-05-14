@@ -1,8 +1,9 @@
-var div    = require('./div'),
-    a      = div.getElementsByTagName('a')[0],
-    select = document.createElement('select'),
-    option = select.appendChild(document.createElement('option')),
-    input  = document.createElement('input');
+var div       = require('./div'),
+    a         = div.getElementsByTagName('a')[0],
+    select    = document.createElement('select'),
+    option    = select.appendChild(document.createElement('option')),
+    input     = document.createElement('input'),
+    textarea  = document.createElement('textarea');
 
 module.exports = {
     classList:     !!div.classList,
@@ -30,10 +31,17 @@ module.exports = {
     // Support: IE9, IE10
     radioValue: input.value === 't',
 
+    // Make sure that the options inside disabled selects aren't marked as disabled
+    // (WebKit marks them as disabled)
     optDisabled: (function() {
-        // Make sure that the options inside disabled selects aren't marked as disabled
-        // (WebKit marks them as disabled)
         select.disabled = true;
         return !option.disabled;
+    }()),
+
+    // Modern browsers normalize \r\n to \n in textarea values,
+    // but IE <= 11 (and possibly newer) do not.
+    valueNormalized: (function() {
+        textarea.value = '\r\n';
+        return textarea.value === '\n';
     }())
 };
