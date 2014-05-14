@@ -627,17 +627,12 @@ test('add(NodeList|undefined|HTMLFormElement|HTMLSelectElement)', function() {
     //equal(D([]).add(D('#form')[0].elements).length, D(D('#form')[0].elements).length, 'Array in constructor must equals array in add()');
 });
 
-test('add(String, Context)', function() {
-    expect(6);
+test('add(String)', function() {
+    expect(3);
 
     deepEqual(D('#firstp').add('#ap').get(), q('firstp', 'ap'), 'Add selector to selector ');
     deepEqual(D(document.getElementById('firstp')).add('#ap').get(), q('firstp', 'ap'), 'Add gEBId to selector');
     deepEqual(D(document.getElementById('firstp')).add(document.getElementById('ap')).get(), q('firstp', 'ap'), 'Add gEBId to gEBId');
-
-    var ctx = document.getElementById('firstp');
-    deepEqual(D('#firstp').add('#ap', ctx).get(), q('firstp'), 'Add selector to selector ');
-    deepEqual(D(document.getElementById('firstp')).add('#ap', ctx).get(), q('firstp'), 'Add gEBId to selector, not in context');
-    deepEqual(D(document.getElementById('firstp')).add('#ap', document.getElementsByTagName('body')[0]).get(), q('firstp', 'ap'), 'Add gEBId to selector, in context');
 });
 
 test('eq("-1") #10616', function() {
@@ -660,7 +655,6 @@ test('index(no arg) #10977', function() {
 
     fragment = document.createDocumentFragment();
     div = fragment.appendChild(document.createElement('div'));
-
     equal(D(div).index(), 0, 'If D#index called on element whose parent is fragment, it still should work correctly');
 });
 
