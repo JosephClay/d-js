@@ -51,78 +51,118 @@ var _legacy = {
         return false;
     },
 
-    addClasses: function(elem, names) {
-        var elemClassNameArray = _split(elem.className),
-            elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
-            nameIdx = names.length,
-            name,
-            append = '';
-
-        while (nameIdx--) {
-            name = names[nameIdx];
-
-            // Element already has this class name
-            if (elemClassNameMap[name] !== undefined) { continue; }
-
-            append += ' ' + name;
-        }
+    _mutateClasses: function(elem, diffNames, callback) {
+        var curNames    = _split(elem.className),
+            curNameSet  = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(curNames)),
+            resultNames = callback(curNames, curNameSet);
 
         // Add all the class names in a single step
-        elem.className += append;
-    },
-
-    removeClasses: function(elem, names) {
-        var elemClassNameArray = _split(elem.className),
-            elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
-            nameIdx = names.length,
-            name,
-            newClasses = array.slice(elemClassNameArray);
-
-        while (nameIdx--) {
-            name = names[nameIdx];
-
-            // Element has this class name
-            if (elemClassNameMap[name] !== undefined) {
-                newClasses.splice(nameIdx, 1);
-                elem.className = newClasses.join(' ');
-                return;
-            }
+        if (resultNames.length) {
+            elem.className = resultNames.join(' ');
+        } else {
+            elem.removeAttribute('class');
         }
     },
 
-    toggleClasses: function(elem, names) {
-        var elemClassNameArray = _split(elem.className),
-            elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
-            nameIdx = names.length,
-            name,
-            addClasses = [],
-            addClassSet = {},
-            removeClasses = [],
-            removeClassSet = {};
+    addClasses: function(elem, namesToAdd) {
+        this._mutateClasses(elem, namesToAdd, function(curNames, curNameSet) {
+            var newNames   = [],
+                newNameSet = _.object(curNames),
+                len = namesToAdd.length,
+                idx = 0,
+                newName,
+                hasName;
 
-        while (nameIdx--) {
-            name = names[nameIdx];
+            // Loop through the names being added and only add new ones.
+            for (; idx < len; idx++) {
+                newName = namesToAdd[idx];
+                hasName = newNameSet[newName] !== undefined;
 
-            // Element has this class name
-            if (elemClassNameMap[name] !== undefined) {
-                // Already added to the list
-                if (addClassSet[name]) { continue; }
-                addClasses.push(name);
-                addClassSet[name] = true;
-            } else {
-                // Already added to the list
-                if (removeClassSet[name]) { continue; }
-                removeClasses.push(name);
-                removeClassSet[name] = true;
+                // Element already has this class name
+                if (hasName) { continue; }
+
+                newNames.push(newName);
+                newNameSet[newName] = newName;
             }
-        }
 
-        if (addClasses.length) {
-            this.addClasses(elem, addClasses);
-        }
-        if (removeClasses.length) {
-            this.removeClasses(elem, removeClasses);
-        }
+            return curNames.concat(newNames);
+        });
+    },
+
+    removeClasses: function(elem, namesToRemove) {
+        this._mutateClasses(elem, namesToRemove, function(curNames) {
+            var resultNames      = [],
+                resultNameSet    = {},
+                namesToRemoveSet = _.object(namesToRemove),
+                len = curNames.length,
+                idx = 0,
+                curName,
+                hasName,
+                shouldRemove;
+
+            // Loop through the element's existing class names
+            // and only keep ones that aren't being removed.
+            for (; idx < len; idx++) {
+                curName = curNames[idx];
+                hasName = resultNameSet[curName] !== undefined;
+                shouldRemove = namesToRemoveSet[curName] !== undefined;
+
+                // Current class name is being removed
+                if (shouldRemove) { continue; }
+
+                // Element already has this class name
+                if (hasName) { continue; }
+
+                resultNames.push(curName);
+                resultNameSet[curName] = curName;
+            }
+
+            return resultNames;
+        });
+    },
+
+    toggleClasses: function(elem, namesToToggle) {
+        this._mutateClasses(elem, namesToToggle, function(curNames, curNameSet) {
+            var newNames   = curNames.slice(),
+                newNameSet = _.object(curNames),
+                len = namesToToggle.length,
+                idx = 0,
+                nameToToggle,
+                hasName;
+
+            // Loop through the element's existing class names
+            // and only keep ones that aren't being removed.
+            for (; idx < len; idx++) {
+                nameToToggle = namesToToggle[idx];
+                hasName = newNameSet[nameToToggle] !== undefined;
+
+                // Element already has this class name - remove it
+                if (hasName) {
+                    var newNameIdx = newNames.length;
+                    while (newNameIdx--) {
+                        if (newNames[newNameIdx] === nameToToggle) {
+                            newNames[newNameIdx] = null;
+                        }
+                    }
+                    delete newNameSet[nameToToggle];
+                }
+                // Element does not have this class name - add it
+                else {
+                    newNames.push(nameToToggle);
+                    newNameSet[nameToToggle] = nameToToggle;
+                }
+            }
+
+            var newNamesClean = [];
+            idx = newNames.length;
+            while (idx--) {
+                if (newNames[idx] !== null) {
+                    newNamesClean.push(newNames[idx]);
+                }
+            }
+
+            return newNamesClean;
+        });
     }
 };
 
