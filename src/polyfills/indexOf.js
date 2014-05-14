@@ -1,31 +1,38 @@
-var _toInteger = function(n) {
-        n = +n;
-        if (n !== n) { // isNaN
-            n = 0;
-        } else if (n !== 0 && n !== (1/0) && n !== -(1/0)) {
-            n = (n > 0 || -1) * Math.floor(Math.abs(n));
-        }
-        return n;
-    },
-    _boxedString = Object('a'),
-    _splitString = _boxedString[0] !== 'a' || !(0 in _boxedString),
-    _toString = (function(toString) {
-
-        return function(obj) {
-            return toString.call(obj);
-        };
-
-    }(Object.prototype.toString));
-
-
 // ES5 15.4.4.14
 // http://es5.github.com/#x15.4.4.14
 // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
 if (!Array.prototype.indexOf || ([0, 1].indexOf(1, 2) !== -1)) {
+
+    var _toInteger = function(n) {
+            n = +n;
+            if (n !== n) { // isNaN
+                n = 0;
+            } else if (n !== 0 && n !== (1/0) && n !== -(1/0)) {
+                n = (n > 0 || -1) * Math.floor(Math.abs(n));
+            }
+            return n;
+        },
+        _boxedString = Object('a'),
+        _splitString = _boxedString[0] !== 'a' || !(0 in _boxedString),
+        _toString = (function(toString) {
+
+            return function(obj) {
+                return toString.call(obj);
+            };
+
+        }(Object.prototype.toString)),
+
+        _toObject = function(o) {
+            if (o == null) { // this matches both null and undefined
+                throw new TypeError("can't convert "+o+" to object");
+            }
+            return Object(o);
+        };
+
     Array.prototype.indexOf = function indexOf(sought /*, fromIndex */ ) {
         var self = _splitString && _toString(this) === '[object String]' ?
                 this.split('') :
-                toObject(this),
+                _toObject(this),
             length = self.length >>> 0;
 
         if (!length) {
