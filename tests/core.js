@@ -62,7 +62,7 @@ test('D()', function() {
 test('length', function() {
     expect(1);
 
-    equal(D('#TestDiv p').length, 3, 'Get Number of Elements Found');
+    equal(D('#TestDiv p').length, 2, 'Get Number of Elements Found');
 });
 
 test('toArray()', function() {
@@ -78,7 +78,7 @@ test('toArray()', function() {
 
 test('get()', function() {
     expect(1);
-    equal(D('#TestDiv p').get().length, 3, 'Get All Elements');
+    equal(D('#TestDiv p').get().length, 2, 'Get All Elements');
 });
 
 test('get(Number)', function() {
@@ -115,7 +115,7 @@ test('each(Function)', function() {
 test('slice()', function() {
     expect(4);
 
-    var ps = D('#TestDiv p');
+    var ps = D('#TestDiv, #NotHiddenDivChild, #firstp');
 
     deepEqual(ps.slice(1, 2).get(), [ ps.get(1) ], 'slice(1,2)' );
     deepEqual(ps.slice(1).get(), [ ps.get(1), ps.get(2) ], 'slice(1)');
@@ -126,7 +126,7 @@ test('slice()', function() {
 test('eq()', function() {
     expect(3);
 
-    var ps = D('#TestDiv p');
+    var ps = D('#TestDiv, #NotHiddenDivChild, #firstp');
 
     deepEqual(ps.eq(1).get(), [ ps.get(1) ], 'eq(1)');
     deepEqual(ps.eq(2).get(), [ ps.get(2) ], 'eq(2)');
@@ -136,7 +136,7 @@ test('eq()', function() {
 test('first()/last()', function() {
     expect(4);
 
-    var items = D('#TestDiv p'),
+    var items = D('#TestDiv, #NotHiddenDivChild, #firstp'),
         none = D('asdf');
 
     deepEqual(items.first().get(), [ items.get(0) ], 'first()');
@@ -149,7 +149,7 @@ test('first()/last()', function() {
 test('map()', function() {
     expect(1);
 
-    var ps = D('#TestDiv p');
+    var ps = D('#TestDiv, #NotHiddenDivChild, #firstp');
 
     deepEqual(
         ps.map(function() {
