@@ -7,7 +7,7 @@ var _ = require('_'),
 
     _ID_PREFIX = 'D-uniqueId-',
     _querySelectorCache = _cache(),
-    
+
     _isMatch = require('../selector/selector-match');
 
 var _determineMethod = function(selector) {
@@ -89,7 +89,7 @@ Selector.prototype = {
             // Probably an invalid query
             console && console.error && console.error(e.message, selector);
         }
-        
+
         if (!selection.length) { return selection; }
 
         if (idApplied) { context.id = id; }
