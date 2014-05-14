@@ -21,7 +21,8 @@ var parser = require('./D/parser'),
     val = require('./modules/val'),
     position = require('./modules/position'),
     classes = require('./modules/classes'),
-    data = require('./modules/data');
+    data = require('./modules/data'),
+    events = require('./modules/events');
 
 // Store previous reference
 var _prevD = window.D;
@@ -147,7 +148,8 @@ _.extend(
     val.fn,
     classes.fn,
     position.fn,
-    data.fn
+    data.fn,
+    events.fn
 );
 
 // Expose the prototype so that
