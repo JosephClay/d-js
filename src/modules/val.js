@@ -53,7 +53,7 @@ var _valHooks = {
                 // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
-                        (support.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
+                        (_supports.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
                         (!option.parentNode.disabled || !_utils.isNodeName.nodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option

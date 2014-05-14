@@ -1,6 +1,8 @@
-var div   = require('./div'),
-    a     = div.getElementsByTagName('a')[0],
-    input = document.createElement('input');
+var div    = require('./div'),
+    a      = div.getElementsByTagName('a')[0],
+    select = document.createElement('select'),
+    option = select.appendChild(document.createElement('option')),
+    input  = document.createElement('input');
 
 module.exports = {
     classList:     !!div.classList,
@@ -26,5 +28,12 @@ module.exports = {
 
     // Check if an input maintains its value after becoming a radio
     // Support: IE9, IE10
-    radioValue: input.value === 't'
+    radioValue: input.value === 't',
+
+    optDisabled: (function() {
+        // Make sure that the options inside disabled selects aren't marked as disabled
+        // (WebKit marks them as disabled)
+        select.disabled = true;
+        return !option.disabled;
+    }())
 };
