@@ -54,7 +54,7 @@ var _legacy = {
     addClasses: function(elem, names) {
         var elemClassNameArray = _split(elem.className),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
-            nameIdx = elemClassNameArray.length,
+            nameIdx = names.length,
             name,
             append = '';
 
@@ -74,7 +74,7 @@ var _legacy = {
     removeClasses: function(elem, names) {
         var elemClassNameArray = _split(elem.className),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
-            nameIdx = elemClassNameArray.length,
+            nameIdx = names.length,
             name,
             newClasses = array.slice(elemClassNameArray);
 
@@ -93,7 +93,7 @@ var _legacy = {
     toggleClasses: function(elem, names) {
         var elemClassNameArray = _split(elem.className),
             elemClassNameMap = _classMapCache[elem.className] || (_classMapCache[elem.className] = _.object(elemClassNameArray)),
-            nameIdx = elemClassNameArray.length,
+            nameIdx = names.length,
             name,
             addClasses = [],
             addClassSet = {},
