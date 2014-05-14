@@ -25,7 +25,6 @@ var _empty = function(arr) {
             }
 
             elem.innerHTML = '';
-
         }
     },
 
@@ -62,12 +61,9 @@ var _empty = function(arr) {
         return frag;
     },
 
-    _appendFunc = function(d, fn) {
-        var idx = 0, length = d.length,
-            elem, result;
-        for (; idx < length; idx++) {
-            elem = d[idx];
-            result = fn.call(elem, idx, elem.innerHTML);
+    _appendProcess = function(d, fn) {
+        _.each(d, function(elem, idx) {
+            var result = fn.call(elem, idx, elem.innerHTML);
 
             if (!_.exists(result)) {
 
@@ -93,7 +89,38 @@ var _empty = function(arr) {
             } else {
                 // do nothing
             }
-        }
+        });
+    },
+
+    _prependProcess = function(d, fn) {
+        _.each(d, function(elem, idx) {
+            var result = fn.call(elem, idx, elem.innerHTML);
+
+            if (!_.exists(result)) {
+
+                // do nothing
+
+            } else if (_.isString(result)) {
+
+                if (utils.isHTML(value)) {
+                    _prependArrToElem(elem, parser.parseHtml(value));
+                    return this;
+                }
+
+                _prependElem(elem, _stringToFrag(result));
+
+            } else if (_.isElement(result)) {
+
+                _prependElem(elem, result);
+
+            } else if (_.isNodeList(result) || result instanceof D) {
+
+                _prependArrToElem(elem, result);
+
+            } else {
+                // do nothing
+            }
+        });
     },
 
     _appendMergeArr = function(arrOne, arrTwo) {
@@ -105,11 +132,26 @@ var _empty = function(arr) {
             }
         }
     },
+    _prependMergeArr = function(arrOne, arrTwo) {
+        var idx = 0, length = arrOne.length;
+        for (; idx < length; idx++) {
+            var i = 0, len = arrTwo.length;
+            for (; i < len; i++) {
+                _prependElem(arrOne[idx], arrTwo[i]);
+            }
+        }
+    },
 
     _appendElemToArr = function(arr, elem) {
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
             _appendElem(arr[idx], elem);
+        }
+    },
+    _prependElemToArr = function(arr, elem) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _prependElem(arr[idx], elem);
         }
     },
 
@@ -119,10 +161,20 @@ var _empty = function(arr) {
             _appendElem(elem, arr[idx]);
         }
     },
+    _prependArrToElem = function(elem, arr) {
+        var idx = 0, length = arr.length;
+        for (; idx < length; idx++) {
+            _prependElem(elem, arr[idx]);
+        }
+    },
 
     _appendElem = function(base, elem) {
         if (!base || !elem || !_.isElement(elem)) { return; }
         base.appendChild(elem);
+    },
+    _prependElem = function(base, elem) {
+        if (!base || !elem || !_.isElement(elem)) { return; }
+        base.insertBefore(elem, base.firstChild);
     };
 
 module.exports = {
@@ -155,7 +207,7 @@ module.exports = {
 
             .args(Function)
             .use(function(fn) {
-                _appendFunc(this, fn);
+                _appendProcess(this, fn);
                 return this;
             })
 
@@ -185,16 +237,52 @@ module.exports = {
                 d.append(this);
                 return this;
             })
+
             .fallback(function(obj) {
                 D(obj).append(this);
                 return this;
             })
             .expose(),
 
-        // TODO: prepend
-        prepend: function() {
+        prepend: overload()
+            .args(String)
+            .use(function(value) {
+                if (utils.isHtml(value)) {
+                    _prependMergeArr(this, parser.parseHtml(value));
+                    return this;
+                }
 
-        },
+                _prependElemToArr(this, _stringToFrag(value));
+
+                return this;
+            })
+
+            .args(Number)
+            .use(function(value) {
+                value = '' + value; // change to a string
+                _prependString(this, value);
+                return this;
+            })
+
+            .args(Function)
+            .use(function(fn) {
+                _prependProcess(this, fn);
+                return this;
+            })
+
+            .args(Element)
+            .use(function(elem) {
+                _prependElemToArr(this, elem);
+                return this;
+            })
+
+            .args(O.any(Array, O.nodeList, O.D))
+            .use(function(arr) {
+                _prependMergeArr(this, arr);
+                return this;
+            })
+
+            .expose(),
 
         prependTo: overload()
             .args(O.D)
