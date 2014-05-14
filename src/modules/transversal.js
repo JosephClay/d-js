@@ -20,7 +20,7 @@ var _getSiblings = function(context) {
     },
 
     _getNodeSiblings = function(node) {
-        var siblings = _array.slice(node.parentNode.children),
+        var siblings = _.toArray(node.parentNode.children),
             idx = siblings.length;
 
         while (idx--) {
@@ -127,7 +127,7 @@ module.exports = {
                     (parent = first.parentNode) &&
                         _utils.isAttached(parent) ||
                             parent.nodeType === _nodeType.DOCUMENT_FRAGMENT) ?
-                                _array.slice(parent.children).indexOf(first) :
+                                _.toArray(parent.children).indexOf(first) :
                                     -1;
             })
 
