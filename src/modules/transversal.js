@@ -106,7 +106,11 @@ module.exports = {
             // No argument, return index in parent
             if (!elem) {
                 // Note: _utils.isAttached check to pass test "Node without parent returns -1"
-                return (first && (parent = first.parentNode) && _utils.isAttached(parent)) ? _array.slice(parent.children).indexOf(first) : -1;
+                return (first &&
+                    (parent = first.parentNode) &&
+                        _utils.isAttached(parent)) ?
+                            _array.slice(parent.children).indexOf(first) :
+                                -1;
             }
 
             // index in selector
