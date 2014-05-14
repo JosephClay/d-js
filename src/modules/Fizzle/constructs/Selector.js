@@ -90,7 +90,7 @@ Selector.prototype = {
             console && console.error && console.error(e.message, selector);
         }
 
-        if (!selection.length) { return selection; }
+        if (!selection.length) { return []; }
 
         if (idApplied) { context.id = id; }
 
