@@ -72,6 +72,11 @@ var _hooks = {
                     return value;
                 }
             }
+        },
+
+        value: {
+            get: function(elem) { return elem.value ? elem.value.replace(/\r\n/g, '\n') : elem.value; },
+            set: function(elem, value) { elem.value = value; }
         }
     },
 
