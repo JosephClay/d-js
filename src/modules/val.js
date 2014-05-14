@@ -53,7 +53,7 @@ var _valHooks = {
                 // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
-                        (support.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
+                        (_supports.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
                         (!option.parentNode.disabled || !_utils.isNodeName.nodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
@@ -123,7 +123,8 @@ var _getVal = function(elem) {
         return hook.get(elem);
     }
 
-    return elem.getAttribute('value');
+    var val = elem.value;
+    return val ? val.replace(/\r\n/g, '\n') : val;
 };
 
 module.exports = {
@@ -142,7 +143,7 @@ module.exports = {
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem) {
+                _.each(this, function(elem, idx) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
                 });
 
@@ -176,7 +177,7 @@ module.exports = {
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem) {
+                _.each(this, function(elem, idx) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
@@ -209,7 +210,7 @@ module.exports = {
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem) {
+                _.each(this, function(elem, idx) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
                 });
 
