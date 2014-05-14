@@ -169,14 +169,12 @@ module.exports = {
 
             .args(String, Function)
             .use(function(attr, fn) {
-                var idx = 0, length = this.length;
-                for (; idx < length; idx++) {
-                    var elem = this[idx],
-                        oldAttr = _getAttribute(this[0], attr),
+                _.each(this, function(elem) {
+                    var oldAttr = _getAttribute(elem, attr),
                         result = fn.call(elem, idx, oldAttr);
-                    if (!_.exists(result)) { continue; }
+                    if (!_.exists(result)) { return; }
                     _setAttribute(elem, attr, result);
-                }
+                });
 
                 return this;
             })
