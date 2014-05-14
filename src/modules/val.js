@@ -142,7 +142,7 @@ module.exports = {
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem) {
+                _.each(this, function(elem, idx) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
                 });
 
@@ -176,7 +176,7 @@ module.exports = {
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem) {
+                _.each(this, function(elem, idx) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
@@ -209,7 +209,7 @@ module.exports = {
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem) {
+                _.each(this, function(elem, idx) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
                 });
 
