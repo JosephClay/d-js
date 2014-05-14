@@ -14,7 +14,8 @@ var _getPosition = function(elem) {
 };
 
 var _getOffset = function(elem) {
-    var rect = elem.getBoundingClientRect();
+    var rect = _utils.isAttached(elem) ? elem.getBoundingClientRect() : {};
+
     return {
         top: (rect.top + document.body.scrollTop) || 0,
         left: (rect.left + document.body.scrollLeft) || 0
