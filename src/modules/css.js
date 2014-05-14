@@ -284,7 +284,7 @@ var _setStyle = function(elem, name, value) {
         return _hooks[name].set(elem, value);
     }
 
-    elem.style[name] = value;
+    elem.style[name] = (value === +value) ? _.toPx(value) : value;
 };
 
 var _getStyle = function(elem, name) {
