@@ -96,22 +96,18 @@ module.exports = {
 
             .args(String, O.any(String, Number, Boolean))
             .use(function(prop, value) {
-                var idx = 0, length = this.length;
-                for (; idx < length; idx++) {
-                    _getOrSetProp(this[idx], prop, value);
-                }
+                _.each(this, function(elem) {
+                    _getOrSetProp(elem, prop, value);
+                });
                 return this;
             })
 
             .args(String, Function)
             .use(function(prop, fn) {
-                var idx = 0, length = this.length,
-                    elem, result;
-                for (; idx < length; idx++) {
-                    elem = this[idx];
-                    result = fn.call(elem, idx, _getOrSetProp(elem, prop));
+                _.each(this, function(elem) {
+                    var result = fn.call(elem, idx, _getOrSetProp(elem, prop));
                     _getOrSetProp(elem, prop, result);
-                }
+                });
                 return this;
             })
 
@@ -120,11 +116,10 @@ module.exports = {
         removeProp: overload()
             .args(String)
             .use(function(prop) {
-                var name = _propFix[prop] || prop,
-                    idx = 0, length = this.length;
-                for (; idx < length; idx++) {
-                    delete this[idx][name];
-                }
+                var name = _propFix[prop] || prop;
+                _.each(this, function(elem) {
+                    delete elem[name];
+                });
                 return this;
             })
             .expose()
