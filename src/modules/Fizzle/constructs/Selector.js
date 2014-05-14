@@ -102,7 +102,7 @@ Selector.prototype = {
 
         // If it's an id, return it as an array, otherwise, toArray
         // to keep from returning out NodeLists and HTMLCollections
-        return !selection.length ? [selection] : _.toArray(selection);
+        return _.isElement(selection) || !selection.length ? [selection] : _.toArray(selection);
     }
 };
 
