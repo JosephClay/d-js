@@ -163,7 +163,7 @@ module.exports = {
                 _.each(this, function(elem) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
-                    hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
+                    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
                     if (hook || hook.set) {
                         hook.set(elem, value);
                     } else {
@@ -179,8 +179,8 @@ module.exports = {
                 _.each(this, function(elem) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
-                    value = iterator.call(elem, idx, _getVal(elem));
-                    hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
+                    var value = iterator.call(elem, idx, _getVal(elem));
+                    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
 
                     if (hook || hook.set) {
                         hook.set(elem, value);
