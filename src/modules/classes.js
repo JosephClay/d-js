@@ -3,8 +3,7 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
-    _supports = require('../supports'),
-    _array = require('./array');
+    _supports = require('../supports');
 
 var _split   = _.string.split;
 var _isEmpty = _.string.isEmpty;
@@ -41,7 +40,7 @@ var _classes = {
 
     addClasses: function(elems, names) {
         // Support array-like objects
-        if (!_.isArray(names)) { names = _array.slice(names); }
+        if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             _impl.addClasses(elems[elemIdx], names);
@@ -50,7 +49,7 @@ var _classes = {
 
     removeClasses: function(elems, names) {
         // Support array-like objects
-        if (!_.isArray(names)) { names = _array.slice(names); }
+        if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             _impl.removeClasses(elems[elemIdx], names);
@@ -66,7 +65,7 @@ var _classes = {
 
     toggleClasses: function(elems, names) {
         // Support array-like objects
-        if (!_.isArray(names)) { names = _array.slice(names); }
+        if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             _impl.toggleClasses(elems[elemIdx], names);
