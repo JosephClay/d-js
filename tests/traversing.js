@@ -436,41 +436,6 @@ test('prev([String])', function() {
     equal(D('#foo').prev('p, div')[0].id, 'ap', 'Multiple filters');
 });
 
-
-test('contents()', function() {
-    expect(12);
-    var ibody, c;
-
-    equal(D('#ap').contents().length, 9, 'Check element contents');
-    ok(D('#iframe').contents()[0], 'Check existence of IFrame document');
-    ibody = D('#loadediframe').contents()[0].body;
-    ok(ibody, 'Check existence of IFrame body');
-
-    equal(D('span', ibody).text(), 'span text', 'Find span in IFrame and check its text');
-
-    D(ibody).append('<div>init text</div>');
-    equal(D('div', ibody).length, 2, 'Check the original div and the new div are in IFrame');
-
-    equal(D('div', ibody).last().text(), 'init text', 'Add text to div in IFrame');
-
-    D('div', ibody).last().text('div text');
-    equal(D('div', ibody).last().text(), 'div text', 'Add text to div in IFrame');
-
-    D('div', ibody).last().remove();
-    equal(D('div', ibody).length, 1, 'Delete the div and check only one div left in IFrame');
-
-    equal(D('div', ibody).text(), 'span text', 'Make sure the correct div is still left after deletion in IFrame');
-
-    D('<table/>', ibody).append('<tr><td>cell</td></tr>').appendTo(ibody);
-    D('table', ibody).remove();
-    equal(D('div', ibody).length, 1, 'Check for JS error on add and delete of a table in IFrame');
-
-    // using contents will get comments regular, text, and comment nodes
-    c = D('#nonnodes').contents().contents();
-    equal(c.length, 1, 'Check node,textnode,comment contents is just one');
-    equal(c[0].nodeValue, 'hi', 'Check node,textnode,comment contents is just the one from span');
-});
-
 test('sort direction', function() {
     expect(12);
 

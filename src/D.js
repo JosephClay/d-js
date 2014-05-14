@@ -1,3 +1,6 @@
+// polyfills
+require('./polyfills/indexOf');
+
 // Configure _ with string methods
 require('./_.string');
 // Configure O with string custom types
