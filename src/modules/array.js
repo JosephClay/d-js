@@ -1,6 +1,17 @@
 var _ = require('_');
 
-var _slice = _.toArray,
+var _slice = (function(_slice) {
+        return function(arr, start, end) {
+            // Exit early for empty array
+            if (!arr || !arr.length) { return []; }
+
+            // End, naturally, has to be higher than 0 to matter,
+            // so a simple existance check will do
+            if (end) { return _slice.call(arr, start, end); }
+
+            return _slice.call(arr, start || 0);
+        };
+    }([].slice)),
 
     // See jQuery
     // src\selector-native.js: 37
