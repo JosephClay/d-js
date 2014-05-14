@@ -1,5 +1,5 @@
-var div = require('./div'),
-    a = div.getElementsByTagName('a')[0],
+var div   = require('./div'),
+    a     = div.getElementsByTagName('a')[0],
     input = document.createElement('input');
 
 module.exports = {
