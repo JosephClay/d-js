@@ -9,6 +9,7 @@ var _ = require('_'),
     _commandCache   = _cache(),
     _idCache        = _cache(),
     _tagCache       = _cache(),
+    _numNotPxCache  = _cache(),
     _classCache     = _cache();
 
     // Matches "-ms-" so that it can be changed to "ms-"
@@ -30,7 +31,9 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
         klass: /^\.([\w-]+)$/
-    };
+    },
+
+    _NUM_NON_PX = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i');
 
 var _camelCase = function(match, letter) {
     return letter.toUpperCase();
@@ -43,6 +46,12 @@ module.exports = {
     camelCase: function(str) {
         return _camelCache.getOrSet(str, function() {
             return str.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
+        });
+    },
+
+    numNotPx: function(val) {
+        return _numNotPxCache.getOrSet(val, function() {
+            return _NUM_NON_PX.test(val);
         });
     },
 
