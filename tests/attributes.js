@@ -780,7 +780,7 @@
         equal($button.val(), 'foobar', 'Value retrieval on a button does not return innerHTML');
         equal($button.val('baz').html(), 'text', 'Setting the value does not change innerHTML');
 
-        equal(D('<option/>').val('test').attr('value'), 'test', 'Setting value sets the value attribute');
+        equal(D('<option></option>').val('test').attr('value'), 'test', 'Setting value sets the value attribute');
     });
 
     test('val() with non-matching values on dropdown list', function() {
@@ -837,7 +837,7 @@
         equal(document.getElementById('text1').value, '', 'Check for modified (via val(null)) value of input element');
 
         var j,
-            $select = D('<select multiple><option value="1"/><option value="2"/></select>'),
+            $select = D('<select multiple><option value="1"></option><option value="2"></option></select>'),
             $select1 = D('#select1');
 
         $select1.val(valueObj('3'));
@@ -955,7 +955,7 @@
         expect(1);
 
         try {
-            D('<option/>').val();
+            D('<option></option>').val();
             ok(true);
         } catch (e) {
             ok(false);
