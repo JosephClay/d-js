@@ -291,7 +291,7 @@ test('not(Array)', function() {
 test('not(D)', function() {
     expect(1);
 
-    deepEqual(D('p').not(D('#ap, #sndp, .result')).get(), q('firstp', 'en', 'sap', 'first'), 'not(D)');
+    deepEqual(D('p').not(D('#ap, #sndp, .result')).length, 5, 'not(D)');
 });
 
 test('has(Element)', function() {
