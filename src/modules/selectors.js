@@ -8,6 +8,16 @@ var _ = require('_'),
 
     Fizzle = require('./Fizzle/Fizzle');
 
+var _doesContain = function(a, b) {
+    var adown = a.nodeType === 9 ? a.documentElement : a,
+        bup = b && b.parentNode;
+    return a === bup || !!( bup && bup.nodeType === 1 && (
+        adown.contains ?
+            adown.contains( bup ) :
+            a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
+    ));
+};
+
 var _find = function(selector, isNew) {
     var query = Fizzle.query(selector);
     return _array.unique(query.exec(this, isNew));
@@ -54,20 +64,24 @@ module.exports = {
     filter: _filter,
 
     fn: {
-        has: function(target) {
-            // TODO: Has
-            /*var i,
-                targets = jQuery( target, this ),
-                len = targets.length;
+        has: overload()
+            .args(String)
+            .use(function(target) {
+                var targets = this.find(target),
+                    idx = 0, length = targets.length;
 
-            return this.filter(function() {
-                for ( i = 0; i < len; i++ ) {
-                    if ( jQuery.contains( this, targets[i] ) ) {
-                        return true;
-                    }
-                }
-            });*/
-        },
+                return D(
+                    _.filter(function() {
+                        for (; idx < length; idx++) {
+                            if (_doesContain(this, targets[idx])) {
+                                return true;
+                            }
+                        }
+                    })
+                );
+            })
+
+            .expose(),
 
         is: overload()
             .args(String)

@@ -39,6 +39,7 @@ var Selector = function(str) {
     this.str = str;
     this.selector = selector;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
+    this.isIdSearch = method === 'getElementById';
     this.method = method;
 };
 
@@ -80,6 +81,8 @@ Selector.prototype = {
 
             selector = this._tailorChildSelector(idApplied ? newId : id, selector);
             context = document;
+        } else if (this.isIdSearch) {
+            selector = selector.substr(1);
         }
 
         // TODO: Remove try-catch when this is working correctly
@@ -90,11 +93,16 @@ Selector.prototype = {
             console && console.error && console.error(e.message, selector);
         }
 
-        if (!selection.length) { return []; }
-
         if (idApplied) { context.id = id; }
 
-        return _.toArray(selection);
+        if (!selection || // If there's no selection
+            (_.isNodeList(selection) && !selection.length)) { // Or if there's a nodelist without a length
+            return [];
+        }
+
+        // If it's an id, return it as an array, otherwise, toArray
+        // to keep from returning out NodeLists and HTMLCollections
+        return !selection.length ? [selection] : _.toArray(selection);
     }
 };
 
