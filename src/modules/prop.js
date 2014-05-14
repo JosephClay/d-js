@@ -3,11 +3,22 @@ var _ = require('_'),
     O = overload.O,
 
     _supports = require('../supports'),
-    _nodeType = require('../nodeType');
+    _nodeType = require('../nodeType'),
+    _regex    = require('../regex');
 
 var _propFix = {
+    'tabindex': 'tabIndex',
+    'readonly': 'readOnly',
     'for': 'htmlFor',
-    'class': 'className'
+    'class': 'className',
+    'maxlength': 'maxLength',
+    'cellspacing': 'cellSpacing',
+    'cellpadding': 'cellPadding',
+    'rowspan': 'rowSpan',
+    'colspan': 'colSpan',
+    'usemap': 'useMap',
+    'frameborder': 'frameBorder',
+    'contenteditable': 'contentEditable'
 };
 
 var _propHooks = {
