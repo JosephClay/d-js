@@ -124,8 +124,9 @@ module.exports = {
                 );
             })
 
-            .args(O.any(Array, O.D))
+            .args(O.any(Array, O.D, O.nodeList))
             .use(function(arr) {
+                arr = _.toArray(arr);
 
                 return D(
                     _.filter(this, function(elem) {
@@ -138,9 +139,11 @@ module.exports = {
             .args(Function)
             .use(function(iterator) {
 
-                return _.filter(this, function(elem, idx) {
-                    return iterator.call(elem, idx);
-                });
+                return D(
+                    _.filter(this, function(elem, idx) {
+                        return !iterator.call(elem, idx);
+                    })
+                );
 
             })
 

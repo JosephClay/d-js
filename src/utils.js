@@ -4,7 +4,7 @@ var _ = require('_'),
 
 module.exports = {
     isAttached: function(elem) {
-        return (elem.ownerDocument === document);
+        return !!(elem && elem !== document ? elem.parentNode : false);
     },
 
     isHtml: function(text) {
