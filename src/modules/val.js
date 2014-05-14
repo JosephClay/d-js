@@ -25,15 +25,6 @@ var _valHooks = {
         }
     },
 
-    button: {
-        get: function(elem, name) {
-            var result = elem.getAttributeNode(name);
-            if (result && result.specified) {
-                return result.value;
-            }
-        }
-    },
-
     select: {
         get: function(elem) {
             var value, option,
