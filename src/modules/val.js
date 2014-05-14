@@ -123,8 +123,7 @@ var _getVal = function(elem) {
         return hook.get(elem);
     }
 
-    var val = elem.value;
-    return val ? val.replace(/\r\n/g, '\n') : val;
+    return _utils.normalizeNewlines(elem.value);
 };
 
 module.exports = {
