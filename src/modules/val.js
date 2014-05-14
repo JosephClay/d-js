@@ -123,7 +123,8 @@ var _getVal = function(elem) {
         return hook.get(elem);
     }
 
-    return elem.getAttribute('value');
+    var val = elem.value;
+    return val ? val.replace(/\r\n/g, '\n') : val;
 };
 
 module.exports = {
