@@ -64,20 +64,13 @@ test('class - D only', function() {
 });
 
 test('name', function() {
-    expect(5);
-
-    var form;
+    expect(4);
 
     t('Name selector', 'input[name=action]', ['text1']);
     t('Name selector with single quotes', 'input[name="action"]', ['text1']);
     t('Name selector with double quotes', 'input[name=\'action\']', ['text1']);
 
     t('Name selector for grouped input', 'input[name="types[]"]', ['types_all', 'types_anime', 'types_movie']);
-
-    form = D('<form><input name="id"/></form>').appendTo('body');
-    equal(D('input', form[0]).length, 1, 'Make sure that rooted queries on forms (with possible expandos) work.');
-
-    form.remove();
 });
 
 test('selectors with comma', function() {
@@ -92,7 +85,7 @@ test('selectors with comma', function() {
 });
 
 test('child and adjacent', function() {
-    expect(27);
+    expect(25);
 
     var nothiddendiv;
 
@@ -103,20 +96,18 @@ test('child and adjacent', function() {
     t('Child w/ Class', 'p > a.blog', ['mark','simon']);
     t('All Children', 'code > *', ['anchor1','anchor2']);
     t('All Grandchildren', 'p > * > *', ['anchor1','anchor2']);
-    t('Adjacent', 'p + p', ['ap','en','sap']);
-    t('Adjacent', 'p#firstp + p', ['ap']);
+    t('Adjacent', '.selector-p + .selector-p', ['selector-secondp','selector-thirdp']);
+    t('Adjacent', 'p#selector-firstp + p', ['selector-secondp']);
     t('Adjacent', 'p[lang=en] + p', ['sap']);
     t('Adjacent', 'a.GROUPS + code + a', ['mark']);
     t('Element Preceded By', '#groups ~ a', ['mark']);
     t('Element Preceded By', '#length ~ input', ['idTest']);
     t('Element Preceded By', '#siblingfirst ~ em', ['siblingnext', 'siblingthird']);
     t('Element Preceded By (multiple)', '#siblingTest em ~ em ~ em ~ span', ['siblingspan']);
-    t('Element Preceded By, Containing', '#liveHandlerOrder ~ div em:contains("1")', ['siblingfirst']);
 
     t('Multiple combinators selects all levels', '#siblingTest em *', ['siblingchild', 'siblinggrandchild', 'siblinggreatgrandchild']);
     t('Multiple combinators selects all levels', '#siblingTest > em *', ['siblingchild', 'siblinggrandchild', 'siblinggreatgrandchild']);
     t('Multiple sibling combinators doesnt miss general siblings', '#siblingTest > em:first-child + em ~ span', ['siblingspan']);
-    t('Combinators are not skipped when mixing general and specific', '#siblingTest > em:contains("x") + em ~ span', []);
 
     equal(D('#listWithTabIndex').length, 1, 'Parent div for next test is found via ID (#8310)');
     equal(D('#listWithTabIndex li:eq(2) ~ li').length, 1, 'Find by general sibling combinator (#8310)');
@@ -133,7 +124,7 @@ test('child and adjacent', function() {
 });
 
 test('attributes', function() {
-    expect(54);
+    expect(46);
 
     var attrbad, div, withScript;
 
@@ -148,19 +139,13 @@ test('attributes', function() {
     t('Boolean attribute exists', '#select2 option[selected]', ['option2d']);
     t('Boolean attribute equals', '#select2 option[selected="selected"]', ['option2d']);
 
-    ok(D('#qunit-fixture:hover a[rel="bookmark"]:first').get(0), 'Attribute Equals');
-    ok(D('#qunit-fixture a[rel="bookmark"]').get(0), 'Attribute Equals');
-    ok(D('#qunit-fixture a[rel="bookmark"]').get(0), 'Attribute Equals');
-    ok(D('#qunit-fixture a[rel=bookmark]').get(0), 'Attribute Equals');
-    ok(D('#qunit-fixture a[href="http://www.google.com/"]').get(0), 'Attribute Equals');
-    ok(D('#qunit-fixture a[ rel = "bookmark" ]').get(0), 'Attribute Equals');
-
-    t('Attribute Equals Number', '#qunit-fixture option[value=1]', ['option1b','option2b','option3b','option4b','option5c']);
-    t('Attribute Equals Number', '#qunit-fixture li[tabIndex=-1]', ['foodWithNegativeTabIndex']);
+    ok(D('#selector-fixture a[rel="bookmark"]').get(0), 'Attribute Equals');
+    ok(D('#selector-fixture a[href="http://www.google.com/"]').get(0), 'Attribute Equals');
+    ok(D('#selector-fixture a[ rel = "bookmark" ]').get(0), 'Attribute Equals');
 
     document.getElementById('anchor2').href = '#2';
-    t('href Attribute', 'p a[href^=#]', ['anchor2']);
-    t('href Attribute', 'p a[href*=#]', ['simon1', 'anchor2']);
+    t('href Attribute', 'p a[href^="#"]', ['anchor2']);
+    t('href Attribute', 'p a[href*="#"]', ['simon1', 'anchor2']);
 
     t('for Attribute', 'form label[for]', ['label-for']);
     t('for Attribute in form', '#form [for=action]', ['label-for']);
@@ -169,9 +154,6 @@ test('attributes', function() {
     t('Attribute containing []', 'input[name^="foo[bar]"]', ['hidden2']);
     t('Attribute containing []', 'input[name*="[bar]"]', ['hidden2']);
     t('Attribute containing []', 'input[name$="bar]"]', ['hidden2']);
-    t('Attribute containing []', 'input[name$="[bar]""]', ['hidden2']);
-    t('Attribute containing []', 'input[name$="foo[bar]""]', ['hidden2']);
-    t('Attribute containing []', 'input[name*="foo[bar]""]', ['hidden2']);
 
     t('Multiple Attribute Equals', '#form input[type="radio"], #form input[type="hidden"]', ['radio1', 'radio2', 'hidden1']);
     t('Multiple Attribute Equals', '#form input[type="radio"], #form input[type=\'hidden\']', ['radio1', 'radio2', 'hidden1']);
@@ -179,13 +161,11 @@ test('attributes', function() {
 
     t('Attribute selector using UTF8', 'span[lang=中文]', ['台北']);
 
-    t('Attribute Begins With', 'a[href ^= "http://www"]', ['google','yahoo']);
+    t('Attribute Begins With', '#selector-fixture a[href ^= "http://www"]', ['selector-anchor']);
     t('Attribute Ends With', 'a[href $= "org/"]', ['mark']);
-    t('Attribute Contains', 'a[href *= "google"]', ['google','groups']);
-    t('Attribute Is Not Equal', '#ap a[hreflang!="en"]', ['google','groups','anchor1']);
+    t('Attribute Contains', '#selector-fixture a[href *= "google"]', ['selector-anchor']);
 
     t('Empty values', '#select1 option[value=""]', ['option1a']);
-    t('Empty values', '#select1 option[value!=""]', ['option1b','option1c','option1d']);
 
     t('Select options via :selected', '#select1 option:selected', ['option1a']);
     t('Select options via :selected', '#select2 option:selected', ['option2d']);
@@ -194,8 +174,6 @@ test('attributes', function() {
 
     t('Grouped Form Elements', 'input[name="foo[bar]"]', ['hidden2']);
 
-    // Make sure attribute value quoting works correctly. See D #6093; #6428; #13894
-    // Use seeded results to bypass querySelectorAll optimizations
     attrbad = D(
         '<input type="hidden" id="attrbad_space" name="foo bar"/>' +
         '<input type="hidden" id="attrbad_dot" value="2" name="foo.baz"/>' +
@@ -208,7 +186,7 @@ test('attributes', function() {
         '<input type="hidden" id="attrbad_unicode" data-attr="&#x4e00;"/>'
    ).appendTo('#qunit-fixture').get();
 
-    t('Underscores dont need escaping', 'input[id=types_all]', ['types_all']);
+    t('Underscores dont need escaping', 'input[id="types_all"]', ['types_all']);
 
     t('input[type=text]', '#form input[type=text]', ['text1', 'text2', 'hidden2', 'name']);
     t('input[type=search]', '#form input[type=search]', ['search']);
@@ -262,83 +240,4 @@ test('disconnected nodes - D only', function() {
     equal($opt.is(':selected'), false, 'unselected option');
     $opt.prop('selected', true);
     equal($opt.is(':selected'), true, 'selected option');
-});
-
-test('D.unique', function() {
-    expect(14);
-
-    function Arrayish(arr) {
-        var i = this.length = arr.length;
-        while (i--) {
-            this[ i ] = arr[ i ];
-        }
-    }
-    Arrayish.prototype = {
-        slice: [].slice,
-        sort: [].sort,
-        splice: [].splice
-    };
-
-    var i, tests,
-        detached = [],
-        body = document.body,
-        fixture = document.getElementById('qunit-fixture'),
-        detached1 = document.createElement('p'),
-        detached2 = document.createElement('ul'),
-        detachedChild = detached1.appendChild(document.createElement('a')),
-        detachedGrandchild = detachedChild.appendChild(document.createElement('b'));
-
-    for (i = 0; i < 12; i++) {
-        detached.push(document.createElement('li'));
-        detached[i].id = 'detached' + i;
-        detached2.appendChild(document.createElement('li')).id = 'detachedChild' + i;
-    }
-
-    tests = {
-        'Empty': {
-            input: [],
-            expected: []
-        },
-        'Single-element': {
-            input: [ fixture ],
-            expected: [ fixture ]
-        },
-        'No duplicates': {
-            input: [ fixture, body ],
-            expected: [ body, fixture ]
-        },
-        'Duplicates': {
-            input: [ body, fixture, fixture, body ],
-            expected: [ body, fixture ]
-        },
-        'Detached': {
-            input: detached.slice(0),
-            expected: detached.slice(0)
-        },
-        'Detached children': {
-            input: [
-                detached2.childNodes[0],
-                detached2.childNodes[1],
-                detached2.childNodes[2],
-                detached2.childNodes[3]
-            ],
-            expected: [
-                detached2.childNodes[0],
-                detached2.childNodes[1],
-                detached2.childNodes[2],
-                detached2.childNodes[3]
-            ]
-        },
-        'Attached/detached mixture': {
-            input: [ detached1, fixture, detached2, document, detachedChild, body, detachedGrandchild ],
-            expected: [ document, body, fixture ],
-            length: 3
-        }
-    };
-
-    D.each(tests, function(test, label) {
-        var length = test.length || test.input.length;
-        deepEqual(D.unique(test.input).slice(0, length), test.expected, label + ' (array)');
-        deepEqual(D.unique(new Arrayish(test.input)).slice(0, length), test.expected, label + ' (quasi-array)');
-    });
 });
