@@ -94,7 +94,7 @@ Selector.prototype = {
 
         if (idApplied) { context.id = id; }
 
-        return _array.slice(selection);
+        return _.toArray(selection);
     }
 };
 
