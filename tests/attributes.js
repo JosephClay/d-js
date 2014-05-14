@@ -553,7 +553,6 @@
             };
 
         D.each(tests, function(val, key) {
-            debugger;
             equal(div.attr(key), val, 'Attribute `' + key + '` exists, and has a value of `' + val + '`');
         });
     });
