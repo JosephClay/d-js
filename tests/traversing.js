@@ -278,7 +278,7 @@ test('not(Element)', function() {
 test('not(Function)', function() {
     expect(1);
 
-    deepEqual(D('#qunit-fixture p').not(function() { return D('a', this).length; }).get(), q('sndp', 'first'), 'not(Function)');
+    deepEqual(D('#qunit-fixture p').not(function() { return D(this).find('a').length; }).get(), q('sndp', 'first'), 'not(Function)');
 });
 
 test('not(Array)', function() {
