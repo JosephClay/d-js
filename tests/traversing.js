@@ -510,16 +510,6 @@ test('add(String selector)', function() {
     ok(divs[0].parentNode, 'Sort with the disconnected node last (started with disconnected first).');
 });
 
-test('add(String selector, String context)', function() {
-    expect(1);
-
-    deepEqual(
-        D([]).add('div', '#nothiddendiv').toArray(),
-        q('nothiddendivchild'),
-        'Check elements from document'
-    );
-});
-
 test('add(String html)', function() {
     expect(3);
 
@@ -615,16 +605,6 @@ test('add(NodeList|undefined|HTMLFormElement|HTMLSelectElement)', function() {
 
     equal(D([]).add(document.getElementById('form')).length, 1, 'Add a form');
     equal(D([]).add(document.getElementById('select1')).length, 1, 'Add a select');
-
-    // We no longer support .add(form.elements), unfortunately.
-    // There is no way, in browsers, to reliably determine the difference
-    // between form.elements and form - and doing .add(form) and having it
-    // add the form elements is way to unexpected, so this gets the boot.
-    //ok(D([]).add(D('#form')[0].elements).length >= 13, 'Check elements from array');
-
-    // For the time being, we're discontinuing support for D(form.elements) since it's ambiguous in IE
-    // use D([]).add(form.elements) instead.
-    //equal(D([]).add(D('#form')[0].elements).length, D(D('#form')[0].elements).length, 'Array in constructor must equals array in add()');
 });
 
 test('add(String)', function() {
