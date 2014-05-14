@@ -111,7 +111,6 @@ test('index()', function() {
     expect(2);
 
     equal(D('#text2').index(), 2, 'Returns the index of a child amongst its siblings');
-
     equal(D('<div/>').index(), -1, 'Node without parent returns -1');
 });
 
