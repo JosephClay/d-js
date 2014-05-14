@@ -21,15 +21,15 @@ var _getDocumentDimension = function(elem, name) {
 
     _getInnerWidth = function(elem) {
         var width = _css.width.get(elem),
-            style = _css.getComputedStyle(elem);
+            style = _css.getComputedStyle(elem) || {};
 
-        return width + _.parseInt(style.paddingLeft) + _.parseInt(style.paddingRight);
+        return width + _.parseInt(style.paddingLeft || 0) + _.parseInt(style.paddingRight || 0);
     },
     _getInnerHeight = function(elem) {
         var height = _css.height.get(elem),
-            style = _css.getComputedStyle(elem);
+            style = _css.getComputedStyle(elem) || {};
 
-        return height + _.parseInt(style.paddingTop) + _.parseInt(style.paddingBottom);
+        return height + _.parseInt(style.paddingTop || 0) + _.parseInt(style.paddingBottom || 0);
     },
 
     _getOuterWidth = function(elem, withMargin) {
