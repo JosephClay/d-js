@@ -205,6 +205,16 @@ var _ = {
             arr.push(obj[key]);
         }
         return arr;
+    },
+
+    object: function(arr) {
+        var obj = {};
+        var len = arr.length,
+            idx = 0;
+        for (; idx < len; idx++) {
+            obj[arr[idx]] = arr[idx];
+        }
+        return obj;
     }
 };
 
