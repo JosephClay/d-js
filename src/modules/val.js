@@ -4,7 +4,9 @@ var _ = require('_'),
 
     _div = require('../div'),
 
-    _supports = require('../supports');
+    _nodeType = require('../nodeType'),
+    _supports = require('../supports'),
+    _utils    = require('../utils');
 
 var _text = {
     get: (_div.textContent !== undefined) ?
