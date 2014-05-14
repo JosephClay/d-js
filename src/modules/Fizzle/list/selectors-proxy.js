@@ -11,6 +11,7 @@ module.exports = {
     ':reset'   : '[type="reset"]',
     ':button'  : '[type="button"]',
     ':image'   : '[type="image"]',
+    ':input'   : '[type="input"]',
     ':file'    : '[type="file"]',
     ':enabled' : ':not([disabled])',
     ':disabled': '[disabled]',
