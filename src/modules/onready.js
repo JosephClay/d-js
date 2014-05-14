@@ -13,6 +13,7 @@ var _bind = function(fn) {
     document.attachEvent('onreadystatechange', function() {
         if (document.readyState === 'interactive') { fn(); }
     });
+    window.attachEvent('onload', fn);
 };
 
 var _makeCalls = function() {
