@@ -40,6 +40,7 @@ var Selector = function(str) {
     this.selector = selector;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
     this.isIdSearch = method === 'getElementById';
+    this.isClassSearch = !this.isIdSearch && method === 'getElementsByClassName';
     this.method = method;
 };
 
@@ -81,7 +82,7 @@ Selector.prototype = {
 
             selector = this._tailorChildSelector(idApplied ? newId : id, selector);
             context = document;
-        } else if (this.isIdSearch) {
+        } else if (this.isIdSearch || this.isClassSearch) {
             selector = selector.substr(1);
         }
 

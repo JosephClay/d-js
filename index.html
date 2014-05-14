@@ -250,9 +250,59 @@
         </map>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="selector-fixture">
+            <p id="selector-firstp"></p>
+            <p id="selector-secondp"></p>
+            <p id="selector-thirdp"></p>
+
+            <input type="text" id="selector-length" name="test"/>
+        </div>
+
+
+
+
+
         <script>
             var t = function(a, b, c) {
-                var f = jQuery(b).get(),
+                var f = D(b).get(),
                     s = "",
                     i = 0;
 
@@ -268,7 +318,8 @@
                     i = 0;
 
                 for (; i < arguments.length; i++) {
-                    r.push(document.getElementById(arguments[i]));
+                    var el = document.getElementById(arguments[i]);
+                    if (el) { r.push(el); }
                 }
                 return r;
             };

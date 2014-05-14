@@ -5,17 +5,12 @@ module('selector');
  */
 
 test('element - D only', function() {
-    expect(7);
+    expect(4);
 
-    var fixture = document.getElementById('qunit-fixture');
+    deepEqual(D('#selector-fixture').find('p').get(), q('selector-firstp','selector-secondp','selector-thirdp'), 'Finding elements with a context via .find().');
 
-    deepEqual(D('p', fixture).get(), q('firstp','ap','sndp','en','sap','first'), 'Finding elements with a Node context.');
-    deepEqual(D('p', '#qunit-fixture').get(), q('firstp','ap','sndp','en','sap','first'), 'Finding elements with a selector context.');
-    deepEqual(D('p', D('#qunit-fixture')).get(), q('firstp','ap','sndp','en','sap','first'), 'Finding elements with a D object context.');
-    deepEqual(D('#qunit-fixture').find('p').get(), q('firstp','ap','sndp','en','sap','first'), 'Finding elements with a context via .find().');
-
-    ok(D('#length').length, '<input name=\'length\'> cannot be found under IE, see #945');
-    ok(D('#lengthtest input').length, '<input name=\'length\'> cannot be found under IE, see #945');
+    ok(D('#selector-length').length, '<input name="length"> cannot be found under IE, see #945');
+    ok(D('#selector-fixture input').length, '<input name="length"> cannot be found under IE, see #945');
 
     // #7533
     equal(D('<div id=\'A\'B~C.D[E]\'><p>foo</p></div>').find('p').length, 1, 'Find where context root is a node and has an ID with CSS3 meta characters');
@@ -25,7 +20,6 @@ test('id', function() {
     expect(26);
 
     var a;
-
     t('ID Selector', '#body', ['body']);
     t('ID Selector w/ Element', 'body#body', ['body']);
     t('ID Selector w/ Element', 'ul#first', []);
@@ -64,11 +58,8 @@ test('id', function() {
 });
 
 test('class - D only', function() {
-    expect(4);
+    expect(1);
 
-    deepEqual(D('.blog', document.getElementsByTagName('p')).get(), q('mark', 'simon'), 'Finding elements with a context.');
-    deepEqual(D('.blog', 'p').get(), q('mark', 'simon'), 'Finding elements with a context.');
-    deepEqual(D('.blog', D('p')).get(), q('mark', 'simon'), 'Finding elements with a context.');
     deepEqual(D('p').find('.blog').get(), q('mark', 'simon'), 'Finding elements with a context.');
 });
 
