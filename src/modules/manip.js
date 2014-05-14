@@ -61,7 +61,7 @@ var _empty = function(arr) {
         return frag;
     },
 
-    _appendProcess = function(d, fn) {
+    _appendPrependFunc = function(d, fn, pender) {
         _.each(d, function(elem, idx) {
             var result = fn.call(elem, idx, elem.innerHTML);
 
@@ -72,107 +72,50 @@ var _empty = function(arr) {
             } else if (_.isString(result)) {
 
                 if (utils.isHTML(value)) {
-                    _appendArrToElem(elem, parser.parseHtml(value));
+                    _appendPrependArrayToElem(elem, parser.parseHtml(value), pender);
                     return this;
                 }
 
-                _appendElem(elem, _stringToFrag(result));
+                pender(elem, _stringToFrag(result));
 
             } else if (_.isElement(result)) {
 
-                _appendElem(elem, result);
+                pender(elem, result);
 
             } else if (_.isNodeList(result) || result instanceof D) {
 
-                _appendArrToElem(elem, result);
+                _appendPrependArrayToElem(elem, result, pender);
 
             } else {
                 // do nothing
             }
         });
     },
-
-    _prependProcess = function(d, fn) {
-        _.each(d, function(elem, idx) {
-            var result = fn.call(elem, idx, elem.innerHTML);
-
-            if (!_.exists(result)) {
-
-                // do nothing
-
-            } else if (_.isString(result)) {
-
-                if (utils.isHTML(value)) {
-                    _prependArrToElem(elem, parser.parseHtml(value));
-                    return this;
-                }
-
-                _prependElem(elem, _stringToFrag(result));
-
-            } else if (_.isElement(result)) {
-
-                _prependElem(elem, result);
-
-            } else if (_.isNodeList(result) || result instanceof D) {
-
-                _prependArrToElem(elem, result);
-
-            } else {
-                // do nothing
+    _appendPrependMergeArray = function(arrOne, arrTwo, pender) {
+        var idx = 0, length = arrOne.length;
+        for (; idx < length; idx++) {
+            var i = 0, len = arrTwo.length;
+            for (; i < len; i++) {
+                pender(arrOne[idx], arrTwo[i]);
             }
+        }
+    },
+    _appendPrependElemToArray = function(arr, elem, pender) {
+        _.each(arr, function(arrElem) {
+            pender(arrElem, elem);
+        });
+    },
+    _appendPrependArrayToElem = function(elem, arr, pender) {
+        _.each(arr, function(arrElem) {
+            pender(elem, arrElem);
         });
     },
 
-    _appendMergeArr = function(arrOne, arrTwo) {
-        var idx = 0, length = arrOne.length;
-        for (; idx < length; idx++) {
-            var i = 0, len = arrTwo.length;
-            for (; i < len; i++) {
-                _appendElem(arrOne[idx], arrTwo[i]);
-            }
-        }
-    },
-    _prependMergeArr = function(arrOne, arrTwo) {
-        var idx = 0, length = arrOne.length;
-        for (; idx < length; idx++) {
-            var i = 0, len = arrTwo.length;
-            for (; i < len; i++) {
-                _prependElem(arrOne[idx], arrTwo[i]);
-            }
-        }
-    },
-
-    _appendElemToArr = function(arr, elem) {
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-            _appendElem(arr[idx], elem);
-        }
-    },
-    _prependElemToArr = function(arr, elem) {
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-            _prependElem(arr[idx], elem);
-        }
-    },
-
-    _appendArrToElem = function(elem, arr) {
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-            _appendElem(elem, arr[idx]);
-        }
-    },
-    _prependArrToElem = function(elem, arr) {
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-            _prependElem(elem, arr[idx]);
-        }
-    },
-
-    _appendElem = function(base, elem) {
+    _append = function(base, elem) {
         if (!base || !elem || !_.isElement(elem)) { return; }
         base.appendChild(elem);
     },
-    _prependElem = function(base, elem) {
+    _prepend = function(base, elem) {
         if (!base || !elem || !_.isElement(elem)) { return; }
         base.insertBefore(elem, base.firstChild);
     };
@@ -189,37 +132,36 @@ module.exports = {
             .args(String)
             .use(function(value) {
                 if (utils.isHtml(value)) {
-                    _appendMergeArr(this, parser.parseHtml(value));
+                    _appendPrependMergeArray(this, parser.parseHtml(value), _append);
                     return this;
                 }
 
-                _appendElemToArr(this, _stringToFrag(value));
+                _appendPrependElemToArray(this, _stringToFrag(value), _append);
 
                 return this;
             })
 
             .args(Number)
             .use(function(value) {
-                value = '' + value; // change to a string
-                _appendString(this, value);
+                _appendPrependElemToArray(this, _stringToFrag('' + value), _append);
                 return this;
             })
 
             .args(Function)
             .use(function(fn) {
-                _appendProcess(this, fn);
+                _appendPrependFunc(this, fn, _append);
                 return this;
             })
 
             .args(Element)
             .use(function(elem) {
-                _appendElemToArr(this, elem);
+                _appendPrependElemToArray(this, elem, _append);
                 return this;
             })
 
             .args(O.any(Array, O.nodeList, O.D))
             .use(function(arr) {
-                _appendMergeArr(this, arr);
+                _appendPrependMergeArray(this, arr, _append);
                 return this;
             })
 
@@ -248,37 +190,36 @@ module.exports = {
             .args(String)
             .use(function(value) {
                 if (utils.isHtml(value)) {
-                    _prependMergeArr(this, parser.parseHtml(value));
+                    _appendPrependMergeArray(this, parser.parseHtml(value), _prepend);
                     return this;
                 }
 
-                _prependElemToArr(this, _stringToFrag(value));
+                _appendPrependElemToArray(this, _stringToFrag(value), _prepend);
 
                 return this;
             })
 
             .args(Number)
             .use(function(value) {
-                value = '' + value; // change to a string
-                _prependString(this, value);
+                _appendPrependElemToArray(this, _stringToFrag('' + value), _prepend);
                 return this;
             })
 
             .args(Function)
             .use(function(fn) {
-                _prependProcess(this, fn);
+                _appendPrependFunc(this, fn, _prepend);
                 return this;
             })
 
             .args(Element)
             .use(function(elem) {
-                _prependElemToArr(this, elem);
+                _appendPrependElemToArray(this, elem, _prepend);
                 return this;
             })
 
             .args(O.any(Array, O.nodeList, O.D))
             .use(function(arr) {
-                _prependMergeArr(this, arr);
+                _appendPrependMergeArray(this, arr, _prepend);
                 return this;
             })
 
