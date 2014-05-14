@@ -73,19 +73,19 @@ module.exports = {
         isStrictId: function(str) {
             return _idCache.getOrSet(str, function() {
                 var result = _SELECTOR.id.exec(str);
-                return result ? !result[1] : false;
+                return result ? !!result[1] : false;
             });
         },
         isTag: function(str) {
             return _tagCache.getOrSet(str, function() {
                 var result = _SELECTOR.tag.exec(str);
-                return result ? !result[1] : false;
+                return result ? !!result[1] : false;
             });
         },
         isClass: function(str) {
             return _classCache.getOrSet(str, function() {
                 var result = _SELECTOR.klass.exec(str);
-                return result ? !result[1] : false;
+                return result ? !!result[1] : false;
             });
         }
     }
