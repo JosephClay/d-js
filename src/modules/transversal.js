@@ -1,4 +1,7 @@
 var _ = require('_'),
+    overload = require('overload'),
+    O = overload.O,
+
     _utils = require('../utils'),
     _nodeType = require('../nodeType'),
 
@@ -97,14 +100,27 @@ var _getSiblings = function(context) {
 
 module.exports = {
     fn: {
-        // TODO: Overload
-        index: function(elem) {
+        index: overload()
 
-            var first = this[0],
-                parent;
+            .args(String)
+            .use(function(selector) {
+                var first = this[0];
+                return D(selector).indexOf(first); // TODO: Can this be optimized?
+            })
 
-            // No argument, return index in parent
-            if (!elem) {
+            .args(O.any(Element, O.window, O.document))
+            .use(function(elem) {
+                return this.indexOf(elem);
+            })
+
+            .args(O.D)
+            .use(function(d) {
+                return this.indexOf(d[0]);
+            })
+
+            .fallback(function() {
+                var first = this[0],
+                    parent;
                 // _utils.isAttached check to pass test "Node without parent returns -1"
                 // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
                 return (first &&
@@ -113,17 +129,9 @@ module.exports = {
                             parent.nodeType === _nodeType.DOCUMENT_FRAGMENT) ?
                                 _array.slice(parent.children).indexOf(first) :
                                     -1;
-            }
+            })
 
-            // index in selector
-            if (_.isString(elem)) {
-                var selector = elem;
-                return D(selector).indexOf(first); // TODO: Can this be optimized?
-            }
-
-            // Locate the position of the desired element
-            return this.indexOf(elem instanceof D ? elem[0] : elem);
-        },
+            .expose(),
 
         // TODO: Filter by selector
         closest: function(selector) {
