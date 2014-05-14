@@ -737,7 +737,7 @@
         var checks, $button;
         equal(D('#text1').val(), 'Test', 'Check for value of input element');
         // ticket #1714 this caused a JS error in IE
-        equal(D('#first').val(), '', 'Check a paragraph element to see if it has a value');
+        equal(D('#first').val(), undefined, 'Check a paragraph element to see if it has a value');
         ok(D([]).val() === undefined, 'Check an empty D object will return undefined from val');
 
         equal(D('#select2').val(), '3', 'Call val() on a single="single" select');
