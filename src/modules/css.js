@@ -17,6 +17,22 @@ var _swapSettings = {
     }
 };
 
+// TODO: This is duplicated from dimensions.js
+var _getDocumentDimension = function(elem, name) {
+    // Either scroll[Width/Height] or offset[Width/Height] or
+    // client[Width/Height], whichever is greatest
+    var doc = elem.documentElement;
+    return Math.max(
+        elem.body['scroll' + name],
+        elem.body['offset' + name],
+
+        doc['scroll' + name],
+        doc['offset' + name],
+
+        doc['client' + name]
+    );
+};
+
 var _hide = function(elem) {
         elem.style.display = 'none';
     },
@@ -111,16 +127,14 @@ var _getWidthOrHeight = function(elem, name) {
         if (val < 0 || !val) { val = elem.style[name]; }
 
         // Computed unit is not pixels. Stop here and return.
-        if (rnumnonpx.test(val)) {
-            return val;
-        }
+        if (_regex.numNotPx(val)) { return val; }
 
         // we need the check for style in case a browser which returns unreliable values
         // for getComputedStyle silently falls back to the reliable elem.style
         valueIsBorderBox = isBorderBox && val === styles[name];
 
         // Normalize '', auto, and prepare for extra
-        val = parseFloat( val ) || 0;
+        val = parseFloat(val) || 0;
     }
 
     // use the active box-sizing model to add/subtract irrelevant styles
@@ -268,7 +282,7 @@ var _setStyle = function(elem, name, value) {
         return _hooks[name].set(elem, value);
     }
 
-    elem.style[name] = value;
+    elem.style[name] = (value === +value) ? _.toPx(value) : value;
 };
 
 var _getStyle = function(elem, name) {
