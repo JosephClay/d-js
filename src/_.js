@@ -181,6 +181,44 @@ var _ = {
         return r;
     },
 
+    toArray: function(obj) {
+        if (!obj) {
+            return [];
+        }
+        if (_.isArray(obj)) {
+            return Array.prototype.slice.call(obj);
+        }
+
+        var arr,
+            len = +obj.length,
+            idx = 0;
+
+        if (obj.length === +obj.length) {
+            arr = new Array(obj.length);
+            for (; idx < len; idx++) {
+                arr[idx] = obj[idx];
+            }
+            return arr;
+        }
+
+        for (var key in obj) {
+            arr.push(obj[key]);
+        }
+        return arr;
+    },
+
+    // Doesn't a very simple case of array to object.
+    // Takes the value and sets it as the key and the value.
+    object: function(arr) {
+        var obj = {},
+            len = arr.length,
+            idx = 0;
+        for (; idx < len; idx++) {
+            obj[arr[idx]] = arr[idx];
+        }
+        return obj;
+    },
+
     each: function(obj, iterator) {
         if (!obj || !iterator) { return; }
 
