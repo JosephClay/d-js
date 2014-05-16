@@ -2,10 +2,7 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-// TODO: :eq, :lt, :gt, and :contains are considered valid selectors and should not be
-// TODO: can we do :eq as nth-child(x)?
-// TODO: can we do :gt as nth-child(n+x)?
-// TODO: can we do :lt as nth-child(~n+x)?
+// TODO: :contains is considered valid selectors and should not be
 var _ = require('_'),
 
     _cache         = require('../../../cache'),
