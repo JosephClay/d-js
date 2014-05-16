@@ -5,24 +5,20 @@ var _ = require('_'),
     _css = require('./css');
 
 var _getInnerWidth = function(elem) {
-        var width = _css.width.get(elem),
+        var width = parseFloat(_css.width.get(elem)) || 0,
             style = _css.getComputedStyle(elem) || {};
 
         return width +
             _.parseInt(style.paddingLeft || 0) +
-                _.parseInt(style.paddingRight || 0) -
-                    _.parseInt(style.borderLeftWidth || 0) -
-                        _.parseInt(style.borderRightWidth || 0);
+                _.parseInt(style.paddingRight || 0);
     },
     _getInnerHeight = function(elem) {
-        var height = _css.height.get(elem),
+        var height = parseFloat(_css.height.get(elem)) || 0,
             style = _css.getComputedStyle(elem) || {};
 
         return height +
                 _.parseInt(style.paddingTop || 0) +
-                    _.parseInt(style.paddingBottom || 0) -
-                        _.parseInt(style.borderTopWidth || 0) -
-                            _.parseInt(style.borderBottomWidth || 0);
+                    _.parseInt(style.paddingBottom || 0);
     },
 
     _getOuterWidth = function(elem, withMargin) {
@@ -66,7 +62,7 @@ module.exports = {
                 var first = this[0];
                 if (!first) { return null; }
 
-                return _.parseInt(_css.width.get(first) || 0);
+                return parseFloat(_css.width.get(first) || 0);
             })
             .expose(),
 
@@ -84,7 +80,7 @@ module.exports = {
                 var first = this[0];
                 if (!first) { return null; }
 
-                return _.parseInt(_css.height.get(first) || 0);
+                return parseFloat(_css.height.get(first) || 0);
             })
             .expose(),
 

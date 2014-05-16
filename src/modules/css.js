@@ -79,7 +79,7 @@ var _hide = function(elem) {
             var width = elem.offsetWidth;
             return (width === 0 &&
                     _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
-                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return elem.offsetWidth; }) :
+                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'width'); }) :
                             _getWidthOrHeight(elem, 'width'); // TODO: Eeewwww
         },
         set: function(elem, val) {
@@ -100,7 +100,7 @@ var _hide = function(elem) {
             var height = elem.offsetHeight;
             return (height === 0 &&
                     _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
-                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return elem.offsetHeight; }) :
+                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'height'); }) :
                             _getWidthOrHeight(elem, 'height');
         },
 
@@ -150,13 +150,15 @@ var _getWidthOrHeight = function(elem, name) {
 
 var _cssExpand = [ 'Top', 'Right', 'Bottom', 'Left' ];
 var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
-    var val = 0;
-
-    // If we already have the right measurement, avoid augmentation
-    if (isBorderBox) { return val; }
-
-    // Otherwise initialize for horizontal or vertical properties
-    var idx = (name === 'width') ? 1 : 0;
+    var val = 0,
+            // If we already have the right measurement, avoid augmentation
+        idx = extra === (isBorderBox ? 'border' : 'content') ?
+                4 :
+                    // Otherwise initialize for horizontal or vertical properties
+                    (name === 'width') ?
+                        1 :
+                            0;
+        
     for (; idx < 4; idx += 2) {
         var type = _cssExpand[idx];
 
@@ -165,14 +167,26 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
             val += _.parseInt(styles[extra + type]) || 0;
         }
 
-        // border-box includes padding, so remove it if we want content
-        if (extra === 'content') {
-            val -= _.parseInt(styles['padding' + type]) || 0;
-        }
+        if (isBorderBox) {
+            // border-box includes padding, so remove it if we want content
+            if (extra === 'content') {
+                val -= _.parseInt(styles['padding' + type]) || 0;
+            }
 
-        // at this point, extra isn't border nor margin, so remove border
-        if (extra !== 'margin') {
-            val -= _.parseInt(styles['border' + type + 'Width']) || 0;
+            // at this point, extra isn't border nor margin, so remove border
+            if (extra !== 'margin') {
+                val -= _.parseInt(styles['border' + type + 'Width']) || 0;
+            }
+        
+        } else {
+
+            // at this point, extra isn't content, so add padding
+            val += _.parseInt(styles['padding' + type]) || 0;
+
+            // at this point, extra isn't content nor padding, so add border
+            if (extra !== 'padding') {
+                val += _.parseInt(styles['border' + type]) || 0;
+            }
         }
     }
 
@@ -290,7 +304,7 @@ module.exports = {
     getComputedStyle: _getComputedStyle,
 
     width: _width,
-    height: _width,
+    height: _height,
 
     fn: {
         css: overload()
