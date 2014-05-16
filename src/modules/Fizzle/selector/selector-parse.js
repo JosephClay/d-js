@@ -2,7 +2,6 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-// TODO: :contains is considered valid selectors and should not be
 var _ = require('_'),
 
     _cache         = require('../../../cache'),
