@@ -102,13 +102,7 @@ Selector.prototype = {
             }
         }
 
-        // TODO: Remove try-catch when this is working correctly
-        try {
-            selection = context[method](selector);
-        } catch (e) {
-            // Probably an invalid query
-            console && console.error && console.error(e.message, selector);
-        }
+        selection = context[method](selector);
 
         if (idApplied) { context.id = id; }
 
