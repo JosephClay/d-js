@@ -9,6 +9,7 @@ var _ = require('_'),
     _commandCache   = _cache(),
     _idCache        = _cache(),
     _tagCache       = _cache(),
+    _positionCache  = _cache(),
     _numNotPxCache  = _cache(),
     _classCache     = _cache();
 
@@ -33,6 +34,8 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
         klass: /^\.([\w-]+)$/
     },
 
+    _POSITION = /^(top|right|bottom|left)$/,
+
     _NUM_NON_PX = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i');
 
 var _camelCase = function(match, letter) {
@@ -52,6 +55,12 @@ module.exports = {
     numNotPx: function(val) {
         return _numNotPxCache.getOrSet(val, function() {
             return _NUM_NON_PX.test(val);
+        });
+    },
+
+    position: function(val) {
+        _positionCache.getOrSet(val, function() {
+            return _POSITION.test(val);
         });
     },
 

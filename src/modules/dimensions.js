@@ -4,37 +4,22 @@ var _ = require('_'),
 
     _css = require('./css');
 
-var _getDocumentDimension = function(elem, name) {
-        // Either scroll[Width/Height] or offset[Width/Height] or
-        // client[Width/Height], whichever is greatest
-        var doc = elem.documentElement;
-        return Math.max(
-            elem.body['scroll' + name],
-            elem.body['offset' + name],
-
-            doc['scroll' + name],
-            doc['offset' + name],
-
-            doc['client' + name]
-        );
-    },
-
-    _getInnerWidth = function(elem) {
-        var width = _.parseInt(_css.width.get(elem)) || 0,
+var _getInnerWidth = function(elem) {
+        var width = _css.width.get(elem),
             style = _css.getComputedStyle(elem) || {};
 
         return width +
-            _.parseInt(style.paddingLeft || 0) -
+            _.parseInt(style.paddingLeft || 0) +
                 _.parseInt(style.paddingRight || 0) -
                     _.parseInt(style.borderLeftWidth || 0) -
                         _.parseInt(style.borderRightWidth || 0);
     },
     _getInnerHeight = function(elem) {
-        var height = _.parseInt(_css.height.get(elem)) || 0,
+        var height = _css.height.get(elem),
             style = _css.getComputedStyle(elem) || {};
 
         return height +
-                _.parseInt(style.paddingTop || 0) -
+                _.parseInt(style.paddingTop || 0) +
                     _.parseInt(style.paddingBottom || 0) -
                         _.parseInt(style.borderTopWidth || 0) -
                             _.parseInt(style.borderBottomWidth || 0);
@@ -48,7 +33,9 @@ var _getDocumentDimension = function(elem, name) {
             width += _.parseInt(style.marginLeft || 0) + _.parseInt(style.marginRight || 0);
         }
 
-        return width;
+        return width +
+                _.parseInt(style.borderLeftWidth || 0) +
+                    _.parseInt(style.borderRightWidth || 0);
     },
     _getOuterHeight = function(elem, withMargin) {
         var height = _getInnerHeight(elem),
@@ -58,7 +45,9 @@ var _getDocumentDimension = function(elem, name) {
             height += _.parseInt(style.marginTop || 0) + _.parseInt(style.marginBottom || 0);
         }
 
-        return height;
+        return height +
+                _.parseInt(style.borderTopWidth || 0) +
+                    _.parseInt(style.borderBottomWidth || 0);
     };
 
 module.exports = {
@@ -66,64 +55,64 @@ module.exports = {
         width: overload()
             .args(Number)
             .use(function(val) {
-                var elem = this[0]; // The first elem
-                if (!elem) { return this; }
+                var first = this[0];
+                if (!first) { return this; }
 
-                _css.width.set(elem, val);
+                _css.width.set(first, val);
                 return this;
             })
 
             .fallback(function() {
-                var elem = this[0]; // The first elem
-                if (!elem) { return null; }
+                var first = this[0];
+                if (!first) { return null; }
 
-                return _css.width.get(elem);
+                return _.parseInt(_css.width.get(first) || 0);
             })
             .expose(),
 
         height: overload()
             .args(Number)
             .use(function(val) {
-                var elem = this[0]; // The first elem
-                if (!elem) { return this; }
+                var first = this[0];
+                if (!first) { return this; }
 
-                _css.height.set(elem, val);
+                _css.height.set(first, val);
                 return this;
             })
 
             .fallback(function() {
-                var elem = this[0]; // The first elem
-                if (!elem) { return null; }
+                var first = this[0];
+                if (!first) { return null; }
 
-                return _css.height.get(elem);
+                return _.parseInt(_css.height.get(first) || 0);
             })
             .expose(),
 
         innerWidth: function() {
-            var elem = this[0];
-            if (!elem) { return this; }
+            var first = this[0];
+            if (!first) { return this; }
 
-            return _getInnerWidth(elem);
+            return _getInnerWidth(first);
         },
 
         innerHeight: function() {
-            var elem = this[0];
-            if (!elem) { return this; }
+            var first = this[0];
+            if (!first) { return this; }
 
-            return _getInnerHeight(elem);
+            return _getInnerHeight(first);
         },
 
         outerWidth: function(withMargin) {
-            var elem = this[0];
-            if (!elem) { return this; }
+            var first = this[0];
+            if (!first) { return this; }
 
-            return _getOuterWidth(elem, withMargin);
+            return _getOuterWidth(first, withMargin);
         },
         outerHeight: function(withMargin) {
-            var elem = this[0];
-            if (!elem) { return this; }
+            var first = this[0];
+            if (!first) { return this; }
 
-            return _getOuterHeight(elem, withMargin);
+            return _getOuterHeight(first, withMargin);
         }
     }
 };

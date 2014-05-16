@@ -31,11 +31,13 @@
         $div.width(val(30));
         equal($div.width(), 30, 'Test set to 30 correctly');
         $div.hide();
+        $('#NotHiddenDiv').width();
         equal($div.width(), 30, 'Test hidden div');
         $div.show();
         $div.width(val(-1)); // handle negative numbers by setting to 0 #11604
         equal($div.width(), 0, 'Test negative width normalized to 0');
         $div.css('padding', '20px');
+        debugger;
         // TODO: width() is returning 40 and that seems wrong, but it also seems to be the exact same way jQuery is doing it...debug
         equal($div.width(), 0, 'Test padding specified with pixels');
         $div.css('border', '2px solid #fff');

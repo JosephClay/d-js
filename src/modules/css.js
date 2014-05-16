@@ -17,7 +17,6 @@ var _swapSettings = {
     }
 };
 
-// TODO: This is duplicated from dimensions.js
 var _getDocumentDimension = function(elem, name) {
     // Either scroll[Width/Height] or offset[Width/Height] or
     // client[Width/Height], whichever is greatest
@@ -139,7 +138,7 @@ var _getWidthOrHeight = function(elem, name) {
 
     // use the active box-sizing model to add/subtract irrelevant styles
     return (val +
-        _augmentWidthOrHeight(
+        _augmentBorderBoxWidthOrHeight(
             elem,
             name,
             isBorderBox ? 'border' : 'content',
@@ -149,39 +148,31 @@ var _getWidthOrHeight = function(elem, name) {
     ) + 'px';
 };
 
-var _augmentWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
-    var i = isBorderBox ?
-        // If we already have the right measurement, avoid augmentation
-        4 :
-        // Otherwise initialize for horizontal or vertical properties
-        name === 'width' ? 1 : 0,
+var _cssExpand = [ 'Top', 'Right', 'Bottom', 'Left' ];
+var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
+    var val = 0;
 
-        val = 0;
+    // If we already have the right measurement, avoid augmentation
+    if (isBorderBox) { return val; }
 
-    for (; i < 4; i += 2) {
+    // Otherwise initialize for horizontal or vertical properties
+    var idx = (name === 'width') ? 1 : 0;
+    for (; idx < 4; idx += 2) {
+        var type = _cssExpand[idx];
+
         // both box models exclude margin, so add it if we want it
-        if ( extra === 'margin' ) {
-            val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
+        if (extra === 'margin') {
+            val += _.parseInt(styles[extra + type]) || 0;
         }
 
-        if (isBorderBox) {
-            // border-box includes padding, so remove it if we want content
-            if ( extra === 'content' ) {
-                val -= jQuery.css( elem, 'padding' + cssExpand[ i ], true, styles );
-            }
+        // border-box includes padding, so remove it if we want content
+        if (extra === 'content') {
+            val -= _.parseInt(styles['padding' + type]) || 0;
+        }
 
-            // at this point, extra isn't border nor margin, so remove border
-            if ( extra !== 'margin' ) {
-                val -= jQuery.css( elem, 'border' + cssExpand[ i ] + 'Width', true, styles );
-            }
-        } else {
-            // at this point, extra isn't content, so add padding
-            val += jQuery.css( elem, 'padding' + cssExpand[ i ], true, styles );
-
-            // at this point, extra isn't content nor padding, so add border
-            if ( extra !== 'padding' ) {
-                val += jQuery.css( elem, 'border' + cssExpand[ i ] + 'Width', true, styles );
-            }
+        // at this point, extra isn't border nor margin, so remove border
+        if (extra !== 'margin') {
+            val -= _.parseInt(styles['border' + type + 'Width']) || 0;
         }
     }
 
@@ -204,7 +195,7 @@ var _curCSS = function(elem, name, computed) {
     // but a number that has a weird ending, we need to convert it to pixels
     // but not position css attributes, as those are proportional to the parent element instead
     // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
-    if (rnumnonpx.test( ret ) && !rposition.test( name )) {
+    if (_regex.numNotPx(ret) && !_regex.position(name)) {
 
         // Remember the original values
         var left = style.left,
@@ -222,8 +213,6 @@ var _curCSS = function(elem, name, computed) {
         if (rsLeft) { rs.left = rsLeft; }
     }
 
-    // Support: IE
-    // IE returns zIndex value as an integer.
     return ret === undefined ? ret : ret + '' || 'auto';
 };
 
@@ -347,17 +336,15 @@ module.exports = {
             .expose(),
 
         hide: function() {
-            var idx = 0, length = this.length;
-            for (; idx < length; idx++) {
-                _hide(this[idx]);
-            }
+            _.each(this, function(elem) {
+                _hide(elem);
+            });
             return this;
         },
         show: function() {
-            var idx = 0, length = this.length;
-            for (; idx < length; idx++) {
-                _show(this[idx]);
-            }
+            _.each(this, function(elem) {
+                _show(elem);
+            });
             return this;
         },
 
