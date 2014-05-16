@@ -112,7 +112,7 @@
         $div.css('padding', '20px');
         equal($div.innerWidth(), 70, 'Test with margin, border and padding');
         $div.hide();
-        debugger;
+
         $('#NotHiddenDiv').innerWidth();
         equal($div.innerWidth(), 70, 'Test hidden div');
 
@@ -223,6 +223,8 @@
 
         // tests that child div of an unconnected div works the same as a normal div
         equal($divUnconnected.width(), $divNormal.width(), 'unconnected element width() is wrong see #9441');
+        debugger;
+        $($divUnconnected[0]).innerWidth();
         equal($divUnconnected.innerWidth(), $divNormal.innerWidth(), 'unconnected element innerWidth() is wrong see #9441');
         equal($divUnconnected.outerWidth(), $divNormal.outerWidth(), 'unconnected element outerWidth() is wrong see #9441');
         equal($divUnconnected.outerWidth(true), $divNormal.outerWidth( true ), 'unconnected element outerWidth( true ) is wrong see #9300');
@@ -354,22 +356,6 @@
         equal(D('#NotHiddenDiv').height(30).innerHeight(undefined).height(), 30, '.innerHeight(undefined) is chainable (#5571)');
         equal(D('#NotHiddenDiv').height(30).outerHeight(undefined).height(), 30, '.outerHeight(undefined) is chainable (#5571)');
         equal(D('#NotHiddenDiv').width(30).width(undefined).width(), 30, '.width(undefined) is chainable (#5571)');
-    });
-
-    test('getters on non elements should return null', function() {
-        expect(8);
-
-        var nonElem = D('notAnElement');
-
-        strictEqual(nonElem.width(), null, '.width() is not null (#12283)');
-        strictEqual(nonElem.innerWidth(), null, '.innerWidth() is not null (#12283)');
-        strictEqual(nonElem.outerWidth(), null, '.outerWidth() is not null (#12283)');
-        strictEqual(nonElem.outerWidth(true), null, '.outerWidth(true) is not null (#12283)');
-
-        strictEqual(nonElem.height(), null, '.height() is not null (#12283)');
-        strictEqual(nonElem.innerHeight(), null, '.innerHeight() is not null (#12283)');
-        strictEqual(nonElem.outerHeight(), null, '.outerHeight() is not null (#12283)');
-        strictEqual(nonElem.outerHeight(true), null, '.outerHeight(true) is not null (#12283)');
     });
 
     test('setters with and without box-sizing:border-box', function() {
