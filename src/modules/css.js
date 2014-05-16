@@ -2,6 +2,7 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
+    _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),
@@ -122,7 +123,7 @@ var _getWidthOrHeight = function(elem, name) {
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
     if (val <= 0 || !_.exists(val)) {
         // Fall back to computed then uncomputed css if necessary
-        val = _curCSS(elem, name, styles);
+        val = _curCss(elem, name, styles);
         if (val < 0 || !val) { val = elem.style[name]; }
 
         // Computed unit is not pixels. Stop here and return.
@@ -193,10 +194,10 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
     return val;
 };
 
-var _curCSS = function(elem, name, computed) {
+var _curCss = function(elem, name, computed) {
     var style = elem.style,
         styles = computed || _getComputedStyle(elem),
-        ret = styles ? styles[name] : undefined;
+        ret = styles ? styles.getPropertyValue(name) || styles[name] : undefined;
 
     // Avoid setting ret to empty string here
     // so we don't default to auto
@@ -205,26 +206,32 @@ var _curCSS = function(elem, name, computed) {
     // From the awesome hack by Dean Edwards
     // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 
-    // If we're not dealing with a regular pixel number
-    // but a number that has a weird ending, we need to convert it to pixels
-    // but not position css attributes, as those are proportional to the parent element instead
-    // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
-    if (_regex.numNotPx(ret) && !_regex.position(name)) {
+    if (styles) {
+        if (ret === '' && !_utils.isAttached(elem)) {
+            ret = elem.style[name];
+        }
 
-        // Remember the original values
-        var left = style.left,
-            rs = elem.runtimeStyle,
-            rsLeft = rs && rs.left;
+        // If we're not dealing with a regular pixel number
+        // but a number that has a weird ending, we need to convert it to pixels
+        // but not position css attributes, as those are proportional to the parent element instead
+        // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
+        if (_regex.numNotPx(ret) && !_regex.position(name)) {
 
-        // Put in the new values to get a computed value out
-        if (rsLeft) { rs.left = elem.currentStyle.left; }
+            // Remember the original values
+            var left = style.left,
+                rs = elem.runtimeStyle,
+                rsLeft = rs && rs.left;
 
-        style.left = (name === 'fontSize') ? '1em' : ret;
-        ret = style.pixelLeft + 'px';
+            // Put in the new values to get a computed value out
+            if (rsLeft) { rs.left = elem.currentStyle.left; }
 
-        // Revert the changed values
-        style.left = left;
-        if (rsLeft) { rs.left = rsLeft; }
+            style.left = (name === 'fontSize') ? '1em' : ret;
+            ret = style.pixelLeft + 'px';
+
+            // Revert the changed values
+            style.left = left;
+            if (rsLeft) { rs.left = rsLeft; }
+        }
     }
 
     return ret === undefined ? ret : ret + '' || 'auto';
@@ -302,7 +309,7 @@ module.exports = {
     swap: _cssSwap,
     swapSetting: _swapSettings,
     getComputedStyle: _getComputedStyle,
-
+    
     width: _width,
     height: _height,
 
