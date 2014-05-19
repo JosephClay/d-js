@@ -76,7 +76,7 @@ var _hooks = {
 
         value: {
             get: function(elem) { return _utils.normalizeNewlines(elem.value); },
-            set: function(elem, value) { elem.value = value; }
+            set: function(elem, value) { elem.setAttribute('value', value); }
         }
     },
 

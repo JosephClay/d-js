@@ -8,20 +8,25 @@ var _ = require('_'),
     _ID_PREFIX = 'D-uniqueId-',
     _querySelectorCache = _cache(),
 
-    _isMatch = require('../selector/selector-match');
+    _isMatch = require('../selector/selector-match'),
+
+    _GET_ELEMENT_BY_ID          = 'getElementById',
+    _GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
+    _GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
+    _QUERY_SELECTOR_ALL         = 'querySelectorAll';
 
 var _determineMethod = function(selector) {
         var method = _querySelectorCache.get(selector);
         if (method) { return method; }
 
         if (_regex.selector.isStrictId(selector)) {
-            method = 'getElementById';
+            method = _GET_ELEMENT_BY_ID;
         } else if (_regex.selector.isClass(selector)) {
-            method = 'getElementsByClassName';
+            method = _GET_ELEMENTS_BY_CLASS_NAME;
         } else if (_regex.selector.isTag(selector)) {
-            method = 'getElementsByTagName';
+            method = _GET_ELEMENTS_BY_TAG_NAME;
         } else {
-            method = 'querySelectorAll';
+            method = _QUERY_SELECTOR_ALL;
         }
 
         _querySelectorCache.set(selector, method);
@@ -34,13 +39,13 @@ var _determineMethod = function(selector) {
 var Selector = function(str) {
     var selector = _.string.trim(str),
         isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
-        method = isChildOrSiblingSelect ? 'querySelectorAll' : _determineMethod(selector);
+        method = isChildOrSiblingSelect ? _QUERY_SELECTOR_ALL : _determineMethod(selector);
 
     this.str = str;
     this.selector = selector;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
-    this.isIdSearch = method === 'getElementById';
-    this.isClassSearch = !this.isIdSearch && method === 'getElementsByClassName';
+    this.isIdSearch = method === _GET_ELEMENT_BY_ID;
+    this.isClassSearch = !this.isIdSearch && method === _GET_ELEMENTS_BY_CLASS_NAME;
     this.method = method;
 };
 
@@ -61,9 +66,9 @@ Selector.prototype = {
     exec: function(context) {
         context = context || document;
 
-        var selection = [];
-
-        var nodeType;
+        var selection = [],
+            method = this.method,
+            nodeType;
         // Early return if context is not an element or document
         if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
 
@@ -82,17 +87,22 @@ Selector.prototype = {
 
             selector = this._tailorChildSelector(idApplied ? newId : id, selector);
             context = document;
-        } else if (this.isIdSearch || this.isClassSearch) {
+        } else if (this.isClassSearch) {
+            // Class search, don't start with '.'
             selector = selector.substr(1);
+        } else if (this.isIdSearch) {
+            if (context === document) {
+                // Id search, don't start with '#'
+                selector = selector.substr(1);
+            } else {
+                // context is not the document,
+                // change to querySelectorAll and
+                // leave the '#'
+                method = _QUERY_SELECTOR_ALL;
+            }
         }
 
-        // TODO: Remove try-catch when this is working correctly
-        try {
-            selection = context[this.method](selector);
-        } catch (e) {
-            // Probably an invalid query
-            console && console.error && console.error(e.message, selector);
-        }
+        selection = context[method](selector);
 
         if (idApplied) { context.id = id; }
 

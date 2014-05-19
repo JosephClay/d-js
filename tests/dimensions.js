@@ -31,12 +31,12 @@
         $div.width(val(30));
         equal($div.width(), 30, 'Test set to 30 correctly');
         $div.hide();
+        $('#NotHiddenDiv').width();
         equal($div.width(), 30, 'Test hidden div');
         $div.show();
         $div.width(val(-1)); // handle negative numbers by setting to 0 #11604
         equal($div.width(), 0, 'Test negative width normalized to 0');
         $div.css('padding', '20px');
-        // TODO: width() is returning 40 and that seems wrong, but it also seems to be the exact same way jQuery is doing it...debug
         equal($div.width(), 0, 'Test padding specified with pixels');
         $div.css('border', '2px solid #fff');
         equal($div.width(), 0, 'Test border specified with pixels');
@@ -84,7 +84,7 @@
         equal(blah.height(val(10)), blah, 'Make sure that setting a height on an empty set returns the set.');
         equal(blah.height(), null, 'Make sure "null" is returned on an empty set');
 
-        equal(D(window).height(), document.documentElement.clientHeight, 'Window width is equal to width reported by window/document.');
+        equal(D(window).height(), document.documentElement.clientHeight, 'Window height is equal to height reported by window/document.');
     };
 
     test('height()', function() {
@@ -108,11 +108,12 @@
             'border': '2px solid #fff',
             'width': 30
         });
-
         equal($div.innerWidth(), 30, 'Test with margin and border');
         $div.css('padding', '20px');
         equal($div.innerWidth(), 70, 'Test with margin, border and padding');
         $div.hide();
+
+        $('#NotHiddenDiv').innerWidth();
         equal($div.innerWidth(), 70, 'Test hidden div');
 
         // reset styles
@@ -222,6 +223,8 @@
 
         // tests that child div of an unconnected div works the same as a normal div
         equal($divUnconnected.width(), $divNormal.width(), 'unconnected element width() is wrong see #9441');
+        debugger;
+        $($divUnconnected[0]).innerWidth();
         equal($divUnconnected.innerWidth(), $divNormal.innerWidth(), 'unconnected element innerWidth() is wrong see #9441');
         equal($divUnconnected.outerWidth(), $divNormal.outerWidth(), 'unconnected element outerWidth() is wrong see #9441');
         equal($divUnconnected.outerWidth(true), $divNormal.outerWidth( true ), 'unconnected element outerWidth( true ) is wrong see #9300');
@@ -353,22 +356,6 @@
         equal(D('#NotHiddenDiv').height(30).innerHeight(undefined).height(), 30, '.innerHeight(undefined) is chainable (#5571)');
         equal(D('#NotHiddenDiv').height(30).outerHeight(undefined).height(), 30, '.outerHeight(undefined) is chainable (#5571)');
         equal(D('#NotHiddenDiv').width(30).width(undefined).width(), 30, '.width(undefined) is chainable (#5571)');
-    });
-
-    test('getters on non elements should return null', function() {
-        expect(8);
-
-        var nonElem = D('notAnElement');
-
-        strictEqual(nonElem.width(), null, '.width() is not null (#12283)');
-        strictEqual(nonElem.innerWidth(), null, '.innerWidth() is not null (#12283)');
-        strictEqual(nonElem.outerWidth(), null, '.outerWidth() is not null (#12283)');
-        strictEqual(nonElem.outerWidth(true), null, '.outerWidth(true) is not null (#12283)');
-
-        strictEqual(nonElem.height(), null, '.height() is not null (#12283)');
-        strictEqual(nonElem.innerHeight(), null, '.innerHeight() is not null (#12283)');
-        strictEqual(nonElem.outerHeight(), null, '.outerHeight() is not null (#12283)');
-        strictEqual(nonElem.outerHeight(true), null, '.outerHeight(true) is not null (#12283)');
     });
 
     test('setters with and without box-sizing:border-box', function() {

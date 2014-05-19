@@ -28,13 +28,13 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
         clickable: /^(?:a|area)$/i
     },
 
-    _POSITION = /^(top|right|bottom|left)$/,
-
     _SELECTOR = {
         id:    /^#([\w-]+)$/,
         tag:   /^[\w-]+$/,
         klass: /^\.([\w-]+)$/
     },
+
+    _POSITION = /^(top|right|bottom|left)$/,
 
     _NUM_NON_PX = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i');
 

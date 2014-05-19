@@ -2,6 +2,7 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
+    _utils = require('../utils'),
     _cache = require('../cache'),
     _regex = require('../regex'),
     _nodeType = require('../nodeType'),
@@ -17,7 +18,6 @@ var _swapSettings = {
     }
 };
 
-// TODO: This is duplicated from dimensions.js
 var _getDocumentDimension = function(elem, name) {
     // Either scroll[Width/Height] or offset[Width/Height] or
     // client[Width/Height], whichever is greatest
@@ -80,7 +80,7 @@ var _hide = function(elem) {
             var width = elem.offsetWidth;
             return (width === 0 &&
                     _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
-                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return elem.offsetWidth; }) :
+                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'width'); }) :
                             _getWidthOrHeight(elem, 'width'); // TODO: Eeewwww
         },
         set: function(elem, val) {
@@ -101,7 +101,7 @@ var _hide = function(elem) {
             var height = elem.offsetHeight;
             return (height === 0 &&
                     _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
-                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return elem.offsetHeight; }) :
+                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'height'); }) :
                             _getWidthOrHeight(elem, 'height');
         },
 
@@ -123,7 +123,7 @@ var _getWidthOrHeight = function(elem, name) {
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
     if (val <= 0 || !_.exists(val)) {
         // Fall back to computed then uncomputed css if necessary
-        val = _curCSS(elem, name, styles);
+        val = _curCss(elem, name, styles);
         if (val < 0 || !val) { val = elem.style[name]; }
 
         // Computed unit is not pixels. Stop here and return.
@@ -139,7 +139,7 @@ var _getWidthOrHeight = function(elem, name) {
 
     // use the active box-sizing model to add/subtract irrelevant styles
     return (val +
-        _augmentWidthOrHeight(
+        _augmentBorderBoxWidthOrHeight(
             elem,
             name,
             isBorderBox ? 'border' : 'content',
@@ -149,38 +149,44 @@ var _getWidthOrHeight = function(elem, name) {
     ) + 'px';
 };
 
-var _augmentWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
-    var i = isBorderBox ?
-        // If we already have the right measurement, avoid augmentation
-        4 :
-        // Otherwise initialize for horizontal or vertical properties
-        name === 'width' ? 1 : 0,
+var _cssExpand = [ 'Top', 'Right', 'Bottom', 'Left' ];
+var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
+    var val = 0,
+            // If we already have the right measurement, avoid augmentation
+        idx = extra === (isBorderBox ? 'border' : 'content') ?
+                4 :
+                    // Otherwise initialize for horizontal or vertical properties
+                    (name === 'width') ?
+                        1 :
+                            0;
+        
+    for (; idx < 4; idx += 2) {
+        var type = _cssExpand[idx];
 
-        val = 0;
-
-    for (; i < 4; i += 2) {
         // both box models exclude margin, so add it if we want it
-        if ( extra === 'margin' ) {
-            val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
+        if (extra === 'margin') {
+            val += _.parseInt(styles[extra + type]) || 0;
         }
 
         if (isBorderBox) {
             // border-box includes padding, so remove it if we want content
-            if ( extra === 'content' ) {
-                val -= jQuery.css( elem, 'padding' + cssExpand[ i ], true, styles );
+            if (extra === 'content') {
+                val -= _.parseInt(styles['padding' + type]) || 0;
             }
 
             // at this point, extra isn't border nor margin, so remove border
-            if ( extra !== 'margin' ) {
-                val -= jQuery.css( elem, 'border' + cssExpand[ i ] + 'Width', true, styles );
+            if (extra !== 'margin') {
+                val -= _.parseInt(styles['border' + type + 'Width']) || 0;
             }
+        
         } else {
+
             // at this point, extra isn't content, so add padding
-            val += jQuery.css( elem, 'padding' + cssExpand[ i ], true, styles );
+            val += _.parseInt(styles['padding' + type]) || 0;
 
             // at this point, extra isn't content nor padding, so add border
-            if ( extra !== 'padding' ) {
-                val += jQuery.css( elem, 'border' + cssExpand[ i ] + 'Width', true, styles );
+            if (extra !== 'padding') {
+                val += _.parseInt(styles['border' + type]) || 0;
             }
         }
     }
@@ -188,10 +194,10 @@ var _augmentWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     return val;
 };
 
-var _curCSS = function(elem, name, computed) {
+var _curCss = function(elem, name, computed) {
     var style = elem.style,
         styles = computed || _getComputedStyle(elem),
-        ret = styles ? styles[name] : undefined;
+        ret = styles ? styles.getPropertyValue(name) || styles[name] : undefined;
 
     // Avoid setting ret to empty string here
     // so we don't default to auto
@@ -200,30 +206,34 @@ var _curCSS = function(elem, name, computed) {
     // From the awesome hack by Dean Edwards
     // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 
-    // If we're not dealing with a regular pixel number
-    // but a number that has a weird ending, we need to convert it to pixels
-    // but not position css attributes, as those are proportional to the parent element instead
-    // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
-    if (_regex.numNotPx(ret) && !_regex.position(name)) {
+    if (styles) {
+        if (ret === '' && !_utils.isAttached(elem)) {
+            ret = elem.style[name];
+        }
 
-        // Remember the original values
-        var left = style.left,
-            rs = elem.runtimeStyle,
-            rsLeft = rs && rs.left;
+        // If we're not dealing with a regular pixel number
+        // but a number that has a weird ending, we need to convert it to pixels
+        // but not position css attributes, as those are proportional to the parent element instead
+        // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
+        if (_regex.numNotPx(ret) && !_regex.position(name)) {
 
-        // Put in the new values to get a computed value out
-        if (rsLeft) { rs.left = elem.currentStyle.left; }
+            // Remember the original values
+            var left = style.left,
+                rs = elem.runtimeStyle,
+                rsLeft = rs && rs.left;
 
-        style.left = (name === 'fontSize') ? '1em' : ret;
-        ret = style.pixelLeft + 'px';
+            // Put in the new values to get a computed value out
+            if (rsLeft) { rs.left = elem.currentStyle.left; }
 
-        // Revert the changed values
-        style.left = left;
-        if (rsLeft) { rs.left = rsLeft; }
+            style.left = (name === 'fontSize') ? '1em' : ret;
+            ret = style.pixelLeft + 'px';
+
+            // Revert the changed values
+            style.left = left;
+            if (rsLeft) { rs.left = rsLeft; }
+        }
     }
 
-    // Support: IE
-    // IE returns zIndex value as an integer.
     return ret === undefined ? ret : ret + '' || 'auto';
 };
 
@@ -299,9 +309,9 @@ module.exports = {
     swap: _cssSwap,
     swapSetting: _swapSettings,
     getComputedStyle: _getComputedStyle,
-
+    
     width: _width,
-    height: _width,
+    height: _height,
 
     fn: {
         css: overload()
@@ -347,17 +357,15 @@ module.exports = {
             .expose(),
 
         hide: function() {
-            var idx = 0, length = this.length;
-            for (; idx < length; idx++) {
-                _hide(this[idx]);
-            }
+            _.each(this, function(elem) {
+                _hide(elem);
+            });
             return this;
         },
         show: function() {
-            var idx = 0, length = this.length;
-            for (; idx < length; idx++) {
-                _show(this[idx]);
-            }
+            _.each(this, function(elem) {
+                _show(elem);
+            });
             return this;
         },
 
