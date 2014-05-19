@@ -9,16 +9,16 @@ var _getInnerWidth = function(elem) {
             style = _css.getComputedStyle(elem) || {};
 
         return width +
-            _.parseInt(style.paddingLeft || 0) +
-                _.parseInt(style.paddingRight || 0);
+            (_.parseInt(_css.curCss(elem, 'paddingLeft')) || 0) +
+                (_.parseInt(_css.curCss(elem, 'paddingRight')) || 0);
     },
     _getInnerHeight = function(elem) {
         var height = parseFloat(_css.height.get(elem)) || 0,
             style = _css.getComputedStyle(elem) || {};
 
         return height +
-                _.parseInt(style.paddingTop || 0) +
-                    _.parseInt(style.paddingBottom || 0);
+            (_.parseInt(_css.curCss(elem, 'paddingTop')) || 0) +
+                (_.parseInt(_css.curCss(elem, 'paddingBottom')) || 0);
     },
 
     _getOuterWidth = function(elem, withMargin) {
@@ -26,24 +26,26 @@ var _getInnerWidth = function(elem) {
             style = _css.getComputedStyle(elem) || {};
 
         if (withMargin) {
-            width += _.parseInt(style.marginLeft || 0) + _.parseInt(style.marginRight || 0);
+            width += (_.parseInt(_css.curCss(elem, 'marginLeft')) || 0) +
+                (_.parseInt(_css.curCss(elem, 'marginRight')) || 0);
         }
 
         return width +
-                _.parseInt(style.borderLeftWidth || 0) +
-                    _.parseInt(style.borderRightWidth || 0);
+            (_.parseInt(_css.curCss(elem, 'borderLeftWidth')) || 0) +
+                (_.parseInt(_css.curCss(elem, 'borderRightWidth')) || 0);
     },
     _getOuterHeight = function(elem, withMargin) {
         var height = _getInnerHeight(elem),
             style = _css.getComputedStyle(elem) || {};
 
         if (withMargin) {
-            height += _.parseInt(style.marginTop || 0) + _.parseInt(style.marginBottom || 0);
+            height += (_.parseInt(_css.curCss(elem, 'marginTop')) || 0) +
+                (_.parseInt(_css.curCss(elem, 'marginBottom')) || 0);
         }
 
         return height +
-                _.parseInt(style.borderTopWidth || 0) +
-                    _.parseInt(style.borderBottomWidth || 0);
+            (_.parseInt(_css.curCss(elem, 'borderTopWidth')) || 0) +
+                (_.parseInt(_css.curCss(elem, 'borderBottomWidth')) || 0);
     };
 
 module.exports = {
