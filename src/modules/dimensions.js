@@ -58,6 +58,11 @@ module.exports = {
                 return this;
             })
 
+            .args(O.any(null, undefined))
+            .use(function() {
+                return this;
+            })
+
             .fallback(function() {
                 var first = this[0];
                 if (!first) { return null; }
@@ -76,6 +81,11 @@ module.exports = {
                 return this;
             })
 
+            .args(O.any(null, undefined))
+            .use(function() {
+                return this;
+            })
+
             .fallback(function() {
                 var first = this[0];
                 if (!first) { return null; }
@@ -84,31 +94,60 @@ module.exports = {
             })
             .expose(),
 
-        innerWidth: function() {
-            var first = this[0];
-            if (!first) { return this; }
+        innerWidth: overload()
+            .args(O.any(null, undefined))
+            .use(function() {
+                return this;
+            })
 
-            return _getInnerWidth(first);
-        },
+            .fallback(function() {
+                var first = this[0];
+                if (!first) { return this; }
 
-        innerHeight: function() {
-            var first = this[0];
-            if (!first) { return this; }
+                return _getInnerWidth(first);
+            })
+            .expose(),
 
-            return _getInnerHeight(first);
-        },
+        innerHeight: overload()
+            .args(O.any(null, undefined))
+            .use(function() {
+                return this;
+            })
 
-        outerWidth: function(withMargin) {
-            var first = this[0];
-            if (!first) { return this; }
+            .fallback(function() {
+                var first = this[0];
+                if (!first) { return this; }
 
-            return _getOuterWidth(first, withMargin);
-        },
-        outerHeight: function(withMargin) {
-            var first = this[0];
-            if (!first) { return this; }
+                return _getInnerHeight(first);
+            })
+            .expose(),
 
-            return _getOuterHeight(first, withMargin);
-        }
+        outerWidth: overload()
+            .args(O.any(null, undefined))
+            .use(function() {
+                return this;
+            })
+
+            .fallback(function(withMargin) {
+                var first = this[0];
+                if (!first) { return this; }
+
+                return _getOuterWidth(first, withMargin);
+            })
+            .expose(),
+
+        outerHeight: overload()
+            .args(O.any(null, undefined))
+            .use(function() {
+                return this;
+            })
+
+            .fallback(function(withMargin) {
+                var first = this[0];
+                if (!first) { return this; }
+
+                return _getOuterHeight(first, withMargin);
+            })
+            .expose()
     }
 };
