@@ -100,6 +100,16 @@ var _getSiblings = function(context) {
 
 module.exports = {
     fn: {
+        contents: function() {
+            return D(
+                _.flatten(
+                    _.map(this, function(elem) {
+                        return elem.childNodes;
+                    })
+                )
+            );
+        },
+
         index: overload()
 
             .args(String)
