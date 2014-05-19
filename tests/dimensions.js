@@ -223,7 +223,6 @@
 
         // tests that child div of an unconnected div works the same as a normal div
         equal($divUnconnected.width(), $divNormal.width(), 'unconnected element width() is wrong see #9441');
-        debugger;
         $($divUnconnected[0]).innerWidth();
         equal($divUnconnected.innerWidth(), $divNormal.innerWidth(), 'unconnected element innerWidth() is wrong see #9441');
         equal($divUnconnected.outerWidth(), $divNormal.outerWidth(), 'unconnected element outerWidth() is wrong see #9441');
