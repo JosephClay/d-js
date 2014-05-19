@@ -360,7 +360,6 @@ test('.data doesnt throw when calling selection is empty. #13551', function() {
 test('Check proper data removal of non-element descendants nodes (#8335)', function() {
     expect(1);
 
-    // TODO: Implement .contents()?
     var div = D('<div>text</div>'),
         text = div.contents();
 
