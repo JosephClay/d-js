@@ -159,7 +159,7 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
                     (name === 'width') ?
                         1 :
                             0;
-        
+
     for (; idx < 4; idx += 2) {
         var type = _cssExpand[idx];
 
@@ -178,7 +178,7 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
             if (extra !== 'margin') {
                 val -= _.parseInt(styles['border' + type + 'Width']) || 0;
             }
-        
+
         } else {
 
             // at this point, extra isn't content, so add padding
@@ -309,7 +309,8 @@ module.exports = {
     swap: _cssSwap,
     swapSetting: _swapSettings,
     getComputedStyle: _getComputedStyle,
-    
+    curCss: _curCss,
+
     width: _width,
     height: _height,
 
