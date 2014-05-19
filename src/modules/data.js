@@ -118,8 +118,13 @@ module.exports = {
             // Set key's value
             .args(String, O.wild)
             .use(function(key, value) {
-                var idx = this.length, id;
+                var idx = this.length,
+                    id,
+                    elem;
                 while (idx--) {
+                    elem = this[idx];
+                    if (!_.isElement(elem)) { continue; }
+
                     id = _getOrSetId(this[idx]);
                     _dataCache.set(id, key, value);
                 }
@@ -131,8 +136,12 @@ module.exports = {
             .use(function(map) {
                 var idx = this.length,
                     id,
-                    key;
+                    key,
+                    elem;
                 while (idx--) {
+                    elem = this[idx];
+                    if (!_.isElement(elem)) { continue; }
+
                     id = _getOrSetId(this[idx]);
                     for (key in map) {
                         _dataCache.set(id, key, map[key]);
