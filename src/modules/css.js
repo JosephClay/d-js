@@ -204,7 +204,7 @@ var _curCSS = function(elem, name, computed) {
     // but a number that has a weird ending, we need to convert it to pixels
     // but not position css attributes, as those are proportional to the parent element instead
     // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
-    if (rnumnonpx.test( ret ) && !rposition.test( name )) {
+    if (_regex.numNotPx(ret) && !_regex.position(name)) {
 
         // Remember the original values
         var left = style.left,
