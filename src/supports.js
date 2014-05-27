@@ -51,6 +51,6 @@ module.exports = {
     // Support: IE8
     getAttribute: !!a.style.getAttribute,
 
-    // Support: IE9+
+    // Support: IE9+, modern browsers
     getElementsByClassName: !!a.getElementsByClassName
 };
