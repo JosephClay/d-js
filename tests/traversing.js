@@ -360,21 +360,10 @@ test('siblings([String])', function() {
     equal(D('<a/>').siblings().length, 0, 'Detached elements have no siblings (#11370)');
 });
 
-test('siblings([String]) - D only', function() {
-    expect(2);
-    deepEqual(D('#sndp').siblings(':has(code)').get(), q('sap'), 'Check for filtered siblings (has code child element)');
-    deepEqual(D('#sndp').siblings(':has(a)').get(), q('en', 'sap'), 'Check for filtered siblings (has anchor child element)');
-});
-
 test('children([String])', function() {
     expect(2);
     deepEqual(D('#foo').children().get(), q('sndp', 'en', 'sap'), 'Check for children');
     deepEqual(D('#foo').children('#en, #sap').get(), q('en', 'sap'), 'Check for multiple filters');
-});
-
-test('children([String]) - D only', function() {
-    expect(1);
-    deepEqual(D('#foo').children(':has(code)').get(), q('sndp', 'sap'), 'Check for filtered children');
 });
 
 test('parent([String])', function() {
