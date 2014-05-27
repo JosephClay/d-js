@@ -52,23 +52,43 @@ var _getSiblings = function(context) {
     },
 
     // Parents ------
+    _getClosest = function(elems, selector, context) {
+        var idx = 0,
+            length = elems.length,
+            parents,
+            closest,
+            result = [];
+        for (; idx < length; idx++) {
+            parents = _crawlUpNode(elems[idx], context);
+            parents.unshift(elems[idx]);
+            closest = _selectors.filter(parents, selector);
+            if (closest.length) {
+                result.push(closest[0]);
+            }
+        }
+        return _.flatten(result);
+    },
+
     _getParents = function(context) {
         var idx = 0,
             length = context.length,
+            parents,
             result = [];
         for (; idx < length; idx++) {
-            var parents = _crawlUpNode(context[idx]);
+            parents = _crawlUpNode(context[idx]);
             result.push(parents);
         }
         return _.flatten(result);
     },
 
-    _crawlUpNode = function(node) {
+    _crawlUpNode = function(node, context) {
         var result = [],
             parent = node,
             nodeType;
 
-        while ((parent = _getNodeParent(parent)) && (nodeType = parent.nodeType) !== _nodeType.DOCUMENT) {
+        while ((parent = _getNodeParent(parent)) &&
+               (nodeType = parent.nodeType) !== _nodeType.DOCUMENT &&
+               (!context || parent !== context)) {
             if (nodeType === _nodeType.ELEMENT) {
                 result.push(parent);
             }
@@ -143,9 +163,12 @@ module.exports = {
 
             .expose(),
 
-        // TODO: Filter by selector
-        closest: function(selector) {
-
+        closest: function(selector, context) {
+            return D(
+                _array.unique(
+                    _getClosest(this, selector, context)
+                )
+            );
         },
 
         siblings: function(selector) {
