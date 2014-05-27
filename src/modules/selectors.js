@@ -55,7 +55,7 @@ var _filter = function(arr, qualifier) {
 
     // Array qualifier
     return _.filter(arr, function(elem) {
-        return arr.indexOf(qualifier) > -1;
+        return qualifier.indexOf(elem) > -1;
     });
 };
 
