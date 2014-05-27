@@ -43,5 +43,11 @@ module.exports = {
     valueNormalized: (function() {
         textarea.value = '\r\n';
         return textarea.value === '\n';
-    }())
+    }()),
+
+    // Support: IE9+, modern browsers
+    getPropertyValue: !!a.style.getPropertyValue,
+
+    // Support: IE8
+    getAttribute: !!a.style.getAttribute
 };

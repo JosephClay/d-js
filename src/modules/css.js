@@ -194,10 +194,16 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
     return val;
 };
 
+var _getPropertyValue = (function() {
+    return _supports.getPropertyValue ? function(styles, name) { return styles.getPropertyValue(name); } :
+           _supports.getAttribute     ? function(styles, name) { return styles.getAttribute(name); } :
+                                        function(styles, name) { return styles[name]; };
+}());
+
 var _curCss = function(elem, name, computed) {
     var style = elem.style,
         styles = computed || _getComputedStyle(elem),
-        ret = styles ? styles.getPropertyValue(name) || styles[name] : undefined;
+        ret = styles ? _getPropertyValue(styles, name) || styles[name] : undefined;
 
     // Avoid setting ret to empty string here
     // so we don't default to auto
