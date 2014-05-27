@@ -3,7 +3,6 @@ var _ = require('_'),
     O = overload.O,
 
     _utils = require('../utils'),
-    _regex = require('../regex'),
     _array = require('./array'),
 
     Fizzle = require('./Fizzle/Fizzle');
