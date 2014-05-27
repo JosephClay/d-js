@@ -25,7 +25,7 @@ var _getSiblings = function(context) {
 
         while (idx--) {
             if (siblings[idx] === node) {
-                siblings.splice(i, 1);
+                siblings.splice(idx, 1);
             }
         }
 
