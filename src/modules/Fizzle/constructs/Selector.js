@@ -111,8 +111,12 @@ Selector.prototype = {
 
         if (idApplied) { context.id = id; }
 
-        if (!selection || // If there's no selection
-            (_.isNodeList(selection) && !selection.length)) { // Or if there's a nodelist without a length
+        // No selection
+        if (!selection) {
+            return [];
+        }
+        // Nodelist without a length
+        if (_.isNodeList(selection) && !selection.length) {
             return [];
         }
 
