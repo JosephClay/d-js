@@ -223,7 +223,7 @@ test('closest()', function() {
 test('closest() with positional selectors', function() {
     expect(2);
 
-    deepEqual(D('#qunit-fixture').closest('div:first').get(), [], 'closest(div:first)');
+    deepEqual(D('#qunit-fixture').closest('div:first').get(), q('qunit-fixture'), 'closest(div:first)');
     deepEqual(D('#qunit-fixture div').closest('body:first div:last').get(), q('fx-tests'), 'closest(body:first div:last)');
 });
 
