@@ -119,6 +119,10 @@ Selector.prototype = {
         if (_.isNodeList(selection) && !selection.length) {
             return [];
         }
+        // IE8 DispStaticNodeList
+        if (selection.item && selection.length === 0) {
+            return [];
+        }
 
         // If it's an id, return it as an array, otherwise, toArray
         // to keep from returning out NodeLists and HTMLCollections
