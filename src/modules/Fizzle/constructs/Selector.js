@@ -66,7 +66,7 @@ Selector.prototype = {
     exec: function(context) {
         context = context || document;
 
-        var selection = [],
+        var selection,
             method = this.method,
             nodeType;
         // Early return if context is not an element or document
