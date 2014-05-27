@@ -4,6 +4,7 @@ var _ = require('_'),
     _nodeType = require('../../../nodeType'),
     _cache = require('../../../cache'),
     _regex = require('../../../regex'),
+    _supports = require('../../../supports'),
 
     _ID_PREFIX = 'D-uniqueId-',
     _querySelectorCache = _cache(),
@@ -88,8 +89,12 @@ Selector.prototype = {
             selector = this._tailorChildSelector(idApplied ? newId : id, selector);
             context = document;
         } else if (this.isClassSearch) {
-            // Class search, don't start with '.'
-            selector = selector.substr(1);
+            if (_supports.getElementsByClassName) {
+                // Class search, don't start with '.'
+                selector = selector.substr(1);
+            } else {
+                method = _QUERY_SELECTOR_ALL;
+            }
         } else if (this.isIdSearch) {
             if (context === document) {
                 // Id search, don't start with '#'

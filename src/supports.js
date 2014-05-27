@@ -49,5 +49,8 @@ module.exports = {
     getPropertyValue: !!a.style.getPropertyValue,
 
     // Support: IE8
-    getAttribute: !!a.style.getAttribute
+    getAttribute: !!a.style.getAttribute,
+
+    // Support: IE9+
+    getElementsByClassName: !!a.getElementsByClassName
 };
