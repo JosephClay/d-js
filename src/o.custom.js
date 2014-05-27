@@ -1,4 +1,5 @@
-var overload = require('overload');
+var _ = require('_'),
+    overload = require('overload');
 
 // Configure overload to throw type errors
 overload.prototype.err = function() {
@@ -16,6 +17,9 @@ overload.defineTypes({
     },
     'document': function(val) {
         return val && val === document;
+    },
+    'selector': function(val) {
+        return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || _.isNodeList(val) || _.isArray(val) || val instanceof D);
     }
 });
 

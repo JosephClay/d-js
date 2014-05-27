@@ -81,7 +81,7 @@ module.exports = {
 
     fn: {
         has: overload()
-            .args(String)
+            .args(O.selector)
             .use(function(target) {
                 var targets = this.find(target),
                     idx = 0, length = targets.length;
@@ -195,7 +195,7 @@ module.exports = {
             .expose(),
 
         find: overload()
-            .args(String)
+            .args(O.selector)
             .use(function(selector) {
 
                 return _utils.merge(D(), _findWithin(selector, this));
