@@ -149,16 +149,16 @@ module.exports = {
             })
 
             .fallback(function() {
+                if (!this.length) {
+                    return -1;
+                }
+
                 var first = this[0],
-                    parent;
+                    parent = first.parentNode;
+
                 // _utils.isAttached check to pass test "Node without parent returns -1"
                 // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
-                return (first &&
-                    (parent = first.parentNode) &&
-                        _utils.isAttached(parent) ||
-                            parent.nodeType === _nodeType.DOCUMENT_FRAGMENT) ?
-                                _.toArray(parent.children).indexOf(first) :
-                                    -1;
+                return (_utils.isAttached(parent) || parent.nodeType === _nodeType.DOCUMENT_FRAGMENT) ? _.toArray(parent.children).indexOf(first) : -1;
             })
 
             .expose(),
