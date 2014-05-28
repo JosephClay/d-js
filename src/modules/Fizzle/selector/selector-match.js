@@ -7,7 +7,7 @@ var matches;
 if (_matchesSelector) {
     matches = function(elem, selector) {
         if (elem.nodeType !== _nodeType.ELEMENT) { return false; }
-        
+
         return _matchesSelector.call(elem, selector);
     };
 } else {
