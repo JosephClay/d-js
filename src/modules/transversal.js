@@ -118,6 +118,7 @@ var _getSiblings = function(context) {
         return d.__idx || 0;
     },
 
+    // TODO: Don't sort twice (.filter() sorts in document order)
     _uniqueSort = function(elems, reverse) {
         var result = _array.unique(elems);
         _array.elementSort(result);
