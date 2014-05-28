@@ -6,7 +6,9 @@ var _ = require('_'),
     _nodeType = require('../nodeType'),
 
     _array = require('./array'),
-    _selectors = require('./selectors');
+    _selectors = require('./selectors'),
+
+    Fizzle = require('./Fizzle/Fizzle');
 
 var _getSiblings = function(context) {
         var idx = 0,
@@ -89,14 +91,27 @@ var _getSiblings = function(context) {
         return _.flatten(result);
     },
 
-    _crawlUpNode = function(node, context) {
+    _getParentsUntil = function(dom, stopSelector) {
+        var idx = 0,
+            length = dom.length,
+            parents,
+            result = [];
+        for (; idx < length; idx++) {
+            parents = _crawlUpNode(dom[idx], null, stopSelector);
+            result.push(parents);
+        }
+        return _.flatten(result);
+    },
+
+    _crawlUpNode = function(node, context, stopSelector) {
         var result = [],
             parent = node,
             nodeType;
 
         while ((parent = _getNodeParent(parent)) &&
                (nodeType = parent.nodeType) !== _nodeType.DOCUMENT &&
-               (!context || parent !== context)) {
+               (!context || parent !== context) &&
+               (!stopSelector || !Fizzle.is(stopSelector).match(parent))) {
             if (nodeType === _nodeType.ELEMENT) {
                 result.push(parent);
             }
@@ -199,6 +214,10 @@ module.exports = {
 
         parents: function(selector) {
             return _filterAndSort(_getParents(this), selector, true);
+        },
+
+        parentsUntil: function(stopSelector) {
+            return _uniqueSort(_getParentsUntil(this, stopSelector), true);
         },
 
         siblings: function(selector) {
