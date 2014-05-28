@@ -88,7 +88,7 @@ module.exports = {
                     len = targets.length;
 
                 return D(
-                    _.filter(function() {
+                    _.filter(this, function() {
                         for (; idx < len; idx++) {
                             if (_doesContain(this, targets[idx])) {
                                 return true;
