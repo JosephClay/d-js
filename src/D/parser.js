@@ -1,7 +1,20 @@
+// TODO: Optimize this function
 var _parse = function(htmlStr) {
-    var tmp = document.createElement('div');
-    tmp.innerHTML = htmlStr;
-    return tmp.children;
+    var div  = document.createElement('div');
+    div.innerHTML = htmlStr;
+
+    var child,
+        idx,
+        len = div.children.length,
+        arr = [];
+
+    for (idx = 0; idx < len; idx++) {
+        child = div.children[idx];
+        div.removeChild(child);
+        arr.push(child);
+    }
+
+    return arr;
 };
 
 var _parseHtml = function(str) {
