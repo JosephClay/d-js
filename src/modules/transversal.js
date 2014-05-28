@@ -149,16 +149,94 @@ var _getSiblings = function(context) {
         return next;
     },
 
+    _getPrevAll = function(node) {
+        var result = [],
+            prev   = node;
+        while ((prev = prev.previousSibling)) {
+            if (prev.nodeType === _nodeType.ELEMENT) {
+                result.push(prev);
+            }
+        }
+        return result;
+    },
+
+    _getNextAll = function(node) {
+        var result = [],
+            next   = node;
+        while ((next = next.nextSibling)) {
+            if (next.nodeType === _nodeType.ELEMENT) {
+                result.push(next);
+            }
+        }
+        return result;
+    },
+
     _getPositional = function(getter, dom, selector) {
         var result = [],
             idx,
             len = dom.length,
-            next;
+            sibling;
 
         for (idx = 0; idx < len; idx++) {
-            next = getter(dom[idx]);
-            if (next && (!selector || Fizzle.is(selector).match(next))) {
-                result.push(next);
+            sibling = getter(dom[idx]);
+            if (sibling && (!selector || Fizzle.is(selector).match(sibling))) {
+                result.push(sibling);
+            }
+        }
+
+        return D(
+            _array.unique(result)
+        );
+    },
+
+    _getPositionalAll = function(getter, dom, selector) {
+        var result = [],
+            idx,
+            len = dom.length,
+            siblings,
+            filter;
+
+        if (selector) {
+            filter = function(sibling) { return Fizzle.is(selector).match(sibling); };
+        }
+
+        for (idx = 0; idx < len; idx++) {
+            siblings = getter(dom[idx]);
+            if (selector) {
+                siblings = _.filter(siblings, filter);
+            }
+            result.push.apply(result, siblings);
+        }
+
+        return D(
+            _array.unique(result)
+        );
+    },
+
+    _getPositionalUntil = function(getter, dom, selector) {
+        var result = [],
+            idx,
+            len = dom.length,
+            siblings,
+            iterator;
+
+        if (selector) {
+            iterator = function(sibling) {
+                var isMatch = Fizzle.is(selector).match(sibling);
+                if (isMatch) {
+                    result.push(sibling);
+                }
+                return isMatch;
+            };
+        }
+
+        for (idx = 0; idx < len; idx++) {
+            siblings = getter(dom[idx]);
+
+            if (selector) {
+                _.each(siblings, iterator);
+            } else {
+                result.push.apply(result, siblings);
             }
         }
 
@@ -264,6 +342,22 @@ module.exports = {
 
         next: function(selector) {
             return _getPositional(_getNext, this, selector);
+        },
+
+        prevAll: function(selector) {
+            return _getPositionalAll(_getPrevAll, this, selector);
+        },
+
+        nextAll: function(selector) {
+            return _getPositionalAll(_getNextAll, this, selector);
+        },
+
+        prevUntil: function(selector) {
+            return _getPositionalUntil(_getPrevAll, this, selector);
+        },
+
+        nextUntil: function(selector) {
+            return _getPositionalUntil(_getNextAll, this, selector);
         }
     }
 };
