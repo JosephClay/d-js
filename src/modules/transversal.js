@@ -116,6 +116,15 @@ var _getSiblings = function(context) {
 
     _getIndex = function(d) {
         return d.__idx || 0;
+    },
+
+    _filterAndSort = function(elems, selector, reverse) {
+        var result = _array.unique(_selectors.filter(elems, selector));
+        _array.elementSort(result);
+        if (reverse) {
+            result.reverse();
+        }
+        return D(result);
     };
 
 module.exports = {
@@ -172,35 +181,19 @@ module.exports = {
         },
 
         siblings: function(selector) {
-            return D(
-                _array.unique(
-                    _selectors.filter(_getSiblings(this), selector)
-                )
-            );
+            return _filterAndSort(_getSiblings(this), selector);
         },
 
         parents: function(selector) {
-            return D(
-                _array.unique(
-                    _selectors.filter(_getParents(this), selector)
-                )
-            );
+            return _filterAndSort(_getParents(this), selector, true);
         },
 
         parent: function(selector) {
-            return D(
-                _array.unique(
-                    _selectors.filter(_getParent(this), selector)
-                )
-            );
+            return _filterAndSort(_getParent(this), selector);
         },
 
         children: function(selector) {
-            return D(
-                _array.unique(
-                    _selectors.filter(_getChildren(this), selector)
-                )
-            );
+            return _filterAndSort(_getChildren(this), selector);
         },
 
         // TODO: next
