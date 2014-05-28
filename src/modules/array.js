@@ -6,7 +6,7 @@ var _slice = (function(_slice) {
             if (!arr || !arr.length) { return []; }
 
             // End, naturally, has to be higher than 0 to matter,
-            // so a simple existance check will do
+            // so a simple existence check will do
             if (end) { return _slice.call(arr, start, end); }
 
             return _slice.call(arr, start || 0);
