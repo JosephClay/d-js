@@ -118,13 +118,17 @@ var _getSiblings = function(context) {
         return d.__idx || 0;
     },
 
-    _filterAndSort = function(elems, selector, reverse) {
-        var result = _array.unique(_selectors.filter(elems, selector));
+    _uniqueSort = function(elems, reverse) {
+        var result = _array.unique(elems);
         _array.elementSort(result);
         if (reverse) {
             result.reverse();
         }
         return D(result);
+    },
+
+    _filterAndSort = function(elems, selector, reverse) {
+        return _uniqueSort(_selectors.filter(elems, selector), reverse);
     };
 
 module.exports = {
@@ -173,11 +177,7 @@ module.exports = {
             .expose(),
 
         closest: function(selector, context) {
-            return D(
-                _array.unique(
-                    _getClosest(this, selector, context)
-                )
-            );
+            return _uniqueSort(_getClosest(this, selector, context));
         },
 
         siblings: function(selector) {
