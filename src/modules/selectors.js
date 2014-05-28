@@ -9,9 +9,18 @@ var _ = require('_'),
 
     Fizzle = require('./Fizzle/Fizzle');
 
+var _uniqueSort = function(elems, reverse) {
+    var result = _array.unique(elems);
+    _array.elementSort(result);
+    if (reverse) {
+        result.reverse();
+    }
+    return result;
+};
+
 var _find = function(selector, isNew) {
     var query = Fizzle.query(selector);
-    return _array.unique(query.exec(this, isNew));
+    return _uniqueSort(query.exec(this, isNew));
 };
 
 /**
@@ -37,7 +46,7 @@ var _findWithin = function(selector, context) {
         results = query.exec(context);
     }
 
-    return _array.unique(results);
+    return _uniqueSort(results);
 };
 
 var _filter = function(arr, qualifier) {
