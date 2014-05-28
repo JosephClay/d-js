@@ -14,9 +14,30 @@ var _find = function(selector, isNew) {
     return _array.unique(query.exec(this, isNew));
 };
 
+/**
+ * @param {String|Function|Element|NodeList|Array|D} selector
+ * @param {D} context
+ * @returns {Element[]}
+ * @private
+ */
 var _findWithin = function(selector, context) {
-    var query = Fizzle.query(selector);
-    return _array.unique(query.exec(context));
+    // Fail fast
+    if (!context.length) { return []; }
+
+    var query, descendants, results;
+
+    if (_.isElement(selector) || _.isNodeList(selector) || _.isArray(selector) || selector instanceof D) {
+        // Convert selector to an array of elements
+        selector = _.isElement(selector) ? [ selector ] : selector;
+
+        descendants = context[0].querySelectorAll('*');
+        results = _.filter(descendants, function(descendant) { return selector.indexOf(descendant) > -1; });
+    } else {
+        query = Fizzle.query(selector);
+        results = query.exec(context);
+    }
+
+    return _array.unique(results);
 };
 
 var _filter = function(arr, qualifier) {
@@ -55,20 +76,22 @@ module.exports = {
     filter: _filter,
 
     fn: {
+        // TODO: Optimize this method
         has: overload()
             .args(O.selector)
             .use(function(target) {
                 var targets = this.find(target),
-                    idx = 0,
+                    idx,
                     len = targets.length;
 
                 return D(
-                    _.filter(this, function() {
-                        for (; idx < len; idx++) {
-                            if (_order.contains(this, targets[idx])) {
+                    _.filter(this, function(elem) {
+                        for (idx = 0; idx < len; idx++) {
+                            if (_order.contains(elem, targets[idx])) {
                                 return true;
                             }
                         }
+                        return false;
                     })
                 );
             })
