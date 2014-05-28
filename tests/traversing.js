@@ -369,8 +369,6 @@ test('children([String])', function() {
 test('parent([String])', function() {
     expect(5);
 
-    var $el;
-
     equal(D('#groups').parent()[0].id, 'ap', 'Simple parent check');
     equal(D('#groups').parent('p')[0].id, 'ap', 'Filtered parent check');
     equal(D('#groups').parent('div').length, 0, 'Filtered parent check, no match');
