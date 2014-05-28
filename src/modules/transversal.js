@@ -137,6 +137,36 @@ var _getSiblings = function(context) {
         return node && node.parentNode;
     },
 
+    _getPrev = function(node) {
+        var prev = node;
+        while ((prev = prev.previousSibling) && prev.nodeType !== _nodeType.ELEMENT) {}
+        return prev;
+    },
+
+    _getNext = function(node) {
+        var next = node;
+        while ((next = next.nextSibling) && next.nodeType !== _nodeType.ELEMENT) {}
+        return next;
+    },
+
+    _getPositional = function(getter, dom, selector) {
+        var result = [],
+            idx,
+            len = dom.length,
+            next;
+
+        for (idx = 0; idx < len; idx++) {
+            next = getter(dom[idx]);
+            if (next && (!selector || Fizzle.is(selector).match(next))) {
+                result.push(next);
+            }
+        }
+
+        return D(
+            _array.unique(result)
+        );
+    },
+
     _getIndex = function(d) {
         return d.__idx || 0;
     },
@@ -228,22 +258,12 @@ module.exports = {
             return _filterAndSort(_getChildren(this), selector);
         },
 
-        // TODO: next
-        next: function(str) {
-            if (_.isString(str)) {
-                // TODO:
-            }
-
-            return; // TODO:
+        prev: function(selector) {
+            return _getPositional(_getPrev, this, selector);
         },
 
-        // TODO: prev
-        prev: function(str) {
-            if (_.isString(str)) {
-                // TODO:
-            }
-
-            return; // TODO:
+        next: function(selector) {
+            return _getPositional(_getNext, this, selector);
         }
     }
 };
