@@ -429,28 +429,30 @@ test('prev([String])', function() {
 });
 
 test('sort direction', function() {
-    expect(12);
+    var methodDirections = {
+        parent:       false,
+        parents:       true,
+        parentsUntil:  true,
+        next:         false,
+        prev:         false,
+        nextAll:      false,
+        prevAll:       true,
+        nextUntil:    false,
+        prevUntil:     true,
+        siblings:     false,
+        children:     false,
+        contents:     false
+    };
 
-    var elems = D('#ap, #select1 > *, #moretests > form'),
-        methodDirections = {
-            parent: false,
-            parents: true,
-            parentsUntil: true,
-            next: false,
-            prev: false,
-            nextAll: false,
-            prevAll: true,
-            nextUntil: false,
-            prevUntil: true,
-            siblings: false,
-            children: false,
-            contents: false
-        };
+    expect(_.size(methodDirections));
 
-    D.each(methodDirections, function(reversed, method) {
-        var actual = elems[ method ]().get(),
-            forward = D.unique([].concat(actual));
-        deepEqual(actual, reversed ? forward.reverse() : forward, 'Correct sort direction for ' + method);
+    var elems = D('#ap, #select1 > *, #moretests > form');
+
+    D.each(methodDirections, function(isReverse, method) {
+        var actual   = elems[method]().get(),
+            forward  = _.unique([].concat(actual)),
+            reversed = forward.slice().reverse();
+        deepEqual(actual, isReverse ? reversed : forward, 'Correct sort direction for ' + method);
     });
 });
 
