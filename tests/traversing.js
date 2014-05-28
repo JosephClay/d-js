@@ -376,8 +376,16 @@ test('parent([String])', function() {
     deepEqual(D('#en, #sndp').parent().get(), q('foo'), 'Check for unique results from parent');
 });
 
+test('parent([document]])', function() {
+    expect(3);
+
+    equal(D('html').parent()[0], document, 'HTML element parent is document object');
+    equal(D('html').parent(document)[0], document, 'HTML element parent can be filtered');
+    equal(D('html').parent([document])[0], document, 'HTML element parent can be filtered');
+});
+
 test('parents([String])', function() {
-    expect(6);
+    expect(7);
 
     equal(D('#groups').parents()[0].id, 'ap', 'Simple parents check');
     deepEqual(D(jQuery('#nonnodes').contents().eq(1).toArray()).parents().eq(0).get(), q('nonnodes'), 'Text node parents check');
@@ -385,6 +393,7 @@ test('parents([String])', function() {
     equal(D('#groups').parents('div')[0].id, 'qunit-fixture', 'Filtered parents check2');
     deepEqual(D('#groups').parents('p, div').get(), q('ap', 'qunit-fixture'), 'Check for multiple filters');
     deepEqual(D('#en, #sndp').parents().get(), q('foo', 'qunit-fixture', 'dl', 'body', 'html'), 'Check for unique results from parents');
+    deepEqual(D('html').parents().get(), [], 'HTML element has no parents');
 });
 
 test('parentsUntil([String])', function() {
