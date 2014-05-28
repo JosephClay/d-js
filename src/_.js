@@ -1,4 +1,5 @@
-var _id = 0,
+var _NODE_TYPE = require('./nodeType'),
+    _id = 0,
     _toString = Object.prototype.toString,
     _isTruthy = function(arg) { return !!arg; };
 
@@ -30,7 +31,7 @@ var _ = {
     },
 
     isElement: function(obj) {
-        return !!(obj && obj.nodeType === 1);
+        return !!(obj && obj.nodeType === _NODE_TYPE.ELEMENT);
     },
 
     isArray: Array.isArray || function(obj) {
