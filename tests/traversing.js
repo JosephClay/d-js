@@ -440,7 +440,6 @@ test('sort direction', function() {
         nextUntil:    [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
         prevUntil:    [ 'option1c', 'option1b', 'option1a', ],
         siblings:     [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1a', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
-        contents:     [ 'google', 'groups', 'mark', 'checkedtest', ],
         children:     [ 'google', 'groups', 'code1', 'mark', 'checkedtest', ],
     };
 
@@ -452,6 +451,40 @@ test('sort direction', function() {
         var actual = elems[method]().get();
         deepEqual(actual, q.apply(null, expected), 'Correct sort direction for ' + method);
     });
+});
+
+test('contents() sort direction', function() {
+    expect(4);
+
+    var nodeTypeValues = {
+        ELEMENT:                 1,
+        ATTRIBUTE:               2,
+        TEXT:                    3,
+        CDATA:                   4,
+        ENTITY_REFERENCE:        5,
+        ENTITY:                  6,
+        PROCESSING_INSTRUCTION:  7,
+        COMMENT:                 8,
+        DOCUMENT:                9,
+        DOCUMENT_TYPE:          10,
+        DOCUMENT_FRAGMENT:      11,
+        NOTATION:               12
+    };
+
+    var nodeTypeNames = {};
+
+    _.each(nodeTypeValues, function(value, name) {
+        nodeTypeNames[value] = name;
+    });
+
+    var elems = D('#ap, #select1 > *, #moretests > form');
+    var actual = elems.contents();
+
+    equal(nodeTypeNames[actual[0].nodeType], 'TEXT');
+    equal(actual[0].nodeValue.replace(/^\s+|\s+$/g, ''), 'Here are some links in a normal paragraph:');
+
+    equal(nodeTypeNames[actual[1].nodeType], 'ELEMENT');
+    equal(actual[1].id, 'google');
 });
 
 test('add(String selector)', function() {
