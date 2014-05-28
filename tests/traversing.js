@@ -454,37 +454,53 @@ test('sort direction', function() {
 });
 
 test('contents() sort direction', function() {
-    expect(4);
+    expect(8);
 
-    var nodeTypeValues = {
-        ELEMENT:                 1,
-        ATTRIBUTE:               2,
-        TEXT:                    3,
-        CDATA:                   4,
-        ENTITY_REFERENCE:        5,
-        ENTITY:                  6,
-        PROCESSING_INSTRUCTION:  7,
-        COMMENT:                 8,
-        DOCUMENT:                9,
-        DOCUMENT_TYPE:          10,
-        DOCUMENT_FRAGMENT:      11,
-        NOTATION:               12
+    var nodeTypeNames = {
+         1: 'ELEMENT',
+         2: 'ATTRIBUTE',
+         3: 'TEXT',
+         4: 'CDATA',
+         5: 'ENTITY_REFERENCE',
+         6: 'ENTITY',
+         7: 'PROCESSING_INSTRUCTION',
+         8: 'COMMENT',
+         9: 'DOCUMENT',
+        10: 'DOCUMENT_TYPE',
+        11: 'DOCUMENT_FRAGMENT',
+        12: 'NOTATION'
     };
 
-    var nodeTypeNames = {};
+    var trim = function(str) {
+        return str.replace(/^\s+|\s+$/g, '');
+    };
 
-    _.each(nodeTypeValues, function(value, name) {
-        nodeTypeNames[value] = name;
-    });
+    var elems      = D('#ap, #select1 > *, #moretests > form'),
+        actual     = elems.contents(),
+        first      = actual[0],
+        second     = actual[1],
+        secondLast = actual[actual.length - 2],
+        last       = actual[actual.length - 1];
 
-    var elems = D('#ap, #select1 > *, #moretests > form');
-    var actual = elems.contents();
+    equal(nodeTypeNames[first.nodeType], 'TEXT',
+        'First node should be text');
+    equal(trim(first.nodeValue), 'Here are some links in a normal paragraph:',
+        'First node should have the correct nodeValue');
 
-    equal(nodeTypeNames[actual[0].nodeType], 'TEXT');
-    equal(actual[0].nodeValue.replace(/^\s+|\s+$/g, ''), 'Here are some links in a normal paragraph:');
+    equal(nodeTypeNames[second.nodeType], 'ELEMENT',
+        'Second node should be an element');
+    equal(second.id, 'google',
+        'Second node should have the correct id');
 
-    equal(nodeTypeNames[actual[1].nodeType], 'ELEMENT');
-    equal(actual[1].id, 'google');
+    equal(nodeTypeNames[secondLast.nodeType], 'ELEMENT',
+        'Second-last node should be an element');
+    equal(secondLast.id, 'checkedtest',
+        'Second-last node should have the correct id');
+
+    equal(nodeTypeNames[last.nodeType], 'TEXT',
+        'Last node should be text');
+    equal(trim(last.nodeValue), '',
+        'Last node should have the correct nodeValue');
 });
 
 test('add(String selector)', function() {
