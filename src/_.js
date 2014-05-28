@@ -223,9 +223,22 @@ var _ = {
     each: function(obj, iterator) {
         if (!obj || !iterator) { return; }
 
-        var idx = 0, length = obj.length;
-        for (; idx < length; idx++) {
-            if (iterator(obj[idx], idx) === false) { return; }
+        // Array-like
+        if (obj.length) {
+            var idx = 0, length = obj.length;
+            for (; idx < length; idx++) {
+                if (iterator(obj[idx], idx) === false) {
+                    return;
+                }
+            }
+        }
+        // Plain object
+        else {
+            for (var prop in obj) {
+                if (iterator(obj[prop], prop) === false) {
+                    return;
+                }
+            }
         }
     }
 };
