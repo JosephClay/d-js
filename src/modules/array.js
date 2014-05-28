@@ -1,4 +1,5 @@
-var _ = require('_');
+var _      = require('_'),
+    _order = require('../order');
 
 var _slice = (function(_slice) {
         return function(arr, start, end) {
@@ -13,46 +14,8 @@ var _slice = (function(_slice) {
         };
     }([].slice)),
 
-    // See jQuery
-    // src\selector-native.js: 37
-    _elementSort = (function() {
-
-        var _hasDuplicate = false;
-        var _sort = function(a, b) {
-            // Flag for duplicate removal
-            if (a === b) {
-                _hasDuplicate = true;
-                return 0;
-            }
-
-            var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
-
-            // Not directly comparable, sort on existence of method
-            if (!compare) { return a.compareDocumentPosition ? -1 : 1; }
-
-            // Disconnected nodes
-            if (compare & 1) {
-
-                // Choose the first element that is related to our document
-                if (a === document || b === document) { return 1; }
-
-                // Maintain original order
-                return 0;
-            }
-
-            return compare & 4 ? -1 : 1;
-        };
-
-        return function(array) {
-            _hasDuplicate = false;
-            array.sort(_sort);
-            return _hasDuplicate;
-        };
-
-    }()),
-
     _unique = function(results) {
-        var hasDuplicates = _elementSort(results);
+        var hasDuplicates = _order.sort(results);
         if (!hasDuplicates) { return results; }
 
         var elem,
@@ -118,7 +81,7 @@ var _slice = (function(_slice) {
 
 module.exports = {
     slice: _slice,
-    elementSort: _elementSort,
+    elementSort: _order.sort,
     unique: _unique,
     each: _each,
 

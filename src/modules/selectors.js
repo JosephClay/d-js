@@ -5,34 +5,9 @@ var _ = require('_'),
     _utils = require('../utils'),
     _array = require('./array'),
 
-    Fizzle = require('./Fizzle/Fizzle'),
+    _order = require('../order'),
 
-    // http://ejohn.org/blog/comparing-document-position/
-    _DOC_POS = {
-        NODES_ARE_IDENTICAL    :  0,
-        DIFFERENT_DOCUMENTS    :  1,
-        NODE_B_PRECEDES_NODE_A :  2,
-        NODE_A_PRECEDES_NODE_B :  4,
-        NODE_B_CONTAINS_NODE_A :  8,
-        NODE_A_CONTAINS_NODE_B : 16
-    };
-
-var _doesContain = function(a, b) {
-    var aDown = a.nodeType === 9 ? a.documentElement : a,
-        bUp   = b && b.parentNode;
-    if (a === bUp) {
-        return true;
-    }
-    if (bUp && bUp.nodeType === 1) {
-        if (aDown.contains) {
-            return aDown.contains(bUp);
-        }
-        if (a.compareDocumentPosition) {
-            return (a.compareDocumentPosition(bUp) & _DOC_POS.NODE_A_CONTAINS_NODE_B) !== 0;
-        }
-    }
-    return false;
-};
+    Fizzle = require('./Fizzle/Fizzle');
 
 var _find = function(selector, isNew) {
     var query = Fizzle.query(selector);
@@ -90,7 +65,7 @@ module.exports = {
                 return D(
                     _.filter(this, function() {
                         for (; idx < len; idx++) {
-                            if (_doesContain(this, targets[idx])) {
+                            if (_order.contains(this, targets[idx])) {
                                 return true;
                             }
                         }
