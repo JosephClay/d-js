@@ -180,16 +180,16 @@ module.exports = {
             return _uniqueSort(_getClosest(this, selector, context));
         },
 
-        siblings: function(selector) {
-            return _filterAndSort(_getSiblings(this), selector);
+        parent: function(selector) {
+            return _filterAndSort(_getParent(this), selector);
         },
 
         parents: function(selector) {
             return _filterAndSort(_getParents(this), selector, true);
         },
 
-        parent: function(selector) {
-            return _filterAndSort(_getParent(this), selector);
+        siblings: function(selector) {
+            return _filterAndSort(_getSiblings(this), selector);
         },
 
         children: function(selector) {
