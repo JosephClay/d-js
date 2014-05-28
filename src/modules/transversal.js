@@ -184,9 +184,7 @@ var _getSiblings = function(context) {
             }
         }
 
-        return D(
-            _array.unique(result)
-        );
+        return result;
     },
 
     _getPositionalAll = function(getter, dom, selector) {
@@ -208,9 +206,7 @@ var _getSiblings = function(context) {
             result.push.apply(result, siblings);
         }
 
-        return D(
-            _array.unique(result)
-        );
+        return result;
     },
 
     _getPositionalUntil = function(getter, dom, selector) {
@@ -240,9 +236,7 @@ var _getSiblings = function(context) {
             }
         }
 
-        return D(
-            _array.unique(result)
-        );
+        return result;
     },
 
     _getIndex = function(d) {
@@ -337,27 +331,27 @@ module.exports = {
         },
 
         prev: function(selector) {
-            return _getPositional(_getPrev, this, selector);
+            return _uniqueSort(_getPositional(_getPrev, this, selector));
         },
 
         next: function(selector) {
-            return _getPositional(_getNext, this, selector);
+            return _uniqueSort(_getPositional(_getNext, this, selector));
         },
 
         prevAll: function(selector) {
-            return _getPositionalAll(_getPrevAll, this, selector);
+            return _uniqueSort(_getPositionalAll(_getPrevAll, this, selector), true);
         },
 
         nextAll: function(selector) {
-            return _getPositionalAll(_getNextAll, this, selector);
+            return _uniqueSort(_getPositionalAll(_getNextAll, this, selector));
         },
 
         prevUntil: function(selector) {
-            return _getPositionalUntil(_getPrevAll, this, selector);
+            return _uniqueSort(_getPositionalUntil(_getPrevAll, this, selector), true);
         },
 
         nextUntil: function(selector) {
-            return _getPositionalUntil(_getNextAll, this, selector);
+            return _uniqueSort(_getPositionalUntil(_getNextAll, this, selector));
         }
     }
 };

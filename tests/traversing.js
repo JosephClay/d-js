@@ -440,8 +440,8 @@ test('sort direction', function() {
         nextUntil:    [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
         prevUntil:    [ 'option1c', 'option1b', 'option1a', ],
         siblings:     [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1a', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
-        children:     [ 'google', 'groups', 'mark', 'checkedtest', ],
         contents:     [ 'google', 'groups', 'mark', 'checkedtest', ],
+        children:     [ 'google', 'groups', 'code1', 'mark', 'checkedtest', ],
     };
 
     expect(_.size(methodDirections));
