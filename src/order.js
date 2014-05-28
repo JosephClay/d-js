@@ -2,8 +2,34 @@ var _NODE_TYPE = require('./nodeType'),
     _DOC_POS   = require('./docPos')
 ;
 
-var _compareDocPos = function(a, b) {
-    return b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition(b);
+// Compare Position - MIT Licensed, John Resig
+var _comparePosition = function(a, b) {
+    if (a.compareDocumentPosition) {
+        return a.compareDocumentPosition(b);
+    }
+
+    if (a.contains) {
+        var num = 0;
+
+        if (a != b && a.contains(b)) {
+            num += _DOC_POS.CONTAINED_BY;
+        }
+
+        if (a != b && b.contains(a)) {
+            num += _DOC_POS.CONTAINS;
+        }
+
+        if (a.sourceIndex >= 0 && b.sourceIndex >= 0) {
+            num += (a.sourceIndex < b.sourceIndex && _DOC_POS.FOLLOWING);
+            num += (a.sourceIndex > b.sourceIndex && _DOC_POS.PRECEDING);
+        } else {
+            num += 1;
+        }
+
+        return num;
+    }
+
+    return 0;
 };
 
 var _is = function(rel, flag) {
@@ -11,7 +37,7 @@ var _is = function(rel, flag) {
 };
 
 var _isNode = function(b, flag, a) {
-    var rel = _compareDocPos(a, b);
+    var rel = _comparePosition(a, b);
     return _is(rel, flag);
 };
 
@@ -34,7 +60,7 @@ module.exports = {
                     return 0;
                 }
 
-                var rel = _compareDocPos(a, b);
+                var rel = _comparePosition(a, b);
 
                 // Not directly comparable, sort on existence of method
                 if (!rel) { return a.compareDocumentPosition ? -1 : 1; }
