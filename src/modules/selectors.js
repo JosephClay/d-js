@@ -84,11 +84,12 @@ module.exports = {
             .args(O.selector)
             .use(function(target) {
                 var targets = this.find(target),
-                    idx = 0, length = targets.length;
+                    idx = 0,
+                    len = targets.length;
 
                 return D(
                     _.filter(function() {
-                        for (; idx < length; idx++) {
+                        for (; idx < len; idx++) {
                             if (_doesContain(this, targets[idx])) {
                                 return true;
                             }
