@@ -5,6 +5,7 @@ var _ = require('_'),
 overload.prototype.err = function() {
     throw new TypeError();
 };
+
 overload.defineTypes({
     'D': function(obj) {
         return obj && obj instanceof D;
