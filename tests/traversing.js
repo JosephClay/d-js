@@ -397,7 +397,7 @@ test('parents([String])', function() {
 });
 
 test('parentsUntil([String])', function() {
-    expect(10);
+    expect(6);
 
     var parents = D('#groups').parents();
 
@@ -407,10 +407,6 @@ test('parentsUntil([String])', function() {
     equal(D('#groups').parentsUntil('#ap').length, 0, 'Simple parentsUntil check');
     deepEqual(D('#nonnodes').contents().eq(1).parentsUntil('#html').eq(0).get(), q('nonnodes'), 'Text node parentsUntil check');
     deepEqual(D('#groups').parentsUntil('#html, #body').get(), parents.slice(0, 3).get(), 'Less simple parentsUntil check');
-    deepEqual(D('#groups').parentsUntil('#html', 'div').get(), D('#qunit-fixture').get(), 'Filtered parentsUntil check');
-    deepEqual(D('#groups').parentsUntil('#html', 'p,div,dl').get(), parents.slice(0, 3).get(), 'Multiple-filtered parentsUntil check');
-    equal(D('#groups').parentsUntil('#html', 'span').length, 0, 'Filtered parentsUntil check, no match');
-    deepEqual(D('#groups, #ap').parentsUntil('#html', 'p,div,dl').get(), parents.slice(0, 3).get(), 'Multi-source, multiple-filtered parentsUntil check');
 });
 
 test('next([String])', function() {
