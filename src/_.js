@@ -223,8 +223,7 @@ var _ = {
     each: function(obj, iterator) {
         if (!obj || !iterator) { return; }
 
-        var idx = 0, length = obj.length,
-            item;
+        var idx = 0, length = obj.length;
         for (; idx < length; idx++) {
             if (iterator(obj[idx], idx) === false) { return; }
         }
