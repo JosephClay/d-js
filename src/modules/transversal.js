@@ -20,7 +20,13 @@ var _getSiblings = function(context) {
     },
 
     _getNodeSiblings = function(node) {
-        var siblings = _.toArray(node.parentNode.children),
+        var parent = node.parentNode;
+
+        if (!parent) {
+            return [];
+        }
+
+        var siblings = _.toArray(parent.children),
             idx = siblings.length;
 
         while (idx--) {
@@ -169,6 +175,10 @@ module.exports = {
 
                 var first = this[0],
                     parent = first.parentNode;
+
+                if (!parent) {
+                    return -1;
+                }
 
                 // _utils.isAttached check to pass test "Node without parent returns -1"
                 // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
