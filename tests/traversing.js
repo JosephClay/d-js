@@ -430,29 +430,27 @@ test('prev([String])', function() {
 
 test('sort direction', function() {
     var methodDirections = {
-        parent:       false,
-        parents:       true,
-        parentsUntil:  true,
-        next:         false,
-        prev:         false,
-        nextAll:      false,
-        prevAll:       true,
-        nextUntil:    false,
-        prevUntil:     true,
-        siblings:     false,
-        children:     false,
-        contents:     false
+        parent:       [ 'qunit-fixture', 'select1', 'moretests', ],
+        parents:      [ 'moretests', 'select1', 'form', 'qunit-fixture', 'dl', 'body', 'html', ],
+        parentsUntil: [ 'moretests', 'select1', 'form', 'qunit-fixture', 'dl', 'body', 'html', ],
+        next:         [ 'foo', 'option1b', 'option1c', 'option1d', 'nonnodes', ],
+        prev:         [ 'option1a', 'option1b', 'option1c', ],
+        nextAll:      [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
+        prevAll:      [ 'option1c', 'option1b', 'option1a', ],
+        nextUntil:    [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
+        prevUntil:    [ 'option1c', 'option1b', 'option1a', ],
+        siblings:     [ 'foo', 'nothiddendiv', 'name+value', 'first', 'firstUL', 'empty', 'not-testing', 'form', 'option1a', 'option1b', 'option1c', 'option1d', 'floatTest', 'iframe', 'lengthtest', 'table', 'name-tests', 'testForm', 'moretests', 'nonnodes', 't2037', 't6652', 'no-clone-exception', 'tabindex-tests', 'liveHandlerOrder', 'siblingTest', 'display', ],
+        children:     [ 'google', 'groups', 'mark', 'checkedtest', ],
+        contents:     [ 'google', 'groups', 'mark', 'checkedtest', ],
     };
 
     expect(_.size(methodDirections));
 
     var elems = D('#ap, #select1 > *, #moretests > form');
 
-    D.each(methodDirections, function(isReverse, method) {
-        var actual   = elems[method]().get(),
-            forward  = _.unique([].concat(actual)),
-            reversed = forward.slice().reverse();
-        deepEqual(actual, isReverse ? reversed : forward, 'Correct sort direction for ' + method);
+    D.each(methodDirections, function(expected, method) {
+        var actual = elems[method]().get();
+        deepEqual(actual, q.apply(null, expected), 'Correct sort direction for ' + method);
     });
 });
 
