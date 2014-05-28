@@ -30,7 +30,9 @@ var _getSiblings = function(context) {
             idx = siblings.length;
 
         while (idx--) {
-            if (siblings[idx] === node) {
+            // Exclude the node itself from the list of its parent's children,
+            // and exclude comment nodes for IE8
+            if (siblings[idx] === node || siblings[idx].nodeType === _nodeType.COMMENT) {
                 siblings.splice(idx, 1);
             }
         }
