@@ -224,6 +224,8 @@ test('closest() with positional selectors', function() {
     expect(2);
 
     deepEqual(D('#qunit-fixture').closest('div:first').get(), q('qunit-fixture'), 'closest(div:first)');
+
+    // This test will fail in IE8 due to lack of :last-child support
     deepEqual(D('#qunit-fixture div').closest('body:first div:last').get(), q('fx-tests'), 'closest(body:first div:last)');
 });
 
@@ -491,6 +493,8 @@ test('contents() sort direction', function() {
         'Second node should be an element');
     equal(second.id, 'google',
         'Second node should have the correct id');
+
+    // The following tests will fail in IE8 because it excludes text nodes that contain only whitespace.
 
     equal(names[secondLast.nodeType], 'ELEMENT',
         'Second-last node should be an element');
