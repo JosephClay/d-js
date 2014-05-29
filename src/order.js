@@ -3,30 +3,30 @@ var _NODE_TYPE = require('./nodeType'),
 ;
 
 // Compare Position - MIT Licensed, John Resig
-var _comparePosition = function(a, b) {
-    if (a.compareDocumentPosition) {
-        return a.compareDocumentPosition(b);
+var _comparePosition = function(node1, node2) {
+    if (node1.compareDocumentPosition) {
+        return node1.compareDocumentPosition(node2);
     }
 
-    if (a.contains) {
-        var num = 0;
+    if (node1.contains) {
+        var rel = 0;
 
-        if (a != b && a.contains(b)) {
-            num += _DOC_POS.CONTAINED_BY;
+        if (node1 != node2 && node1.contains(node2)) {
+            rel += _DOC_POS.CONTAINED_BY;
         }
 
-        if (a != b && b.contains(a)) {
-            num += _DOC_POS.CONTAINS;
+        if (node1 != node2 && node2.contains(node1)) {
+            rel += _DOC_POS.CONTAINS;
         }
 
-        if (a.sourceIndex >= 0 && b.sourceIndex >= 0) {
-            num += (a.sourceIndex < b.sourceIndex && _DOC_POS.FOLLOWING);
-            num += (a.sourceIndex > b.sourceIndex && _DOC_POS.PRECEDING);
+        if (node1.sourceIndex >= 0 && node2.sourceIndex >= 0) {
+            rel += (node1.sourceIndex < node2.sourceIndex && _DOC_POS.FOLLOWING);
+            rel += (node1.sourceIndex > node2.sourceIndex && _DOC_POS.PRECEDING);
         } else {
-            num += 1;
+            rel += 1;
         }
 
-        return num;
+        return rel;
     }
 
     return 0;
