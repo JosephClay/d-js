@@ -1,7 +1,5 @@
 module.exports = {
     // TODO: Document differences between jQuery and D.js behavior for these selectors
-    ':first'   : ':first-child',
-    ':last'    : ':last-child',
     ':even'    : ':nth-child(even)',
     ':odd'     : ':nth-child(odd)',
 

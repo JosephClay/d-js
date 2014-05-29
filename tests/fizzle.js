@@ -98,7 +98,7 @@
         'Other': [
             [ '#TestDiv p' ],
             [ "a", "#id", "[some-attr]", ".class", "[asdf\\]]" ],
-            [ '#a > div', ':first', '#id:first', '.class:first', '[attr]', '#id[attr]', '.class[attr]', '.class[attr]:first', '[attr="value"]', ':not([attr="value"])' ]
+            [ '#a > div', ':first-child', '#id:first-child', '.class:first-child', '[attr]', '#id[attr]', '.class[attr]', '.class[attr]:first-child', '[attr="value"]', ':not([attr="value"])' ]
         ],
 
         'Pseudo': [
