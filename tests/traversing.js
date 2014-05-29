@@ -456,7 +456,7 @@ test('sort direction', function() {
 test('contents() sort direction', function() {
     expect(8);
 
-    var nodeTypeNames = {
+    var names = {
          1: 'ELEMENT',
          2: 'ATTRIBUTE',
          3: 'TEXT',
@@ -476,28 +476,28 @@ test('contents() sort direction', function() {
     };
 
     var elems      = D('#ap, #select1 > *, #moretests > form'),
-        actual     = elems.contents(),
-        first      = actual[0],
-        second     = actual[1],
-        secondLast = actual[actual.length - 2],
-        last       = actual[actual.length - 1];
+        nodes      = elems.contents(),
+        first      = nodes[0],
+        second     = nodes[1],
+        secondLast = nodes[nodes.length - 2],
+        last       = nodes[nodes.length - 1];
 
-    equal(nodeTypeNames[first.nodeType], 'TEXT',
+    equal(names[first.nodeType], 'TEXT',
         'First node should be text');
     equal(trim(first.nodeValue), 'Here are some links in a normal paragraph:',
         'First node should have the correct nodeValue');
 
-    equal(nodeTypeNames[second.nodeType], 'ELEMENT',
+    equal(names[second.nodeType], 'ELEMENT',
         'Second node should be an element');
     equal(second.id, 'google',
         'Second node should have the correct id');
 
-    equal(nodeTypeNames[secondLast.nodeType], 'ELEMENT',
+    equal(names[secondLast.nodeType], 'ELEMENT',
         'Second-last node should be an element');
     equal(secondLast.id, 'checkedtest',
         'Second-last node should have the correct id');
 
-    equal(nodeTypeNames[last.nodeType], 'TEXT',
+    equal(names[last.nodeType], 'TEXT',
         'Last node should be text');
     equal(trim(last.nodeValue), '',
         'Last node should have the correct nodeValue');
