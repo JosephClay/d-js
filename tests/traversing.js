@@ -1,5 +1,40 @@
 module('traversing');
 
+var _NODE_TYPE = {
+    ELEMENT:                1,
+    ATTRIBUTE:              2,
+    TEXT:                   3,
+    CDATA:                  4,
+    ENTITY_REFERENCE:       5,
+    ENTITY:                 6,
+    PROCESSING_INSTRUCTION: 7,
+    COMMENT:                8,
+    DOCUMENT:               9,
+    DOCUMENT_TYPE:         10,
+    DOCUMENT_FRAGMENT:     11,
+    NOTATION:              12
+};
+
+var _NODE_TYPE_NAME = {
+     1: 'ELEMENT',
+     2: 'ATTRIBUTE',
+     3: 'TEXT',
+     4: 'CDATA',
+     5: 'ENTITY_REFERENCE',
+     6: 'ENTITY',
+     7: 'PROCESSING_INSTRUCTION',
+     8: 'COMMENT',
+     9: 'DOCUMENT',
+    10: 'DOCUMENT_TYPE',
+    11: 'DOCUMENT_FRAGMENT',
+    12: 'NOTATION'
+};
+
+var _getParent = function(node) {
+    // Fragment check for IE8
+    return (node && node.parentNode && node.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT) ? node.parentNode : null;
+};
+
 test('find(String)', function() {
     expect(1);
 
@@ -458,21 +493,6 @@ test('sort direction', function() {
 test('contents() sort direction', function() {
     expect(8);
 
-    var names = {
-         1: 'ELEMENT',
-         2: 'ATTRIBUTE',
-         3: 'TEXT',
-         4: 'CDATA',
-         5: 'ENTITY_REFERENCE',
-         6: 'ENTITY',
-         7: 'PROCESSING_INSTRUCTION',
-         8: 'COMMENT',
-         9: 'DOCUMENT',
-        10: 'DOCUMENT_TYPE',
-        11: 'DOCUMENT_FRAGMENT',
-        12: 'NOTATION'
-    };
-
     var trim = function(str) {
         return str.replace(/^\s+|\s+$/g, '');
     };
@@ -484,24 +504,24 @@ test('contents() sort direction', function() {
         secondLast = nodes[nodes.length - 2],
         last       = nodes[nodes.length - 1];
 
-    equal(names[first.nodeType], 'TEXT',
+    equal(_NODE_TYPE_NAME[first.nodeType], 'TEXT',
         'First node should be text');
     equal(trim(first.nodeValue), 'Here are some links in a normal paragraph:',
         'First node should have the correct nodeValue');
 
-    equal(names[second.nodeType], 'ELEMENT',
+    equal(_NODE_TYPE_NAME[second.nodeType], 'ELEMENT',
         'Second node should be an element');
     equal(second.id, 'google',
         'Second node should have the correct id');
 
     // The following tests will fail in IE8 because it excludes text nodes that contain only whitespace.
 
-    equal(names[secondLast.nodeType], 'ELEMENT',
+    equal(_NODE_TYPE_NAME[secondLast.nodeType], 'ELEMENT',
         'Second-last node should be an element');
     equal(secondLast.id, 'checkedtest',
         'Second-last node should have the correct id');
 
-    equal(names[last.nodeType], 'TEXT',
+    equal(_NODE_TYPE_NAME[last.nodeType], 'TEXT',
         'Last node should be text');
     equal(trim(last.nodeValue), '',
         'Last node should have the correct nodeValue');
@@ -516,7 +536,7 @@ test('add()', function() {
 });
 
 test('add(String selector)', function() {
-    expect(2);
+    expect(3);
 
     var divs;
 
@@ -527,16 +547,18 @@ test('add(String selector)', function() {
     );
 
     divs = D('<div/>').add('#sndp');
-    ok(divs[0].parentNode, 'Sort with the disconnected node last (started with disconnected first).');
+    ok(_getParent(divs[0]), 'Sort with the connected node first.');
+    ok(!_getParent(divs[1]), 'Sort with the disconnected node last.');
 });
 
 test('add(String html)', function() {
-    expect(3);
+    expect(4);
 
     var x,
         divs = D('#sndp').add('<div/>');
 
-    ok(!divs[1].parentNode, 'Sort with the disconnected node last.');
+    ok(_getParent(divs[0]), 'Sort with the connected node first.');
+    ok(!_getParent(divs[1]), 'Sort with the disconnected node last.');
 
     x = D([]).add('<p id="x1">xxx</p>').add('<p id="x2">xxx</p>');
     equal(x[0].id, 'x1', 'Check detached element1');
