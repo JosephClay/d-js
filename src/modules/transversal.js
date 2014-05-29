@@ -301,7 +301,18 @@ module.exports = {
 
                 // _utils.isAttached check to pass test "Node without parent returns -1"
                 // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
-                return (_utils.isAttached(parent) || parent.nodeType === _nodeType.DOCUMENT_FRAGMENT) ? _.toArray(parent.children).indexOf(first) : -1;
+                var isAttached       = _utils.isAttached(first),
+                    isParentFragment = parent.nodeType === _nodeType.DOCUMENT_FRAGMENT;
+
+                if (!isAttached && !isParentFragment) {
+                    return -1;
+                }
+
+                var childElems = parent.children || _.filter(parent.childNodes, function(node) {
+                    return node.nodeType === _nodeType.ELEMENT;
+                });
+
+                return [].indexOf.apply(childElems, [ first ]);
             })
 
             .expose(),
