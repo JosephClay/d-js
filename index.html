@@ -302,27 +302,29 @@
 
 
         <script>
-            var t = function(a, b, c) {
-                var f = D(b).get(),
-                    s = "",
-                    i = 0;
+            var q = function() {
+                var arr = [],
+                    idx,
+                    el;
 
-                for (; i < f.length; i++) {
-                    s += (s && ",") + '"' + f[i].id + '"';
+                for (idx = 0; idx < arguments.length; idx++) {
+                    el = document.getElementById(arguments[idx]);
+                    if (el) { arr.push(el); }
                 }
 
-                deepEqual(f, q.apply(q, c), a + " (" + b + ")" );
+                return arr;
             };
 
-            var q = function() {
-                var r = [],
-                    i = 0;
+            var t = function(message, selector, args) {
+                var arr = D(selector).get(),
+                    s = '',
+                    idx;
 
-                for (; i < arguments.length; i++) {
-                    var el = document.getElementById(arguments[i]);
-                    if (el) { r.push(el); }
+                for (idx = 0; idx < arr.length; idx++) {
+                    s += (s && ',') + '"' + arr[idx].id + '"';
                 }
-                return r;
+
+                deepEqual(arr, q.apply(q, args), message + ' (' + selector + ')' );
             };
         </script>
 
