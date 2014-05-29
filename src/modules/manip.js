@@ -5,6 +5,7 @@ var _ = require('_'),
     _selector = require('./selectors'),
     _array = require('./array'),
     _utils = require('../utils'),
+    _order = require('../order'),
 
     _data = require('./data'),
 
@@ -246,34 +247,39 @@ module.exports = {
         },
 
         add: overload()
+            // String selector
             .args(String)
             .use(function(selector) {
-                _array.unique(
-                    _utils.merge(this, D(selector))
+                var elems = _array.unique(
+                    [].concat(this.get(), D(selector).get())
                 );
-
-                return this;
+                _order.sort(elems);
+                return D(elems);
             })
 
+            // Array of elements
             .args(O.any(Array, O.nodeList, O.D))
             .use(function(arr) {
-                _array.unique(
-                    _utils.merge(this, arr)
+                var elems = _array.unique(
+                    [].concat(this.get(), _.toArray(arr))
                 );
-
-                return this;
+                _order.sort(elems);
+                return D(elems);
             })
 
-            .args(O.any(window, Element, O.nodeList))
+            // Single element
+            .args(O.any(window, document, Element))
             .use(function(elem) {
-                this.push(elem);
-                _array.unique(this);
-
-                return this;
+                var elems = _array.unique(
+                    [].concat(this.get(), [ elem ])
+                );
+                _order.sort(elems);
+                return D(elems);
             })
 
+            // Everything else
             .fallback(function() {
-                return this;
+                return D(this);
             })
 
             .expose(),
