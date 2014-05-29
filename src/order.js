@@ -50,7 +50,7 @@ var _isNode = function(b, flag, a) {
     return _is(rel, flag);
 };
 
-var _order = module.exports = {
+module.exports = {
 
     /**
      * Sorts an array of DOM elements in-place (i.e., mutates the original array)
@@ -62,50 +62,49 @@ var _order = module.exports = {
      * @see jQuery src/selector-native.js:37
      */
     sort: (function() {
-        var _hasDuplicate = false,
-            _sort = function(a, b) {
-                // Flag for duplicate removal
-                if (a === b) {
-                    _hasDuplicate = true;
+        var _hasDuplicate = false;
+
+        var _sort = function(node1, node2) {
+            // Flag for duplicate removal
+            if (node1 === node2) {
+                _hasDuplicate = true;
+                return 0;
+            }
+
+            // Sort on method existence if only one input has compareDocumentPosition
+            var rel = !node1.compareDocumentPosition - !node2.compareDocumentPosition;
+            if (rel) {
+                return rel;
+            }
+
+            // Nodes share the same document
+            if ((node1.ownerDocument || node1) === (node2.ownerDocument || node2)) {
+                rel = _comparePosition(node1, node2);
+            }
+            // Otherwise we know they are disconnected
+            else {
+                rel = _DOC_POS.DISCONNECTED;
+            }
+
+            // Not directly comparable
+            if (!rel) {
+                return 0;
+            }
+
+            // Disconnected nodes
+            if (_is(rel, _DOC_POS.DISCONNECTED)) {
+                var isNode1Disconnected = !_utils.isAttached(node1);
+                var isNode2Disconnected = !_utils.isAttached(node2);
+
+                if (isNode1Disconnected && isNode2Disconnected) {
                     return 0;
                 }
 
-                // Sort on method existence if only one input has compareDocumentPosition
-                var rel = !a.compareDocumentPosition - !b.compareDocumentPosition;
-                if (rel) {
-                    return rel;
-                }
+                return isNode2Disconnected ? -1 : 1;
+            }
 
-                // Nodes share the same document
-                if ((a.ownerDocument || a) === (b.ownerDocument || b)) {
-                    rel = _comparePosition(a, b);
-                }
-                // Otherwise we know they are disconnected
-                else {
-                    rel = _DOC_POS.DISCONNECTED;
-                }
-
-                // Not directly comparable
-                if (!rel) {
-                    // Maintain original order
-                    return 0;
-                }
-
-                // Disconnected nodes
-                if (_is(rel, _DOC_POS.DISCONNECTED)) {
-                    var isDisconnectedA = !_utils.isAttached(a);
-                    var isDisconnectedB = !_utils.isAttached(b);
-
-                    if (isDisconnectedA && isDisconnectedB) {
-                        // Maintain original order
-                        return 0;
-                    }
-
-                    return isDisconnectedB ? -1 : 1;
-                }
-
-                return _is(rel, _DOC_POS.FOLLOWING) ? -1 : 1;
-            };
+            return _is(rel, _DOC_POS.FOLLOWING) ? -1 : 1;
+        };
 
         return function(array, reverse) {
             _hasDuplicate = false;
@@ -132,11 +131,13 @@ var _order = module.exports = {
         }
 
         if (bUp && bUp.nodeType === _NODE_TYPE.ELEMENT) {
-            if (aDown.contains) {
-                return aDown.contains(bUp);
-            }
+            // Modern browsers (IE9+)
             if (a.compareDocumentPosition) {
                 return _isNode(bUp, _DOC_POS.CONTAINED_BY, a);
+            }
+            // IE8
+            if (aDown.contains) {
+                return aDown.contains(bUp);
             }
         }
 
