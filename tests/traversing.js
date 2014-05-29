@@ -530,7 +530,6 @@ test('add(String html)', function() {
 
     ok(!divs[1].parentNode, 'Sort with the disconnected node last.');
 
-
     x = D([]).add('<p id="x1">xxx</p>').add('<p id="x2">xxx</p>');
     equal(x[0].id, 'x1', 'Check detached element1');
     equal(x[1].id, 'x2', 'Check detached element2');
