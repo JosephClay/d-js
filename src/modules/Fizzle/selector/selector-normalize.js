@@ -38,6 +38,7 @@ var _pseudoReplace = function(str, positions) {
 };
 
 var _captureReplace = function(str, positions) {
+    var captureSelector;
     return str.replace(_CAPTURE_SELECT, function(match, cap, value, position) {
         if (!_isOutsideOfAttribute(position, positions)) { return match; }
 
