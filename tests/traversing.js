@@ -507,6 +507,14 @@ test('contents() sort direction', function() {
         'Last node should have the correct nodeValue');
 });
 
+test('add()', function() {
+    expect(1);
+
+    var elem = D('body');
+
+    notStrictEqual(elem, elem.add(), 'Return a new D object');
+});
+
 test('add(String selector)', function() {
     expect(2);
 
