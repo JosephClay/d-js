@@ -4,10 +4,12 @@ var _NODE_TYPE = require('./nodeType'),
 
 // Compare Position - MIT Licensed, John Resig
 var _comparePosition = function(node1, node2) {
+    // Modern browsers (IE9+)
     if (node1.compareDocumentPosition) {
         return node1.compareDocumentPosition(node2);
     }
 
+    // IE8
     if (node1.contains) {
         var rel = 0;
 
