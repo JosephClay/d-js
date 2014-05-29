@@ -13,11 +13,11 @@ var _comparePosition = function(node1, node2) {
     if (node1.contains) {
         var rel = 0;
 
-        if (node1 != node2 && node1.contains(node2)) {
+        if (node1 !== node2 && node1.contains(node2)) {
             rel += _DOC_POS.CONTAINED_BY;
         }
 
-        if (node1 != node2 && node2.contains(node1)) {
+        if (node1 !== node2 && node2.contains(node1)) {
             rel += _DOC_POS.CONTAINS;
         }
 
