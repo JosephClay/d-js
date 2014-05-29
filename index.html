@@ -303,28 +303,22 @@
 
         <script>
             var q = function() {
-                var arr = [],
+                var elems = [],
                     idx,
+                    len = arguments.length,
                     el;
 
-                for (idx = 0; idx < arguments.length; idx++) {
+                for (idx = 0; idx < len; idx++) {
                     el = document.getElementById(arguments[idx]);
-                    if (el) { arr.push(el); }
+                    if (el) { elems.push(el); }
                 }
 
-                return arr;
+                return elems;
             };
 
             var t = function(message, selector, args) {
-                var arr = D(selector).get(),
-                    s = '',
-                    idx;
-
-                for (idx = 0; idx < arr.length; idx++) {
-                    s += (s && ',') + '"' + arr[idx].id + '"';
-                }
-
-                deepEqual(arr, q.apply(q, args), message + ' (' + selector + ')' );
+                var elems = D(selector).get();
+                deepEqual(elems, q.apply(null, args), message + ' (' + selector + ')' );
             };
         </script>
 
