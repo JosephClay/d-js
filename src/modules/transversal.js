@@ -292,7 +292,7 @@ module.exports = {
                     return -1;
                 }
 
-                var first = this[0],
+                var first  = this[0],
                     parent = first.parentNode;
 
                 if (!parent) {
