@@ -275,7 +275,7 @@ module.exports = {
 
         remove: overload()
             .args(String)
-            .use(function() {
+            .use(function(selector) {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
                 _remove(arr);
@@ -290,7 +290,7 @@ module.exports = {
 
         detach: overload()
             .args(String)
-            .use(function() {
+            .use(function(selector) {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
                 _detach(arr);
