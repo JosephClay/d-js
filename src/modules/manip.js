@@ -184,6 +184,7 @@ module.exports = {
                 D(obj).append(this);
                 return this;
             })
+
             .expose(),
 
         prepend: overload()
@@ -231,10 +232,12 @@ module.exports = {
                 d.prepend(this);
                 return this;
             })
+
             .fallback(function(obj) {
                 D(obj).prepend(this);
                 return this;
             })
+
             .expose(),
 
         empty: function() {
@@ -268,9 +271,11 @@ module.exports = {
 
                 return this;
             })
+
             .fallback(function() {
                 return this;
             })
+
             .expose(),
 
         remove: overload()
@@ -286,6 +291,7 @@ module.exports = {
                 _remove(this);
                 return this;
             })
+
             .expose(),
 
         detach: overload()
@@ -301,6 +307,7 @@ module.exports = {
                 _detach(this);
                 return this;
             })
+
             .expose()
     }
 };
