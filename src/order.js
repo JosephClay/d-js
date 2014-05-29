@@ -49,7 +49,8 @@ module.exports = {
      * Sorts an array of DOM elements in-place (i.e., mutates the original array)
      * in document order and returns whether any duplicates were found.
      * @function
-     * @param {Element[]} array Array of DOM elements.
+     * @param {Element[]} array          Array of DOM elements.
+     * @param {Boolean}  [reverse=false] If a truthy value is passed, the given array will be reversed.
      * @returns {Boolean} true if any duplicates were found, otherwise false.
      * @see jQuery src/selector-native.js:37
      */
@@ -79,9 +80,12 @@ module.exports = {
                 return _is(rel, _DOC_POS.FOLLOWING) ? -1 : 1;
             };
 
-        return function(array) {
+        return function(array, reverse) {
             _hasDuplicate = false;
             array.sort(_sort);
+            if (reverse) {
+                array.reverse();
+            }
             return _hasDuplicate;
         };
     }()),
