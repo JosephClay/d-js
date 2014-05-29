@@ -1,11 +1,14 @@
-var _ = require('_'),
+var _NODE_TYPE = require('./nodeType'),
+
+    _ = require('_'),
+
     _cache = require('./cache'),
     _nodeNameCache = _cache(),
     _supports = require('./supports');
 
 module.exports = {
     isAttached: function(elem) {
-        return !!(elem && elem !== document ? elem.parentNode : false);
+        return !!(elem && elem.ownerDocument && elem !== document && elem.parentNode && elem.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT);
     },
 
     isHtml: function(text) {
