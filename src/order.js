@@ -22,8 +22,8 @@ var _comparePosition = function(node1, node2) {
         }
 
         if (node1.sourceIndex >= 0 && node2.sourceIndex >= 0) {
-            rel += (node1.sourceIndex < node2.sourceIndex && _DOC_POS.FOLLOWING);
-            rel += (node1.sourceIndex > node2.sourceIndex && _DOC_POS.PRECEDING);
+            rel += (node1.sourceIndex < node2.sourceIndex ? _DOC_POS.FOLLOWING : 0);
+            rel += (node1.sourceIndex > node2.sourceIndex ? _DOC_POS.PRECEDING : 0);
         } else {
             rel += 1;
         }
