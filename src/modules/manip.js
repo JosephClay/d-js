@@ -268,7 +268,7 @@ module.exports = {
             })
 
             // Single element
-            .args(O.any(window, document, Element))
+            .args(O.any(O.window, O.document, Element))
             .use(function(elem) {
                 var elems = _array.unique(
                     [].concat(this.get(), [ elem ])
