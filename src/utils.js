@@ -56,5 +56,13 @@ module.exports = {
 
     normalizeNewlines: function(str) {
         return str && _supports.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
+    },
+
+    returnTrue: function() {
+        return true;
+    },
+
+    returnFalse: function() {
+        return false;
     }
 };
