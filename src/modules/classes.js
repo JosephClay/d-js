@@ -10,27 +10,7 @@ var _isEmpty = _.string.isEmpty;
 
 var _impl = _supports.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
 
-var _classes = {
-    getClasses: function(elems) {
-        var names = [],
-            nameSet = {},
-            elemIdx = elems.length,
-            curNames,
-            curNameIdx,
-            curName;
-        while (elemIdx--) {
-            curNames = _impl.getClasses(elems[elemIdx]);
-            curNameIdx = curNames.length;
-            while (curNameIdx--) {
-                curName = curNames[curNameIdx];
-                if (nameSet[curName]) { continue; }
-                names.push(curName);
-                nameSet[curName] = true;
-            }
-        }
-    },
-
-    doAnyElemsHaveClass: function(elems, name) {
+var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (_impl.hasClass(elems[elemIdx], name)) { return true; }
@@ -38,7 +18,7 @@ var _classes = {
         return false;
     },
 
-    addClasses: function(elems, names) {
+    _addClasses = function(elems, names) {
         // Support array-like objects
         if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
@@ -47,7 +27,7 @@ var _classes = {
         }
     },
 
-    removeClasses: function(elems, names) {
+    _removeClasses = function(elems, names) {
         // Support array-like objects
         if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
@@ -56,30 +36,29 @@ var _classes = {
         }
     },
 
-    removeAllClasses: function(elems) {
+    _removeAllClasses = function(elems) {
         var elemIdx = elems.length;
         while (elemIdx--) {
             elems[elemIdx].className = '';
         }
     },
 
-    toggleClasses: function(elems, names) {
+    _toggleClasses = function(elems, names) {
         // Support array-like objects
         if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             _impl.toggleClasses(elems[elemIdx], names);
         }
-    }
-};
+    };
 
-module.exports = _.extend({}, _classes, {
+module.exports = {
     fn: {
         hasClass: overload()
             .args(String)
             .use(function(name) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
-                return _classes.doAnyElemsHaveClass(this, name);
+                return _doAnyElemsHaveClass(this, name);
             })
             .expose(),
 
@@ -91,7 +70,7 @@ module.exports = _.extend({}, _classes, {
                 var names = _split(name);
                 if (!names.length) { return this; }
 
-                _classes.addClasses(this, names);
+                _addClasses(this, names);
 
                 return this;
             })
@@ -100,7 +79,7 @@ module.exports = _.extend({}, _classes, {
             .use(function(names) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
-                _classes.addClasses(this, names);
+                _addClasses(this, names);
 
                 return this;
             })
@@ -117,7 +96,7 @@ module.exports = _.extend({}, _classes, {
             .use(function() {
                 if (!this.length) { return this; }
 
-                _classes.removeAllClasses(this);
+                _removeAllClasses(this);
 
                 return this;
             })
@@ -129,7 +108,7 @@ module.exports = _.extend({}, _classes, {
                 var names = _split(name);
                 if (!names.length) { return this; }
 
-                _classes.removeClasses(this, names);
+                _removeClasses(this, names);
 
                 return this;
             })
@@ -138,7 +117,7 @@ module.exports = _.extend({}, _classes, {
             .use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
-                _classes.removeClasses(this, names);
+                _removeClasses(this, names);
 
                 return this;
             })
@@ -158,7 +137,7 @@ module.exports = _.extend({}, _classes, {
                 var names = _split(name);
                 if (!names.length) { return this; }
 
-                _classes.toggleClasses(this, names);
+                _toggleClasses(this, names);
 
                 return this;
             })
@@ -171,9 +150,9 @@ module.exports = _.extend({}, _classes, {
                 if (!names.length) { return this; }
 
                 if (shouldAdd) {
-                    _classes.addClasses(this, names);
+                    _addClasses(this, names);
                 } else {
-                    _classes.removeClasses(this, names);
+                    _removeClasses(this, names);
                 }
 
                 return this;
@@ -183,7 +162,7 @@ module.exports = _.extend({}, _classes, {
             .use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
-                _classes.toggleClasses(this, names);
+                _toggleClasses(this, names);
 
                 return this;
             })
@@ -198,9 +177,9 @@ module.exports = _.extend({}, _classes, {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
                 if (shouldAdd) {
-                    _classes.addClasses(this, names);
+                    _addClasses(this, names);
                 } else {
-                    _classes.removeClasses(this, names);
+                    _removeClasses(this, names);
                 }
 
                 return this;
@@ -208,4 +187,4 @@ module.exports = _.extend({}, _classes, {
 
             .expose()
     }
-});
+};

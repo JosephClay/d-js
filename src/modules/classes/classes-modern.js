@@ -1,10 +1,6 @@
 var _ = require('_');
 
 module.exports = {
-    getClasses: function(elem) {
-        return _.toArray(elem.classList);
-    },
-
     hasClass: function(elem, name) {
         return elem.classList.contains(name);
     },

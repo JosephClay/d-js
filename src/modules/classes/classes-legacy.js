@@ -8,12 +8,7 @@ var _      = require('_'),
     _removeCache = _cache.biLevel(),
     _toggleCache = _cache.biLevel();
 
-var _impl = {
-    getClasses: function(elem) {
-        return _split(elem.className);
-    },
-
-    hasClass: function(elem, name) {
+var _hasClass = function(elem, name) {
         var elemClassNames = _split(elem.className),
             idx = elemClassNames.length;
         while (idx--) {
@@ -22,7 +17,7 @@ var _impl = {
         return false;
     },
 
-    addClasses: function(elem, namesToAdd) {
+    _addClasses = function(elem, namesToAdd) {
         var curNames   = _split(elem.className),
             newNames   = [],
             newNameSet = _.object(curNames),
@@ -46,7 +41,7 @@ var _impl = {
         return curNames.concat(newNames);
     },
 
-    removeClasses: function(elem, namesToRemove) {
+    _removeClasses = function(elem, namesToRemove) {
         var curNames         = _split(elem.className),
             resultNames      = [],
             resultNameSet    = {},
@@ -77,7 +72,7 @@ var _impl = {
         return resultNames;
     },
 
-    toggleClasses: function(elem, namesToToggle) {
+    _toggleClasses = function(elem, namesToToggle) {
         var curNames   = _split(elem.className),
             newNames   = curNames.slice(),
             newNameSet = _.object(curNames),
@@ -118,37 +113,30 @@ var _impl = {
         }
 
         return newNamesClean;
-    }
-};
+    };
 
 module.exports = {
-    getClasses: function(elem) {
-        return _getCache.getOrSet(elem.className, function() {
-            return _impl.getClasses(elem);
-        });
-    },
-
     hasClass: function(elem, name) {
         return _hasCache.getOrSet(elem.className, name, function() {
-            return _impl.hasClass(elem, name);
+            return _hasClass(elem, name);
         });
     },
 
     addClasses: function(elem, names) {
         this._setClassName(elem, _addCache.getOrSet(elem.className, names.join(' '), function() {
-            return _impl.addClasses(elem, names);
+            return _addClasses(elem, names);
         }));
     },
 
     removeClasses: function(elem, names) {
         this._setClassName(elem, _removeCache.getOrSet(elem.className, names.join(' '), function() {
-            return _impl.removeClasses(elem, names);
+            return _removeClasses(elem, names);
         }));
     },
 
     toggleClasses: function(elem, names) {
         this._setClassName(elem, _toggleCache.getOrSet(elem.className, names.join(' '), function() {
-            return _impl.toggleClasses(elem, names);
+            return _toggleClasses(elem, names);
         }));
     },
 
