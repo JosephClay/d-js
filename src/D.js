@@ -6,23 +6,24 @@ require('./_.string');
 // Configure O with string custom types
 require('./o.custom');
 
-var _ = require('_');
-var parser = require('./D/parser'),
-    utils = require('./utils'),
-    array = require('./modules/array'),
-    onready = require('./modules/onready'),
-    selectors = require('./modules/selectors'),
+var _ = require('_'),
+
+    parser      = require('./D/parser'),
+    utils       = require('./utils'),
+    array       = require('./modules/array'),
+    onready     = require('./modules/onready'),
+    selectors   = require('./modules/selectors'),
     transversal = require('./modules/transversal'),
-    dimensions = require('./modules/dimensions'),
-    manip = require('./modules/manip'),
-    css = require('./modules/css'),
-    attr = require('./modules/attr'),
-    prop = require('./modules/prop'),
-    val = require('./modules/val'),
-    position = require('./modules/position'),
-    classes = require('./modules/classes'),
-    data = require('./modules/data'),
-    events = require('./modules/events');
+    dimensions  = require('./modules/dimensions'),
+    manip       = require('./modules/manip'),
+    css         = require('./modules/css'),
+    attr        = require('./modules/attr'),
+    prop        = require('./modules/prop'),
+    val         = require('./modules/val'),
+    position    = require('./modules/position'),
+    classes     = require('./modules/classes'),
+    data        = require('./modules/data'),
+    events      = require('./modules/events');
 
 // Store previous reference
 var _prevD = window.D;
