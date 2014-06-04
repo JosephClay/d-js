@@ -177,9 +177,9 @@ test('index(Object|String|undefined)', function() {
     // enabled since [6330]
     equal(D('#text2').index(), 2, 'Check for index amongst siblings');
     equal(D('#form').children().eq(4).index(), 4, 'Check for index amongst siblings');
-    equal(D('#radio2').index('#form input[type="radio"]') , 1, 'Check for index within a selector');
+    equal(D('#radio2').index('#form input[type="radio"]'), 1, 'Check for index within a selector');
     equal(D('#form input[type="radio"]').index(D('#radio2')), 1, 'Check for index within a selector');
-    equal(D('#radio2').index('#form input[type="text"]') , -1, 'Check for index not found within a selector');
+    equal(D('#radio2').index('#form input[type="text"]'), -1, 'Check for index not found within a selector');
 });
 
 test('filter(Selector|undefined)', function() {
