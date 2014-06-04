@@ -8,6 +8,6 @@
     "grunt-contrib-watch": "^0.6.1"
   },
   "dependencies": {
-    "grunt-rquirejs": "^0.1.7"
+    "grunt-rquirejs": "^0.1.9"
   }
 }
