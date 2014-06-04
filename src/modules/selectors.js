@@ -253,8 +253,7 @@ module.exports = {
 
                 return D(
                     _.filter(this, function(elem, idx) {
-                        // TODO: This is backwards from forEach and _.each, change?
-                        return checker.call(elem, idx, elem);
+                        return checker.call(elem, elem, idx);
                     })
                 );
 

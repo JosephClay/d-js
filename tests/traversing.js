@@ -200,7 +200,7 @@ test('filter(Function)', function() {
 
     deepEqual(D('#qunit-fixture p').filter(function() { return !jQuery('a', this).length; }).get(), q('sndp', 'first'), 'filter(Function)');
 
-    deepEqual(D('#qunit-fixture p').filter(function(i, elem) { return !jQuery('a', elem).length; }).get(), q('sndp', 'first'), 'filter(Function) using arg');
+    deepEqual(D('#qunit-fixture p').filter(function(elem, i) { return !jQuery('a', elem).length; }).get(), q('sndp', 'first'), 'filter(Function) using arg');
 });
 
 test('filter(Element)', function() {
