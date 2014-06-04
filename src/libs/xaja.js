@@ -1,14 +1,13 @@
 (function(root, _POST, _GET, _PUT, _DEL, undefined) {
 
-
     (function(name, definition) {
 
         if (typeof define === 'function') { // AMD
-            define(definition);
+            define(function() { return definition; });
         } else if (typeof module !== 'undefined' && module.exports) { // Node.js
-            module.exports = definition();
+            module.exports = definition;
         } else { // Browser
-            this[name] = definition();
+            this[name] = definition;
         }
 
     })('xaja', (function(config, definitions, undefined) {
@@ -51,9 +50,7 @@
                 define(path, definitions[path]);
             }
 
-            return function() {
-                return require(config.main);
-            };
+            return require(config.main);
 
         }(
             {
