@@ -149,6 +149,7 @@ var _getWidthOrHeight = function(elem, name) {
     ) + 'px';
 };
 
+// TODO: Refactor and optimize this function
 var _cssExpand = [ 'Top', 'Right', 'Bottom', 'Left' ];
 var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     var val = 0,
