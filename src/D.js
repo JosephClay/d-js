@@ -23,7 +23,9 @@ var _ = require('_'),
     position    = require('./modules/position'),
     classes     = require('./modules/classes'),
     data        = require('./modules/data'),
-    events      = require('./modules/events');
+    events      = require('./modules/events'),
+
+    xaja        = require('./libs/xaja');
 
 // Store previous reference
 var _prevD = window.D;
@@ -79,6 +81,13 @@ _.extend(DOM,
     map:     _.map,
     extend:  _.extend,
     forEach: _.each,
+
+    // proxy ajax to xaja
+    ajax: xaja.ajax,
+    get: xaja.get,
+    post: xaja.post,
+    put: xaja.put,
+    del: xaja.del,
 
     noConflict: function() {
         if (_hasMoreConflict) {
