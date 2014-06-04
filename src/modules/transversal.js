@@ -217,8 +217,9 @@ var _getSiblings = function(context) {
             iterator;
 
         if (selector) {
+            var is = Fizzle.is(selector);
             iterator = function(sibling) {
-                var isMatch = Fizzle.is(selector).match(sibling);
+                var isMatch = is.match(sibling);
                 if (isMatch) {
                     result.push(sibling);
                 }
@@ -239,11 +240,6 @@ var _getSiblings = function(context) {
         return result;
     },
 
-    _getIndex = function(d) {
-        return d.__idx || 0;
-    },
-
-    // TODO: Don't sort twice (.filter() sorts in document order)
     _uniqueSort = function(elems, reverse) {
         var result = _array.unique(elems);
         _array.elementSort(result);
@@ -274,7 +270,7 @@ module.exports = {
             .args(String)
             .use(function(selector) {
                 var first = this[0];
-                return D(selector).indexOf(first); // TODO: Can this be optimized?
+                return D(selector).indexOf(first);
             })
 
             .args(O.any(Element, O.window, O.document))
