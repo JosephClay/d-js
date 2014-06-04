@@ -109,39 +109,35 @@ _.extend(DOM,
     }
 });
 
-var arrayProto = (function() {
+var arrayProto = (function(proto, obj) {
 
-    var keys = [
-            'length',
-            'toString',
-            'toLocaleString',
-            'join',
-            'pop',
-            'push',
-            'concat',
-            'reverse',
-            'shift',
-            'unshift',
-            'slice',
-            'splice',
-            'sort',
-            'some',
-            'every',
-            'indexOf',
-            'lastIndexOf',
-            'reduce',
-            'reduceRight'
-        ],
-        idx = keys.length,
-        obj = {};
-
-    while (idx--) {
-        obj[keys[idx]] = Array.prototype[keys[idx]];
-    }
+    _.each([
+        'length',
+        'toString',
+        'toLocaleString',
+        'join',
+        'pop',
+        'push',
+        'concat',
+        'reverse',
+        'shift',
+        'unshift',
+        'slice',
+        'splice',
+        'sort',
+        'some',
+        'every',
+        'indexOf',
+        'lastIndexOf',
+        'reduce',
+        'reduceRight'
+    ], function(key) {
+        obj[key] = proto[key];
+    });
 
     return obj;
 
-}());
+}(Array.prototype, {}));
 
 _.extend(
     DOM.prototype,
