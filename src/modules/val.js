@@ -146,6 +146,7 @@ module.exports = {
             })
             .expose(),
 
+        // TODO: Add handling of (and unit tests for) \r\n in IE
         val: overload()
             .args(O.any(String, Number))
             .use(function(value) {
