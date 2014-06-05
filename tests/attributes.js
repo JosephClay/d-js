@@ -2,6 +2,10 @@
 
     module('attributes');
 
+    var DQ = function() {
+        return D(q.apply(q, arguments));
+    };
+
     var bareObj = function(value) {
         return value;
     };
@@ -24,29 +28,73 @@
             Returns a function that returns the value
     */
 
-    test('D.propFix integrity test', function() {
-        expect(1);
+    test('propFix integrity test', function() {
+        expect(44);
 
-        //  This must be maintained and equal D.attrFix when appropriate
-        //  Ensure that accidental or erroneous property
-        //  overwrites don't occur
-        //  This is simply for better code coverage and future proofing.
-        var props = {
-            'tabindex': 'tabIndex',
-            'readonly': 'readOnly',
-            'for': 'htmlFor',
-            'class': 'className',
-            'maxlength': 'maxLength',
-            'cellspacing': 'cellSpacing',
-            'cellpadding': 'cellPadding',
-            'rowspan': 'rowSpan',
-            'colspan': 'colSpan',
-            'usemap': 'useMap',
-            'frameborder': 'frameBorder',
-            'contenteditable': 'contentEditable'
-        };
+        var list = DQ('listWithTabIndex');
+        strictEqual(list.attr('tabindex'), '5', 'attr("tabindex")');
+        strictEqual(list.attr('tabIndex'), '5', 'attr("tabIndex")');
+        strictEqual(list.prop('tabindex'),  5,  'prop("tabindex")');
+        strictEqual(list.prop('tabIndex'),  5,  'prop("tabIndex")');
 
-        deepEqual(props, D.propFix, 'D.propFix passes integrity check');
+        var t2 = DQ('T2');
+        strictEqual(t2.attr('readonly'), 'readonly', 'attr("readonly")');
+        strictEqual(t2.attr('readOnly'), 'readonly', 'attr("readOnly")');
+        strictEqual(t2.prop('readonly'),  true,      'prop("readonly")');
+        strictEqual(t2.prop('readOnly'),  true,      'prop("readOnly")');
+
+        var label = DQ('label-for');
+        strictEqual(label.attr('for'),     'action',  'attr("for")');
+        strictEqual(label.attr('htmlFor'), undefined, 'attr("htmlFor")');
+        strictEqual(label.prop('for'),     'action',  'prop("for")');
+        strictEqual(label.prop('htmlFor'), 'action',  'prop("htmlFor")');
+
+        var groupsLink = DQ('groups');
+        strictEqual(groupsLink.attr('class'),     'GROUPS',  'attr("class")');
+        strictEqual(groupsLink.attr('className'), undefined, 'attr("className")');
+        strictEqual(groupsLink.prop('class'),     'GROUPS',  'prop("class")');
+        strictEqual(groupsLink.prop('className'), 'GROUPS',  'prop("className")');
+
+        var text1 = DQ('text1');
+        strictEqual(text1.attr('maxlength'), '30', 'attr("maxlength")');
+        strictEqual(text1.attr('maxLength'), '30', 'attr("maxLength")');
+        strictEqual(text1.prop('maxlength'),  30,  'prop("maxlength")');
+        strictEqual(text1.prop('maxLength'),  30,  'prop("maxLength")');
+
+        var table1 = DQ('table1');
+        strictEqual(table1.attr('cellspacing'), '2', 'attr("cellspacing")');
+        strictEqual(table1.attr('cellSpacing'), '2', 'attr("cellSpacing")');
+        strictEqual(table1.prop('cellspacing'), '2', 'prop("cellspacing")');
+        strictEqual(table1.prop('cellSpacing'), '2', 'prop("cellSpacing")');
+
+        strictEqual(table1.attr('cellpadding'), '3', 'attr("cellpadding")');
+        strictEqual(table1.attr('cellPadding'), '3', 'attr("cellPadding")');
+        strictEqual(table1.prop('cellpadding'), '3', 'prop("cellpadding")');
+        strictEqual(table1.prop('cellPadding'), '3', 'prop("cellPadding")');
+
+        var th1 = DQ('th1');
+        strictEqual(th1.attr('rowspan'), '2', 'attr("rowspan")');
+        strictEqual(th1.attr('rowSpan'), '2', 'attr("rowSpan")');
+        strictEqual(th1.prop('rowspan'),  2,  'prop("rowspan")');
+        strictEqual(th1.prop('rowSpan'),  2,  'prop("rowSpan")');
+
+        var th2 = DQ('th2');
+        strictEqual(th2.attr('colspan'), '4', 'attr("colspan")');
+        strictEqual(th2.attr('colSpan'), '4', 'attr("colSpan")');
+        strictEqual(th2.prop('colspan'),  4,  'prop("colspan")');
+        strictEqual(th2.prop('colSpan'),  4,  'prop("colSpan")');
+
+        var img = DQ('img');
+        strictEqual(img.attr('usemap'), '#bigthings', 'attr("usemap")');
+        strictEqual(img.attr('useMap'), '#bigthings', 'attr("useMap")');
+        strictEqual(img.prop('usemap'), '#bigthings', 'prop("usemap")');
+        strictEqual(img.prop('useMap'), '#bigthings', 'prop("useMap")');
+
+        var editable = DQ('contenteditable');
+        strictEqual(editable.attr('contenteditable'), 'true', 'attr("contenteditable")');
+        strictEqual(editable.attr('contentEditable'), 'true', 'attr("contentEditable")');
+        strictEqual(editable.prop('contenteditable'), 'true', 'prop("contenteditable")');
+        strictEqual(editable.prop('contentEditable'), 'true', 'prop("contentEditable")');
     });
 
     test('attr(String)', function() {
