@@ -1,6 +1,6 @@
-// TODO: Optimize this function
+// http://jsperf.com/js-push-vs-index11/2
 var _parse = function(htmlStr) {
-    var div  = document.createElement('div');
+    var div = document.createElement('div');
     div.innerHTML = htmlStr;
 
     var child,
@@ -11,7 +11,7 @@ var _parse = function(htmlStr) {
     for (idx = 0; idx < len; idx++) {
         child = div.children[idx];
         div.removeChild(child);
-        arr.push(child);
+        arr[idx] = child;
     }
 
     return arr;
