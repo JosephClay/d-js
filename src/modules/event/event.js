@@ -2,6 +2,7 @@ var _           = require('_'),
 
     Event       = require('./EventConstructor'),
     _nodeType   = require('../../nodeType'),
+    _regex      = require('../../regex'),
     _data       = require('../data'),
     _eventUtils = require('./eventUtils'),
     _global     = {};
@@ -35,9 +36,9 @@ var _add = function(elem, types, handler, data, selector) {
 
     if (!(eventHandle = elemData.handle)) {
         eventHandle = elemData.handle = function(e) {
-            // Discard the second event of a jQuery.event.trigger() and
+            // Discard the second event of a D.event.trigger() and
             // when an event is called after a page has unloaded
-            return typeof jQuery !== 'undefined' && (!e || D.event.triggered !== e.type) ?
+            return typeof D !== 'undefined' && (!e || D.event.triggered !== e.type) ?
                 _dispatch.apply(eventHandle.elem, arguments) :
                 undefined;
         };
@@ -50,11 +51,11 @@ var _add = function(elem, types, handler, data, selector) {
     t = types.length;
     while (t--) {
 
+        tmp = rtypenamespace.exec(types[t]) || [];
         type = origType = tmp[1];
         // There *must* be a type, no attaching namespace-only handlers
         if (!type) { continue; }
 
-        tmp = rtypenamespace.exec(types[t]) || [];
         namespaces = (tmp[2] || '').split('.').sort();
 
         // If event changes its type, use the special event handlers for the changed type
@@ -74,7 +75,7 @@ var _add = function(elem, types, handler, data, selector) {
             handler     : handler,
             guid        : handler.guid,
             selector    : selector,
-            needsContext: selector && jQuery.expr.match.needsContext.test(selector),
+            needsContext: selector && _regex.needsContext(selector),
             namespace   : namespaces.join('.')
         }, handleObjIn);
 
@@ -420,7 +421,7 @@ var _handlers = function(event, handlers) {
 
                     if (matches[sel] === undefined) {
                         matches[sel] = handleObj.needsContext ?
-                            this.find(sel).index( cur ) >= 0 :
+                            this.find(sel).index(cur) >= 0 :
                             // TODO: What is happening here?
                             jQuery.find(sel, this, null, [ cur ]).length;
                     }
