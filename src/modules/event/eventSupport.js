@@ -1,4 +1,3 @@
-
 // IE change delegation and checkbox/radio fix
 if ( !support.changeBubbles ) {
 
