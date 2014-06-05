@@ -83,6 +83,7 @@ _.extend(DOM,
 {
     each:    array.each,
     forEach: array.each,
+
     map:     _.map,
     extend:  _.extend,
 
