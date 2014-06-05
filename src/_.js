@@ -21,7 +21,7 @@ var _ = {
     },
 
     coerceToNum: function(val) {
-        return _.isNumber(val) ? val || 0 : // Its a number! || 0 to avoid NaN (as NaN's a number)
+        return _.isNumber(val) ? (val || 0) : // Its a number! || 0 to avoid NaN (as NaN's a number)
                 _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN again
                 0; // Default to zero
     },
