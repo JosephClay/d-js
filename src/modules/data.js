@@ -60,14 +60,14 @@ var _          = require('_'),
     };
 
 module.exports = {
-    hasData: _hasData,
-    getData: function(elem, str) {
+    has: _hasData,
+    get: function(elem, str) {
         if (str === undefined) {
             return _getAllData(elem);
         }
         return _getData(elem, str);
     },
-    removeData: function(elem, str) {
+    remove: function(elem, str) {
         if (str === undefined) {
             return _removeAllData(elem);
         }
