@@ -10,7 +10,7 @@ var _isD = function(val) {
     return val instanceof D;
 };
 
-var _isArrayLike = function(val) {
+var _isCollection = function(val) {
     return _isD(val) || _.isArray(val) || _.isNodeList(val);
 };
 
@@ -28,10 +28,10 @@ overload.defineTypes({
         return val && val === document;
     },
     'selector': function(val) {
-        return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || _isArrayLike(val));
+        return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || _isCollection(val));
     },
-    'arrayLike': function(val) {
-        return val && _isArrayLike(val);
+    'collection': function(val) {
+        return val && _isCollection(val);
     }
 });
 
