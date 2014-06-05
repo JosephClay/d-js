@@ -7,8 +7,8 @@ var _ = require('_'),
     _supports = require('../supports'),
     _utils    = require('../utils');
 
-var _outerHtml = function(elem) {
-    return elem.outerHTML;
+var _outerHtml = function() {
+    return this.length ? this[0].outerHTML : null;
 };
 
 var _text = {
