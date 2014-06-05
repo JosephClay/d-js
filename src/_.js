@@ -34,19 +34,18 @@ var _ = {
         return !!(obj && obj.nodeType === _NODE_TYPE.ELEMENT);
     },
 
-    isArray: Array.isArray || function(obj) {
-        return _toString.call(obj) === '[object Array]';
-    },
+    // NOTE: In older browsers, this will be overwritten below
+    isArray: Array.isArray,
 
     // NodeList check. For our purposes, a node list
     // and an HTMLCollection are the same
     isNodeList: function(obj) {
-        return obj instanceof NodeList || obj instanceof HTMLCollection;
+        return !!(obj && (obj instanceof NodeList || obj instanceof HTMLCollection));
     },
 
     // Window check
     isWindow: function(obj) {
-        return obj && obj === obj.window;
+        return !!(obj && obj === obj.window);
     },
 
     // Flatten that also checks if value is a NodeList
@@ -250,13 +249,13 @@ var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
-            return _toString.call(obj) === '[object ' + name + ']';
+            return !!obj && _toString.call(obj) === '[object ' + name + ']';
         };
     },
     name;
 while (idx--) {
     name = types[idx];
-    _['is' + name] = generateCheck(name);
+    _['is' + name] = _['is' + name] || generateCheck(name);
 }
 
 // Optimize `isFunction` if appropriate.
