@@ -24,31 +24,64 @@ var _          = require('_'),
         return id;
     },
 
-    _destroyData = function(elem) {
-        var id = _getId(elem);
-        if (!id) { return; }
+    _getAllData = function(elem) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
+        return _dataCache.get(id);
+    },
 
+    _getData = function(elem, key) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
+        return _dataCache.get(id, key);
+    },
+
+    _hasData = function(elem) {
+        var id;
+        if (!(id = _getId(elem))) { return false; }
+        return _dataCache.has(id);
+    },
+
+    _setData = function(elem, key, value) {
+        var id = _getOrSetId(elem);
+        return _dataCache.set(id, key, value);
+    },
+
+    _removeAllData = function(elem) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
         _dataCache.remove(id);
+    },
+
+    _removeData = function(elem, key) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
+        _dataCache.remove(id, key);
     };
 
 module.exports = {
-    destroyData: _destroyData,
+    hasData: _hasData,
+    getData: function(elem, str) {
+        if (str === undefined) {
+            return _getAllData(elem);
+        }
+        return _getData(elem, str);
+    },
+    removeData: function(elem, str) {
+        if (str === undefined) {
+            return _removeAllData(elem);
+        }
+        return _removeData(elem, str);
+    },
 
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
             .args(O.element, String, O.wild)
-            .use(function(elem, key, value) {
-                var id = _getOrSetId(elem);
-                return _dataCache.set(id, key, value);
-            })
+            .use(_setData)
 
             .args(O.element, String)
-            .use(function(elem, key) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                return _dataCache.get(id, key);
-            })
+            .use(_getData)
 
             .args(O.element, Object)
             .use(function(elem, map) {
@@ -62,32 +95,20 @@ module.exports = {
             })
 
             .args(O.element)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                return _dataCache.get(id);
-            })
+            .use(_getAllData)
 
             .expose(),
 
         hasData: overload()
             .args(O.element)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return false; }
-                return _dataCache.has(id);
-            })
+            .use(_hasData)
             .expose(),
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
             // Remove single key
             .args(O.element, String)
-            .use(function(elem, key) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                _dataCache.remove(id, key);
-            })
+            .use(_removeData)
 
             // Remove multiple keys
             .args(O.element, Array)
@@ -102,11 +123,7 @@ module.exports = {
 
             // Remove all data
             .args(O.element)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                _dataCache.remove(id);
-            })
+            .use(_removeAllData)
 
             .expose()
     },
