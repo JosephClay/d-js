@@ -1,12 +1,13 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _            = require('_'),
+    overload     = require('overload'),
+    O            = overload.O,
 
-    _utils = require('../utils'),
-    _cache = require('../cache'),
-    _regex = require('../regex'),
-    _nodeType = require('../nodeType'),
-    _supports = require('../supports'),
+    _SUPPORTS    = require('../supports'),
+    _NODE_TYPE   = require('../nodeType'),
+
+    _utils       = require('../utils'),
+    _cache       = require('../cache'),
+    _regex       = require('../regex'),
 
     _cssKeyCache = _cache();
 
@@ -61,7 +62,7 @@ var _hide = function(elem) {
     },
 
     _getComputedStyle = (function() {
-        return _supports.currentStyle ?
+        return _SUPPORTS.currentStyle ?
             function(elem) { return elem.currentStyle; } :
                 // Avoids an 'Illegal Invocation' error
                 function(elem) { return window.getComputedStyle(elem); };
@@ -73,7 +74,7 @@ var _hide = function(elem) {
                 return elem.document.documentElement.clientWidth;
             }
 
-            if (elem.nodeType === _nodeType.DOCUMENT) {
+            if (elem.nodeType === _NODE_TYPE.DOCUMENT) {
                 return _getDocumentDimension(elem, 'Width');
             }
 
@@ -94,7 +95,7 @@ var _hide = function(elem) {
                 return elem.document.documentElement.clientHeight;
             }
 
-            if (elem.nodeType === _nodeType.DOCUMENT) {
+            if (elem.nodeType === _NODE_TYPE.DOCUMENT) {
                 return _getDocumentDimension(elem, 'Height');
             }
 
@@ -206,8 +207,8 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
 };
 
 var _getPropertyValue = (function() {
-    return _supports.getPropertyValue ? function(styles, name) { return styles.getPropertyValue(name); } :
-           _supports.getAttribute     ? function(styles, name) { return styles.getAttribute(name); } :
+    return _SUPPORTS.getPropertyValue ? function(styles, name) { return styles.getPropertyValue(name); } :
+           _SUPPORTS.getAttribute     ? function(styles, name) { return styles.getAttribute(name); } :
                                         function(styles, name) { return styles[name]; };
 }());
 
@@ -255,10 +256,10 @@ var _curCss = function(elem, name, computed) {
 };
 
 var _hooks = {
-    opacity: _supports.opacity ? {} : {
+    opacity: _SUPPORTS.opacity ? {} : {
         get: function(elem) {
             // IE uses filters for opacity
-            var style = _supports.currentStyle ? elem.currentStyle.filter : elem.style.filter;
+            var style = _SUPPORTS.currentStyle ? elem.currentStyle.filter : elem.style.filter;
             return _regex.opacity.test(style || '') ?
                         (0.01 * parseFloat(RegExp.$1)) + '' :
                             '1';
@@ -278,7 +279,7 @@ var _hooks = {
                 style.removeAttribute('filter');
 
                 // if there is no filter style applied in a css rule or unset inline opacity, we are done
-                if (value === '' || _supports.currentStyle && !currentStyle.filter) { return; }
+                if (value === '' || _SUPPORTS.currentStyle && !currentStyle.filter) { return; }
             }
 
             // IE has trouble with opacity if it does not have layout
@@ -334,13 +335,13 @@ var _isHidden = function(elem) {
 };
 
 module.exports = {
-    swap: _cssSwap,
-    swapSetting: _swapSettings,
-    getComputedStyle: _getComputedStyle,
-    curCss: _curCss,
+    swap             : _cssSwap,
+    swapSetting      : _swapSettings,
+    getComputedStyle : _getComputedStyle,
+    curCss           : _curCss,
 
-    width: _width,
-    height: _height,
+    width            : _width,
+    height           : _height,
 
     fn: {
         css: overload()

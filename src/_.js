@@ -1,9 +1,11 @@
 var _NODE_TYPE = require('./nodeType'),
-    _id = 0,
-    _toString = Object.prototype.toString,
-    _isTruthy = function(arg) { return !!arg; };
+    _id        = 0,
+    _toString  = Object.prototype.toString,
+    _indexOf   = Array.prototype.indexOf,
+    _isTruthy  = function(arg) { return !!arg; };
 
 var _ = {
+
     noop: function() {},
 
     now: Date.now || function() { return new Date().getTime(); },
@@ -21,9 +23,9 @@ var _ = {
     },
 
     coerceToNum: function(val) {
-        return _.isNumber(val) ? val || 0 : // Its a number! || 0 to avoid NaN (as NaN's a number)
-                _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN again
-                0; // Default to zero
+        return _.isNumber(val) ? (val || 0) : // Its a number! || 0 to avoid NaN (as NaN's a number)
+               _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN again
+               0; // Default to zero
     },
 
     toPx: function(num) {
@@ -34,28 +36,33 @@ var _ = {
         return !!(obj && obj.nodeType === _NODE_TYPE.ELEMENT);
     },
 
-    isArray: Array.isArray || function(obj) {
-        return _toString.call(obj) === '[object Array]';
-    },
+    // NOTE: In older browsers, this will be overwritten below
+    isArray: Array.isArray,
 
     // NodeList check. For our purposes, a node list
     // and an HTMLCollection are the same
     isNodeList: function(obj) {
-        return obj instanceof NodeList || obj instanceof HTMLCollection;
+        return !!(obj && (obj instanceof NodeList || obj instanceof HTMLCollection));
     },
 
     // Window check
     isWindow: function(obj) {
-        return obj && obj === obj.window;
+        return !!(obj && obj === obj.window);
+    },
+
+    // Supports IE8 via obj.callee (see http://stackoverflow.com/a/10645766/467582)
+    isArguments: function(obj) {
+        return !!(obj && (_toString.call(obj) === '[object Arguments]' || obj.callee));
     },
 
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
         var result = [];
 
-        var idx = 0, length = arr.length,
+        var idx = 0,
+            len = arr.length,
             value;
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             value = arr[idx];
 
             if (_.isArray(value) || _.isNodeList(value)) {
@@ -92,12 +99,13 @@ var _ = {
     // Faster extend; strip each()
     extend: function() {
         var args = arguments,
-            obj = args[0],
-            idx = 1, length = args.length;
+            obj  = args[0],
+            idx  = 1,
+            len  = args.length;
 
         if (!obj) { return obj; }
 
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             var source = args[idx];
             if (source) {
                 for (var prop in source) {
@@ -220,6 +228,13 @@ var _ = {
         return obj;
     },
 
+    indexOf: function(arr, item) {
+        if (arr.indexOf === _indexOf) {
+            return arr.indexOf(item);
+        }
+        return _indexOf.call(arr, item);
+    },
+
     each: function(obj, iterator) {
         if (!obj || !iterator) { return; }
 
@@ -243,20 +258,21 @@ var _ = {
 
         return obj;
     }
+
 };
 
-// Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
+// Add some isType methods (only if they do NOT already exist): isArray, isFunction, isString, isNumber, isDate, isRegExp.
+var types = ['Array', 'Function', 'String', 'Number', 'Date', 'RegExp'],
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
-            return _toString.call(obj) === '[object ' + name + ']';
+            return !!obj && _toString.call(obj) === '[object ' + name + ']';
         };
     },
     name;
 while (idx--) {
     name = types[idx];
-    _['is' + name] = generateCheck(name);
+    _['is' + name] = _['is' + name] || generateCheck(name);
 }
 
 // Optimize `isFunction` if appropriate.

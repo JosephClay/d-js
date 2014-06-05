@@ -6,21 +6,32 @@ overload.prototype.err = function() {
     throw new TypeError();
 };
 
+var _isD = function(val) {
+    return val instanceof D;
+};
+
+var _isCollection = function(val) {
+    return _isD(val) || _.isArray(val) || _.isNodeList(val);
+};
+
 overload.defineTypes({
-    'D': function(obj) {
-        return obj && obj instanceof D;
+    'D': function(val) {
+        return val && _isD(val);
     },
-    'nodeList': function(obj) {
-        return obj && (obj instanceof NodeList || obj instanceof HTMLCollection);
+    'nodeList': function(val) {
+        return _.isNodeList(val);
     },
     'window': function(val) {
-        return val && val.window === window;
+        return _.isWindow(val);
     },
     'document': function(val) {
         return val && val === document;
     },
     'selector': function(val) {
-        return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || _.isNodeList(val) || _.isArray(val) || val instanceof D);
+        return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || _isCollection(val));
+    },
+    'collection': function(val) {
+        return val && _isCollection(val);
     }
 });
 

@@ -1,25 +1,15 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _manip = require('./manip'),
+    _SUPPORTS  = require('../supports'),
+    _NODE_TYPE = require('../nodeType'),
 
-    _div = require('../div'),
-    _nodeType = require('../nodeType'),
-    _supports = require('../supports'),
-    _utils    = require('../utils');
+    _utils     = require('../utils'),
+    _div       = require('../div');
 
-var _outerHtml = function(elem) {
-    var div = document.createElement('div');
-
-    // append elem to div
-    _manip.append(div, elem.cloneNode(true));
-
-    var html = div.innerHTML;
-
-    div = null;
-
-    return html;
+var _outerHtml = function() {
+    return this.length ? this[0].outerHTML : null;
 };
 
 var _text = {
@@ -43,13 +33,11 @@ var _valHooks = {
         get: function(elem) {
             var value, option,
                 options = elem.options,
-                index = elem.selectedIndex,
-                one = elem.type === 'select-one' || index < 0,
-                values = one ? null : [],
-                max = one ? index + 1 : options.length,
-                idx = index < 0 ?
-                    max :
-                    one ? index : 0;
+                index   = elem.selectedIndex,
+                one     = elem.type === 'select-one' || index < 0,
+                values  = one ? null : [],
+                max     = one ? index + 1 : options.length,
+                idx     = index < 0 ? max : (one ? index : 0);
 
             // Loop through all the selected options
             for (; idx < max; idx++) {
@@ -58,7 +46,7 @@ var _valHooks = {
                 // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
-                        (_supports.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
+                        (_SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
                         (!option.parentNode.disabled || !_utils.isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
@@ -80,8 +68,8 @@ var _valHooks = {
         set: function(elem, value) {
             var optionSet, option,
                 options = elem.options,
-                values = jQuery.makeArray(value),
-                idx = options.length;
+                values  = jQuery.makeArray(value),
+                idx     = options.length;
 
             while (idx--) {
                 option = options[idx];
@@ -112,7 +100,7 @@ _.each(['radio', 'checkbox'], function(type) {
         }
     };
 
-    if (!_supports.checkOn) {
+    if (!_SUPPORTS.checkOn) {
         _valHooks[type].get = function(elem) {
             // Support: Webkit - '' is returned instead of 'on' if a value isn't specified
             return elem.getAttribute('value') === null ? 'on' : elem.value;
@@ -121,7 +109,7 @@ _.each(['radio', 'checkbox'], function(type) {
 });
 
 var _getVal = function(elem) {
-    if (!elem || (elem.nodeType !== _nodeType.ELEMENT)) { return; }
+    if (!elem || (elem.nodeType !== _NODE_TYPE.ELEMENT)) { return; }
 
     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
     if (hook && hook.get) {
@@ -135,12 +123,8 @@ module.exports = {
     fn: {
         // TODO: Overload and determine api
         // TODO: unit tests
-        outerHtml: function() {
-            var first = this[0];
-            if (!first) { return null; }
-
-            return _outerHtml(first);
-        },
+        outerHtml: _outerHtml,
+        outerHTML: _outerHtml,
 
         html: overload()
             .args(String)
@@ -170,7 +154,7 @@ module.exports = {
                 value = '' + value;
 
                 return _.each(this, function(elem) {
-                    if (elem.nodeType !== _nodeType.ELEMENT) { return; }
+                    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
 
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
                     if (hook && hook.set) {
@@ -184,7 +168,7 @@ module.exports = {
             .args(Function)
             .use(function(iterator) {
                 return _.each(this, function(elem, idx) {
-                    if (elem.nodeType !== _nodeType.ELEMENT) { return; }
+                    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];

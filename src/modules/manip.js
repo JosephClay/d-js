@@ -1,16 +1,16 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
     _selector = require('./selectors'),
-    _array = require('./array'),
-    _utils = require('../utils'),
-    _order = require('../order'),
+    _array    = require('./array'),
+    _utils    = require('../utils'),
+    _order    = require('../order'),
 
-    _data = require('./data'),
+    _data     = require('./data'),
 
-    parser = require('../D/parser'),
-    utils = require('../utils');
+    parser    = require('../D/parser'),
+    utils     = require('../utils');
 
 var _empty = function(arr) {
         var idx = 0, length = arr.length;
@@ -122,8 +122,8 @@ var _empty = function(arr) {
     };
 
 module.exports = {
-    append: _append,
-    prepend: _prepend,
+    append  : _append,
+    prepend : _prepend,
 
     fn: {
         clone: function() {
@@ -163,7 +163,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(Array, O.nodeList, O.D))
+            .args(O.collection)
             .use(function(arr) {
                 _appendPrependMergeArray(this, arr, _append);
                 return this;
@@ -222,7 +222,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(Array, O.nodeList, O.D))
+            .args(O.collection)
             .use(function(arr) {
                 _appendPrependMergeArray(this, arr, _prepend);
                 return this;
@@ -261,7 +261,7 @@ module.exports = {
             })
 
             // Array of elements
-            .args(O.any(Array, O.nodeList, O.D))
+            .args(O.collection)
             .use(function(arr) {
                 var elems = _array.unique(
                     [].concat(this.get(), _.toArray(arr))

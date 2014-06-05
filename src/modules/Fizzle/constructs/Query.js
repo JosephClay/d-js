@@ -1,4 +1,4 @@
-var _ = require('_'),
+var _      = require('_'),
     _array = require('../../array');
 
 var Query = module.exports = function(selectors) {

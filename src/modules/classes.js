@@ -1,14 +1,13 @@
-var _ = require('_'),
+var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
-    overload = require('overload'),
-    O = overload.O,
+    _SUPPORTS = require('../supports'),
 
-    _supports = require('../supports');
+    _split    = _.string.split,
+    _isEmpty  = _.string.isEmpty;
 
-var _split   = _.string.split;
-var _isEmpty = _.string.isEmpty;
-
-var _impl = _supports.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
+var _impl = _SUPPORTS.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
 
 var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
@@ -130,11 +129,11 @@ module.exports = {
             .expose(),
 
         toggleClass: overload()
-            .args(String)
-            .use(function(name) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+            .args(O.any(String, Array))
+            .use(function(names) {
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
-                var names = _split(name);
+                names = _split(names);
                 if (!names.length) { return this; }
 
                 _toggleClasses(this, names);
@@ -142,11 +141,11 @@ module.exports = {
                 return this;
             })
 
-            .args(String, Boolean)
-            .use(function(name, shouldAdd) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+            .args(O.any(String, Array), O.wild)
+            .use(function(names, shouldAdd) {
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
-                var names = _split(name);
+                names = _split(names);
                 if (!names.length) { return this; }
 
                 if (shouldAdd) {
@@ -154,34 +153,12 @@ module.exports = {
                 } else {
                     _removeClasses(this, names);
                 }
-
-                return this;
-            })
-
-            .args(Array)
-            .use(function(names) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                _toggleClasses(this, names);
 
                 return this;
             })
 
             .args(O.any(null, undefined))
             .use(function() {
-                return this;
-            })
-
-            .length(2)
-            .use(function(names, shouldAdd) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                if (shouldAdd) {
-                    _addClasses(this, names);
-                } else {
-                    _removeClasses(this, names);
-                }
-
                 return this;
             })
 

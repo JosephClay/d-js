@@ -1,34 +1,35 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _supports = require('../supports'),
-    _nodeType = require('../nodeType'),
-    _regex    = require('../regex');
+    _SUPPORTS  = require('../supports'),
+    _NODE_TYPE = require('../nodeType'),
+
+    _regex     = require('../regex');
 
 var _propFix = {
-    'tabindex': 'tabIndex',
-    'readonly': 'readOnly',
-    'for': 'htmlFor',
-    'class': 'className',
-    'maxlength': 'maxLength',
-    'cellspacing': 'cellSpacing',
-    'cellpadding': 'cellPadding',
-    'rowspan': 'rowSpan',
-    'colspan': 'colSpan',
-    'usemap': 'useMap',
-    'frameborder': 'frameBorder',
-    'contenteditable': 'contentEditable'
+    'tabindex'        : 'tabIndex',
+    'readonly'        : 'readOnly',
+    'for'             : 'htmlFor',
+    'class'           : 'className',
+    'maxlength'       : 'maxLength',
+    'cellspacing'     : 'cellSpacing',
+    'cellpadding'     : 'cellPadding',
+    'rowspan'         : 'rowSpan',
+    'colspan'         : 'colSpan',
+    'usemap'          : 'useMap',
+    'frameborder'     : 'frameBorder',
+    'contenteditable' : 'contentEditable'
 };
 
 var _propHooks = {
-    src: (_supports.hrefNormalized) ? {} : {
+    src: (_SUPPORTS.hrefNormalized) ? {} : {
         get: function(elem) {
             return elem.getAttribute('src', 4);
         }
     },
 
-    href: (_supports.hrefNormalized) ? {} : {
+    href: (_SUPPORTS.hrefNormalized) ? {} : {
         get: function(elem) {
             return elem.getAttribute('href', 4);
         }
@@ -37,7 +38,7 @@ var _propHooks = {
     // Support: Safari, IE9+
     // mis-reports the default selected property of an option
     // Accessing the parent's selectedIndex property fixes it
-    selected: (_supports.optSelected) ? {} : {
+    selected: (_SUPPORTS.optSelected) ? {} : {
         get: function( elem ) {
             var parent = elem.parentNode,
                 fix;
@@ -73,7 +74,7 @@ var _getOrSetProp = function(elem, name, value) {
     var nodeType = elem.nodeType;
 
     // don't get/set properties on text, comment and attribute nodes
-    if (!elem || nodeType === _nodeType.TEXT || nodeType === _nodeType.COMMENT || nodeType === _nodeType.ATTRIBUTE) {
+    if (!elem || nodeType === _NODE_TYPE.TEXT || nodeType === _NODE_TYPE.COMMENT || nodeType === _NODE_TYPE.ATTRIBUTE) {
         return;
     }
 

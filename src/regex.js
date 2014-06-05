@@ -1,6 +1,6 @@
-var _ = require('_'),
+var _               = require('_'),
 
-    _cache = require('./cache'),
+    _cache          = require('./cache'),
 
     _camelCache     = _cache(),
     _displayCache   = _cache(),

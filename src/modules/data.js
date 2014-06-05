@@ -1,12 +1,12 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _cache = require('../cache'),
+    _cache     = require('../cache'),
 
     _dataCache = _cache.biLevel(),
 
-    _ACCESSOR = '__d_id__ ',
+    _ACCESSOR  = '__d_id__ ',
 
     _id = _.now(),
     _uniqueId = function() {

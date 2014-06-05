@@ -1,14 +1,15 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
-    _cache = require('../cache'),
-    _utils = require('../utils'),
-    _supports = require('../supports'),
+    _SUPPORTS = require('../supports'),
 
-    _isDataKeyCache = _cache(),
+    _utils    = require('../utils'),
+    _cache    = require('../cache'),
+
+    _isDataKeyCache       = _cache(),
     _sanitizeDataKeyCache = _cache(),
-    _trimDataKeyCache = _cache();
+    _trimDataKeyCache     = _cache();
 
 var _isDataKey = function(key) {
         return _isDataKeyCache.getOrSet(key, function() {
@@ -30,7 +31,7 @@ var _isDataKey = function(key) {
 
     _getDataAttrKeys = function(elem) {
         var attrs = first.attributes,
-            idx = attr.length, keys = [];
+            idx   = attr.length, keys = [];
         while (idx--) {
             key = attrs[idx];
             if (_isDataKey(key)) {
@@ -63,7 +64,7 @@ var _hooks = {
 
         type: {
             set: function(elem, value) {
-                if (!_supports.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
+                if (!_SUPPORTS.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
                     // Setting the type on a radio button after the value resets the value in IE6-9
                     // Reset value to default in case type is set after value during creation
                     var val = elem.value;
@@ -93,9 +94,10 @@ var _hooks = {
 
     _setAttributes = function(arr, attr, value) {
         var isFn = _.isFunction(value),
-            idx = 0, length = arr.length,
+            idx  = 0,
+            len  = arr.length,
             elem, val;
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             elem = arr[idx];
             val = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
             _setAttribute(elem, attr, val);
@@ -220,9 +222,9 @@ module.exports = {
                 var first = this[0];
                 if (!first) { return; }
 
-                var map = {},
+                var map  = {},
                     keys = _getDataAttrKeys(first),
-                    idx = keys.length, key;
+                    idx  = keys.length, key;
                 while (idx--) {
                     key = keys[idx];
                     map[_trimDataKey(key)] = _.typecast(first.getAttribute(key));

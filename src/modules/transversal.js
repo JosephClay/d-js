@@ -1,20 +1,20 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _           = require('_'),
+    overload    = require('overload'),
+    O           = overload.O,
 
-    _utils = require('../utils'),
-    _nodeType = require('../nodeType'),
+    _NODE_TYPE  = require('../nodeType'),
 
-    _array = require('./array'),
-    _selectors = require('./selectors'),
+    _utils      = require('../utils'),
+    _array      = require('./array'),
+    _selectors  = require('./selectors'),
 
-    Fizzle = require('./Fizzle/Fizzle');
+    Fizzle      = require('./Fizzle/Fizzle');
 
 var _getSiblings = function(context) {
-        var idx = 0,
-            length = context.length,
+        var idx    = 0,
+            len    = context.length,
             result = [];
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             var sibs = _getNodeSiblings(context[idx]);
             if (sibs.length) { result.push(sibs); }
         }
@@ -28,18 +28,18 @@ var _getSiblings = function(context) {
             return [];
         }
 
-        var siblings = _.toArray(parent.children),
-            idx = siblings.length;
+        var sibs = _.toArray(parent.children),
+            idx  = sibs.length;
 
         while (idx--) {
             // Exclude the node itself from the list of its parent's children,
             // and exclude comment nodes for IE8
-            if (siblings[idx] === node || siblings[idx].nodeType === _nodeType.COMMENT) {
-                siblings.splice(idx, 1);
+            if (sibs[idx] === node || sibs[idx].nodeType === _NODE_TYPE.COMMENT) {
+                sibs.splice(idx, 1);
             }
         }
 
-        return siblings;
+        return sibs;
     },
 
     // Children ------
@@ -47,14 +47,15 @@ var _getSiblings = function(context) {
         return _.flatten(_.map(arr, _chldrn));
     },
     _chldrn = function(elem) {
-        var arr = [],
-            children = elem.children,
-            idx = 0, length = children.length,
+        var arr  = [],
+            kids = elem.children,
+            idx  = 0,
+            len  = kids.length,
             child;
-        for (; idx < length; idx++) {
-            child = children[idx];
+        for (; idx < len; idx++) {
+            child = kids[idx];
             // Skip comment nodes on IE8
-            if (child.nodeType !== _nodeType.COMMENT) {
+            if (child.nodeType !== _NODE_TYPE.COMMENT) {
                 arr.push(child);
             }
         }
@@ -64,11 +65,11 @@ var _getSiblings = function(context) {
     // Parents ------
     _getClosest = function(elems, selector, context) {
         var idx = 0,
-            length = elems.length,
+            len = elems.length,
             parents,
             closest,
             result = [];
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             parents = _crawlUpNode(elems[idx], context);
             parents.unshift(elems[idx]);
             closest = _selectors.filter(parents, selector);
@@ -81,10 +82,10 @@ var _getSiblings = function(context) {
 
     _getParents = function(context) {
         var idx = 0,
-            length = context.length,
+            len = context.length,
             parents,
             result = [];
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             parents = _crawlUpNode(context[idx]);
             result.push(parents);
         }
@@ -93,10 +94,10 @@ var _getSiblings = function(context) {
 
     _getParentsUntil = function(dom, stopSelector) {
         var idx = 0,
-            length = dom.length,
+            len = dom.length,
             parents,
             result = [];
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             parents = _crawlUpNode(dom[idx], null, stopSelector);
             result.push(parents);
         }
@@ -108,11 +109,11 @@ var _getSiblings = function(context) {
             parent = node,
             nodeType;
 
-        while ((parent = _getNodeParent(parent)) &&
-               (nodeType = parent.nodeType) !== _nodeType.DOCUMENT &&
-               (!context || parent !== context) &&
+        while ((parent   = _getNodeParent(parent)) &&
+               (nodeType = parent.nodeType) !== _NODE_TYPE.DOCUMENT &&
+               (!context      || parent !== context) &&
                (!stopSelector || !Fizzle.is(stopSelector).match(parent))) {
-            if (nodeType === _nodeType.ELEMENT) {
+            if (nodeType === _NODE_TYPE.ELEMENT) {
                 result.push(parent);
             }
         }
@@ -122,10 +123,10 @@ var _getSiblings = function(context) {
 
     // Parent ------
     _getParent = function(context) {
-        var idx = 0,
-            length = context.length,
+        var idx    = 0,
+            len    = context.length,
             result = [];
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             var parent = _getNodeParent(context[idx]);
             if (parent) { result.push(parent); }
         }
@@ -139,13 +140,13 @@ var _getSiblings = function(context) {
 
     _getPrev = function(node) {
         var prev = node;
-        while ((prev = prev.previousSibling) && prev.nodeType !== _nodeType.ELEMENT) {}
+        while ((prev = prev.previousSibling) && prev.nodeType !== _NODE_TYPE.ELEMENT) {}
         return prev;
     },
 
     _getNext = function(node) {
         var next = node;
-        while ((next = next.nextSibling) && next.nodeType !== _nodeType.ELEMENT) {}
+        while ((next = next.nextSibling) && next.nodeType !== _NODE_TYPE.ELEMENT) {}
         return next;
     },
 
@@ -153,7 +154,7 @@ var _getSiblings = function(context) {
         var result = [],
             prev   = node;
         while ((prev = prev.previousSibling)) {
-            if (prev.nodeType === _nodeType.ELEMENT) {
+            if (prev.nodeType === _NODE_TYPE.ELEMENT) {
                 result.push(prev);
             }
         }
@@ -164,7 +165,7 @@ var _getSiblings = function(context) {
         var result = [],
             next   = node;
         while ((next = next.nextSibling)) {
-            if (next.nodeType === _nodeType.ELEMENT) {
+            if (next.nodeType === _NODE_TYPE.ELEMENT) {
                 result.push(next);
             }
         }
@@ -298,14 +299,14 @@ module.exports = {
                 // _utils.isAttached check to pass test "Node without parent returns -1"
                 // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
                 var isAttached       = _utils.isAttached(first),
-                    isParentFragment = parent.nodeType === _nodeType.DOCUMENT_FRAGMENT;
+                    isParentFragment = parent.nodeType === _NODE_TYPE.DOCUMENT_FRAGMENT;
 
                 if (!isAttached && !isParentFragment) {
                     return -1;
                 }
 
                 var childElems = parent.children || _.filter(parent.childNodes, function(node) {
-                    return node.nodeType === _nodeType.ELEMENT;
+                    return node.nodeType === _NODE_TYPE.ELEMENT;
                 });
 
                 return [].indexOf.apply(childElems, [ first ]);
