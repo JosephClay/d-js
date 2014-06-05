@@ -48,6 +48,11 @@ var _ = {
         return !!(obj && obj === obj.window);
     },
 
+    // http://stackoverflow.com/a/10645766/467582
+    isArguments: function(obj) {
+        return !!(obj && (_toString.call(obj) === '[object Arguments]' || obj.callee));
+    },
+
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
         var result = [];
@@ -245,7 +250,7 @@ var _ = {
 };
 
 // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-var types = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
+var types = ['Function', 'String', 'Number', 'Date', 'RegExp'],
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
