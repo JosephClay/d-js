@@ -32,6 +32,9 @@ overload.defineTypes({
     },
     'collection': function(val) {
         return val && _isCollection(val);
+    },
+    'element': function(val) {
+        return val === document || _.isWindow(val) || _.isElement(val);
     }
 });
 

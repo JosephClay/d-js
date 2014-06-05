@@ -29,9 +29,7 @@ var _          = require('_'),
         if (!id) { return; }
 
         _dataCache.remove(id);
-    },
-
-    _ELEM_TYPE = O.any(Element, O.window, O.document, Object);
+    };
 
 module.exports = {
     destroyData: _destroyData,
@@ -39,20 +37,20 @@ module.exports = {
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(_ELEM_TYPE, String, O.wild)
+            .args(O.element, String, O.wild)
             .use(function(elem, key, value) {
                 var id = _getOrSetId(elem);
                 return _dataCache.set(id, key, value);
             })
 
-            .args(_ELEM_TYPE, String)
+            .args(O.element, String)
             .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 return _dataCache.get(id, key);
             })
 
-            .args(_ELEM_TYPE, Object)
+            .args(O.element, Object)
             .use(function(elem, map) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -63,7 +61,7 @@ module.exports = {
                 return map;
             })
 
-            .args(_ELEM_TYPE)
+            .args(O.element)
             .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -73,7 +71,7 @@ module.exports = {
             .expose(),
 
         hasData: overload()
-            .args(_ELEM_TYPE)
+            .args(O.element)
             .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return false; }
@@ -84,7 +82,7 @@ module.exports = {
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
             // Remove single key
-            .args(_ELEM_TYPE, String)
+            .args(O.element, String)
             .use(function(elem, key) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -92,7 +90,7 @@ module.exports = {
             })
 
             // Remove multiple keys
-            .args(_ELEM_TYPE, Array)
+            .args(O.element, Array)
             .use(function(elem, array) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -103,7 +101,7 @@ module.exports = {
             })
 
             // Remove all data
-            .args(_ELEM_TYPE)
+            .args(O.element)
             .use(function(elem) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
