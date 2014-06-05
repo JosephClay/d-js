@@ -11,7 +11,7 @@ var _isD = function(val) {
 };
 
 var _isCollection = function(val) {
-    return _isD(val) || _.isArray(val) || _.isNodeList(val) || _.isArguments(val);
+    return _isD(val) || _.isArray(val) || _.isNodeList(val);
 };
 
 overload.defineTypes({
