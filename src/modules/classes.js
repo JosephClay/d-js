@@ -1,12 +1,11 @@
-var _ = require('_'),
+var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
-    overload = require('overload'),
-    O = overload.O,
+    _supports = require('../supports'),
 
-    _supports = require('../supports');
-
-var _split   = _.string.split;
-var _isEmpty = _.string.isEmpty;
+    _split    = _.string.split,
+    _isEmpty  = _.string.isEmpty;
 
 var _impl = _supports.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
 

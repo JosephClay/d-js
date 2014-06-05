@@ -1,10 +1,11 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
-    _utils = require('../utils'),
-    _cache = require('../cache'),
-    _regex = require('../regex'),
+    _utils    = require('../utils'),
+    _cache    = require('../cache'),
+    _regex    = require('../regex'),
+
     _nodeType = require('../nodeType'),
     _supports = require('../supports'),
 
@@ -334,13 +335,13 @@ var _isHidden = function(elem) {
 };
 
 module.exports = {
-    swap: _cssSwap,
-    swapSetting: _swapSettings,
-    getComputedStyle: _getComputedStyle,
-    curCss: _curCss,
+    swap             : _cssSwap,
+    swapSetting      : _swapSettings,
+    getComputedStyle : _getComputedStyle,
+    curCss           : _curCss,
 
-    width: _width,
-    height: _height,
+    width            : _width,
+    height           : _height,
 
     fn: {
         css: overload()

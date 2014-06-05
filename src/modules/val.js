@@ -1,8 +1,8 @@
-var _ = require('_'),
-    overload = require('overload'),
-    O = overload.O,
+var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
-    _div = require('../div'),
+    _div      = require('../div'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports'),
     _utils    = require('../utils');
@@ -32,13 +32,11 @@ var _valHooks = {
         get: function(elem) {
             var value, option,
                 options = elem.options,
-                index = elem.selectedIndex,
-                one = elem.type === 'select-one' || index < 0,
-                values = one ? null : [],
-                max = one ? index + 1 : options.length,
-                idx = index < 0 ?
-                    max :
-                    one ? index : 0;
+                index   = elem.selectedIndex,
+                one     = elem.type === 'select-one' || index < 0,
+                values  = one ? null : [],
+                max     = one ? index + 1 : options.length,
+                idx     = index < 0 ? max : (one ? index : 0);
 
             // Loop through all the selected options
             for (; idx < max; idx++) {
@@ -69,8 +67,8 @@ var _valHooks = {
         set: function(elem, value) {
             var optionSet, option,
                 options = elem.options,
-                values = jQuery.makeArray(value),
-                idx = options.length;
+                values  = jQuery.makeArray(value),
+                idx     = options.length;
 
             while (idx--) {
                 option = options[idx];

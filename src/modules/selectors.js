@@ -1,13 +1,12 @@
-var _ = require('_'),
+var _        = require('_'),
     overload = require('overload'),
-    O = overload.O,
+    O        = overload.O,
 
-    _utils = require('../utils'),
-    _array = require('./array'),
+    _utils   = require('../utils'),
+    _array   = require('./array'),
+    _order   = require('../order'),
 
-    _order = require('../order'),
-
-    Fizzle = require('./Fizzle/Fizzle');
+    Fizzle   = require('./Fizzle/Fizzle');
 
 var _uniqueSort = function(elems, reverse) {
     var result = _array.unique(elems);

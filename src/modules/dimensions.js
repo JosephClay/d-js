@@ -1,8 +1,8 @@
-var _ = require('_'),
+var _        = require('_'),
     overload = require('overload'),
-    O = overload.O,
+    O        = overload.O,
 
-    _css = require('./css');
+    _css     = require('./css');
 
 var _getInnerWidth = function(elem) {
         var width = parseFloat(_css.width.get(elem)) || 0;
