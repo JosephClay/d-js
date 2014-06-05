@@ -1,4 +1,8 @@
-var _global = {};
+var _ = require('_'),
+
+    _nodeType = require('../../nodeType'),
+
+    _global = {};
 
 module.exports = {
     fn: {
@@ -112,7 +116,7 @@ module.exports = {
                     }
 
                     // Keep track of which events have ever been used, for event optimization
-                    jQuery.event.global[ type ] = true;
+                    _global[ type ] = true;
                 }
 
                 // Nullify elem to prevent memory leaks in IE
@@ -174,41 +178,41 @@ module.exports = {
 
                     // Remove generic event handler if we removed something and no more handlers exist
                     // (avoids potential for endless recursion during removal of special event handlers)
-                    if ( origCount && !handlers.length ) {
-                        if ( !special.teardown || special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
-                            jQuery.removeEvent( elem, type, elemData.handle );
+                    if (origCount && !handlers.length) {
+                        if (!special.teardown || special.teardown.call(elem, namespaces, elemData.handle) === false) {
+                            jQuery.removeEvent(elem, type, elemData.handle);
                         }
 
-                        delete events[ type ];
+                        delete events[type];
                     }
                 }
 
                 // Remove the expando if it's no longer used
-                if ( jQuery.isEmptyObject( events ) ) {
+                if (jQuery.isEmptyObject(events)) {
                     delete elemData.handle;
 
                     // removeData also checks for emptiness and clears the expando if empty
                     // so use it instead of delete
-                    jQuery._removeData( elem, "events" );
+                    jQuery._removeData(elem, "events");
                 }
             },
 
-            trigger: function( event, data, elem, onlyHandlers ) {
+            trigger: function(event, data, elem, onlyHandlers) {
                 var handle, ontype, cur,
                     bubbleType, special, tmp, i,
                     eventPath = [ elem || document ],
-                    type = hasOwn.call( event, "type" ) ? event.type : event,
-                    namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split(".") : [];
+                    type = hasOwn.call(event, 'type') ? event.type : event,
+                    namespaces = hasOwn.call(event, 'namespace') ? event.namespace.split('.') : [];
 
                 cur = tmp = elem = elem || document;
 
                 // Don't do events on text and comment nodes
-                if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
+                if (elem.nodeType === _nodeType.TEXT || elem.nodeType === _nodeType.COMMENT) {
                     return;
                 }
 
                 // focus/blur morphs to focusin/out; ensure we're not firing them right now
-                if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
+                if (rfocusMorph.test(type + jQuery.event.triggered)) {
                     return;
                 }
 
@@ -239,9 +243,9 @@ module.exports = {
                 }
 
                 // Clone any incoming data and prepend the event, creating the handler arg list
-                data = data == null ?
+                data = !_.exists(data) ?
                     [ event ] :
-                    jQuery.makeArray( data, [ event ] );
+                    jQuery.makeArray(data, [ event ]);
 
                 // Allow special events to draw outside the lines
                 special = jQuery.event.special[ type ] || {};
@@ -407,7 +411,7 @@ module.exports = {
 
                         // Don't check non-elements (#13208)
                         // Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-                        if ( cur.nodeType === 1 && (cur.disabled !== true || event.type !== "click") ) {
+                        if ( cur.nodeType === _nodeType.ELEMENT && (cur.disabled !== true || event.type !== "click") ) {
                             matches = [];
                             for ( i = 0; i < delegateCount; i++ ) {
                                 handleObj = handlers[ i ];
@@ -474,7 +478,7 @@ module.exports = {
 
                 // Support: Chrome 23+, Safari?
                 // Target should not be a text node (#504, #13143)
-                if ( event.target.nodeType === 3 ) {
+                if ( event.target.nodeType === _nodeType.TEXT ) {
                     event.target = event.target.parentNode;
                 }
 
@@ -486,17 +490,17 @@ module.exports = {
             },
 
             // Includes some event props shared by KeyEvent and MouseEvent
-            props: "altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),
+            props: ['altKey', 'bubbles', 'cancelable', 'ctrlKey', 'currentTarget', 'eventPhase', 'metaKey', 'relatedTarget', 'shiftKey', 'target', 'timeStamp', 'view', 'which'],
 
             fixHooks: {},
 
             keyHooks: {
                 props: ['char', 'charCode', 'key', 'keyCode'],
-                filter: function( event, original ) {
+                filter: function(event, original) {
 
                     // Add which for key events
-                    if ( event.which == null ) {
-                        event.which = original.charCode != null ? original.charCode : original.keyCode;
+                    if (!_.exists(event.which)) {
+                        event.which = _.exists(original.charCode) ? original.charCode : original.keyCode;
                     }
 
                     return event;
@@ -505,13 +509,13 @@ module.exports = {
 
             mouseHooks: {
                 props: ['button', 'buttons', 'clientX', 'clientY', 'fromElement', 'offsetX', 'offsetY', 'pageX', 'pageY', 'screenX', 'screenY', 'toElement'],
-                filter: function( event, original ) {
+                filter: function(event, original) {
                     var body, eventDoc, doc,
                         button = original.button,
                         fromElement = original.fromElement;
 
                     // Calculate pageX/Y if missing and clientX/Y available
-                    if ( event.pageX == null && original.clientX != null ) {
+                    if (!_.exists(event.pageX) && !_.exists(original.clientX)) {
                         eventDoc = event.target.ownerDocument || document;
                         doc = eventDoc.documentElement;
                         body = eventDoc.body;
@@ -554,7 +558,7 @@ module.exports = {
                             }
                         }
                     },
-                    delegateType: "focusin"
+                    delegateType: 'focusin'
                 },
                 blur: {
                     trigger: function() {
@@ -568,7 +572,7 @@ module.exports = {
                 click: {
                     // For checkbox, fire native event so checked state will be right
                     trigger: function() {
-                        if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
+                        if ( jQuery.nodeName( this, 'input' ) && this.type === 'checkbox' && this.click ) {
                             this.click();
                             return false;
                         }
