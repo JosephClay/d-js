@@ -122,6 +122,9 @@ var _empty = function(arr) {
     };
 
 module.exports = {
+    append: _append,
+    prepend: _prepend,
+
     fn: {
         clone: function() {
             return _.fastmap(this.slice(), function(elem) {
