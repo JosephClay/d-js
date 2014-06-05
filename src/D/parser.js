@@ -14,6 +14,8 @@ var _parse = function(htmlStr) {
         arr[idx] = child;
     }
 
+    div = null;
+
     return arr;
 };
 
