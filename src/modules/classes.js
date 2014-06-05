@@ -63,21 +63,12 @@ module.exports = {
             .expose(),
 
         addClass: overload()
-            .args(String)
-            .use(function(name) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
-
-                var names = _split(name);
-                if (!names.length) { return this; }
-
-                _addClasses(this, names);
-
-                return this;
-            })
-
-            .args(Array)
+            .args(O.any(String, Array))
             .use(function(names) {
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                names = _split(names);
+                if (!names.length) { return this; }
 
                 _addClasses(this, names);
 
@@ -101,21 +92,12 @@ module.exports = {
                 return this;
             })
 
-            .args(String)
-            .use(function(name) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
-
-                var names = _split(name);
-                if (!names.length) { return this; }
-
-                _removeClasses(this, names);
-
-                return this;
-            })
-
-            .args(Array)
+            .args(O.any(String, Array))
             .use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                names = _split(names);
+                if (!names.length) { return this; }
 
                 _removeClasses(this, names);
 
