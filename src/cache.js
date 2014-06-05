@@ -86,4 +86,5 @@ var api = function() {
 api.biLevel = function() {
     return _biLevelGetterSetter();
 };
+
 module.exports = api;

@@ -1,10 +1,11 @@
 var _NODE_TYPE = require('./nodeType'),
-    _id = 0,
-    _toString = Object.prototype.toString,
-    _isTruthy = function(arg) { return !!arg;},
-    _nativeIndexOf = Array.prototype.indexOf;
+    _id        = 0,
+    _toString  = Object.prototype.toString,
+    _indexOf   = Array.prototype.indexOf,
+    _isTruthy  = function(arg) { return !!arg; };
 
 var _ = {
+
     noop: function() {},
 
     now: Date.now || function() { return new Date().getTime(); },
@@ -58,9 +59,10 @@ var _ = {
     flatten: function(arr) {
         var result = [];
 
-        var idx = 0, length = arr.length,
+        var idx = 0,
+            len = arr.length,
             value;
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             value = arr[idx];
 
             if (_.isArray(value) || _.isNodeList(value)) {
@@ -97,12 +99,13 @@ var _ = {
     // Faster extend; strip each()
     extend: function() {
         var args = arguments,
-            obj = args[0],
-            idx = 1, length = args.length;
+            obj  = args[0],
+            idx  = 1,
+            len  = args.length;
 
         if (!obj) { return obj; }
 
-        for (; idx < length; idx++) {
+        for (; idx < len; idx++) {
             var source = args[idx];
             if (source) {
                 for (var prop in source) {
@@ -226,10 +229,10 @@ var _ = {
     },
 
     indexOf: function(arr, item) {
-        if (arr.indexOf === _nativeIndexOf) {
+        if (arr.indexOf === _indexOf) {
             return arr.indexOf(item);
         }
-        return _nativeIndexOf.call(arr, item);
+        return _indexOf.call(arr, item);
     },
 
     each: function(obj, iterator) {
@@ -255,6 +258,7 @@ var _ = {
 
         return obj;
     }
+
 };
 
 // Add some isType methods (only if they do NOT already exist): isArray, isFunction, isString, isNumber, isDate, isRegExp.

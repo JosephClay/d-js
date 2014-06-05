@@ -1,10 +1,11 @@
-var _NODE_TYPE = require('./nodeType'),
+var _ = require('_'),
 
-    _ = require('_'),
+    _SUPPORTS      = require('./supports'),
+    _NODE_TYPE     = require('./nodeType'),
 
-    _cache = require('./cache'),
-    _nodeNameCache = _cache(),
-    _supports = require('./supports');
+    _cache         = require('./cache'),
+
+    _nodeNameCache = _cache();
 
 module.exports = {
     isAttached: function(elem) {
@@ -55,7 +56,7 @@ module.exports = {
     },
 
     normalizeNewlines: function(str) {
-        return str && _supports.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
+        return str && _SUPPORTS.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
     },
 
     returnTrue: function() {

@@ -1,6 +1,6 @@
 var _NODE_TYPE = require('./nodeType'),
     _DOC_POS   = require('./docPos'),
-    _supports  = require('./supports'),
+
     _utils     = require('./utils');
 
 // Compare Position - MIT Licensed, John Resig
