@@ -2,24 +2,13 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
-    _manip = require('./manip'),
-
     _div = require('../div'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports'),
     _utils    = require('../utils');
 
 var _outerHtml = function(elem) {
-    var div = document.createElement('div');
-
-    // append elem to div
-    _manip.append(div, elem.cloneNode(true));
-
-    var html = div.innerHTML;
-
-    div = null;
-
-    return html;
+    return elem.outerHTML;
 };
 
 var _text = {
@@ -135,12 +124,8 @@ module.exports = {
     fn: {
         // TODO: Overload and determine api
         // TODO: unit tests
-        outerHtml: function() {
-            var first = this[0];
-            if (!first) { return null; }
-
-            return _outerHtml(first);
-        },
+        outerHtml: _outerHtml,
+        outerHTML: _outerHtml,
 
         html: overload()
             .args(String)
