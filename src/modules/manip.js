@@ -163,7 +163,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(Array, O.nodeList, O.D))
+            .args(O.collection)
             .use(function(arr) {
                 _appendPrependMergeArray(this, arr, _append);
                 return this;
@@ -222,7 +222,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(Array, O.nodeList, O.D))
+            .args(O.collection)
             .use(function(arr) {
                 _appendPrependMergeArray(this, arr, _prepend);
                 return this;
@@ -261,7 +261,7 @@ module.exports = {
             })
 
             // Array of elements
-            .args(O.any(Array, O.nodeList, O.D))
+            .args(O.collection)
             .use(function(arr) {
                 var elems = _array.unique(
                     [].concat(this.get(), _.toArray(arr))
