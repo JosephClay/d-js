@@ -1,10 +1,11 @@
-var _         = require('_'),
-    overload  = require('overload'),
-    O         = overload.O,
+var _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _supports = require('../supports'),
+    _SUPPORTS  = require('../supports'),
     _NODE_TYPE = require('../nodeType'),
-    _regex    = require('../regex');
+
+    _regex     = require('../regex');
 
 var _propFix = {
     'tabindex'        : 'tabIndex',
@@ -22,13 +23,13 @@ var _propFix = {
 };
 
 var _propHooks = {
-    src: (_supports.hrefNormalized) ? {} : {
+    src: (_SUPPORTS.hrefNormalized) ? {} : {
         get: function(elem) {
             return elem.getAttribute('src', 4);
         }
     },
 
-    href: (_supports.hrefNormalized) ? {} : {
+    href: (_SUPPORTS.hrefNormalized) ? {} : {
         get: function(elem) {
             return elem.getAttribute('href', 4);
         }
@@ -37,7 +38,7 @@ var _propHooks = {
     // Support: Safari, IE9+
     // mis-reports the default selected property of an option
     // Accessing the parent's selectedIndex property fixes it
-    selected: (_supports.optSelected) ? {} : {
+    selected: (_SUPPORTS.optSelected) ? {} : {
         get: function( elem ) {
             var parent = elem.parentNode,
                 fix;

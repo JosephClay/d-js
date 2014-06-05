@@ -1,12 +1,12 @@
 var _ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?=\s*(['"]?)(.*?[^\\]|[^\\]*)\1\s*\]/g,
-    _PSEUDO_SELECT = /(:[^\s\(\[)]+)/g,
-    _CAPTURE_SELECT = /(:[^\s^(]+)\(([^\)]+)\)/g,
+    _PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
+    _CAPTURE_SELECT     = /(:[^\s^(]+)\(([^\)]+)\)/g,
 
-    _cache       = require('../../../cache'),
-    _pseudoCache = _cache(),
+    _cache              = require('../../../cache'),
+    _pseudoCache        = _cache(),
 
-    _proxySelectors = require('../list/selectors-proxy'),
-    _captureSelectors = require('../list/selectors-capture');
+    _proxySelectors     = require('../list/selectors-proxy'),
+    _captureSelectors   = require('../list/selectors-capture');
 
 var _getAttributePositions = function(str) {
     var pairs = [];

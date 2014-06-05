@@ -2,9 +2,10 @@ var _         = require('_'),
     overload  = require('overload'),
     O         = overload.O,
 
-    _cache    = require('../cache'),
+    _SUPPORTS = require('../supports'),
+
     _utils    = require('../utils'),
-    _supports = require('../supports'),
+    _cache    = require('../cache'),
 
     _isDataKeyCache       = _cache(),
     _sanitizeDataKeyCache = _cache(),
@@ -63,7 +64,7 @@ var _hooks = {
 
         type: {
             set: function(elem, value) {
-                if (!_supports.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
+                if (!_SUPPORTS.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
                     // Setting the type on a radio button after the value resets the value in IE6-9
                     // Reset value to default in case type is set after value during creation
                     var val = elem.value;

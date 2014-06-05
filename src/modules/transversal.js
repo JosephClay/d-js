@@ -1,14 +1,14 @@
-var _          = require('_'),
-    overload   = require('overload'),
-    O          = overload.O,
+var _           = require('_'),
+    overload    = require('overload'),
+    O           = overload.O,
 
-    _utils     = require('../utils'),
     _NODE_TYPE  = require('../nodeType'),
 
-    _array     = require('./array'),
-    _selectors = require('./selectors'),
+    _utils      = require('../utils'),
+    _array      = require('./array'),
+    _selectors  = require('./selectors'),
 
-    Fizzle     = require('./Fizzle/Fizzle');
+    Fizzle      = require('./Fizzle/Fizzle');
 
 var _getSiblings = function(context) {
         var idx    = 0,

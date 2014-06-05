@@ -1,5 +1,6 @@
-var _ = require('underscore'),
-    _utils = require('./utils'),
+var _         = require('underscore'),
+
+    _utils    = require('./utils'),
 
     // TODO: Do we need an equivalent to jQuery expando.
     // If we do, do we only need it here or on the main D object?

@@ -1,19 +1,21 @@
 var _ = require('_'),
 
-    _NODE_TYPE = require('../../../nodeType'),
-    _cache = require('../../../cache'),
-    _regex = require('../../../regex'),
-    _supports = require('../../../supports'),
-
     _ID_PREFIX = 'D-uniqueId-',
-    _querySelectorCache = _cache(),
-
-    _isMatch = require('../selector/selector-match'),
 
     _GET_ELEMENT_BY_ID          = 'getElementById',
     _GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
     _GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
-    _QUERY_SELECTOR_ALL         = 'querySelectorAll';
+    _QUERY_SELECTOR_ALL         = 'querySelectorAll',
+
+    _SUPPORTS  = require('../../../supports'),
+    _NODE_TYPE = require('../../../nodeType'),
+
+    _cache = require('../../../cache'),
+    _regex = require('../../../regex'),
+
+    _querySelectorCache = _cache(),
+
+    _isMatch = require('../selector/selector-match');
 
 var _determineMethod = function(selector) {
         var method = _querySelectorCache.get(selector);
@@ -37,16 +39,16 @@ var _determineMethod = function(selector) {
     };
 
 var Selector = function(str) {
-    var selector = _.string.trim(str),
-        isChildOrSiblingSelect = (selector[0] === '>' || selector[0] === '+'),
-        method = isChildOrSiblingSelect ? _QUERY_SELECTOR_ALL : _determineMethod(selector);
+    var selector                = _.string.trim(str),
+        isChildOrSiblingSelect  = (selector[0] === '>' || selector[0] === '+'),
+        method                  = isChildOrSiblingSelect ? _QUERY_SELECTOR_ALL : _determineMethod(selector);
 
-    this.str = str;
-    this.selector = selector;
+    this.str                    = str;
+    this.selector               = selector;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
-    this.isIdSearch = method === _GET_ELEMENT_BY_ID;
-    this.isClassSearch = !this.isIdSearch && method === _GET_ELEMENTS_BY_CLASS_NAME;
-    this.method = method;
+    this.isIdSearch             = method === _GET_ELEMENT_BY_ID;
+    this.isClassSearch          = !this.isIdSearch && method === _GET_ELEMENTS_BY_CLASS_NAME;
+    this.method                 = method;
 };
 
 Selector.prototype = {
@@ -69,6 +71,7 @@ Selector.prototype = {
         var selection,
             method = this.method,
             nodeType;
+
         // Early return if context is not an element or document
         if ((nodeType = context.nodeType) !== _NODE_TYPE.ELEMENT && nodeType !== _NODE_TYPE.DOCUMENT) { return; }
 
@@ -76,7 +79,8 @@ Selector.prototype = {
         var id,
             newId,
             idApplied = false,
-            selector = this.selector;
+            selector  = this.selector;
+
         if (this.isChildOrSiblingSelect) {
             id = context.id;
             if (!_.exists(id)) {
@@ -88,7 +92,7 @@ Selector.prototype = {
             selector = this._tailorChildSelector(idApplied ? newId : id, selector);
             context = document;
         } else if (this.isClassSearch) {
-            if (_supports.getElementsByClassName) {
+            if (_SUPPORTS.getElementsByClassName) {
                 // Class search, don't start with '.'
                 selector = selector.substr(1);
             } else {

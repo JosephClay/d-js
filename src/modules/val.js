@@ -1,11 +1,12 @@
-var _         = require('_'),
-    overload  = require('overload'),
-    O         = overload.O,
+var _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _div      = require('../div'),
+    _SUPPORTS  = require('../supports'),
     _NODE_TYPE = require('../nodeType'),
-    _supports = require('../supports'),
-    _utils    = require('../utils');
+
+    _utils     = require('../utils'),
+    _div       = require('../div');
 
 var _outerHtml = function() {
     return this.length ? this[0].outerHTML : null;
@@ -45,7 +46,7 @@ var _valHooks = {
                 // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
-                        (_supports.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
+                        (_SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
                         (!option.parentNode.disabled || !_utils.isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
@@ -99,7 +100,7 @@ _.each(['radio', 'checkbox'], function(type) {
         }
     };
 
-    if (!_supports.checkOn) {
+    if (!_SUPPORTS.checkOn) {
         _valHooks[type].get = function(elem) {
             // Support: Webkit - '' is returned instead of 'on' if a value isn't specified
             return elem.getAttribute('value') === null ? 'on' : elem.value;
