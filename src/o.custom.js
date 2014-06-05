@@ -29,6 +29,9 @@ overload.defineTypes({
     },
     'selector': function(val) {
         return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || _isArrayLike(val));
+    },
+    'arrayLike': function(val) {
+        return val && _isArrayLike(val);
     }
 });
 
