@@ -322,6 +322,17 @@ var _getStyle = function(elem, name) {
     return _getComputedStyle(elem)[name];
 };
 
+var _isHidden = function(elem) {
+            // Standard:
+            // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement.offsetParent
+    return elem.offsetParent === null ||
+            // Support: Opera <= 12.12
+            // Opera reports offsetWidths and offsetHeights less than zero on some elements
+            elem.offsetWidth <= 0 && elem.offsetHeight <= 0 ||
+            // Fallback
+            ((elem.style && elem.style.display) ? elem.style.display === 'none' : false);
+};
+
 module.exports = {
     swap: _cssSwap,
     swapSetting: _swapSettings,
@@ -387,9 +398,21 @@ module.exports = {
             return this;
         },
 
-        // TODO: Toggle
-        toggle: function() {
+        toggle: function(state) {
+            if (_.isBoolean(state)) {
+                return state ? this.show() : this.hide();
+            }
 
+            // TODO: Make internal _.each return the array passed
+            _.each(this, function(elem) {
+                if (_isHidden(this)) {
+                    return _show(this);
+                }
+
+                _hide(this);
+            });
+
+            return this;
         }
     }
 };
