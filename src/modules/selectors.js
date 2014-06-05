@@ -116,11 +116,11 @@ module.exports = {
                 return is.any(this);
             })
 
-            .args(O.any(Array, O.D))
+            .args(O.collection)
             .use(function(arr) {
 
                 return _.any(this, function(elem) {
-                    if (arr.indexOf(elem) !== -1) { return true; }
+                    if (_.indexOf(arr, elem) !== -1) { return true; }
                 });
 
             })
@@ -162,13 +162,13 @@ module.exports = {
                 );
             })
 
-            .args(O.any(Array, O.D, O.nodeList))
+            .args(O.collection)
             .use(function(arr) {
                 arr = _.toArray(arr);
 
                 return D(
                     _.filter(this, function(elem) {
-                        if (arr.indexOf(elem) === -1) { return true; }
+                        if (_.indexOf(arr, elem) === -1) { return true; }
                     })
                 );
 
@@ -225,12 +225,12 @@ module.exports = {
 
             })
 
-            .args(O.any(Array, O.D))
+            .args(O.collection)
             .use(function(arr) {
 
                 return D(
                     _.filter(this, function(elem) {
-                        if (arr.indexOf(elem) !== -1) { return true; }
+                        if (_.indexOf(arr, elem) !== -1) { return true; }
                     })
                 );
 
