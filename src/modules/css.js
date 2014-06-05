@@ -138,45 +138,55 @@ var _getWidthOrHeight = function(elem, name) {
     }
 
     // use the active box-sizing model to add/subtract irrelevant styles
-    return (val +
-        _augmentBorderBoxWidthOrHeight(
+    return _.toPx(
+        val + _augmentBorderBoxWidthOrHeight(
             elem,
             name,
             isBorderBox ? 'border' : 'content',
             valueIsBorderBox,
             styles
         )
-    ) + 'px';
+    );
 };
 
-// TODO: Refactor and optimize this function
-var _cssExpand = [ 'Top', 'Right', 'Bottom', 'Left' ];
+var _CSS_EXPAND = [
+    'Top',
+    'Right',
+    'Bottom',
+    'Left'
+];
 var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     var val = 0,
-            // If we already have the right measurement, avoid augmentation
-        idx = extra === (isBorderBox ? 'border' : 'content') ?
-                4 :
-                    // Otherwise initialize for horizontal or vertical properties
-                    (name === 'width') ?
-                        1 :
-                            0;
+        // If we already have the right measurement, avoid augmentation
+        idx = (extra === (isBorderBox ? 'border' : 'content')) ?
+            4 :
+            // Otherwise initialize for horizontal or vertical properties
+            (name === 'width') ?
+            1 :
+            0,
+        type,
+        // Pulled out of the loop to reduce string comparisons
+        extraIsMargin  = (extra === 'margin'),
+        extraIsContent = (!extraIsMargin && extra === 'content'),
+        extraIsPadding = (!extraIsMargin && !extraIsContent && extra === 'padding');
 
     for (; idx < 4; idx += 2) {
-        var type = _cssExpand[idx];
+        type = _CSS_EXPAND[idx];
 
         // both box models exclude margin, so add it if we want it
-        if (extra === 'margin') {
+        if (extraIsMargin) {
             val += _.parseInt(styles[extra + type]) || 0;
         }
 
         if (isBorderBox) {
+
             // border-box includes padding, so remove it if we want content
-            if (extra === 'content') {
+            if (extraIsContent) {
                 val -= _.parseInt(styles['padding' + type]) || 0;
             }
 
             // at this point, extra isn't border nor margin, so remove border
-            if (extra !== 'margin') {
+            if (!extraIsMargin) {
                 val -= _.parseInt(styles['border' + type + 'Width']) || 0;
             }
 
@@ -186,7 +196,7 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
             val += _.parseInt(styles['padding' + type]) || 0;
 
             // at this point, extra isn't content nor padding, so add border
-            if (extra !== 'padding') {
+            if (extraIsPadding) {
                 val += _.parseInt(styles['border' + type]) || 0;
             }
         }
@@ -210,7 +220,7 @@ var _curCss = function(elem, name, computed) {
     // so we don't default to auto
     if (!_.exists(ret) && style && style[name]) { ret = style[name]; }
 
-    // From the awesome hack by Dean Edwards
+    // From the hack by Dean Edwards
     // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 
     if (styles) {
@@ -233,7 +243,7 @@ var _curCss = function(elem, name, computed) {
             if (rsLeft) { rs.left = elem.currentStyle.left; }
 
             style.left = (name === 'fontSize') ? '1em' : ret;
-            ret = style.pixelLeft + 'px';
+            ret = _.toPx(style.pixelLeft);
 
             // Revert the changed values
             style.left = left;
