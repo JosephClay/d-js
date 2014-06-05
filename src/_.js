@@ -48,7 +48,7 @@ var _ = {
         return !!(obj && obj === obj.window);
     },
 
-    // http://stackoverflow.com/a/10645766/467582
+    // Supports IE8 via obj.callee (see http://stackoverflow.com/a/10645766/467582)
     isArguments: function(obj) {
         return !!(obj && (_toString.call(obj) === '[object Arguments]' || obj.callee));
     },
@@ -249,8 +249,8 @@ var _ = {
     }
 };
 
-// Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-var types = ['Function', 'String', 'Number', 'Date', 'RegExp'],
+// Add some isType methods (only if they do NOT already exist): isArray, isFunction, isString, isNumber, isDate, isRegExp.
+var types = ['Array', 'Function', 'String', 'Number', 'Date', 'RegExp'],
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
