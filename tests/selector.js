@@ -7,10 +7,10 @@ module('selector');
 test('element - D only', function() {
     expect(4);
 
-    deepEqual(D('#selector-fixture').find('p').get(), q('selector-firstp','selector-secondp','selector-thirdp'), 'Finding elements with a context via .find().');
+    deepEqual(D('#selector-tests').find('p').get(), q('selector-firstp','selector-secondp','selector-thirdp'), 'Finding elements with a context via .find().');
 
     ok(D('#selector-length').length, '<input name="length"> cannot be found under IE, see #945');
-    ok(D('#selector-fixture input').length, '<input name="length"> cannot be found under IE, see #945');
+    ok(D('#selector-tests input').length, '<input name="length"> cannot be found under IE, see #945');
 
     // #7533
     equal(D('<div id=\'A\'B~C.D[E]\'><p>foo</p></div>').find('p').length, 1, 'Find where context root is a node and has an ID with CSS3 meta characters');
@@ -139,9 +139,9 @@ test('attributes', function() {
     t('Boolean attribute exists', '#select2 option[selected]', ['option2d']);
     t('Boolean attribute equals', '#select2 option[selected="selected"]', ['option2d']);
 
-    ok(D('#selector-fixture a[rel="bookmark"]').get(0), 'Attribute Equals');
-    ok(D('#selector-fixture a[href="http://www.google.com/"]').get(0), 'Attribute Equals');
-    ok(D('#selector-fixture a[ rel = "bookmark" ]').get(0), 'Attribute Equals');
+    ok(D('#selector-tests a[rel="bookmark"]').get(0), 'Attribute Equals');
+    ok(D('#selector-tests a[href="http://www.google.com/"]').get(0), 'Attribute Equals');
+    ok(D('#selector-tests a[ rel = "bookmark" ]').get(0), 'Attribute Equals');
 
     document.getElementById('anchor2').href = '#2';
     t('href Attribute', 'p a[href^="#"]', ['anchor2']);
@@ -161,9 +161,9 @@ test('attributes', function() {
 
     t('Attribute selector using UTF8', 'span[lang=中文]', ['台北']);
 
-    t('Attribute Begins With', '#selector-fixture a[href ^= "http://www"]', ['selector-anchor']);
+    t('Attribute Begins With', '#selector-tests a[href ^= "http://www"]', ['selector-anchor']);
     t('Attribute Ends With', 'a[href $= "org/"]', ['mark']);
-    t('Attribute Contains', '#selector-fixture a[href *= "google"]', ['selector-anchor']);
+    t('Attribute Contains', '#selector-tests a[href *= "google"]', ['selector-anchor']);
 
     t('Empty values', '#select1 option[value=""]', ['option1a']);
 

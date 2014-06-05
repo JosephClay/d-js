@@ -143,8 +143,8 @@
                 <input type="hidden" name="H1" value="x" />
                 <input type="hidden" name="H2" />
                 <input name="PWD" type="password" value="" />
-                <input name="T1" type="text" />
-                <input name="T2" type="text" value="YES" readonly="readonly" />
+                <input name="T1" type="text" id="T1" />
+                <input name="T2" type="text" id="T2" value="YES" readonly="readonly" />
                 <input type="checkbox" name="C1" value="1" />
                 <input type="checkbox" name="C2" />
                 <input type="radio" name="R1" value="1" />
@@ -288,8 +288,8 @@
 
 
 
-        <div id="d-fixture">
-            <div id="selector-fixture">
+        <div id="d-fixture" class="test-fixture">
+            <div id="selector-tests">
                 <p class="selector-p" id="selector-firstp"></p>
                 <p class="selector-p" id="selector-secondp"></p>
                 <p class="selector-p" id="selector-thirdp"></p>
@@ -297,11 +297,47 @@
                 <input type="text" id="selector-length" name="test"/>
                 <a id="selector-anchor" href="http://www.google.com/" rel="bookmark"></a>
             </div>
+            <div id="attr-tests">
+                <table id="table1" cellspacing="2" cellpadding="3">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" id="th1"></th>
+                            <th colspan="4" id="th2"></th>
+                        </tr>
+                        <tr>
+                            <th>I</th>
+                            <th>II</th>
+                            <th>III</th>
+                            <th>IIII</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <map name="bigthings"></map>
+                <img src="" alt="" usemap="#bigthings" id="img" />
+
+                <div id="contenteditable" contenteditable="true"></div>
+            </div>
         </div>
 
 
 
-
+        <style>
+            .test-fixture {
+                position: absolute;
+                top: -999em;
+                left: -999em;
+            }
+        </style>
 
         <script>
             var q = function() {

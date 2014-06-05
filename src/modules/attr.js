@@ -58,7 +58,7 @@ var _hooks = {
             get: function(elem) {
                 var tabindex = elem.getAttribute('tabindex');
                 if (!_.exists(tabindex) || tabindex === '') { return; }
-                return _.parseInt(tabindex) || 0;
+                return tabindex;
             }
         },
 
