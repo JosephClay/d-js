@@ -24,7 +24,6 @@
             Returns a function that returns the value
     */
 
-    /* TODO: Enable for testing props?
     test('D.propFix integrity test', function() {
         expect(1);
 
@@ -49,7 +48,6 @@
 
         deepEqual(props, D.propFix, 'D.propFix passes integrity check');
     });
-    */
 
     test('attr(String)', function() {
         expect(50);

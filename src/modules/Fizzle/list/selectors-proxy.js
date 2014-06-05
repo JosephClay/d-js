@@ -1,5 +1,5 @@
 module.exports = {
-    // TODO: Document differences between jQuery and D.js behavior for these selectors
+    // DOC: Document these selectors
     ':child-even' : ':nth-child(even)',
     ':child-odd'  : ':nth-child(odd)',
 

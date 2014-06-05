@@ -52,7 +52,6 @@ test('find(leading combinator)', function() {
     expect(4);
 
     strictEqual(D('#qunit-fixture').find('> div').get().length, 6, 'find child elements');
-    // TODO: Handle commas
     strictEqual(D('#qunit-fixture').find('> #foo, > #moretests').get().length, 2, 'find child elements');
     strictEqual(D('#qunit-fixture').find('> #foo > p').get().length, 3, 'find child elements');
 
@@ -299,7 +298,7 @@ test('not(Selector|undefined)', function() {
     deepEqual(D('p').not(0).get(),         all, 'not(0) should have no effect');
     deepEqual(D('p').not('').get(),        all, 'not("") should have no effect');
 
-    // TODO: Make sure :contains in an invalid selector and caught by the parser
+    // NOTE: :contains in an invalid selector and caught by the parser
     /*deepEqual(
         D('#form option').not('option.emptyopt:contains("Nothing"),optgroup *,[value="1"]').get(),
         q('option1c', 'option1d', 'option2c', 'option2d', 'option3c', 'option3d', 'option3e', 'option4d', 'option4e', 'option5a', 'option5b'),

@@ -2,11 +2,25 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
-    _div = require('../div'),
+    _manip = require('./manip'),
 
+    _div = require('../div'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports'),
     _utils    = require('../utils');
+
+var _outerHtml = function(elem) {
+    var div = document.createElement('div');
+
+    // append elem to div
+    _manip.append(div, elem.cloneNode(true));
+
+    var html = div.innerHTML;
+
+    div = null;
+
+    return html;
+};
 
 var _text = {
     get: (_div.textContent !== undefined) ?
@@ -119,25 +133,28 @@ var _getVal = function(elem) {
 
 module.exports = {
     fn: {
-        // TODO: OuterHtml getter?
+        // TODO: Overload and determine api
+        // TODO: unit tests
+        outerHtml: function() {
+            var first = this[0];
+            if (!first) { return null; }
+
+            return _outerHtml(first);
+        },
 
         html: overload()
             .args(String)
             .use(function(html) {
-                _.each(this, function(elem) {
+                return _.each(this, function(elem) {
                     elem.innerHTML = html;
                 });
-
-                return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
                 });
-
-                return this;
             })
 
             .fallback(function() {
@@ -152,7 +169,7 @@ module.exports = {
             .use(function(value) {
                 value = '' + value;
 
-                _.each(this, function(elem) {
+                return _.each(this, function(elem) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
@@ -162,13 +179,11 @@ module.exports = {
                         elem.setAttribute('value', value);
                     }
                 });
-
-                return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
@@ -180,8 +195,6 @@ module.exports = {
                         elem.setAttribute('value', value);
                     }
                 });
-
-                return this;
             })
 
             .fallback(function() {
@@ -192,20 +205,16 @@ module.exports = {
         text: overload()
             .args(String)
             .use(function(str) {
-                _.each(this, function(elem) {
+                return _.each(this, function(elem) {
                     _text.set(elem, str);
                 });
-
-                return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
                 });
-
-                return this;
             })
 
             .fallback(function() {
