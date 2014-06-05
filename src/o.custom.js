@@ -19,10 +19,10 @@ overload.defineTypes({
         return val && _isD(val);
     },
     'nodeList': function(val) {
-        return val && _.isNodeList(val);
+        return _.isNodeList(val);
     },
     'window': function(val) {
-        return val && val.window === window;
+        return _.isWindow(val);
     },
     'document': function(val) {
         return val && val === document;
