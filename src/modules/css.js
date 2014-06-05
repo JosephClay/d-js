@@ -386,16 +386,14 @@ module.exports = {
             .expose(),
 
         hide: function() {
-            _.each(this, function(elem) {
+            return _.each(this, function(elem) {
                 _hide(elem);
             });
-            return this;
         },
         show: function() {
-            _.each(this, function(elem) {
+            return _.each(this, function(elem) {
                 _show(elem);
             });
-            return this;
         },
 
         toggle: function(state) {
@@ -403,16 +401,13 @@ module.exports = {
                 return state ? this.show() : this.hide();
             }
 
-            // TODO: Make internal _.each return the array passed
-            _.each(this, function(elem) {
+            return _.each(this, function(elem) {
                 if (_isHidden(this)) {
                     return _show(this);
                 }
 
                 _hide(this);
             });
-
-            return this;
         }
     }
 };

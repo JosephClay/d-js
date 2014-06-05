@@ -145,20 +145,16 @@ module.exports = {
         html: overload()
             .args(String)
             .use(function(html) {
-                _.each(this, function(elem) {
+                return _.each(this, function(elem) {
                     elem.innerHTML = html;
                 });
-
-                return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
                 });
-
-                return this;
             })
 
             .fallback(function() {
@@ -173,7 +169,7 @@ module.exports = {
             .use(function(value) {
                 value = '' + value;
 
-                _.each(this, function(elem) {
+                return _.each(this, function(elem) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
@@ -183,13 +179,11 @@ module.exports = {
                         elem.setAttribute('value', value);
                     }
                 });
-
-                return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     if (elem.nodeType !== _nodeType.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
@@ -201,8 +195,6 @@ module.exports = {
                         elem.setAttribute('value', value);
                     }
                 });
-
-                return this;
             })
 
             .fallback(function() {
@@ -213,20 +205,16 @@ module.exports = {
         text: overload()
             .args(String)
             .use(function(str) {
-                _.each(this, function(elem) {
+                return _.each(this, function(elem) {
                     _text.set(elem, str);
                 });
-
-                return this;
             })
 
             .args(Function)
             .use(function(iterator) {
-                _.each(this, function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
                 });
-
-                return this;
             })
 
             .fallback(function() {

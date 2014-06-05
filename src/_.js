@@ -228,7 +228,7 @@ var _ = {
             var idx = 0, length = obj.length;
             for (; idx < length; idx++) {
                 if (iterator(obj[idx], idx) === false) {
-                    return;
+                    break;
                 }
             }
         }
@@ -236,10 +236,12 @@ var _ = {
         else {
             for (var prop in obj) {
                 if (iterator(obj[prop], prop) === false) {
-                    return;
+                    break;
                 }
             }
         }
+
+        return obj;
     }
 };
 
