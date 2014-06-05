@@ -76,7 +76,13 @@ var _hooks = {
         },
 
         value: {
-            get: function(elem) { return _utils.normalizeNewlines(elem.value); },
+            get: function(elem) {
+                var val = elem.value;
+                if (val === null || val === undefined) {
+                    val = elem.getAttribute('value');
+                }
+                return _utils.normalizeNewlines(val);
+            },
             set: function(elem, value) { elem.setAttribute('value', value); }
         }
     },
