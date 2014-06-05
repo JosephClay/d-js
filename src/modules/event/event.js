@@ -2,6 +2,7 @@ var _           = require('_'),
 
     Event       = require('./EventConstructor'),
     _nodeType   = require('../../nodeType'),
+    _data       = require('../data'),
     _eventUtils = require('./eventUtils'),
     _global     = {};
 
@@ -10,7 +11,7 @@ var _add = function(elem, types, handler, data, selector) {
         special, eventHandle, handleObj,
         handlers, type, namespaces, origType;
 
-    var elemData = jQuery._data(elem);
+    var elemData = _data.get(elem);
     // Don't attach events to noData or text/comment nodes
     if (!elemData) { return; }
 
@@ -126,7 +127,7 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
         origCount, t, events,
         special, handlers, type,
         namespaces, origType,
-        elemData = jQuery.hasData( elem ) && jQuery._data(elem);
+        elemData = _data.has(elem) && _data.get(elem);
 
     if (!elemData || !(events = elemData.events)) { return; }
 
@@ -190,7 +191,7 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
 
         // removeData also checks for emptiness and clears the expando if empty
         // so use it instead of delete
-        jQuery._removeData(elem, 'events');
+        _data.remove(elem, 'events');
     }
 };
 
@@ -279,7 +280,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
             special.bindType || type;
 
         // jQuery handler
-        handle = (jQuery._data(cur, 'events') || {})[event.type] && jQuery._data(cur, 'handle');
+        handle = (_data.get(cur, 'events') || {})[event.type] && _data.get(cur, 'handle');
         if ( handle ) {
             handle.apply( cur, data );
         }
@@ -344,7 +345,7 @@ var _dispatch = function(event) {
     var i, ret, handleObj, matched, j,
         handlerQueue = [],
         args = _.slice(arguments),
-        handlers = (jQuery._data(this, 'events') || {})[event.type] || [],
+        handlers = (_data.get(this, 'events') || {})[event.type] || [],
         special = _special[event.type] || {};
 
     // Use the fix-ed Event rather than the (read-only) native event
