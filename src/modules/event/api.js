@@ -77,7 +77,7 @@ module.exports = {
         off: function(types, selector, fn) {
             var handleObj, type;
             if ( types && types.preventDefault && types.handleObj ) {
-                // ( event )  dispatched jQuery.Event
+                // ( event )  dispatched Event
                 handleObj = types.handleObj;
                 jQuery( types.delegateTarget ).off(
                     handleObj.namespace ? handleObj.origType + "." + handleObj.namespace : handleObj.origType,
