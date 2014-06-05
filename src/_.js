@@ -1,7 +1,8 @@
 var _NODE_TYPE = require('./nodeType'),
     _id = 0,
     _toString = Object.prototype.toString,
-    _isTruthy = function(arg) { return !!arg; };
+    _isTruthy = function(arg) { return !!arg;},
+    _nativeIndexOf = Array.prototype.indexOf;
 
 var _ = {
     noop: function() {},
@@ -222,6 +223,13 @@ var _ = {
             obj[arr[idx]] = arr[idx];
         }
         return obj;
+    },
+
+    indexOf: function(arr, item) {
+        if (arr.indexOf === _nativeIndexOf) {
+            return arr.indexOf(item);
+        }
+        return _nativeIndexOf.call(arr, item);
     },
 
     each: function(obj, iterator) {
