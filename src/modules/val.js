@@ -3,7 +3,7 @@ var _         = require('_'),
     O         = overload.O,
 
     _div      = require('../div'),
-    _nodeType = require('../nodeType'),
+    _NODE_TYPE = require('../nodeType'),
     _supports = require('../supports'),
     _utils    = require('../utils');
 
@@ -108,7 +108,7 @@ _.each(['radio', 'checkbox'], function(type) {
 });
 
 var _getVal = function(elem) {
-    if (!elem || (elem.nodeType !== _nodeType.ELEMENT)) { return; }
+    if (!elem || (elem.nodeType !== _NODE_TYPE.ELEMENT)) { return; }
 
     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
     if (hook && hook.get) {
@@ -153,7 +153,7 @@ module.exports = {
                 value = '' + value;
 
                 return _.each(this, function(elem) {
-                    if (elem.nodeType !== _nodeType.ELEMENT) { return; }
+                    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
 
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
                     if (hook && hook.set) {
@@ -167,7 +167,7 @@ module.exports = {
             .args(Function)
             .use(function(iterator) {
                 return _.each(this, function(elem, idx) {
-                    if (elem.nodeType !== _nodeType.ELEMENT) { return; }
+                    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
                     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];

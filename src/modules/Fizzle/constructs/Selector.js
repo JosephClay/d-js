@@ -1,6 +1,6 @@
 var _ = require('_'),
 
-    _nodeType = require('../../../nodeType'),
+    _NODE_TYPE = require('../../../nodeType'),
     _cache = require('../../../cache'),
     _regex = require('../../../regex'),
     _supports = require('../../../supports'),
@@ -70,7 +70,7 @@ Selector.prototype = {
             method = this.method,
             nodeType;
         // Early return if context is not an element or document
-        if ((nodeType = context.nodeType) !== _nodeType.ELEMENT && nodeType !== _nodeType.DOCUMENT) { return; }
+        if ((nodeType = context.nodeType) !== _NODE_TYPE.ELEMENT && nodeType !== _NODE_TYPE.DOCUMENT) { return; }
 
         // Child select - needs special help so that "> div" doesn't break
         var id,

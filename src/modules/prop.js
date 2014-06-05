@@ -3,7 +3,7 @@ var _         = require('_'),
     O         = overload.O,
 
     _supports = require('../supports'),
-    _nodeType = require('../nodeType'),
+    _NODE_TYPE = require('../nodeType'),
     _regex    = require('../regex');
 
 var _propFix = {
@@ -73,7 +73,7 @@ var _getOrSetProp = function(elem, name, value) {
     var nodeType = elem.nodeType;
 
     // don't get/set properties on text, comment and attribute nodes
-    if (!elem || nodeType === _nodeType.TEXT || nodeType === _nodeType.COMMENT || nodeType === _nodeType.ATTRIBUTE) {
+    if (!elem || nodeType === _NODE_TYPE.TEXT || nodeType === _NODE_TYPE.COMMENT || nodeType === _NODE_TYPE.ATTRIBUTE) {
         return;
     }
 

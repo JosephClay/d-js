@@ -6,7 +6,7 @@ var _         = require('_'),
     _cache    = require('../cache'),
     _regex    = require('../regex'),
 
-    _nodeType = require('../nodeType'),
+    _NODE_TYPE = require('../nodeType'),
     _supports = require('../supports'),
 
     _cssKeyCache = _cache();
@@ -74,7 +74,7 @@ var _hide = function(elem) {
                 return elem.document.documentElement.clientWidth;
             }
 
-            if (elem.nodeType === _nodeType.DOCUMENT) {
+            if (elem.nodeType === _NODE_TYPE.DOCUMENT) {
                 return _getDocumentDimension(elem, 'Width');
             }
 
@@ -95,7 +95,7 @@ var _hide = function(elem) {
                 return elem.document.documentElement.clientHeight;
             }
 
-            if (elem.nodeType === _nodeType.DOCUMENT) {
+            if (elem.nodeType === _NODE_TYPE.DOCUMENT) {
                 return _getDocumentDimension(elem, 'Height');
             }
 
