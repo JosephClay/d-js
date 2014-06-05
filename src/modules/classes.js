@@ -130,11 +130,11 @@ module.exports = {
             .expose(),
 
         toggleClass: overload()
-            .args(String)
-            .use(function(name) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+            .args(O.any(String, Array))
+            .use(function(names) {
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
-                var names = _split(name);
+                names = _split(names);
                 if (!names.length) { return this; }
 
                 _toggleClasses(this, names);
@@ -142,11 +142,11 @@ module.exports = {
                 return this;
             })
 
-            .args(String, Boolean)
-            .use(function(name, shouldAdd) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+            .args(O.any(String, Array), O.wild)
+            .use(function(names, shouldAdd) {
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
-                var names = _split(name);
+                names = _split(names);
                 if (!names.length) { return this; }
 
                 if (shouldAdd) {
@@ -154,34 +154,12 @@ module.exports = {
                 } else {
                     _removeClasses(this, names);
                 }
-
-                return this;
-            })
-
-            .args(Array)
-            .use(function(names) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                _toggleClasses(this, names);
 
                 return this;
             })
 
             .args(O.any(null, undefined))
             .use(function() {
-                return this;
-            })
-
-            .length(2)
-            .use(function(names, shouldAdd) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                if (shouldAdd) {
-                    _addClasses(this, names);
-                } else {
-                    _removeClasses(this, names);
-                }
-
                 return this;
             })
 
