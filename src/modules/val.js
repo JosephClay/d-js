@@ -2,11 +2,25 @@ var _ = require('_'),
     overload = require('overload'),
     O = overload.O,
 
-    _div = require('../div'),
+    _manip = require('./manip'),
 
+    _div = require('../div'),
     _nodeType = require('../nodeType'),
     _supports = require('../supports'),
     _utils    = require('../utils');
+
+var _outerHtml = function(elem) {
+    var div = document.createElement('div');
+
+    // append elem to div
+    _manip.append(div, elem.cloneNode(true));
+
+    var html = div.innerHTML;
+
+    div = null;
+
+    return html;
+};
 
 var _text = {
     get: (_div.textContent !== undefined) ?
@@ -119,7 +133,14 @@ var _getVal = function(elem) {
 
 module.exports = {
     fn: {
-        // TODO: OuterHtml getter?
+        // TODO: Overload and determine api
+        // TODO: unit tests
+        outerHtml: function() {
+            var first = this[0];
+            if (!first) { return null; }
+
+            return _outerHtml(first);
+        },
 
         html: overload()
             .args(String)
