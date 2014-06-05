@@ -7,6 +7,7 @@ var _ = require('_'),
     _cache         = require('../../../cache'),
     _tokenCache    = _cache(),
     _subqueryCache = _cache(),
+    _boolAttrCache = _cache(),
 
     _error = (!console || !console.error) ? _.noop :
         function(selector) {
@@ -251,6 +252,12 @@ module.exports = {
     subqueries: function(selector) {
         return _subqueryCache.getOrSet(selector, function() {
             return _tokenize(selector);
+        });
+    },
+
+    isBooleanAttribute: function(name) {
+        return _boolAttrCache.getOrSet(name, function() {
+            return _matchExpr.bool.test(name);
         });
     }
 };

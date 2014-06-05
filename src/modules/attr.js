@@ -7,9 +7,12 @@ var _         = require('_'),
     _utils    = require('../utils'),
     _cache    = require('../cache'),
 
+    _selector = require('./Fizzle/selector/selector-parse'),
+
     _isDataKeyCache       = _cache(),
     _sanitizeDataKeyCache = _cache(),
-    _trimDataKeyCache     = _cache();
+    _trimDataKeyCache     = _cache(),
+    _attrNameLowerCache   = _cache();
 
 var _isDataKey = function(key) {
         return _isDataKeyCache.getOrSet(key, function() {
@@ -30,7 +33,7 @@ var _isDataKey = function(key) {
     },
 
     _getDataAttrKeys = function(elem) {
-        var attrs = first.attributes,
+        var attrs = elem.attributes,
             idx   = attr.length, keys = [];
         while (idx--) {
             key = attrs[idx];
@@ -43,13 +46,24 @@ var _isDataKey = function(key) {
     };
 
 var _boolHook = {
-    set: function(elem, value, name) {
+    is: function(attrName) {
+        return _selector.isBooleanAttribute(attrName);
+    },
+    get: function(elem, attrName) {
+        if (elem.hasAttribute(attrName)) {
+            return _attrNameLowerCache.getOrSet(attrName, function() {
+                return attrName.toLowerCase();
+            });
+        }
+        return undefined;
+    },
+    set: function(elem, value, attrName) {
         if (value === false) {
             // Remove boolean attributes when set to false
-            return elem.removeAttribute(name);
+            return elem.removeAttribute(attrName);
         }
 
-        elem.setAttribute(name, name);
+        elem.setAttribute(attrName, attrName);
     }
 };
 
@@ -90,6 +104,10 @@ var _hooks = {
     _getAttribute = function(elem, attr) {
         if (!elem || !elem.hasAttribute(attr)) { return; }
 
+        if (_boolHook.is(attr)) {
+            return _boolHook.get(elem, attr);
+        }
+
         if (_hooks[attr] && _hooks[attr].get) {
             return _hooks[attr].get(elem);
         }
@@ -112,7 +130,7 @@ var _hooks = {
     _setAttribute = function(elem, attr, value) {
         if (!elem) { return; }
 
-        if (value === true || value === false) {
+        if (_boolHook.is(attr) && (value === true || value === false)) {
             return _boolHook.set(elem, value, attr);
         }
 
@@ -147,7 +165,7 @@ module.exports = {
                 return _getAttribute(this[0], attr);
             })
 
-            .args(String, O.any(String, Number))
+            .args(String, O.any(String, Number, Boolean))
             .use(function(attr, value) {
                 _setAttributes(this, attr, value);
                 return this;
@@ -159,20 +177,9 @@ module.exports = {
                 return this;
             })
 
-            .args(String, Boolean)
-            .use(function(attr, bool) {
-                if (bool) {
-                    _setAttributes(this, attr, bool);
-                    return this;
-                }
-
-                _removeAttributes(this, attr);
-                return this;
-            })
-
             .args(Object)
             .use(function(attrs) {
-                var attr, value;
+                var attr;
                 for (attr in attrs) {
                     _setAttributes(this, attr, attrs[attr]);
                 }
