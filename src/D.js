@@ -24,6 +24,8 @@ var _ = require('_'),
     classes     = require('./modules/classes'),
     data        = require('./modules/data'),
     events      = require('./modules/events'),
+    deferred    = require('./modules/Deferred/Deferred'),
+    when        = require('./modules/Deferred/when'),
 
     xaja        = require('./libs/xaja');
 
@@ -76,11 +78,13 @@ var _hasMoreConflict = false,
 _.extend(DOM,
     parser.D,
     data.D,
+    deferred.D,
+    when.D,
 {
     each:    array.each,
+    forEach: array.each,
     map:     _.map,
     extend:  _.extend,
-    forEach: _.each,
 
     // proxy ajax to xaja
     ajax: xaja.ajax,
