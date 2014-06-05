@@ -112,8 +112,7 @@
         $set.addClass('test').addClass('foo').addClass('bar');
         $set.removeClass(valueObj('test')).removeClass(valueObj('bar')).removeClass(valueObj('foo'));
 
-        // TODO: Support comma separated selectors in .is()
-//        ok(!$set.is('.test,.bar,.foo'), 'Remove multiple classes');
+        ok(!$set.is('.test,.bar,.foo'), 'Remove multiple classes');
         ok(!($set.is('.test') || $set.is('.bar') || $set.is('.foo')), 'Remove multiple classes');
 
         $set.eq(0).addClass('expected').removeClass(valueObj(null));
@@ -122,12 +121,10 @@
         $set.eq(0).addClass('expected').removeClass(valueObj(''));
         ok($set.eq(0).is('.expected'), 'Empty string passed to removeClass');
 
-
-        // TODO: Implement .contents()?
-//        // using contents will get regular, text, and comment nodes
-//        $set = D('#nonnodes').contents();
-//        $set.removeClass(valueObj('asdf'));
-//        ok(!$set.hasClass('asdf'), 'Check node,textnode,comment for removeClass');
+        // using contents will get regular, text, and comment nodes
+        $set = D('#nonnodes').contents();
+        $set.removeClass(valueObj('asdf'));
+        ok(!$set.hasClass('asdf'), 'Check node,textnode,comment for removeClass');
 
 
         D(div).removeClass(valueObj('foo'));
@@ -143,16 +140,15 @@
         testRemoveClass(bareObj);
     });
 
-    // TODO: Implement?
-//    test('removeClass() removes duplicates', function() {
-//        expect(1);
-//
-//        var $div = D(D.parseHTML('<div class="x x x"></div>'));
-//
-//        $div.removeClass('x');
-//
-//        ok(!$div.hasClass('x'), 'Element with multiple same classes does not escape the wrath of removeClass()');
-//    });
+    test('removeClass() removes duplicates', function() {
+        expect(1);
+
+        var $div = D(D.parseHTML('<div class="x x x"></div>'));
+
+        $div.removeClass('x');
+
+        ok(!$div.hasClass('x'), 'Element with multiple same classes does not escape the wrath of removeClass()');
+    });
 
     test('removeClass(undefined) is a no-op', function() {
         expect(1);
@@ -276,16 +272,15 @@
         ok(!D('<p class="hi0">p0</p><p class="hi1">p1</p><p class="hi2">p2</p>').hasClass('hi'), 'Did not find a class when not present');
     });
 
-    // TODO: Implement .contents()?
-//    test('contents().hasClass() returns correct values', function() {
-//        expect(2);
-//
-//        var $div = D('<div><span class="foo"></span><!-- comment -->text</div>'),
-//        $contents = $div.contents();
-//
-//        ok($contents.hasClass('foo'), 'Found "foo" in $contents');
-//        ok(!$contents.hasClass('undefined'), 'Did not find "undefined" in $contents (correctly)');
-//    });
+    test('contents().hasClass() returns correct values', function() {
+        expect(2);
+
+        var $div = D('<div><span class="foo"></span><!-- comment -->text</div>'),
+        $contents = $div.contents();
+
+        ok($contents.hasClass('foo'), 'Found "foo" in $contents');
+        ok(!$contents.hasClass('undefined'), 'Did not find "undefined" in $contents (correctly)');
+    });
 
     test('hasClass correctly interprets non-space separators (#13835)', function() {
         expect(4);

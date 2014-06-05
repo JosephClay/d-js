@@ -357,38 +357,39 @@
         equal(D('#NotHiddenDiv').width(30).width(undefined).width(), 30, '.width(undefined) is chainable (#5571)');
     });
 
-    /* TODO: Do we care about border-box testing?
+    // NOTE: Changed tests to set and measure width and height. We're not supporting
+    // setting innerWidth/outerWidth etc...
     test('setters with and without box-sizing:border-box', function() {
-        expect(20);
+        expect(4);
+        // expect(20);
 
         var el_bb = D('<div style="width:114px;height:114px;margin:5px;padding:3px;border:4px solid white;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;"">test</div>').appendTo('#qunit-fixture'),
             el = D('<div style="width:100px;height:100px;margin:5px;padding:3px;border:4px solid white;">test</div>').appendTo('#qunit-fixture'),
             expected = 100;
 
         equal(el_bb.width(101).width(), expected + 1, 'test border-box width(int) by roundtripping');
-        equal(el_bb.innerWidth(108).width(), expected + 2, 'test border-box innerWidth(int) by roundtripping');
-        equal(el_bb.outerWidth(117).width(), expected + 3, 'test border-box outerWidth(int) by roundtripping');
-        equal(el_bb.outerWidth(118, false).width(), expected + 4, 'test border-box outerWidth(int, false) by roundtripping');
-        equal(el_bb.outerWidth(129, true).width(), expected + 5, 'test border-box innerWidth(int, true) by roundtripping');
+        // equal(el_bb.innerWidth(108).width(), expected + 2, 'test border-box innerWidth(int) by roundtripping');
+        // equal(el_bb.outerWidth(117).width(), expected + 3, 'test border-box outerWidth(int) by roundtripping');
+        // equal(el_bb.outerWidth(118, false).width(), expected + 4, 'test border-box outerWidth(int, false) by roundtripping');
+        // equal(el_bb.outerWidth(129, true).width(), expected + 5, 'test border-box innerWidth(int, true) by roundtripping');
 
         equal(el_bb.height(101).height(), expected + 1, 'test border-box height(int) by roundtripping');
-        equal(el_bb.innerHeight(108).height(), expected + 2, 'test border-box innerHeight(int) by roundtripping');
-        equal(el_bb.outerHeight(117).height(), expected + 3, 'test border-box outerHeight(int) by roundtripping');
-        equal(el_bb.outerHeight(118, false).height(), expected + 4, 'test border-box outerHeight(int, false) by roundtripping');
-        equal(el_bb.outerHeight(129, true).height(), expected + 5, 'test border-box innerHeight(int, true) by roundtripping');
+        // equal(el_bb.innerHeight(108).height(), expected + 2, 'test border-box innerHeight(int) by roundtripping');
+        // equal(el_bb.outerHeight(117).height(), expected + 3, 'test border-box outerHeight(int) by roundtripping');
+        // equal(el_bb.outerHeight(118, false).height(), expected + 4, 'test border-box outerHeight(int, false) by roundtripping');
+        // equal(el_bb.outerHeight(129, true).height(), expected + 5, 'test border-box innerHeight(int, true) by roundtripping');
 
         equal(el.width(101).width(), expected + 1, 'test border-box width(int) by roundtripping');
-        equal(el.innerWidth(108).width(), expected + 2, 'test border-box innerWidth(int) by roundtripping');
-        equal(el.outerWidth(117).width(), expected + 3, 'test border-box outerWidth(int) by roundtripping');
-        equal(el.outerWidth(118, false).width(), expected + 4, 'test border-box outerWidth(int, false) by roundtripping');
-        equal(el.outerWidth(129, true).width(), expected + 5, 'test border-box innerWidth(int, true) by roundtripping');
+        // equal(el.innerWidth(108).width(), expected + 2, 'test border-box innerWidth(int) by roundtripping');
+        // equal(el.outerWidth(117).width(), expected + 3, 'test border-box outerWidth(int) by roundtripping');
+        // equal(el.outerWidth(118, false).width(), expected + 4, 'test border-box outerWidth(int, false) by roundtripping');
+        // equal(el.outerWidth(129, true).width(), expected + 5, 'test border-box innerWidth(int, true) by roundtripping');
 
         equal(el.height(101).height(), expected + 1, 'test border-box height(int) by roundtripping');
-        equal(el.innerHeight(108).height(), expected + 2, 'test border-box innerHeight(int) by roundtripping');
-        equal(el.outerHeight(117).height(), expected + 3, 'test border-box outerHeight(int) by roundtripping');
-        equal(el.outerHeight(118, false).height(), expected + 4, 'test border-box outerHeight(int, false) by roundtripping');
-        equal(el.outerHeight(129, true).height(), expected + 5, 'test border-box innerHeight(int, true) by roundtripping');
+        // equal(el.innerHeight(108).height(), expected + 2, 'test border-box innerHeight(int) by roundtripping');
+        // equal(el.outerHeight(117).height(), expected + 3, 'test border-box outerHeight(int) by roundtripping');
+        // equal(el.outerHeight(118, false).height(), expected + 4, 'test border-box outerHeight(int, false) by roundtripping');
+        // equal(el.outerHeight(129, true).height(), expected + 5, 'test border-box innerHeight(int, true) by roundtripping');
     });
-    */
 
 })();
