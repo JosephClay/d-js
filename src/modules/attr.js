@@ -88,7 +88,7 @@ var _hooks = {
     },
 
     _getAttribute = function(elem, attr) {
-        if (!elem) { return; }
+        if (!elem || !elem.hasAttribute(attr)) { return; }
 
         if (_hooks[attr] && _hooks[attr].get) {
             return _hooks[attr].get(elem);
