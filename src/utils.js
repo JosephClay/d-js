@@ -5,7 +5,9 @@ var _ = require('_'),
 
     _cache         = require('./cache'),
 
-    _nodeNameCache = _cache();
+    _nodeNameCache = _cache(),
+
+    _returnThis    = function() { return this; };
 
 module.exports = {
     isAttached: function(elem) {
@@ -65,5 +67,8 @@ module.exports = {
 
     returnFalse: function() {
         return false;
-    }
+    },
+
+    returnThis: _returnThis,
+    identity: _returnThis
 };

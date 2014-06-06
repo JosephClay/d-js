@@ -223,6 +223,8 @@ module.exports = {
                 });
             })
 
+            .fallback(_utils.returnThis)
+
             .expose(),
 
         removeAttr: overload()
