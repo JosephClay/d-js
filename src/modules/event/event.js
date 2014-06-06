@@ -393,7 +393,7 @@ var _dispatch = function(event) {
 };
 
 var _handlers = function(event, handlers) {
-    var sel, handleObj, matches, i,
+    var sel, handleObj, matches,
         handlerQueue = [],
         delegateCount = handlers.delegateCount,
         cur = event.target;
@@ -403,14 +403,17 @@ var _handlers = function(event, handlers) {
     // Avoid non-left-click bubbling in Firefox (#3861)
     if (delegateCount && cur.nodeType && (!event.button || event.type !== 'click')) {
 
+        // TODO: Better as a while loop?
         for (; cur != this; cur = cur.parentNode || this) {
 
             // Don't check non-elements (#13208)
             // Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
             if (cur.nodeType === _nodeType.ELEMENT && (cur.disabled !== true || event.type !== 'click') ) {
                 matches = [];
-                for (i = 0; i < delegateCount; i++) {
-                    handleObj = handlers[i];
+
+                var idx = 0;
+                for (; idx < delegateCount; idx++) {
+                    handleObj = handlers[idx];
 
                     // Don't conflict with Object.prototype properties (#13203)
                     sel = handleObj.selector + ' ';
@@ -419,14 +422,19 @@ var _handlers = function(event, handlers) {
                         matches[sel] = handleObj.needsContext ?
                             this.find(sel).index(cur) >= 0 :
                             // TODO: What is happening here?
-                            jQuery.find(sel, this, null, [ cur ]).length;
+                            jQuery.find(sel, this, null, [cur]).length;
                     }
-                    if ( matches[ sel ] ) {
-                        matches.push( handleObj );
+
+                    if (matches[sel]) {
+                        matches.push(handleObj);
                     }
                 }
-                if ( matches.length ) {
-                    handlerQueue.push({ elem: cur, handlers: matches });
+
+                if (matches.length) {
+                    handlerQueue.push({
+                        elem: cur,
+                        handlers: matches
+                    });
                 }
             }
         }
@@ -450,24 +458,25 @@ var _fix = function(event) {
     }
 
     // Create a writable copy of the event object and normalize some properties
-    var i, prop, copy,
-        type = event.type,
+    var type = event.type,
         originalEvent = event,
-        fixHook = this.fixHooks[ type ];
+        fixHook = _fixHooks[type];
 
     if (!fixHook) {
-        this.fixHooks[type] = fixHook =
-            rmouseEvent.test(type) ? this.mouseHooks :
-            rkeyEvent.test( type ) ? this.keyHooks :
+        _fixHooks[type] = fixHook =
+            rmouseEvent.test(type) ? _mouseHooks :
+            rkeyEvent.test(type) ? _keyHooks :
             {};
     }
-    copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props;
+
+    var copy = fixHook.props ? _props.concat(fixHook.props) : _props;
 
     event = new Event(originalEvent);
 
-    i = copy.length;
-    while (i--) {
-        prop = copy[i];
+    var idx = copy.length,
+        prop;
+    while (idx--) {
+        prop = copy[idx];
         event[prop] = originalEvent[prop];
     }
 
