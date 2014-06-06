@@ -10,11 +10,11 @@ module.exports = {
         } catch (err) {}
     },
 
-    addEvent: (_div.addEventListener) ?
+    addEvent: _div.addEventListener ?
         function(elem, type, callback) {
             elem.addEventListener(type, eventHandle, false);
         } :
-        (_div.attachEvent) ?
+        _div.attachEvent ?
         function(elem, type, callback) {
             elem.attachEvent('on' + type, eventHandle);
         } :

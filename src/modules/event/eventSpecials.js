@@ -1,7 +1,7 @@
-var _         = require('_'),
-    _support  = require('../../support'),
-    _data     = require('../data'),
-    _event    = require('./event');
+var _              = require('_'),
+    _support       = require('../../support'),
+    _data          = require('../data'),
+    _event         = require('./event');
 
 if (!_support.submitBubbles) {
     // IE change delegation and checkbox/radio fix

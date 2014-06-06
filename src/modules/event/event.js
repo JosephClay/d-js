@@ -5,7 +5,16 @@ var _           = require('_'),
     _regex      = require('../../regex'),
     _data       = require('../data'),
     _eventUtils = require('./eventUtils'),
-    _global     = {};
+
+    _global     = {},
+
+    _NOOP_OBJ   = {},
+    _CLICK = {
+        none  : 0,
+        left  : 1,
+        middle: 2,
+        right : 3
+    };
 
 var _add = function(elem, types, handler, data, selector) {
     var elemData = _data.get(elem);
@@ -58,13 +67,13 @@ var _add = function(elem, types, handler, data, selector) {
         namespaces = (tmp[2] || '').split('.').sort();
 
         // If event changes its type, use the special event handlers for the changed type
-        special = _special[type] || {}; // TODO: Noop object
+        special = _special[type] || _NOOP_OBJ;
 
         // If selector defined, determine special event api type, otherwise given type
         type = (selector ? special.delegateType : special.bindType) || type;
 
         // Update special based on newly reset type
-        special = _special[type] || {}; // TODO: Noop object
+        special = _special[type] || _NOOP_OBJ;
 
         // handleObj is passed to all event handlers
         handleObj = _.extend({
@@ -187,12 +196,11 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
 };
 
 var _trigger = function(event, data, elem, onlyHandlers) {
-    var handle, ontype, cur,
-        bubbleType, special, tmp, i,
-        eventPath = [elem || document],
+    var eventPath = [elem || document],
         type = event.type || event,
         namespaces = event.namespace ? event.namespace.split('.') : [];
 
+    var cur, tmp;
     cur = tmp = elem = elem || document;
 
     // Don't do events on text and comment nodes
@@ -201,7 +209,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     }
 
     // focus/blur morphs to focusin/out; ensure we're not firing them right now
-    if (rfocusMorph.test(type + D.event.triggered)) {
+    if (_regex.focusMorph(type + D.event.triggered)) {
         return;
     }
 
@@ -211,7 +219,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
         type = namespaces.shift();
         namespaces.sort();
     }
-    ontype = type.indexOf(':') < 0 && 'on' + type;
+    var ontype = type.indexOf(':') < 0 && 'on' + type;
 
     // Caller can pass in a Event object, Object, or just an event type string
     event = event[_eventUtils.id] ?
@@ -221,7 +229,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     // Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
     event.isTrigger = onlyHandlers ? 2 : 3;
     event.namespace = namespaces.join('.');
-    event.namespace_re = event.namespace ?
+    event.namespaceRegex = event.namespace ?
         new RegExp('(^|\\.)' + namespaces.join('\\.(?:.*\\.|)') + '(\\.|$)') :
         null;
 
@@ -232,21 +240,22 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     // Clone any incoming data and prepend the event, creating the handler arg list
     data = !_.exists(data) ?
         [event] :
-        // NOTE: use to be jQuery.makeArray - _.flatten should be equivalent
+        // NOTE: this was jQuery.makeArray - _.flatten should be equivalent
         _.flatten(data, [event]);
 
     // Allow special events to draw outside the lines
-    special = _special[type] || {};
+    var special = _special[type] || {};
     if (!onlyHandlers && special.trigger && special.trigger.apply(elem, data) === false) {
         return;
     }
 
     // Determine event propagation path in advance, per W3C events spec (#9951)
     // Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+    var bubbleType;
     if (!onlyHandlers && !special.noBubble && !_.isWindow(elem)) {
 
         bubbleType = special.delegateType || type;
-        if (!rfocusMorph.test(bubbleType + type)) {
+        if (!_regex.focusMorph(bubbleType + type)) {
             cur = cur.parentNode;
         }
         for (; cur; cur = cur.parentNode) {
@@ -254,28 +263,28 @@ var _trigger = function(event, data, elem, onlyHandlers) {
             tmp = cur;
         }
 
-        // Only add window if we got to document (e.g., not plain obj or detached DOM)
+        // Only add window if we got to document (e.g., not detached DOM)
         if (tmp === (elem.ownerDocument || document)) {
             eventPath.push(tmp.defaultView || tmp.parentWindow || window);
         }
     }
 
     // Fire handlers on the event path
-    i = 0;
-    while ((cur = eventPath[i++]) && !event.isPropagationStopped()) {
+    var idx = 0, handle;
+    while ((cur = eventPath[idx++]) && !event.isPropagationStopped()) {
 
-        event.type = i > 1 ?
+        event.type = idx > 1 ?
             bubbleType :
             special.bindType || type;
 
         // jQuery handler
         handle = (_data.get(cur, 'events') || {})[event.type] && _data.get(cur, 'handle');
         if (handle) {
-            handle.apply( cur, data );
+            handle.apply(cur, data);
         }
 
         // Native handler
-        handle = ontype && cur[ ontype ];
+        handle = ontype && cur[ontype];
         // NOTE: Pulled out jQuery.acceptData(cur) as we don't allow non-element types
         if (handle && handle.apply) {
             event.result = handle.apply(cur, data);
@@ -331,9 +340,7 @@ var _dispatch = function(event) {
     // Make a writable Event from the native event object
     event = _fix(event);
 
-    var i, ret, handleObj, matched, j,
-        handlerQueue = [],
-        args = _.slice(arguments),
+    var args = _.slice(arguments),
         handlers = (_data.get(this, 'events') || {})[event.type] || [],
         special = _special[event.type] || {};
 
@@ -347,24 +354,25 @@ var _dispatch = function(event) {
     }
 
     // Determine handlers
-    handlerQueue = _handlers.call(this, event, handlers);
-
-    // Run delegates first; they may want to stop propagation beneath us
-    i = 0;
-    while ((matched = handlerQueue[i++]) && !event.isPropagationStopped()) {
+    var handlerQueue = _handlers.call(this, event, handlers),
+        // Run delegates first; they may want to stop propagation beneath us
+        idx = 0,
+        matched;
+    while ((matched = handlerQueue[idx++]) && !event.isPropagationStopped()) {
         event.currentTarget = matched.elem;
 
-        j = 0;
-        while ((handleObj = matched.handlers[j++]) && !event.isImmediatePropagationStopped()) {
+        var i = 0,
+            handleObj;
+        while ((handleObj = matched.handlers[i++]) && !event.isImmediatePropagationStopped()) {
 
             // Triggered event must either 1) have no namespace, or
             // 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
-            if (!event.namespace_re || event.namespace_re.test(handleObj.namespace)) {
+            if (!event.namespaceRegex || event.namespaceRegex.test(handleObj.namespace)) {
 
                 event.handleObj = handleObj;
                 event.data = handleObj.data;
 
-                ret = ((_special[handleObj.origType] || {}).handle || handleObj.handler).apply(matched.elem, args);
+                var ret = ((_special[handleObj.origType] || {}).handle || handleObj.handler).apply(matched.elem, args);
 
                 if (ret !== undefined) {
                     if ((event.result = ret) === false) {
@@ -385,8 +393,7 @@ var _dispatch = function(event) {
 };
 
 var _handlers = function(event, handlers) {
-    var sel, handleObj, matches,
-        handlerQueue = [],
+    var handlerQueue = [],
         delegateCount = handlers.delegateCount,
         cur = event.target;
 
@@ -401,14 +408,14 @@ var _handlers = function(event, handlers) {
             // Don't check non-elements (#13208)
             // Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
             if (cur.nodeType === _nodeType.ELEMENT && (cur.disabled !== true || event.type !== 'click') ) {
-                matches = [];
+                var matches = [];
 
                 var idx = 0;
                 for (; idx < delegateCount; idx++) {
-                    handleObj = handlers[idx];
+                    var handleObj = handlers[idx],
 
-                    // Don't conflict with Object.prototype properties (#13203)
-                    sel = handleObj.selector + ' ';
+                        // Don't conflict with Object.prototype properties (#13203)
+                        sel = handleObj.selector + ' ';
 
                     if (matches[sel] === undefined) {
                         matches[sel] = handleObj.needsContext ?
@@ -443,7 +450,6 @@ var _handlers = function(event, handlers) {
     return handlerQueue;
 };
 
-// TODO: Does this need to be public?
 var _fix = function(event) {
     if (event[_eventUtils.id]) {
         return event;
@@ -456,8 +462,8 @@ var _fix = function(event) {
 
     if (!fixHook) {
         _fixHooks[type] = fixHook =
-            rmouseEvent.test(type) ? _mouseHooks :
-            rkeyEvent.test(type) ? _keyHooks :
+            _regex.mouseEvent(type) ? _mouseHooks :
+            _regex.keyEvent(type) ? _keyHooks :
             {};
     }
 
@@ -492,13 +498,10 @@ var _fix = function(event) {
 };
 
 // Includes some event props shared by KeyEvent and MouseEvent
-// TODO: Does this need to be public?
 var _props = ['altKey', 'bubbles', 'cancelable', 'ctrlKey', 'currentTarget', 'eventPhase', 'metaKey', 'relatedTarget', 'shiftKey', 'target', 'timeStamp', 'view', 'which'];
 
-// TODO: Does this need to be public?
 var _fixHooks = {};
 
-// TODO: Does this need to be public?
 var _keyHooks = {
     props: ['char', 'charCode', 'key', 'keyCode'],
     filter: function(event, original) {
@@ -512,7 +515,6 @@ var _keyHooks = {
     }
 };
 
-// TODO: Does this need to be public?
 var _mouseHooks = {
     props: ['button', 'buttons', 'clientX', 'clientY', 'fromElement', 'offsetX', 'offsetY', 'pageX', 'pageY', 'screenX', 'screenY', 'toElement'],
     filter: function(event, original) {
@@ -539,7 +541,7 @@ var _mouseHooks = {
         // Add which for click: 1 === left; 2 === middle; 3 === right
         // Note: button is not normalized, so don't use it
         if (!event.which && button !== undefined) {
-            event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
+            event.which = (button & 1 ? _CLICK.left : (button & 2 ? _CLICK.right : (button & 4 ? _CLICK.middle : _CLICK.none)));
         }
 
         return event;
@@ -633,6 +635,7 @@ module.exports = {
     remove    : _remove,
     trigger   : _trigger,
     simulate  : _simulate,
+    fix       : _fix,
 
     fn: {
         // triggered, a state holder for events
