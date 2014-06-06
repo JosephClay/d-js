@@ -563,9 +563,9 @@
         equal(D('#fx-test-group').attr('height', '3px').removeAttr('height').get(0).style.height, '1px', 'Removing height attribute has no effect on height set with style attribute');
 
         D('#check1').removeAttr('checked').prop('checked', true).removeAttr('checked');
-        equal(document.getElementById('check1').checked, false, 'removeAttr sets boolean properties to false');
+        equal(document.getElementById('check1').checked, true, 'removeAttr does not alter checked property');
         D('#text1').prop('readOnly', true).removeAttr('readonly');
-        equal(document.getElementById('text1').readOnly, false, 'removeAttr sets boolean properties to false');
+        equal(document.getElementById('text1').readOnly, false, 'removeAttr alters readonly property');
 
         D('#option2c').removeAttr('selected');
         equal(D('#option2d').attr('selected'), 'selected', 'Removing `selected` from an option that is not selected does not remove selected from the currently selected option (#10870)');
