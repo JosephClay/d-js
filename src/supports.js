@@ -1,11 +1,28 @@
-var div       = require('./div'),
+var _         = require('_'),
+    div       = require('./div'),
     a         = div.getElementsByTagName('a')[0],
     select    = document.createElement('select'),
     option    = select.appendChild(document.createElement('option')),
     input     = document.createElement('input'),
     textarea  = document.createElement('textarea');
 
-module.exports = {
+// Support: IE < 9 (lack submit/change bubble), Firefox 23+ (lack focusin event)
+var support = {};
+_.each([ 'submit', 'change', 'focusin' ], function(type) {
+    var eventName = 'on' + type,
+        supportName = type + 'Bubbles';
+
+    if (!(support[supportName] = eventName in window)) {
+        // Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
+        div.setAttribute(eventName, 't');
+
+        // Checking '_' as it should be null or undefined if the
+        // event is supported, false if it's not
+        support[supportName] = div.attributes[eventName]._ === false;
+    }
+});
+
+module.exports = _.extend(support, {
     classList:     !!div.classList,
     currentStyle:  !!div.currentStyle,
     matchesSelector: div.matches               ||
@@ -53,4 +70,4 @@ module.exports = {
 
     // Support: IE9+, modern browsers
     getElementsByClassName: !!a.getElementsByClassName
-};
+});
