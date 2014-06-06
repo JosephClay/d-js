@@ -117,8 +117,11 @@ var _getVal = function(elem) {
     }
 
     var val = elem.value;
-    return _.isString(val) ? _utils.normalizeNewlines(val) : val;
+    if (val === undefined) {
+        val = elem.getAttribute('value');
+    }
 
+    return _.isString(val) ? _utils.normalizeNewlines(val) : val;
 };
 
 var _setVal = function(elem, value) {
@@ -162,9 +165,27 @@ module.exports = {
 
         // TODO: Add handling of (and unit tests for) \r\n in IE
         val: overload()
+            // Getter
             .args()
             .use(function() {
+                // TODO: Select first element node instead of index 0?
                 return _getVal(this[0]);
+            })
+
+            // Setters
+            .args(O.any(String, Number))
+            .use(function(value) {
+                value = '' + value;
+                return _.each(this, function(elem) {
+                    _setVal(elem, value);
+                });
+            })
+
+            .args(O.any(null, undefined))
+            .use(function() {
+                return _.each(this, function(elem) {
+                    _setVal(elem, '');
+                });
             })
 
             .args(Function)
@@ -192,13 +213,6 @@ module.exports = {
                     _setVal(dom[idx], '' + val);
                 });
                 return this;
-            })
-
-            .args(O.any(null, undefined))
-            .use(function(value) {
-                return _.each(this, function(elem) {
-                    _setVal(elem, '');
-                });
             })
 
             .fallback(function(value) {
