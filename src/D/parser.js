@@ -1,52 +1,22 @@
-var _      = require('_'),
-
-    _cache = require('../cache'),
-
-    _singleTagCache = _cache(),
-    _specificParentCache = _cache(),
-
-    _rSingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
-
-    _parentMap = {
-        'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
-        'tbody':    /^<(?:tr)\b/,
-        'tr':       /^<(?:td|th)\b/,
-        'colgroup': /^<(?:col)\b/
-    };
+var _regex                 = require('../regex'),
+    _MAX_SINGLE_TAG_LENGTH = 30;
 
 var _parseSingleTag = function(htmlStr) {
-    if (htmlStr.length > 30) { return null; }
+    if (htmlStr.length > _MAX_SINGLE_TAG_LENGTH) { return null; }
 
-    var singleTagMatch = _singleTagCache.getOrSet(htmlStr, function() {
-        return _rSingleTag.exec(htmlStr);
-    });
-
+    var singleTagMatch = _regex.singleTagMatch(htmlStr);
     if (!singleTagMatch) { return null; }
 
     return [ document.createElement(singleTagMatch[1]) ];
 };
 
-var _getParentTagName = function(htmlStr) {
-    htmlStr = htmlStr.substr(0, 30);
-    return _specificParentCache.getOrSet(htmlStr, function() {
-        var parentTagName;
-        for (parentTagName in _parentMap) {
-            if (_parentMap[parentTagName].test(htmlStr)) {
-                return parentTagName;
-            }
-        }
-        return 'div';
-    });
-};
-
-// http://jsperf.com/js-push-vs-index11/2
 var _parse = function(htmlStr) {
     var singleTag = _parseSingleTag(htmlStr);
     if (singleTag) { return singleTag; }
 
-    var parentTagName = _getParentTagName(htmlStr);
+    var parentTagName = _regex.getParentTagName(htmlStr),
+        parent = document.createElement(parentTagName);
 
-    var parent = document.createElement(parentTagName);
     parent.innerHTML = htmlStr;
 
     var child,
@@ -56,6 +26,8 @@ var _parse = function(htmlStr) {
     while (idx--) {
         child = parent.children[idx];
         parent.removeChild(child);
+
+        // http://jsperf.com/js-push-vs-index11/2
         arr[idx] = child;
     }
 
