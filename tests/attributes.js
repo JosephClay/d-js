@@ -291,7 +291,7 @@
     });
 
     test('attr(String, Object)', function() {
-        expect(66);
+        expect(62);
 
         var $input, $text, $details,
             attributeNode, commentNode, textNode, obj,
