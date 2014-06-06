@@ -14,7 +14,9 @@ var _                 = require('_'),
     _needContextCache = _cache(),
     _focusMorphCache  = _cache(),
     _mouseEventCache  = _cache(),
-    _keyEventCache    = _cache();
+    _keyEventCache    = _cache(),
+    _singleTagCache   = _cache(),
+    _parentCache      = _cache();
 
     // Matches "-ms-" so that it can be changed to "ms-"
 var _TRUNCATE_MS_PREFIX = /^-ms-/,
@@ -46,7 +48,16 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
 
     _FOCUS_MORPH = /^(?:focusinfocus|focusoutblur)$/,
     _MOUSE_EVENT = /^(?:mouse|contextmenu)|click/,
-    _KEY_EVENT = /^key/;
+    _KEY_EVENT = /^key/,
+
+    _SINGLE_TAG = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+
+    _PARENT_MAP = {
+        'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
+        'tbody':    /^<(?:tr)\b/,
+        'tr':       /^<(?:td|th)\b/,
+        'colgroup': /^<(?:col)\b/
+    };
 
 var _camelCase = function(match, letter) {
     return letter.toUpperCase();
@@ -95,6 +106,25 @@ module.exports = {
     keyEvent: function(val) {
         return _keyEventCache.getOrSet(val, function() {
             return _KEY_EVENT.test(val);
+        });
+    },
+
+    singleTagMatch: function(val) {
+        return _singleTagCache.getOrSet(val, function() {
+            return _SINGLE_TAG.exec(val);
+        });
+    },
+
+    getParentTagName: function(val) {
+        val = val.substr(0, 30);
+        return _parentCache.getOrSet(val, function() {
+            var parentTagName;
+            for (parentTagName in _PARENT_MAP) {
+                if (_PARENT_MAP[parentTagName].test(val)) {
+                    return parentTagName;
+                }
+            }
+            return 'div';
         });
     },
 
