@@ -88,12 +88,6 @@ test('D.data(div)', function() {
 //    QUnit.expectJqData(div, 'foo');
 });
 
-test('D.data({})', function() {
-    expect(13);
-
-    dataTests({});
-});
-
 test('D.data(window)', function() {
     expect(13);
 
@@ -222,7 +216,7 @@ test('.data(Object)', function() {
 });
 
 test('D.removeData', function() {
-    expect(10);
+    expect(8);
 
     var obj,
         div = D('#foo')[0];
@@ -256,12 +250,6 @@ test('D.removeData', function() {
     D.removeData(div, 'test3 test4');
     ok(!D.data(div, 'test3 test4'), 'Multiple delete with spaces deleted key with exact name');
     ok(D.data(div, 'test3'), 'Left the partial matched key alone');
-
-    obj = {};
-    D.data(obj, 'test', 'testing');
-    equal(D.data(obj, 'test'), 'testing', 'Verify data on plain object');
-    D.removeData(obj, 'test');
-    equal(D.data(obj, 'test'), undefined, 'Check removal of data on plain object');
 
     D.data(window, 'BAD', true);
     D.removeData(window, 'BAD');

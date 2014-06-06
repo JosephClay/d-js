@@ -1,17 +1,18 @@
-var _               = require('_'),
+var _                 = require('_'),
 
-    _cache          = require('./cache'),
+    _cache            = require('./cache'),
 
-    _camelCache     = _cache(),
-    _displayCache   = _cache(),
-    _focusableCache = _cache(),
-    _clickableCache = _cache(),
-    _commandCache   = _cache(),
-    _idCache        = _cache(),
-    _tagCache       = _cache(),
-    _numNotPxCache  = _cache(),
-    _positionCache  = _cache(),
-    _classCache     = _cache();
+    _camelCache       = _cache(),
+    _displayCache     = _cache(),
+    _focusableCache   = _cache(),
+    _clickableCache   = _cache(),
+    _commandCache     = _cache(),
+    _idCache          = _cache(),
+    _tagCache         = _cache(),
+    _numNotPxCache    = _cache(),
+    _positionCache    = _cache(),
+    _classCache       = _cache();
+    _needContextCache = _cache();
 
     // Matches "-ms-" so that it can be changed to "ms-"
 var _TRUNCATE_MS_PREFIX = /^-ms-/,
@@ -36,7 +37,11 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
 
     _POSITION = /^(top|right|bottom|left)$/,
 
-    _NUM_NON_PX = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i');
+    _NUM_NON_PX = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i'),
+
+    _WHITESPACE = '[\\x20\\t\\r\\n\\f]',
+    _NEEDS_CONTEXT = new RegExp('^' + _WHITESPACE + '*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(' +
+            _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i');
 
 var _camelCase = function(match, letter) {
     return letter.toUpperCase();
@@ -61,6 +66,12 @@ module.exports = {
     position: function(val) {
         return _positionCache.getOrSet(val, function() {
             return _POSITION.test(val);
+        });
+    },
+
+    needsContext: function(val) {
+        return _needContextCache.getOrSet(val, function() {
+            return _NEEDS_CONTEXT.test(val);
         });
     },
 

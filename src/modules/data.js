@@ -24,35 +24,66 @@ var _          = require('_'),
         return id;
     },
 
-    _destroyData = function(elem) {
-        var id = _getId(elem);
-        if (!id) { return; }
+    _getAllData = function(elem) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
+        return _dataCache.get(id);
+    },
 
+    _getData = function(elem, key) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
+        return _dataCache.get(id, key);
+    },
+
+    _hasData = function(elem) {
+        var id;
+        if (!(id = _getId(elem))) { return false; }
+        return _dataCache.has(id);
+    },
+
+    _setData = function(elem, key, value) {
+        var id = _getOrSetId(elem);
+        return _dataCache.set(id, key, value);
+    },
+
+    _removeAllData = function(elem) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
         _dataCache.remove(id);
     },
 
-    _ELEM_TYPE = O.any(Element, O.window, O.document, Object);
+    _removeData = function(elem, key) {
+        var id;
+        if (!(id = _getId(elem))) { return; }
+        _dataCache.remove(id, key);
+    };
 
 module.exports = {
-    destroyData: _destroyData,
+    has: _hasData,
+    get: function(elem, str) {
+        if (str === undefined) {
+            return _getAllData(elem);
+        }
+        return _getData(elem, str);
+    },
+    remove: function(elem, str) {
+        if (str === undefined) {
+            return _removeAllData(elem);
+        }
+        return _removeData(elem, str);
+    },
 
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(_ELEM_TYPE, String, O.wild)
-            .use(function(elem, key, value) {
-                var id = _getOrSetId(elem);
-                return _dataCache.set(id, key, value);
-            })
+            .args(O.element, String, O.wild)
+            .use(_setData)
 
-            .args(_ELEM_TYPE, String)
-            .use(function(elem, key) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                return _dataCache.get(id, key);
-            })
+            .args(O.element, String)
+            .use(_getData)
 
-            .args(_ELEM_TYPE, Object)
+            .args(O.element, Object)
             .use(function(elem, map) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -63,36 +94,24 @@ module.exports = {
                 return map;
             })
 
-            .args(_ELEM_TYPE)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                return _dataCache.get(id);
-            })
+            .args(O.element)
+            .use(_getAllData)
 
             .expose(),
 
         hasData: overload()
-            .args(_ELEM_TYPE)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return false; }
-                return _dataCache.has(id);
-            })
+            .args(O.element)
+            .use(_hasData)
             .expose(),
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
             // Remove single key
-            .args(_ELEM_TYPE, String)
-            .use(function(elem, key) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                _dataCache.remove(id, key);
-            })
+            .args(O.element, String)
+            .use(_removeData)
 
             // Remove multiple keys
-            .args(_ELEM_TYPE, Array)
+            .args(O.element, Array)
             .use(function(elem, array) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -103,12 +122,8 @@ module.exports = {
             })
 
             // Remove all data
-            .args(_ELEM_TYPE)
-            .use(function(elem) {
-                var id;
-                if (!(id = _getId(elem))) { return; }
-                _dataCache.remove(id);
-            })
+            .args(O.element)
+            .use(_removeAllData)
 
             .expose()
     },

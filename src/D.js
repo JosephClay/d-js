@@ -83,6 +83,7 @@ _.extend(DOM,
 {
     each:    array.each,
     forEach: array.each,
+
     map:     _.map,
     extend:  _.extend,
 
@@ -173,47 +174,3 @@ if (typeof define === 'function' && define.amd) {
         return DOM;
     });
 }
-
-/*
-        _bind = function(elem, eventName, callback) {
-            if (elem.addEventListener) {
-                return elem.addEventListener(eventName, callback);
-            }
-
-            elem.attachEvent('on' + eventName, function() {
-                callback.call(elem);
-            });
-        },
-
-        _unbind = function(elem, eventName, callback) {
-            if (elem.removeEventListener) {
-                return elem.removeEventListener(eventName, callback);
-            }
-
-            elem.detachEvent('on' + eventName, callback);
-        },
-
-        html: function(str) {
-            if (_exists(str)) {
-                this.elem.innerHTML = ('' + str);
-                return this;
-            }
-
-            return this.elem.innerHTML;
-        },
-
-        offset: function() {
-            return this.elem.getBoundingClientRect();
-        },
-
-        on: function(eventName, callback) {
-            _bind(this.elem, eventName, callback);
-            return this;
-        },
-
-        off: function(eventName, callback) {
-            _unbind(this.elem, eventName, callback);
-            return this;
-        }
-    };
-*/

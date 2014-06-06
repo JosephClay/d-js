@@ -1,10 +1,7 @@
-var _         = require('underscore'),
+var _           = require('underscore'),
 
-    _utils    = require('./utils'),
-
-    // TODO: Do we need an equivalent to jQuery expando.
-    // If we do, do we only need it here or on the main D object?
-    _uniqueId = 'D';
+    _utils      = require('./utils'),
+    _eventUtils = require('./eventUtils');
 
 var Event = module.exports = function(src, props) {
     if (!(this instanceof Event)) { return new Event(src, props); }
@@ -34,7 +31,7 @@ var Event = module.exports = function(src, props) {
     this.timeStamp = src && src.timeStamp || _.now();
 
     // Mark it as fixed
-    this[_uniqueId] = true;
+    this[_eventUtils.id] = true;
 };
 
 // Event is based on DOM3 Events as specified by the ECMAScript Language Binding
