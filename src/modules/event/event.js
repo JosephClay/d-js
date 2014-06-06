@@ -36,7 +36,7 @@ var _add = function(elem, types, handler, data, selector) {
         eventHandle = elemData.handle = function(e) {
             // Discard the second event of a D.event.trigger() and
             // when an event is called after a page has unloaded
-            return (!e || D.event.triggered !== e.type) ?
+            return typeof D !== 'undefined' && (!e || D.event.triggered !== e.type) ?
                 _dispatch.apply(eventHandle.elem, arguments) :
                 undefined;
         };
