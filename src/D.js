@@ -32,9 +32,9 @@ var _ = require('_'),
 // Store previous reference
 var _prevD = window.D;
 
-var DOM = function(arg) {
+var DOM = function(arg, attrs) {
     // Wasn't created with "new"
-    if (!(this instanceof DOM)) { return new DOM(arg); }
+    if (!(this instanceof DOM)) { return new DOM(arg, attrs); }
 
     // Nothin
     if (!arg) { return; }
@@ -51,6 +51,7 @@ var DOM = function(arg) {
         // HTML string
         if (utils.isHtml(arg)) {
             utils.merge(this, parser.parseHtml(arg));
+            if (attrs) { this.attr(attrs); }
             return;
         }
 
