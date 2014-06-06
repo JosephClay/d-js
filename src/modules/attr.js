@@ -82,10 +82,9 @@ var _hooks = {
                 if (!_SUPPORTS.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
                     // Setting the type on a radio button after the value resets the value in IE6-9
                     // Reset value to default in case type is set after value during creation
-                    var val = elem.value;
+                    var oldValue = elem.value;
                     elem.setAttribute('type', value);
-                    if (val) { elem.value = val; }
-                    return value;
+                    if (oldValue) { elem.value = oldValue; }
                 }
             }
         },
@@ -98,7 +97,9 @@ var _hooks = {
                 }
                 return _utils.normalizeNewlines(val);
             },
-            set: function(elem, value) { elem.setAttribute('value', value); }
+            set: function(elem, value) {
+                elem.setAttribute('value', value);
+            }
         }
     },
 
