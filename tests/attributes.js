@@ -291,7 +291,7 @@
     });
 
     test('attr(String, Object)', function() {
-        expect(67);
+        expect(66);
 
         var $input, $text, $details,
             attributeNode, commentNode, textNode, obj,
@@ -404,18 +404,10 @@
         textNode = document.createTextNode('some text');
         obj = {};
 
-        D.each([ commentNode, textNode, attributeNode ], function(elem, i) {
+        D.each([ window, document, obj, commentNode, textNode, attributeNode ], function(elem) {
             var $elem = D(elem);
             $elem.attr('nonexisting', 'foo');
             strictEqual($elem.attr('nonexisting'), undefined, 'attr(name, value) works correctly on comment and text nodes (bug #7500).');
-        });
-
-        D.each([ window, document, obj, '#firstp' ], function(elem, i) {
-            var oldVal = elem.nonexisting,
-                $elem = D(elem);
-            strictEqual($elem.attr('nonexisting'), undefined, 'attr works correctly for non existing attributes (bug #7500).');
-            equal($elem.attr('nonexisting', 'foo').attr('nonexisting'), 'foo', 'attr falls back to prop on unsupported arguments');
-            elem.nonexisting = oldVal;
         });
 
         table = D('#table').append('<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>');
