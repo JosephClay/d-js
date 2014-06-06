@@ -1,13 +1,14 @@
-var _         = require('_'),
-    overload  = require('overload'),
-    O         = overload.O,
+var _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _SUPPORTS = require('../supports'),
+    _SUPPORTS  = require('../supports'),
+    _NODE_TYPE = require('../nodeType'),
 
-    _utils    = require('../utils'),
-    _cache    = require('../cache'),
+    _utils     = require('../utils'),
+    _cache     = require('../cache'),
 
-    _selector = require('./Fizzle/selector/selector-parse'),
+    _selector  = require('./Fizzle/selector/selector-parse'),
 
     _isDataKeyCache       = _cache(),
     _sanitizeDataKeyCache = _cache(),
@@ -101,8 +102,12 @@ var _hooks = {
         }
     },
 
+    _isElementNode = function(elem) {
+        return elem && elem.nodeType === _NODE_TYPE.ELEMENT;
+    },
+
     _getAttribute = function(elem, attr) {
-        if (!elem || !elem.hasAttribute(attr)) { return; }
+        if (!_isElementNode(elem) || !elem.hasAttribute(attr)) { return; }
 
         if (_boolHook.is(attr)) {
             return _boolHook.get(elem, attr);
@@ -116,29 +121,46 @@ var _hooks = {
         return _.exists(ret) ? ret : undefined;
     },
 
+    _setter = {
+        forAttr: function(attr, value) {
+            if (_boolHook.is(attr) && (value === true || value === false)) {
+                return _setter.bool;
+            } else if (_hooks[attr] && _hooks[attr].set) {
+                return _setter.hook;
+            }
+            return _setter.elem;
+        },
+        bool: function(elem, attr, value) {
+            _boolHook.set(elem, value, attr);
+        },
+        hook: function(elem, attr, value) {
+            _hooks[attr].set(elem, value);
+        },
+        elem: function(elem, attr, value) {
+            elem.setAttribute(attr, value);
+        },
+    },
     _setAttributes = function(arr, attr, value) {
-        var isFn = _.isFunction(value),
-            idx  = 0,
-            len  = arr.length,
-            elem, val;
+        var isFn   = _.isFunction(value),
+            idx    = 0,
+            len    = arr.length,
+            elem,
+            val,
+            setter = _setter.forAttr(attr, value);
+
         for (; idx < len; idx++) {
             elem = arr[idx];
+
+            if (!_isElementNode(elem)) { continue; }
+
             val = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
-            _setAttribute(elem, attr, val);
+            setter(elem, attr, val);
         }
     },
     _setAttribute = function(elem, attr, value) {
-        if (!elem) { return; }
-
-        if (_boolHook.is(attr) && (value === true || value === false)) {
-            return _boolHook.set(elem, value, attr);
-        }
-
-        if (_hooks[attr] && _hooks[attr].set) {
-            return _hooks[attr].set(elem, value);
-        }
-
-        elem.setAttribute(attr, value);
+        if (!_isElementNode(elem)) { return; }
+        var setter = _setter.forAttr(attr, value);
+        setter(elem, attr, value);
     },
 
     _removeAttributes = function(arr, attr) {
@@ -148,7 +170,7 @@ var _hooks = {
         }
     },
     _removeAttribute = function(elem, attr) {
-        if (!elem) { return; }
+        if (!_isElementNode(elem)) { return; }
 
         if (_hooks[attr] && _hooks[attr].remove) {
             return _hooks[attr].remove(elem);
@@ -191,7 +213,7 @@ module.exports = {
             .use(function(attr, fn) {
                 return _.each(this, function(elem, idx) {
                     var oldAttr = _getAttribute(elem, attr),
-                        result = fn.call(elem, idx, oldAttr);
+                        result  = fn.call(elem, idx, oldAttr);
                     if (!_.exists(result)) { return; }
                     _setAttribute(elem, attr, result);
                 });
