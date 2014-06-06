@@ -22,7 +22,7 @@ var _empty = function(arr) {
                 desc;
             while (i--) {
                 desc = descendants[i];
-                _data.destroyData(desc);
+                _data.remove(desc);
             }
 
             elem.innerHTML = '';
@@ -35,7 +35,7 @@ var _empty = function(arr) {
         for (; idx < length; idx++) {
             elem = arr[idx];
             if (elem && (parent = elem.parentNode)) {
-                _data.destroyData(elem);
+                _data.remove(elem);
                 parent.removeChild(elem);
             }
         }
