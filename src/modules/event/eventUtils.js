@@ -1,3 +1,6 @@
+var _    = require('_'),
+    _div = require('../../div');
+
 module.exports = {
     id: 'd' + (new Date().getTime()),
 
@@ -6,6 +9,16 @@ module.exports = {
             return document.activeElement;
         } catch (err) {}
     },
+
+    addEvent: _div.addEventListener ?
+        function(elem, type, callback) {
+            elem.addEventListener(type, eventHandle, false);
+        } :
+        _div.attachEvent ?
+        function(elem, type, callback) {
+            elem.attachEvent('on' + type, eventHandle);
+        } :
+        _.noop,
 
     removeEvent: document.removeEventListener ?
         function(elem, type, handle) {

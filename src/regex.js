@@ -11,11 +11,17 @@ var _                 = require('_'),
     _tagCache         = _cache(),
     _numNotPxCache    = _cache(),
     _positionCache    = _cache(),
-    _classCache       = _cache();
-    _needContextCache = _cache();
+    _classCache       = _cache().
+    _needContextCache = _cache(),
+    _focusMorphCache  = _cache(),
+    _mouseEventCache  = _cache(),
+    _keyEventCache    = _cache();
 
     // Matches "-ms-" so that it can be changed to "ms-"
 var _TRUNCATE_MS_PREFIX = /^-ms-/,
+
+    _ALPHA = /alpha\([^)]*\)/i,
+    _OPACITY = /opacity\s*=\s*([^)]*)/,
 
     // Matches dashed string for camelizing
     _DASH_CATCH = /-([\da-z])/gi,
@@ -24,16 +30,12 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
     // "table-cell" etc...
     _NONE_OR_TABLE = /^(none|table(?!-c[ea]).+)/,
 
-    _TYPE_TEST = {
-        focusable: /^(?:input|select|textarea|button|object)$/i,
-        clickable: /^(?:a|area)$/i
-    },
+    _TYPE_TEST_FOCUSABLE = /^(?:input|select|textarea|button|object)$/i,
+    _TYPE_TEST_CLICKABLE = /^(?:a|area)$/i,
 
-    _SELECTOR = {
-        id:    /^#([\w-]+)$/,
-        tag:   /^[\w-]+$/,
-        klass: /^\.([\w-]+)$/
-    },
+    _SELECTOR_ID =    /^#([\w-]+)$/,
+    _SELECTOR_TAG =   /^[\w-]+$/,
+    _SELECTOR_CLASS = /^\.([\w-]+)$/,
 
     _POSITION = /^(top|right|bottom|left)$/,
 
@@ -41,15 +43,19 @@ var _TRUNCATE_MS_PREFIX = /^-ms-/,
 
     _WHITESPACE = '[\\x20\\t\\r\\n\\f]',
     _NEEDS_CONTEXT = new RegExp('^' + _WHITESPACE + '*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(' +
-            _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i');
+            _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i'),
+
+    _FOCUS_MORPH = /^(?:focusinfocus|focusoutblur)$/,
+    _MOUSE_EVENT = /^(?:mouse|contextmenu)|click/,
+    _KEY_EVENT = /^key/;
 
 var _camelCase = function(match, letter) {
     return letter.toUpperCase();
 };
 
 module.exports = {
-    alpha: /alpha\([^)]*\)/i,
-    opacity: /opacity\s*=\s*([^)]*)/,
+    alpha: _ALPHA,
+    opacity: _OPACITY,
 
     camelCase: function(str) {
         return _camelCache.getOrSet(str, function() {
@@ -75,6 +81,24 @@ module.exports = {
         });
     },
 
+    focusMorph: function(val) {
+        return _focusMorphCache.getOrSet(val, function() {
+            return _FOCUS_MORPH.test(val);
+        });
+    },
+
+    mouseEvent: function(val) {
+        return _mouseEventCache.getOrSet(val, function() {
+            return _MOUSE_EVENT.test(val);
+        });
+    },
+
+    keyEvent: function(val) {
+        return _keyEventCache.getOrSet(val, function() {
+            return _KEY_EVENT.test(val);
+        });
+    },
+
     display: {
         isNoneOrTable: function(str) {
             return _displayCache.getOrSet(str, function() {
@@ -86,12 +110,12 @@ module.exports = {
     type: {
         isFocusable: function(str) {
             return _focusableCache.getOrSet(str, function() {
-                return _TYPE_TEST.focusable.test(str);
+                return _TYPE_TEST_FOCUSABLE.test(str);
             });
         },
         isClickable: function(str) {
             return _clickableCache.getOrSet(str, function() {
-                return _TYPE_TEST.clickable.test(str);
+                return _TYPE_TEST_CLICKABLE.test(str);
             });
         }
     },
@@ -99,17 +123,17 @@ module.exports = {
     selector: {
         isStrictId: function(str) {
             return _idCache.getOrSet(str, function() {
-                return _SELECTOR.id.test(str);
+                return _SELECTOR_ID.test(str);
             });
         },
         isTag: function(str) {
             return _tagCache.getOrSet(str, function() {
-                return _SELECTOR.tag.test(str);
+                return _SELECTOR_TAG.test(str);
             });
         },
         isClass: function(str) {
             return _classCache.getOrSet(str, function() {
-                return _SELECTOR.klass.test(str);
+                return _SELECTOR_CLASS.test(str);
             });
         }
     }

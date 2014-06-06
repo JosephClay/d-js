@@ -1,7 +1,8 @@
-var _ = require('_'),
+var _         = require('_'),
 
-    _utils = require('../../utils');
-    _event = require('./event');
+    _utils    = require('../../utils');
+    _event    = require('./event');
+    _specials = require('./eventSpecials');
 
 module.exports = {
     fn: {
