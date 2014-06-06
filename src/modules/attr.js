@@ -84,7 +84,10 @@ var _hooks = {
                     // Reset value to default in case type is set after value during creation
                     var oldValue = elem.value;
                     elem.setAttribute('type', value);
-                    if (oldValue) { elem.value = oldValue; }
+                    elem.value = oldValue;
+                }
+                else {
+                    elem.setAttribute('type', value);
                 }
             }
         },
