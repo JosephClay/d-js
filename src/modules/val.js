@@ -116,7 +116,9 @@ var _getVal = function(elem) {
         return hook.get(elem);
     }
 
-    return _utils.normalizeNewlines(elem.value);
+    var val = elem.value;
+    return _.isString(val) ? _utils.normalizeNewlines() : val;
+
 };
 
 var _setVal = function(elem, value) {
