@@ -1,9 +1,12 @@
+var _ = require('_'),
+
+    _utils = require('../../utils');
+    _event = require('./event');
+
 module.exports = {
     fn: {
 
         on: function(types, selector, data, fn, /*INTERNAL*/ one) {
-            var type, origFn;
-
             // Types can be a map of types/handlers
             if (_.isObject(types)) {
 
@@ -14,6 +17,7 @@ module.exports = {
                     selector = undefined;
                 }
 
+                var type;
                 for (type in types) {
                     this.on(type, selector, data, types[type], one);
                 }
@@ -55,18 +59,22 @@ module.exports = {
 
             }
 
+            var origFn;
             if (one === 1) {
                 origFn = fn;
-                fn = function( event ) {
+                fn = function(event) {
                     // Can use an empty set, since event contains the info
-                    jQuery().off( event );
+                    // TODO: Address this
+                    jQuery().off(event);
                     return origFn.apply( this, arguments );
                 };
+
                 // Use same guid so caller can remove using origFn
-                fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
+                fn.guid = origFn.guid || (origFn.guid = _.uniqueId());
             }
-            return this.each( function() {
-                jQuery.event.add( this, types, fn, data, selector );
+
+            return this.each(function() {
+                _event.add(this, types, fn, data, selector);
             });
         },
 
@@ -74,41 +82,49 @@ module.exports = {
             return this.on(types, selector, data, fn, 1);
         },
 
+        // Proxy to one
+        once: function() { this.one.apply(this, arguments); },
+
         off: function(types, selector, fn) {
             var handleObj, type;
-            if ( types && types.preventDefault && types.handleObj ) {
+            if (types && types.preventDefault && types.handleObj) {
                 // ( event )  dispatched Event
                 handleObj = types.handleObj;
-                jQuery( types.delegateTarget ).off(
-                    handleObj.namespace ? handleObj.origType + "." + handleObj.namespace : handleObj.origType,
+                // TODO:
+                D(types.delegateTarget).off(
+                    handleObj.namespace ? handleObj.origType + '.' + handleObj.namespace : handleObj.origType,
                     handleObj.selector,
                     handleObj.handler
                 );
                 return this;
             }
-            if ( typeof types === "object" ) {
+
+            if (_.isObject(types)) {
                 // ( types-object [, selector] )
-                for ( type in types ) {
-                    this.off( type, selector, types[ type ] );
+                for (type in types) {
+                    this.off(type, selector, types[type] );
                 }
                 return this;
             }
-            if ( selector === false || typeof selector === "function" ) {
+
+            if (selector === false || _.isFunction(selector)) {
                 // ( types [, fn] )
                 fn = selector;
                 selector = undefined;
             }
-            if ( fn === false ) {
+
+            if (fn === false) {
                 fn = returnFalse;
             }
+
             return this.each(function() {
-                jQuery.event.remove( this, types, fn, selector );
+                _event.remove(this, types, fn, selector);
             });
         },
 
         trigger: function(type, data) {
             return this.each(function() {
-                jQuery.event.trigger( type, data, this );
+                _event.trigger(type, data, this);
             });
         },
 
@@ -116,7 +132,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return; }
 
-            return jQuery.event.trigger(type, data, first, true);
+            return _event.trigger(type, data, first, true);
         }
     }
 };

@@ -8,10 +8,6 @@ var _           = require('_'),
     _global     = {};
 
 var _add = function(elem, types, handler, data, selector) {
-    var tmp, events, t,
-        special, eventHandle, handleObj,
-        handlers, type, namespaces, origType;
-
     var elemData = _data.get(elem);
     // Don't attach events to noData or text/comment nodes
     if (!elemData) { return; }
@@ -29,11 +25,13 @@ var _add = function(elem, types, handler, data, selector) {
         handler.guid = _.uniqueId();
     }
 
+    var events;
     // Init the element's event structure and main handler, if this is the first
     if (!(events = elemData.events)) {
         events = elemData.events = {};
     }
 
+    var eventHandle;
     if (!(eventHandle = elemData.handle)) {
         eventHandle = elemData.handle = function(e) {
             // Discard the second event of a D.event.trigger() and
@@ -48,10 +46,11 @@ var _add = function(elem, types, handler, data, selector) {
 
     // Handle multiple events separated by a space
     types = (types || '').match(rnotwhite) || [''];
-    t = types.length;
-    while (t--) {
+    var idx = types.length,
+        tmp, type, origType, namespaces, special, handleObj, handlers;
+    while (idx--) {
 
-        tmp = rtypenamespace.exec(types[t]) || [];
+        tmp = rtypenamespace.exec(types[idx]) || [];
         type = origType = tmp[1];
         // There *must* be a type, no attaching namespace-only handlers
         if (!type) { continue; }
@@ -75,6 +74,7 @@ var _add = function(elem, types, handler, data, selector) {
             handler     : handler,
             guid        : handler.guid,
             selector    : selector,
+            // TODO: If the event system changes to not needing this, remember to remove it here and in _regex
             needsContext: selector && _regex.needsContext(selector),
             namespace   : namespaces.join('.')
         }, handleObjIn);
@@ -124,26 +124,23 @@ var _add = function(elem, types, handler, data, selector) {
 
 // Detach an event or set of events from an element
 var _remove = function(elem, types, handler, selector, mappedTypes) {
-    var j, handleObj, tmp,
-        origCount, t, events,
-        special, handlers, type,
-        namespaces, origType,
-        elemData = _data.has(elem) && _data.get(elem);
-
+    var elemData = _data.has(elem) && _data.get(elem),
+        events;
     if (!elemData || !(events = elemData.events)) { return; }
 
     // Once for each type.namespace in types; type may be omitted
-    types = (types || '').match(rnotwhite) || [ '' ];
-    t = types.length;
-    while (t--) {
-        tmp = rtypenamespace.exec( types[t] ) || [];
+    types = (types || '').match(rnotwhite) || [''];
+    var idx = types.length,
+        tmp, type, origType, namespaces, special, handlers;
+    while (idx--) {
+        tmp = rtypenamespace.exec(types[idx]) || [];
         type = origType = tmp[1];
         namespaces = (tmp[2] || '').split('.').sort();
 
         // Unbind all events (on this namespace, if provided) for the element
         if (!type) {
             for (type in events) {
-                _remove(elem, type + types[t], handler, selector, true);
+                _remove(elem, type + types[idx], handler, selector, true);
             }
             continue;
         }
@@ -154,9 +151,10 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
         tmp = tmp[2] && new RegExp('(^|\\.)' + namespaces.join('\\.(?:.*\\.|)') + '(\\.|$)');
 
         // Remove matching events
-        origCount = j = handlers.length;
-        while (j--) {
-            handleObj = handlers[j];
+        var origCount, i, handleObj;
+        origCount = i = handlers.length;
+        while (i--) {
+            handleObj = handlers[i];
 
             if (
                 (mappedTypes || origType === handleObj.origType) &&
@@ -164,7 +162,7 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
                 (!tmp        || tmp.test( handleObj.namespace))  &&
                 (!selector   || selector === handleObj.selector  || selector === '**' && handleObj.selector)
             ) {
-                handlers.splice(j, 1);
+                handlers.splice(i, 1);
 
                 if (handleObj.selector) {
                     handlers.delegateCount--;
@@ -215,7 +213,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
         return;
     }
 
-    if ( type.indexOf('.') >= 0 ) {
+    if (type.indexOf('.') >= 0) {
         // Namespaced trigger; create a regexp to match event type in handle()
         namespaces = type.split('.');
         type = namespaces.shift();
@@ -237,9 +235,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
 
     // Clean up the event in case it is being reused
     event.result = undefined;
-    if (!event.target) {
-        event.target = elem;
-    }
+    event.target = event.target || elem;
 
     // Clone any incoming data and prepend the event, creating the handler arg list
     data = !_.exists(data) ?
@@ -282,7 +278,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
 
         // jQuery handler
         handle = (_data.get(cur, 'events') || {})[event.type] && _data.get(cur, 'handle');
-        if ( handle ) {
+        if (handle) {
             handle.apply( cur, data );
         }
 
@@ -460,8 +456,8 @@ var _fix = function(event) {
         fixHook = this.fixHooks[ type ];
 
     if (!fixHook) {
-        this.fixHooks[ type ] = fixHook =
-            rmouseEvent.test( type ) ? this.mouseHooks :
+        this.fixHooks[type] = fixHook =
+            rmouseEvent.test(type) ? this.mouseHooks :
             rkeyEvent.test( type ) ? this.keyHooks :
             {};
     }
@@ -630,23 +626,26 @@ var _simulate = function(type, elem, event, bubble) {
     }
 };
 
+
 module.exports = {
+    add       : _add,
+    remove    : _remove,
+    trigger   : _trigger,
+
     fn: {
-        event: {
-            // triggered, a state holder for events
-            global    : _global,
-            add       : _add,
-            remove    : _remove,
-            trigger   : _trigger,
-            dispatch  : _dispatch,
-            handlers  : _handlers,
-            fix       : _fix,
-            props     : _props,
-            fixHooks  : _fixHooks,
-            keyHooks  : _keyHooks,
-            mouseHooks: _mouseHooks,
-            special   : _special,
-            simulate  : _simulate
-        }
+        // triggered, a state holder for events
+        global    : _global,
+        add       : _add,
+        remove    : _remove,
+        trigger   : _trigger,
+        dispatch  : _dispatch,
+        handlers  : _handlers,
+        fix       : _fix,
+        props     : _props,
+        fixHooks  : _fixHooks,
+        keyHooks  : _keyHooks,
+        mouseHooks: _mouseHooks,
+        special   : _special,
+        simulate  : _simulate
     }
 };
