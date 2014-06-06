@@ -154,7 +154,7 @@ var _hooks = {
             if (!_isElementNode(elem)) { continue; }
 
             val = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
-            setter(elem, attr, value);
+            setter(elem, attr, val);
         }
     },
     _setAttribute = function(elem, attr, value) {
