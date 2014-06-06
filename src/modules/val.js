@@ -162,12 +162,9 @@ module.exports = {
 
         // TODO: Add handling of (and unit tests for) \r\n in IE
         val: overload()
-            .args(O.any(String, Number))
-            .use(function(value) {
-                value = '' + value;
-                return _.each(this, function(elem) {
-                    _setVal(elem, value);
-                });
+            .args()
+            .use(function() {
+                return _getVal(this[0]);
             })
 
             .args(Function)
@@ -197,8 +194,18 @@ module.exports = {
                 return this;
             })
 
-            .fallback(function() {
-                return _getVal(this[0]);
+            .args(O.any(null, undefined))
+            .use(function(value) {
+                return _.each(this, function(elem) {
+                    _setVal(elem, '');
+                });
+            })
+
+            .fallback(function(value) {
+                value = '' + value;
+                return _.each(this, function(elem) {
+                    _setVal(elem, value);
+                });
             })
 
             .expose(),
