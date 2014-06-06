@@ -453,7 +453,7 @@
             thrown = false;
         }
         ok(thrown, 'Exception thrown when trying to change type property');
-        equal('checkbox', D(check).attr('type'), 'Verify that you can change the type of an input element that isnt in the DOM');
+        equal(D(check).attr('type'), 'checkbox', 'Verify that you can change the type of an input element that isnt in the DOM');
 
         check = D('<input />');
         thrown = true;
@@ -463,7 +463,7 @@
             thrown = false;
         }
         ok(thrown, 'Exception thrown when trying to change type property');
-        equal('checkbox', check.attr('type'), 'Verify that you can change the type of an input element that isnt in the DOM');
+        equal(check.attr('type'), 'checkbox', 'Verify that you can change the type of an input element that isnt in the DOM');
 
         button = D('#button');
         try {
