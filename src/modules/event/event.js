@@ -84,18 +84,10 @@ var _add = function(elem, types, handler, data, selector) {
             handlers = events[type] = [];
             handlers.delegateCount = 0;
 
-            // Only use addEventListener/attachEvent if the special events handler returns false
+            // Only use add the event if the special events handler returns false
             if (!special.setup || special.setup.call(elem, data, namespaces, eventHandle) === false) {
                 // Bind the global event handler to the element
-                if (elem.addEventListener) {
-
-                    elem.addEventListener(type, eventHandle, false);
-
-                } else if (elem.attachEvent) {
-
-                    elem.attachEvent('on' + type, eventHandle);
-
-                }
+                _eventUtils.addEvent(elem, type, eventHandle);
             }
         }
 
@@ -640,6 +632,7 @@ module.exports = {
     add       : _add,
     remove    : _remove,
     trigger   : _trigger,
+    simulate  : _simulate,
 
     fn: {
         // triggered, a state holder for events
