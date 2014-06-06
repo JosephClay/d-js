@@ -4,11 +4,10 @@ var _parse = function(htmlStr) {
     div.innerHTML = htmlStr;
 
     var child,
-        idx,
-        len = div.children.length,
+        idx = div.children.length,
         arr = [];
 
-    for (idx = 0; idx < len; idx++) {
+    while (idx--) {
         child = div.children[idx];
         div.removeChild(child);
         arr[idx] = child;
@@ -16,7 +15,7 @@ var _parse = function(htmlStr) {
 
     div = null;
 
-    return arr;
+    return arr.reverse();
 };
 
 var _parseHtml = function(str) {

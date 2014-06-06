@@ -291,7 +291,7 @@
     });
 
     test('attr(String, Object)', function() {
-        expect(69);
+        expect(67);
 
         var $input, $text, $details,
             attributeNode, commentNode, textNode, obj,
@@ -386,12 +386,15 @@
 
         $text.attr('data-something', true);
         equal($text.attr('data-something'), 'true', 'Set data attributes');
-        equal($text.data('something'), true, 'Setting data attributes are not affected by boolean settings');
+        // TODO: Move to .attrData() tests
+        //equal($text.data('something'), true, 'Setting data attributes are not affected by boolean settings');
         $text.attr('data-another', false);
         equal($text.attr('data-another'), 'false', 'Set data attributes');
-        equal($text.data('another'), false, 'Setting data attributes are not affected by boolean settings');
+        // TODO: Move to .attrData() tests
+        //equal($text.data('another'), false, 'Setting data attributes are not affected by boolean settings');
         equal($text.attr('aria-disabled', false).attr('aria-disabled'), 'false', 'Setting aria attributes are not affected by boolean settings');
-        $text.removeData('something').removeData('another').removeAttr('aria-disabled');
+        // TODO: Move to .attrData() tests
+        //$text.removeData('something').removeData('another').removeAttr('aria-disabled');
 
         D('#foo').attr('contenteditable', true);
         equal(D('#foo').attr('contenteditable'), 'true', 'Enumerated attributes are set properly');

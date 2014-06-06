@@ -5,6 +5,12 @@ module.exports = {
         },
         off: function() {
             return this;
+        },
+        trigger: function() {
+            return this;
+        },
+        triggerHandler: function() {
+            return this;
         }
     }
 };
