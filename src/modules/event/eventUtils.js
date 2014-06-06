@@ -1,4 +1,6 @@
 module.exports = {
+    id: new Date().getTime(),
+    
     activeElement: function() {
         try {
             return document.activeElement;

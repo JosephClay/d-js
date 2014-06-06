@@ -36,7 +36,7 @@ var _add = function(elem, types, handler, data, selector) {
         eventHandle = elemData.handle = function(e) {
             // Discard the second event of a D.event.trigger() and
             // when an event is called after a page has unloaded
-            return typeof D !== 'undefined' && (!e || D.event.triggered !== e.type) ?
+            return (!e || D.event.triggered !== e.type) ?
                 _dispatch.apply(eventHandle.elem, arguments) :
                 undefined;
         };
@@ -184,11 +184,11 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
         }
     }
 
-    // Remove the expando if it's no longer used
+    // Remove the events if it's no longer used
     if (!_.hasSize(events)) {
         delete elemData.handle;
 
-        // removeData also checks for emptiness and clears the expando if empty
+        // removeData also checks for emptiness and clears the events if empty
         // so use it instead of delete
         _data.remove(elem, 'events');
     }
@@ -222,7 +222,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     ontype = type.indexOf(':') < 0 && 'on' + type;
 
     // Caller can pass in a Event object, Object, or just an event type string
-    event = event[jQuery.expando] ?
+    event = event[_eventUtils.id] ?
         event :
         new Event(type, event && _.isObject(event));
 
@@ -445,7 +445,7 @@ var _handlers = function(event, handlers) {
 
 // TODO: Does this need to be public?
 var _fix = function(event) {
-    if (event[jQuery.expando]) {
+    if (event[_eventUtils.id]) {
         return event;
     }
 
