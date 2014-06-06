@@ -117,7 +117,7 @@ var _getVal = function(elem) {
     }
 
     var val = elem.value;
-    return _.isString(val) ? _utils.normalizeNewlines() : val;
+    return _.isString(val) ? _utils.normalizeNewlines(val) : val;
 
 };
 
