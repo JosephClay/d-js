@@ -119,6 +119,17 @@ var _getVal = function(elem) {
     return _utils.normalizeNewlines(elem.value);
 };
 
+var _setVal = function(elem, value) {
+    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
+
+    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
+    if (hook && hook.set) {
+        hook.set(elem, value);
+    } else {
+        elem.setAttribute('value', value);
+    }
+};
+
 module.exports = {
     fn: {
         // TODO: Overload and determine api
@@ -152,16 +163,8 @@ module.exports = {
             .args(O.any(String, Number))
             .use(function(value) {
                 value = '' + value;
-
                 return _.each(this, function(elem) {
-                    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
-
-                    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
-                    if (hook && hook.set) {
-                        hook.set(elem, value);
-                    } else {
-                        elem.setAttribute('value', value);
-                    }
+                    _setVal(elem, value);
                 });
             })
 
@@ -181,9 +184,21 @@ module.exports = {
                 });
             })
 
+            .args(Array)
+            .use(function(arr) {
+                var dom = this,
+                    len = this.length;
+                _.each(arr, function(val, idx) {
+                    if (idx >= len) { return false; }
+                    _setVal(dom[idx], '' + val);
+                });
+                return this;
+            })
+
             .fallback(function() {
                 return _getVal(this[0]);
             })
+
             .expose(),
 
         text: overload()
