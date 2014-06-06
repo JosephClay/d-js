@@ -1,19 +1,65 @@
+var _      = require('_'),
+
+    _cache = require('../cache'),
+
+    _singleTagCache = _cache(),
+    _specificParentCache = _cache(),
+
+    _rSingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+
+    _parentMap = {
+        'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
+        'tbody':    /^<(?:tr)\b/,
+        'tr':       /^<(?:td|th)\b/,
+        'colgroup': /^<(?:col)\b/
+    };
+
+var _parseSingleTag = function(htmlStr) {
+    if (htmlStr.length > 30) { return null; }
+
+    var singleTagMatch = _singleTagCache.getOrSet(htmlStr, function() {
+        return _rSingleTag.exec(htmlStr);
+    });
+
+    if (!singleTagMatch) { return null; }
+
+    return [ document.createElement(singleTagMatch[1]) ];
+};
+
+var _getParentTagName = function(htmlStr) {
+    htmlStr = htmlStr.substr(0, 30);
+    return _specificParentCache.getOrSet(htmlStr, function() {
+        var parentTagName;
+        for (parentTagName in _parentMap) {
+            if (_parentMap[parentTagName].test(htmlStr)) {
+                return parentTagName;
+            }
+        }
+        return 'div';
+    });
+};
+
 // http://jsperf.com/js-push-vs-index11/2
 var _parse = function(htmlStr) {
-    var div = document.createElement('div');
-    div.innerHTML = htmlStr;
+    var singleTag = _parseSingleTag(htmlStr);
+    if (singleTag) { return singleTag; }
+
+    var parentTagName = _getParentTagName(htmlStr);
+
+    var parent = document.createElement(parentTagName);
+    parent.innerHTML = htmlStr;
 
     var child,
-        idx = div.children.length,
+        idx = parent.children.length,
         arr = [];
 
     while (idx--) {
-        child = div.children[idx];
-        div.removeChild(child);
+        child = parent.children[idx];
+        parent.removeChild(child);
         arr[idx] = child;
     }
 
-    div = null;
+    parent = null;
 
     return arr.reverse();
 };
