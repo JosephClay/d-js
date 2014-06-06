@@ -418,9 +418,6 @@
             elem.nonexisting = oldVal;
         });
 
-        // Register the property on the window for the previous assertion so it will be clean up
-        Globals.register('nonexisting');
-
         table = D('#table').append('<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>');
         td = table.find('td').eq(0);
         td.attr('rowspan', '2');
