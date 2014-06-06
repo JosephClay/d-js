@@ -141,10 +141,11 @@ var _hooks = {
 
         for (; idx < len; idx++) {
             elem = arr[idx];
-            val  = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
-            if (_isElementNode(elem)) {
-                setter(elem, attr, value);
-            }
+
+            if (!_isElementNode(elem)) { continue; }
+
+            val = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
+            setter(elem, attr, value);
         }
     },
     _setAttributeBool = function(elem, attr, value) {
