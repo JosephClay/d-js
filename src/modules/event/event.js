@@ -121,7 +121,7 @@ var _add = function(elem, types, handler, selector) {
 };
 
 // Detach an event or set of events from an element
-var _remove = function(elem, types, handler, selector, mappedTypes) {
+var _remove = function(elem, types, selector, mappedTypes) {
     var elemData = _data.has(elem) && _data.get(elem),
         events;
     if (!elemData || !(events = elemData.events)) { return; }
@@ -139,7 +139,7 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
         // Unbind all events (on this namespace, if provided) for the element
         if (!type) {
             for (type in events) {
-                _remove(elem, type + types[idx], handler, selector, true);
+                _remove(elem, type + types[idx], selector, true);
             }
             continue;
         }
@@ -158,8 +158,7 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
 
             if (
                 (mappedTypes || origType === handleObj.origType) &&
-                (!handler    || handler.guid === handleObj.guid) &&
-                (!tmp        || tmp.test( handleObj.namespace))  &&
+                (!tmp        || tmp.test(handleObj.namespace))  &&
                 (!selector   || selector === handleObj.selector  || selector === '**' && handleObj.selector)
             ) {
                 handlers.splice(i, 1);
