@@ -1,1 +1,2 @@
  ☐ Proxy Overload error to D.error
+ ☐ Remove _.isObject, nothing should be using that
