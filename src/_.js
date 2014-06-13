@@ -274,7 +274,7 @@ var _ = {
 };
 
 // Add some isType methods (only if they do NOT already exist): isArray, isFunction, isString, isNumber, isDate, isRegExp.
-var types = ['Array', 'Function', 'String', 'Number', 'Date', 'RegExp'],
+var types = _.splt('Array|Function|String|Number|Date|RegExp'),
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
