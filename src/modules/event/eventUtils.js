@@ -12,11 +12,11 @@ module.exports = {
 
     addEvent: _div.addEventListener ?
         function(elem, type, callback) {
-            elem.addEventListener(type, eventHandle, false);
+            elem.addEventListener(type, callback, false);
         } :
         _div.attachEvent ?
         function(elem, type, callback) {
-            elem.attachEvent('on' + type, eventHandle);
+            elem.attachEvent('on' + type, callback);
         } :
         _.noop,
 
