@@ -1,4 +1,6 @@
 var _         = require('_'),
+    overload  = require('overload'),
+    O         = overload.O,
 
     _utils    = require('../../utils');
     _event    = require('./event');
@@ -74,8 +76,8 @@ module.exports = {
                 fn.guid = origFn.guid || (origFn.guid = _.uniqueId());
             }
 
-            return this.each(function() {
-                _event.add(this, types, fn, data, selector);
+            return _.each(this, function(elem) {
+                _event.add(elem, types, fn, data, selector);
             });
         },
 
@@ -118,14 +120,14 @@ module.exports = {
                 fn = returnFalse;
             }
 
-            return this.each(function() {
-                _event.remove(this, types, fn, selector);
+            return _.each(this, function(elem) {
+                _event.remove(elem, types, fn, selector);
             });
         },
 
         trigger: function(type, data) {
-            return this.each(function() {
-                _event.trigger(type, data, this);
+            return _.each(this, function(elem) {
+                _event.trigger(type, data, elem);
             });
         },
 

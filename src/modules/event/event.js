@@ -17,16 +17,19 @@ var _           = require('_'),
     };
 
 var _add = function(elem, types, handler, data, selector) {
-    var elemData = _data.get(elem);
-    // Don't attach events to noData or text/comment nodes
-    if (!elemData) { return; }
+    // Don't attach events to text/comment nodes
+    var nodeType = elem.nodeType;
+    if (nodeType === _nodeType.TEXT ||
+        nodeType === _nodeType.COMMENT) { return; }
+
+    var elemData = _data.get(elem) || {};
 
     // Caller can pass in an object of custom data in lieu of the handler
     var handleObjIn;
     if (handler.handler) {
         handleObjIn = handler;
-        handler = handleObjIn.handler;
-        selector = handleObjIn.selector;
+        handler     = handleObjIn.handler;
+        selector    = handleObjIn.selector;
     }
 
     // Make sure that the handler has a unique ID, used to find/remove it later
@@ -131,12 +134,13 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
 
     // Once for each type.namespace in types; type may be omitted
     types = (types || '').match(rnotwhite) || [''];
-    var idx = types.length,
-        tmp, type, origType, namespaces, special, handlers;
+
+    var idx = types.length;
     while (idx--) {
-        tmp = rtypenamespace.exec(types[idx]) || [];
-        type = origType = tmp[1];
-        namespaces = (tmp[2] || '').split('.').sort();
+        var tmp = rtypenamespace.exec(types[idx]) || [],
+            type = tmp[1],
+            origType = type,
+            namespaces = (tmp[2] || '').split('.').sort();
 
         // Unbind all events (on this namespace, if provided) for the element
         if (!type) {
@@ -146,9 +150,10 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
             continue;
         }
 
-        special = _special[type] || {};
+        var special = _special[type] || {};
         type = (selector ? special.delegateType : special.bindType) || type;
-        handlers = events[type] || [];
+        
+        var handlers = events[type] || [];
         tmp = tmp[2] && new RegExp('(^|\\.)' + namespaces.join('\\.(?:.*\\.|)') + '(\\.|$)');
 
         // Remove matching events
