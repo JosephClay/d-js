@@ -3,6 +3,7 @@ var _           = require('_'),
     Event       = require('./E'),
     _nodeType   = require('../../nodeType'),
     _regex      = require('../../regex'),
+    _array      = require('../array'),
     _data       = require('../data'),
     _eventUtils = require('./eventUtils'),
 
@@ -57,12 +58,12 @@ var _add = function(elem, types, handler, data, selector) {
     }
 
     // Handle multiple events separated by a space
-    types = (types || '').match(rnotwhite) || [''];
+    types = _regex.matchNotWhite(types);
     var idx = types.length,
         tmp, type, origType, namespaces, special, handleObj, handlers;
     while (idx--) {
 
-        tmp = rtypenamespace.exec(types[idx]) || [];
+        tmp = _regex.typeNamespace(types[idx]) || [];
         type = origType = tmp[1];
         // There *must* be a type, no attaching namespace-only handlers
         if (!type) { continue; }
@@ -133,11 +134,11 @@ var _remove = function(elem, types, handler, selector, mappedTypes) {
     if (!elemData || !(events = elemData.events)) { return; }
 
     // Once for each type.namespace in types; type may be omitted
-    types = (types || '').match(rnotwhite) || [''];
+    types = _regex.matchNotWhite(types) || [''];
 
     var idx = types.length;
     while (idx--) {
-        var tmp = rtypenamespace.exec(types[idx]) || [],
+        var tmp = _regex.typeNamespace(types[idx]) || [],
             type = tmp[1],
             origType = type,
             namespaces = (tmp[2] || '').split('.').sort();
@@ -345,7 +346,7 @@ var _dispatch = function(event) {
     // Make a writable Event from the native event object
     event = _fix(event);
 
-    var args = _.slice(arguments),
+    var args = _array.slice(arguments),
         handlers = (_data.get(this, 'events') || {})[event.type] || [],
         special = _special[event.type] || {};
 
