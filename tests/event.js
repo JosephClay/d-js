@@ -4,15 +4,11 @@ test('null or undefined handler', function() {
     expect(2);
 
     // Supports Fixes bug #7229
-    try {
-        D('#firstp').on('click', null);
-        ok(true, 'Passing a null handler will not throw an exception');
-    } catch (e) {}
-
-    try {
-        D('#firstp').on('click', undefined);
-        ok(true, 'Passing an undefined handler will not throw an exception');
-    } catch (e) {}
+    D('#firstp').on('click', null);
+    ok(true, 'Passing a null handler will not throw an exception');
+    
+    D('#firstp').on('click', undefined);
+    ok(true, 'Passing an undefined handler will not throw an exception');
 });
 
 test('on() with non-null,defined data', function() {
@@ -2418,62 +2414,6 @@ test('focusin using non-element targets', function() {
     }).trigger('focusin').off('focusin');
 
 });
-
-testIframeWithCallback('focusin from an iframe', 'event/focusinCrossFrame.html', function(frameDoc) {
-    expect(1);
-
-    var input = D(frameDoc).find('#frame-input');
-
-    if (input.length) {
-        // Create a focusin handler on the parent; shouldn't affect the iframe's fate
-        D ('body').on('focusin.iframeTest', function() {
-            ok(false, 'fired a focusin event in the parent document');
-        });
-
-        input.on('focusin', function() {
-            ok(true, 'fired a focusin event in the iframe');
-        });
-
-        // Avoid a native event; Chrome can't force focus to another frame
-        input.trigger('focusin');
-
-        // Must manually remove handler to avoid leaks in our data store
-        input.remove();
-
-        // Be sure it was removed; nothing should happen
-        input.trigger('focusin');
-
-        // Remove body handler manually since it's outside the fixture
-        D('body').off('focusin.iframeTest');
-
-    } else {
-        // Opera 12 (pre-Blink) doesn't select anything
-        ok(true, 'SOFTFAIL: no focus event fired in the iframe');
-    }
-});
-
-testIframeWithCallback('D.ready promise', 'event/promiseReady.html', function(isOk) {
-    expect(1);
-    ok(isOk, '$.when($.ready) works');
-});
-
-testIframeWithCallback('Focusing iframe element', 'event/focusElem.html', function(isOk) {
-    expect(1);
-    ok(isOk, 'Focused an element in an iframe');
-});
-
-testIframeWithCallback('triggerHandler(onbeforeunload)', 'event/triggerunload.html', function(isOk) {
-    expect(1);
-    ok(isOk, 'Triggered onbeforeunload without an error');
-});
-
-// need PHP here to make the incepted IFRAME hang
-if (hasPHP) {
-    testIframeWithCallback('D.ready synchronous load with long loading subresources', 'event/syncReady.html', function(isOk) {
-        expect(1);
-        ok(isOk, 'D loaded synchronously fires ready when the DOM can truly be interacted with');
-    });
-}
 
 test('change handler should be detached from element', function() {
     expect(2);

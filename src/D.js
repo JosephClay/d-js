@@ -23,7 +23,8 @@ var _ = require('_'),
     position    = require('./modules/position'),
     classes     = require('./modules/classes'),
     data        = require('./modules/data'),
-    events      = require('./modules/events'),
+    events      = require('./modules/event/api'),
+    eventObj    = require('./modules/event/event'),
     deferred    = require('./modules/Deferred/Deferred'),
     when        = require('./modules/Deferred/when'),
 
@@ -161,7 +162,8 @@ _.extend(
     classes.fn,
     position.fn,
     data.fn,
-    events.fn
+    events.fn,
+    eventObj.fn
 );
 
 // Expose the prototype so that

@@ -508,7 +508,7 @@ var _props = _.splt('altKey|bubbles|cancelable|ctrlKey|currentTarget|eventPhase|
 var _fixHooks = {};
 
 var _keyHooks = {
-    props: ['char', 'charCode', 'key', 'keyCode'],
+    props: _.splt('char|charCode|key|keyCode'),
     filter: function(event, original) {
 
         // Add which for key events
@@ -643,19 +643,21 @@ module.exports = {
     fix       : _fix,
 
     fn: {
-        // triggered, a state holder for events
-        global    : _global,
-        add       : _add,
-        remove    : _remove,
-        trigger   : _trigger,
-        dispatch  : _dispatch,
-        handlers  : _handlers,
-        fix       : _fix,
-        props     : _props,
-        fixHooks  : _fixHooks,
-        keyHooks  : _keyHooks,
-        mouseHooks: _mouseHooks,
-        special   : _special,
-        simulate  : _simulate
+        event: {
+            // triggered, a state holder for events
+            global    : _global,
+            add       : _add,
+            remove    : _remove,
+            trigger   : _trigger,
+            dispatch  : _dispatch,
+            handlers  : _handlers,
+            fix       : _fix,
+            props     : _props,
+            fixHooks  : _fixHooks,
+            keyHooks  : _keyHooks,
+            mouseHooks: _mouseHooks,
+            special   : _special,
+            simulate  : _simulate
+        }
     }
 };

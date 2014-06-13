@@ -1,6 +1,6 @@
-var _           = require('underscore'),
+var _           = require('_'),
 
-    _utils      = require('./utils'),
+    _utils      = require('../../utils'),
     _eventUtils = require('./eventUtils');
 
 var Event = module.exports = function(src, props) {

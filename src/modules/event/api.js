@@ -81,12 +81,15 @@ module.exports = {
             });
         },
 
+        //  TODO: Don't use the stupid 1 on the end
         one: function(types, selector, data, fn) {
             return this.on(types, selector, data, fn, 1);
         },
 
         // Proxy to one
-        once: function() { this.one.apply(this, arguments); },
+        once: function(types, selector, data, fn) {
+            return this.on(types, selector, data, fn, 1);
+        },
 
         off: function(types, selector, fn) {
             var handleObj, type;

@@ -1,9 +1,9 @@
 var _              = require('_'),
-    _support       = require('../../support'),
+    _supports      = require('../../supports'),
     _data          = require('../data'),
     _event         = require('./event');
 
-if (!_support.submitBubbles) {
+if (!_supports.submitBubbles) {
     // IE change delegation and checkbox/radio fix
     _event.special.change = {
 
@@ -66,7 +66,7 @@ if (!_support.submitBubbles) {
     };
 }
 
-if (!_support.changeBubbles) {
+if (!_supports.changeBubbles) {
     // Create 'bubbling' focus and blur events
     _.each({
         focus: 'focusin',
