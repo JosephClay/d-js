@@ -150,12 +150,7 @@ var _getWidthOrHeight = function(elem, name) {
     );
 };
 
-var _CSS_EXPAND = [
-    'Top',
-    'Right',
-    'Bottom',
-    'Left'
-];
+var _CSS_EXPAND = _.splt('Top|Right|Bottom|Left');
 var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     var val = 0,
         // If we already have the right measurement, avoid augmentation

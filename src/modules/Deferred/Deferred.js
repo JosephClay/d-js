@@ -6,6 +6,8 @@
      * @readonly
      * @enum {Number}
      */
+var _ = require('_');
+
 var _DEFERRED_STATUS = {
         idle:       0,
         progressed: 1,
@@ -38,14 +40,7 @@ var _DEFERRED_STATUS = {
         return result;
     }(_DEFERRED_CALL)),
 
-    _PROMISE_KEYS = [
-        'done',
-        'fail',
-        'always',
-        'progress',
-        'pipe',
-        'then'
-    ];
+    _PROMISE_KEYS = _.splt('done|fail|always|progress|pipe|then');
 
 /**
  * A lightweight implementation of promises.

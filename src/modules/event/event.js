@@ -503,7 +503,7 @@ var _fix = function(event) {
 };
 
 // Includes some event props shared by KeyEvent and MouseEvent
-var _props = ['altKey', 'bubbles', 'cancelable', 'ctrlKey', 'currentTarget', 'eventPhase', 'metaKey', 'relatedTarget', 'shiftKey', 'target', 'timeStamp', 'view', 'which'];
+var _props = _.splt('altKey|bubbles|cancelable|ctrlKey|currentTarget|eventPhase|metaKey|relatedTarget|shiftKey|target|timeStamp|view|which');
 
 var _fixHooks = {};
 
@@ -521,7 +521,7 @@ var _keyHooks = {
 };
 
 var _mouseHooks = {
-    props: ['button', 'buttons', 'clientX', 'clientY', 'fromElement', 'offsetX', 'offsetY', 'pageX', 'pageY', 'screenX', 'screenY', 'toElement'],
+    props: _.splt('button|buttons|clientX|clientY|fromElement|offsetX|offsetY|pageX|pageY|screenX|screenY|toElement'),
     filter: function(event, original) {
         var body, eventDoc, doc,
             button = original.button,
