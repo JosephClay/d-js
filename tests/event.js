@@ -25,15 +25,16 @@ test('on() with non-null,defined data', function() {
 
     D('#foo').off('foo.on', handler);
     D('div').off('foo.delegate', '#foo');
-
 });
 
+/*
+TODO: Rewrite - using .addBack() (unsupported)
 test('Handler changes and .trigger() order', function() {
     expect(1);
 
     var markup = D(
         '<div><div><p><span><b class="a">b</b></span></p></div></div>'
-   ),
+    ),
     path = '';
 
     markup
@@ -53,9 +54,13 @@ test('Handler changes and .trigger() order', function() {
 
     markup.remove();
 });
+*/
 
+/*
+TODO: Rewrite - using D._data
 test('on(), with data', function() {
     expect(4);
+    
     var test, handler, handler2;
 
     handler = function(event) {
@@ -72,9 +77,13 @@ test('on(), with data', function() {
     };
     D('#firstp').on('click', test, handler2).trigger('click').off('click', handler2);
 });
+*/
 
+/*
+TODO: Rewrite - using D._data
 test('click(), with data', function() {
     expect(3);
+
     var handler = function(event) {
         ok(event.data, 'on() with data, check passed data exists');
         equal(event.data.foo, 'bar', 'on() with data, Check value of passed data');
@@ -83,9 +92,11 @@ test('click(), with data', function() {
 
     ok(!D._data(D('#firstp')[0], 'events'), 'Event handler unbound when using data.');
 });
+*/
 
 test('on(), with data, trigger with data', function() {
     expect(4);
+
     var handler = function(event, data) {
         ok(event.data, 'check passed data exists');
         equal(event.data.foo, 'bar', 'Check value of passed data');
@@ -97,6 +108,7 @@ test('on(), with data, trigger with data', function() {
 
 test('on(), multiple events at once', function() {
     expect(2);
+
     var handler,
         clickCounter = 0,
         mouseoverCounter = 0;
