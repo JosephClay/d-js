@@ -19,7 +19,7 @@ var _           = require('_'),
         right : 3
     };
 
-var _add = function(elem, events, handler, selector) {
+var _add = function(elem, eventStr, handler, selector) {
     // Don't attach events to text/comment nodes
     var nodeType = elem.nodeType;
     if (nodeType === _nodeType.TEXT ||
@@ -40,16 +40,17 @@ var _add = function(elem, events, handler, selector) {
                 _dispatch.apply(eventHandle.elem, arguments) :
                 undefined;
         };
+
         // Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
         eventHandle.elem = elem;
     }
 
-    // Handle multiple events separated by a space
-    events = _regex.matchNotWhite(events);
-    var idx = events.length;
+    // Handle multiple eventStr separated by a space
+    var eventStrInstances = _regex.matchNotWhite(eventStr),
+        idx = eventStrInstances.length;
     while (idx--) {
 
-        var tmp = _regex.typeNamespace(events[idx]) || [],
+        var tmp = _regex.typeNamespace(eventStrInstances[idx]) || [],
             type = tmp[1],
             origType = type;
         // There *must* be a type, no attaching namespace-only handlers
@@ -78,8 +79,8 @@ var _add = function(elem, events, handler, selector) {
 
         var handlers;
         // Init the event handler queue if we're the first
-        if (!(handlers = events[type])) {
-            handlers = events[type] = [];
+        if (!(handlers = eventStrInstances[type])) {
+            handlers = eventStrInstances[type] = [];
             handlers.delegateCount = 0;
 
             // Only use add the event if the special events handler returns false
@@ -524,7 +525,6 @@ var _mouseHooks = {
             event.relatedTarget = fromElement === event.target ? original.toElement : fromElement;
         }
 
-        // TODO: Pull this into a constant
         // Add which for click: 1 === left; 2 === middle; 3 === right
         // Note: button is not normalized, so don't use it
         if (!event.which && button !== undefined) {
