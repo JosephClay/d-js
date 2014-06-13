@@ -18,21 +18,13 @@ var _           = require('_'),
         right : 3
     };
 
-var _add = function(elem, types, handler, data, selector) {
+var _add = function(elem, types, handler, selector) {
     // Don't attach events to text/comment nodes
     var nodeType = elem.nodeType;
     if (nodeType === _nodeType.TEXT ||
         nodeType === _nodeType.COMMENT) { return; }
 
     var elemData = _data.get(elem) || {};
-
-    // Caller can pass in an object of custom data in lieu of the handler
-    var handleObjIn;
-    if (handler.handler) {
-        handleObjIn = handler;
-        handler     = handleObjIn.handler;
-        selector    = handleObjIn.selector;
-    }
 
     // Make sure that the handler has a unique ID, used to find/remove it later
     if (!handler.guid) {
@@ -81,17 +73,16 @@ var _add = function(elem, types, handler, data, selector) {
         special = _special[type] || _NOOP_OBJ;
 
         // handleObj is passed to all event handlers
-        handleObj = _.extend({
+        handleObj = {
             type        : type,
             origType    : origType,
-            data        : data,
             handler     : handler,
             guid        : handler.guid,
             selector    : selector,
             // TODO: If the event system changes to not needing this, remember to remove it here and in _regex
             needsContext: selector && _regex.needsContext(selector),
             namespace   : namespaces.join('.')
-        }, handleObjIn);
+        };
 
         // Init the event handler queue if we're the first
         if (!(handlers = events[type])) {
@@ -99,7 +90,8 @@ var _add = function(elem, types, handler, data, selector) {
             handlers.delegateCount = 0;
 
             // Only use add the event if the special events handler returns false
-            if (!special.setup || special.setup.call(elem, data, namespaces, eventHandle) === false) {
+            // TODO: in special.setup.call, the null used to be data. check if any specials are using the data
+            if (!special.setup || special.setup.call(elem, null, namespaces, eventHandle) === false) {
                 // Bind the global event handler to the element
                 _eventUtils.addEvent(elem, type, eventHandle);
             }
@@ -248,7 +240,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     data = !_.exists(data) ?
         [event] :
         // NOTE: this was jQuery.makeArray - _.flatten should be equivalent
-        _.flatten(data, [event]);
+        _.flatten([event], data);
 
     // Allow special events to draw outside the lines
     var special = _special[type] || {};
@@ -377,7 +369,6 @@ var _dispatch = function(event) {
             if (!event.namespaceRegex || event.namespaceRegex.test(handleObj.namespace)) {
 
                 event.handleObj = handleObj;
-                event.data = handleObj.data;
 
                 var ret = ((_special[handleObj.origType] || {}).handle || handleObj.handler).apply(matched.elem, args);
 
