@@ -10,6 +10,7 @@ var _           = require('_'),
 
     _global     = {},
 
+    _EVENT_KEY  = '__D_events__',
     _NOOP_OBJ   = {},
     _CLICK = {
         none  : 0,
@@ -18,28 +19,21 @@ var _           = require('_'),
         right : 3
     };
 
-var _add = function(elem, types, handler, selector) {
+var _add = function(elem, events, handler, selector) {
     // Don't attach events to text/comment nodes
     var nodeType = elem.nodeType;
     if (nodeType === _nodeType.TEXT ||
         nodeType === _nodeType.COMMENT) { return; }
 
-    var elemData = _data.get(elem) || {};
-
-    // Make sure that the handler has a unique ID, used to find/remove it later
-    if (!handler.guid) {
-        handler.guid = _.uniqueId();
-    }
-
-    var events;
-    // Init the element's event structure and main handler, if this is the first
-    if (!(events = elemData.events)) {
-        events = elemData.events = {};
+    var eventData = _data.get(elem, _EVENT_KEY);
+    if (!eventData) {
+        eventData = {};
+        _data.set(elem, _EVENT_KEY, eventData);
     }
 
     var eventHandle;
-    if (!(eventHandle = elemData.handle)) {
-        eventHandle = elemData.handle = function(e) {
+    if (!(eventHandle = eventData.handle)) {
+        eventHandle = eventData.handle = function(e) {
             // Discard the second event of a D.event.trigger() and
             // when an event is called after a page has unloaded
             return typeof D !== 'undefined' && (!e || D.event.triggered !== e.type) ?
@@ -51,20 +45,19 @@ var _add = function(elem, types, handler, selector) {
     }
 
     // Handle multiple events separated by a space
-    types = _regex.matchNotWhite(types);
-    var idx = types.length,
-        tmp, type, origType, namespaces, special, handleObj, handlers;
+    events = _regex.matchNotWhite(events);
+    var idx = events.length;
     while (idx--) {
 
-        tmp = _regex.typeNamespace(types[idx]) || [];
-        type = origType = tmp[1];
+        var tmp = _regex.typeNamespace(events[idx]) || [],
+            type = tmp[1],
+            origType = type;
         // There *must* be a type, no attaching namespace-only handlers
         if (!type) { continue; }
 
-        namespaces = (tmp[2] || '').split('.').sort();
-
-        // If event changes its type, use the special event handlers for the changed type
-        special = _special[type] || _NOOP_OBJ;
+        var namespaces = (tmp[2] || '').split('.').sort(),
+            // If event changes its type, use the special event handlers for the changed type
+            special = _special[type] || _NOOP_OBJ;
 
         // If selector defined, determine special event api type, otherwise given type
         type = (selector ? special.delegateType : special.bindType) || type;
@@ -73,17 +66,17 @@ var _add = function(elem, types, handler, selector) {
         special = _special[type] || _NOOP_OBJ;
 
         // handleObj is passed to all event handlers
-        handleObj = {
+        var handleObj = {
             type        : type,
             origType    : origType,
             handler     : handler,
-            guid        : handler.guid,
             selector    : selector,
             // TODO: If the event system changes to not needing this, remember to remove it here and in _regex
             needsContext: selector && _regex.needsContext(selector),
             namespace   : namespaces.join('.')
         };
 
+        var handlers;
         // Init the event handler queue if we're the first
         if (!(handlers = events[type])) {
             handlers = events[type] = [];
@@ -99,10 +92,6 @@ var _add = function(elem, types, handler, selector) {
 
         if (special.add) {
             special.add.call(elem, handleObj);
-
-            if (!handleObj.handler.guid) {
-                handleObj.handler.guid = handler.guid;
-            }
         }
 
         // Add to the element's handler list, delegates in front
@@ -124,7 +113,7 @@ var _add = function(elem, types, handler, selector) {
 var _remove = function(elem, types, selector, mappedTypes) {
     var elemData = _data.has(elem) && _data.get(elem),
         events;
-    if (!elemData || !(events = elemData.events)) { return; }
+    if (!elemData || !(events = elemData[_EVENT_KEY])) { return; }
 
     // Once for each type.namespace in types; type may be omitted
     types = _regex.matchNotWhite(types) || [''];
@@ -189,7 +178,7 @@ var _remove = function(elem, types, selector, mappedTypes) {
 
         // removeData also checks for emptiness and clears the events if empty
         // so use it instead of delete
-        _data.remove(elem, 'events');
+        _data.remove(elem, _EVENT_KEY);
     }
 };
 
@@ -276,7 +265,9 @@ var _trigger = function(event, data, elem, onlyHandlers) {
             special.bindType || type;
 
         // jQuery handler
-        handle = (_data.get(cur, 'events') || {})[event.type] && _data.get(cur, 'handle');
+        var eventData = _data.get(cur, _EVENT_KEY) || {};
+        handle = eventData[event.type] && eventData.handle;
+        debugger;
         if (handle) {
             handle.apply(cur, data);
         }
@@ -339,7 +330,7 @@ var _dispatch = function(event) {
     event = _fix(event);
 
     var args = _array.slice(arguments),
-        handlers = (_data.get(this, 'events') || {})[event.type] || [],
+        handlers = (_data.get(this, _EVENT_KEY) || {})[event.type] || [],
         special = _special[event.type] || {};
 
     // Use the fix-ed Event rather than the (read-only) native event
@@ -410,7 +401,6 @@ var _handlers = function(event, handlers) {
                 var idx = 0;
                 for (; idx < delegateCount; idx++) {
                     var handleObj = handlers[idx],
-
                         // Don't conflict with Object.prototype properties (#13203)
                         sel = handleObj.selector + ' ';
 

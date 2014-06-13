@@ -61,6 +61,7 @@ var _          = require('_'),
 
 module.exports = {
     has: _hasData,
+    set: _setData,
     get: function(elem, str) {
         if (str === undefined) {
             return _getAllData(elem);

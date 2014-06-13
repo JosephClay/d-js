@@ -62,6 +62,7 @@ module.exports = {
 
             }
 
+            // TODO: Make this self removing by adding a unique namespace and then unbinding that namespace
             var origFn;
             if (one === 1) {
                 origFn = fn;
@@ -71,9 +72,6 @@ module.exports = {
                     jQuery().off(event);
                     return origFn.apply( this, arguments );
                 };
-
-                // Use same guid so caller can remove using origFn
-                fn.guid = origFn.guid || (origFn.guid = _.uniqueId());
             }
 
             return _.each(this, function(elem) {
@@ -124,42 +122,47 @@ module.exports = {
             return this.on(types, selector, data, fn, 1);
         },
 
-        off: function(types, selector, fn) {
-            var handleObj, type;
-            if (types && types.preventDefault && types.handleObj) {
-                // ( event )  dispatched Event
-                handleObj = types.handleObj;
-                // TODO:
-                D(types.delegateTarget).off(
-                    handleObj.namespace ? handleObj.origType + '.' + handleObj.namespace : handleObj.origType,
-                    handleObj.selector,
-                    handleObj.handler
-                );
-                return this;
-            }
+        off: overload()
 
-            if (_.isObject(types)) {
-                // ( types-object [, selector] )
-                for (type in types) {
-                    this.off(type, selector, types[type] );
-                }
-                return this;
-            }
+            // In leu of { string: function }, since we
+            // dont allow functions in the off, allow an array
+            // of strings instead...
+            .args(Array)
+            .use(function(arr) {
+                return _.each(this, function(elem) {
+                    _.each(arr, function(evt) {
+                        _event.remove(elem, evt);
+                    });
+                });
+            })
 
-            if (selector === false || _.isFunction(selector)) {
-                // ( types [, fn] )
-                fn = selector;
-                selector = undefined;
-            }
+            // ...and, of course, allow a selector
+            .args(Array, String)
+            .use(function(arr, selector) {
+                return _.each(this, function(elem) {
+                    _.each(arr, function(evt) {
+                        _event.remove(elem, evt, selector);
+                    });
+                });
+            })
 
-            if (fn === false) {
-                fn = returnFalse;
-            }
+            .args(String)
+            .use(function(evt) {
+                return _.each(this, function(elem) {
+                    _event.remove(elem, evt);
+                });
+            })
 
-            return _.each(this, function(elem) {
-                _event.remove(elem, types, fn, selector);
-            });
-        },
+            .args(String, String)
+            .use(function(evt, selector) {
+                return _.each(this, function(elem) {
+                    _event.remove(elem, evt, selector);
+                });
+            })
+
+            .fallback(_utils.returnThis)
+
+            .expose(),
 
         trigger: function(type, data) {
             return _.each(this, function(elem) {

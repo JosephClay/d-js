@@ -18,12 +18,13 @@ test('on() with non-null,defined data', function() {
         equal(data, 0, 'non-null, defined data (zero) is correctly passed');
     };
 
+    debugger;
     D('#foo').on('foo.on', handler);
     D('div').on('foo.delegate', '#foo', handler);
 
     D('#foo').trigger('foo', 0);
 
-    D('#foo').off('foo.on', handler);
+    D('#foo').off('foo.on');
     D('div').off('foo.delegate', '#foo');
 });
 
