@@ -118,29 +118,12 @@ _.extend(DOM,
 
 var arrayProto = (function(proto, obj) {
 
-    _.each([
-        'length',
-        'toString',
-        'toLocaleString',
-        'join',
-        'pop',
-        'push',
-        'concat',
-        'reverse',
-        'shift',
-        'unshift',
-        'slice',
-        'splice',
-        'sort',
-        'some',
-        'every',
-        'indexOf',
-        'lastIndexOf',
-        'reduce',
-        'reduceRight'
-    ], function(key) {
-        obj[key] = proto[key];
-    });
+    _.each(
+        _.splt('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight'),
+        function(key) {
+            obj[key] = proto[key];
+        }
+    );
 
     return obj;
 
@@ -172,6 +155,7 @@ DOM.fn = DOM.prototype;
 
 module.exports = window.D = DOM;
 
+// TODO: Make this part of the build configuration
 if (typeof define === 'function' && define.amd) {
     define('D', [], function() {
         return DOM;
