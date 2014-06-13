@@ -82,6 +82,7 @@ _.extend(DOM,
     data.D,
     deferred.D,
     when.D,
+    eventObj.D,
 {
     each:    array.each,
     forEach: array.each,
@@ -145,8 +146,7 @@ _.extend(
     classes.fn,
     position.fn,
     data.fn,
-    events.fn,
-    eventObj.fn
+    events.fn
 );
 
 // Expose the prototype so that

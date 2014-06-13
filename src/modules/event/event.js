@@ -642,7 +642,7 @@ module.exports = {
     simulate  : _simulate,
     fix       : _fix,
 
-    fn: {
+    D: {
         event: {
             // triggered, a state holder for events
             global    : _global,
