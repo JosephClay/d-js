@@ -1,6 +1,6 @@
 var _           = require('_'),
 
-    Event       = require('./EventConstructor'),
+    Event       = require('./E'),
     _nodeType   = require('../../nodeType'),
     _regex      = require('../../regex'),
     _data       = require('../data'),
