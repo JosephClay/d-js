@@ -265,6 +265,10 @@ var _ = {
         return true;
     },
 
+    isObject: function(obj) {
+        return obj === Object(obj);
+    },
+
     // Breaks even on arrays with 3 items. 3 or more
     // items starts saving space
     splt: function(str, delimiter) {
