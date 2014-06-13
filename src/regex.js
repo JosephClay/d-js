@@ -2,62 +2,67 @@ var _                 = require('_'),
 
     _cache            = require('./cache'),
 
-    _camelCache       = _cache(),
-    _displayCache     = _cache(),
-    _focusableCache   = _cache(),
-    _clickableCache   = _cache(),
-    _idCache          = _cache(),
-    _tagCache         = _cache(),
-    _numNotPxCache    = _cache(),
-    _positionCache    = _cache(),
-    _classCache       = _cache(),
-    _needContextCache = _cache(),
-    _focusMorphCache  = _cache(),
-    _mouseEventCache  = _cache(),
-    _keyEventCache    = _cache(),
-    _singleTagCache   = _cache(),
-    _parentCache      = _cache();
+    _camelCache         = _cache(),
+    _displayCache       = _cache(),
+    _focusableCache     = _cache(),
+    _clickableCache     = _cache(),
+    _idCache            = _cache(),
+    _tagCache           = _cache(),
+    _numNotPxCache      = _cache(),
+    _positionCache      = _cache(),
+    _classCache         = _cache(),
+    _needContextCache   = _cache(),
+    _focusMorphCache    = _cache(),
+    _mouseEventCache    = _cache(),
+    _keyEventCache      = _cache(),
+    _singleTagCache     = _cache(),
+    _parentCache        = _cache(),
+    _typeNamespaceCache = _cache(),
+    _notWhiteCache      = _cache();
 
     // Matches "-ms-" so that it can be changed to "ms-"
-var _TRUNCATE_MS_PREFIX = /^-ms-/,
+var _TRUNCATE_MS_PREFIX  = /^-ms-/,
 
-    _ALPHA = /alpha\([^)]*\)/i,
-    _OPACITY = /opacity\s*=\s*([^)]*)/,
+    _ALPHA               = /alpha\([^)]*\)/i,
+    _OPACITY             = /opacity\s*=\s*([^)]*)/,
 
     // Matches dashed string for camelizing
     _DASH_CATCH = /-([\da-z])/gi,
 
     // Matches "none" or a table type e.g. "table",
     // "table-cell" etc...
-    _NONE_OR_TABLE = /^(none|table(?!-c[ea]).+)/,
+    _NONE_OR_TABLE       = /^(none|table(?!-c[ea]).+)/,
 
     _TYPE_TEST_FOCUSABLE = /^(?:input|select|textarea|button|object)$/i,
     _TYPE_TEST_CLICKABLE = /^(?:a|area)$/i,
+    _TYPE_NAMESPACE      = /^([^.]*)(?:\.(.+)|)$/,
 
-    _SELECTOR_ID =    /^#([\w-]+)$/,
-    _SELECTOR_TAG =   /^[\w-]+$/,
-    _SELECTOR_CLASS = /^\.([\w-]+)$/,
+    _SELECTOR_ID         = /^#([\w-]+)$/,
+    _SELECTOR_TAG        = /^[\w-]+$/,
+    _SELECTOR_CLASS      = /^\.([\w-]+)$/,
 
-    _POSITION = /^(top|right|bottom|left)$/,
+    _POSITION            = /^(top|right|bottom|left)$/,
 
-    _NUM_NON_PX = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i'),
+    _NUM_NON_PX          = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i'),
 
-    _WHITESPACE = '[\\x20\\t\\r\\n\\f]',
-    _NEEDS_CONTEXT = new RegExp('^' + _WHITESPACE + '*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(' +
-            _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i'),
+    _WHITESPACE          = '[\\x20\\t\\r\\n\\f]',
+    _NEEDS_CONTEXT       = new RegExp('^' + _WHITESPACE + '*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(' +
+                                _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i'),
 
-    _FOCUS_MORPH = /^(?:focusinfocus|focusoutblur)$/,
-    _MOUSE_EVENT = /^(?:mouse|contextmenu)|click/,
-    _KEY_EVENT = /^key/,
+    _FOCUS_MORPH         = /^(?:focusinfocus|focusoutblur)$/,
+    _MOUSE_EVENT         = /^(?:mouse|contextmenu)|click/,
+    _KEY_EVENT           = /^key/,
 
-    _SINGLE_TAG = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+    _SINGLE_TAG          = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 
-    _PARENT_MAP = {
+    _PARENT_MAP          = {
         'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
         'tbody':    /^<(?:tr)\b/,
         'tr':       /^<(?:td|th)\b/,
         'colgroup': /^<(?:col)\b/
-    };
+    },
+
+    _NOT_WHITE           = /\S+/g;
 
 var _camelCase = function(match, letter) {
     return letter.toUpperCase();
@@ -125,6 +130,19 @@ module.exports = {
                 }
             }
             return 'div';
+        });
+    },
+
+    typeNamespace: function(val) {
+        return _typeNamespaceCache.getOrSet(val, function() {
+            return _TYPE_NAMESPACE.exec(val);
+        });
+    },
+
+    matchNotWhite: function(val) {
+        val = val || '';
+        return _notWhiteCache.getOrSet(val, function() {
+            return val.match(_NOT_WHITE);
         });
     },
 
