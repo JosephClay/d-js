@@ -559,6 +559,7 @@ var _special = {
         noBubble: true
     },
     focus: {
+        delegateType: 'focusin',
         // Fire native event if possible so blur/focus sequence is correct
         trigger: function() {
             if (this !== _eventUtils.activeElement() && this.focus) {
@@ -571,17 +572,16 @@ var _special = {
                     // let .trigger() run the handlers
                 }
             }
-        },
-        delegateType: 'focusin'
+        }
     },
     blur: {
+        delegateType: 'focusout',
         trigger: function() {
             if (this === _eventUtils.activeElement() && this.blur) {
                 this.blur();
                 return false;
             }
-        },
-        delegateType: 'focusout'
+        }
     },
     click: {
         // For checkbox, fire native event so checked state will be right
