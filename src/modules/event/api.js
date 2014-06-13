@@ -81,13 +81,46 @@ module.exports = {
             });
         },
 
+
+        once: overload()
+            .args(Object)
+            .use(function(events) {
+                var self = this;
+                _.each(events, function(fn, evt) {
+                    self.once(evt, fn);
+                });
+                return this;
+            })
+
+            .args(Object, String)
+            .use(function(events, selector) {
+                var self = this;
+                _.each(events, function(fn, evt) {
+                    self.once(evt, selector, fn);
+                });
+                return this;
+            })
+
+            .args(String, Function)
+            .use(function(evt, fn) {
+
+                // this.on(types, selector, data, fn, 1);
+                
+            })
+
+            .args(String, String, Function)
+            .use(function(evt, selector, fn) {
+
+                // this.on(types, selector, data, fn, 1);
+
+            })
+
+            .expose(),
+
+
+
         //  TODO: Don't use the stupid 1 on the end
         one: function(types, selector, data, fn) {
-            return this.on(types, selector, data, fn, 1);
-        },
-
-        // Proxy to one
-        once: function(types, selector, data, fn) {
             return this.on(types, selector, data, fn, 1);
         },
 
