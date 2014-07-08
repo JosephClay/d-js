@@ -37,6 +37,7 @@ var _parse = function(htmlStr) {
 };
 
 var _parseHtml = function(str) {
+    if (!str) { return null; }
     var result = _parse(str);
     if (!result || !result.length) { return null; }
     return D(result);
