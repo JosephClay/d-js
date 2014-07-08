@@ -2,10 +2,12 @@ var _ = require('_');
 
 module.exports = {
     hasClass: function(elem, name) {
-        return elem.classList.contains(name);
+        return !!elem.classList && elem.classList.contains(name);
     },
 
     addClasses: function(elem, names) {
+        if (!elem.classList) { return; }
+
         var len = names.length,
             idx = 0;
         for (; idx < len; idx++) {
@@ -14,6 +16,8 @@ module.exports = {
     },
 
     removeClasses: function(elem, names) {
+        if (!elem.classList) { return; }
+
         var len = names.length,
             idx = 0;
         for (; idx < len; idx++) {
@@ -22,6 +26,8 @@ module.exports = {
     },
 
     toggleClasses: function(elem, names) {
+        if (!elem.classList) { return; }
+
         var len = names.length,
             idx = 0;
         for (; idx < len; idx++) {
