@@ -61,8 +61,8 @@ var DOM = function(arg, attrs) {
         return;
     }
 
-    // Array of Elements or NodeList
-    if (_.isArray(arg) || _.isNodeList(arg)) {
+    // Array of Elements, NodeList, or D object
+    if (_.isArray(arg) || _.isNodeList(arg) || arg instanceof D) {
         utils.merge(this, arg);
         return;
     }
