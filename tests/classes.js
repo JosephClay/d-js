@@ -100,7 +100,7 @@
     });
 
     var testRemoveClass = function(valueObj) {
-        expect(6);
+        expect(8);
 
         var $set = D('#qunit-fixture div'),
             div = document.createElement('div');
