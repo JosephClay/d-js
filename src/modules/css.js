@@ -382,12 +382,12 @@ module.exports = {
             .expose(),
 
         hide: function() {
-            return _.each(this, function(elem) {
+            return this.each(function(elem) {
                 _hide(elem);
             });
         },
         show: function() {
-            return _.each(this, function(elem) {
+            return this.each(function(elem) {
                 _show(elem);
             });
         },
@@ -397,7 +397,7 @@ module.exports = {
                 return state ? this.show() : this.hide();
             }
 
-            return _.each(this, function(elem) {
+            return this.each(function(elem) {
                 if (_isHidden(this)) {
                     return _show(this);
                 }

@@ -108,14 +108,14 @@ module.exports = {
 
             .args(String, O.any(String, Number, Boolean))
             .use(function(prop, value) {
-                return _.each(this, function(elem) {
+                return this.each(function(elem) {
                     _getOrSetProp(elem, prop, value);
                 });
             })
 
             .args(String, Function)
             .use(function(prop, fn) {
-                return _.each(this, function(elem) {
+                return this.each(function(elem) {
                     var result = fn.call(elem, idx, _getOrSetProp(elem, prop));
                     _getOrSetProp(elem, prop, result);
                 });
@@ -127,7 +127,7 @@ module.exports = {
             .args(String)
             .use(function(prop) {
                 var name = _propFix[prop] || prop;
-                return _.each(this, function(elem) {
+                return this.each(function(elem) {
                     delete elem[name];
                 });
             })
