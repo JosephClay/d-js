@@ -74,7 +74,7 @@ module.exports = {
                 };
             }
 
-            return this.each(function(elem) {
+            return _.each(this, function(elem) {
                 _event.add(elem, types, fn, data, selector);
             });
         },
@@ -129,7 +129,7 @@ module.exports = {
             // of strings instead...
             .args(Array)
             .use(function(arr) {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _.each(arr, function(evt) {
                         _event.remove(elem, evt);
                     });
@@ -139,7 +139,7 @@ module.exports = {
             // ...and, of course, allow a selector
             .args(Array, String)
             .use(function(arr, selector) {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _.each(arr, function(evt) {
                         _event.remove(elem, evt, selector);
                     });
@@ -148,14 +148,14 @@ module.exports = {
 
             .args(String)
             .use(function(evt) {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _event.remove(elem, evt);
                 });
             })
 
             .args(String, String)
             .use(function(evt, selector) {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _event.remove(elem, evt, selector);
                 });
             })
@@ -165,7 +165,7 @@ module.exports = {
             .expose(),
 
         trigger: function(type, data) {
-            return this.each(function(elem) {
+            return _.each(this, function(elem) {
                 _event.trigger(type, data, elem);
             });
         },

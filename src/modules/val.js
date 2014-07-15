@@ -145,14 +145,14 @@ module.exports = {
         html: overload()
             .args(String)
             .use(function(html) {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     elem.innerHTML = html;
                 });
             })
 
             .args(Function)
             .use(function(iterator) {
-                return this.each(function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
                 });
             })
@@ -176,21 +176,21 @@ module.exports = {
             .args(O.any(String, Number))
             .use(function(value) {
                 value = '' + value;
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _setVal(elem, value);
                 });
             })
 
             .args(O.any(null, undefined))
             .use(function() {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _setVal(elem, '');
                 });
             })
 
             .args(Function)
             .use(function(iterator) {
-                return this.each(function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
@@ -217,7 +217,7 @@ module.exports = {
 
             .fallback(function(value) {
                 value = '' + value;
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _setVal(elem, value);
                 });
             })
@@ -227,21 +227,21 @@ module.exports = {
         text: overload()
             .args(String)
             .use(function(str) {
-                return this.each(function(elem) {
+                return _.each(this, function(elem) {
                     _text.set(elem, str);
                 });
             })
 
             .args(Function)
             .use(function(iterator) {
-                return this.each(function(elem, idx) {
+                return _.each(this, function(elem, idx) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
                 });
             })
 
             .fallback(function() {
                 var str = '';
-                this.each(function(elem) {
+                _.each(this, function(elem) {
                     str += _text.get(elem);
                 });
 
