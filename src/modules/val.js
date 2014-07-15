@@ -210,7 +210,7 @@ module.exports = {
                     len = this.length;
                 _.each(arr, function(val, idx) {
                     if (idx >= len) { return false; }
-                    _setVal(dom[idx], '' + val);
+                    _setVal(d[idx], '' + val);
                 });
                 return this;
             })

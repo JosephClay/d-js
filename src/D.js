@@ -33,9 +33,9 @@ var _ = require('_'),
 // Store previous reference
 var _prevD = window.D;
 
-var DOM = function(arg, attrs) {
+var D = function(arg, attrs) {
     // Wasn't created with "new"
-    if (!(this instanceof DOM)) { return new DOM(arg, attrs); }
+    if (!(this instanceof D)) { return new D(arg, attrs); }
 
     // Nothin
     if (!arg) { return; }
@@ -56,7 +56,7 @@ var DOM = function(arg, attrs) {
             return;
         }
 
-        // Selector: perform a find without creating a new DOM
+        // Selector: perform a find without creating a new D
         utils.merge(this, selectors.find(arg, true));
         return;
     }
@@ -77,7 +77,7 @@ var _hasMoreConflict = false,
     _prevjQuery,
     _prev$;
 
-_.extend(DOM,
+_.extend(D,
     parser.D,
     data.D,
     deferred.D,
@@ -106,14 +106,14 @@ _.extend(DOM,
         }
 
         window.D = _prevD;
-        return DOM;
+        return D;
     },
 
     moreConflict: function() {
         _hasMoreConflict = true;
         _prevjQuery = window.jQuery;
         _prev$ = window.$;
-        window.jQuery = window.Zepto = window.$ = DOM;
+        window.jQuery = window.Zepto = window.$ = D;
     }
 });
 
@@ -131,8 +131,8 @@ var arrayProto = (function(proto, obj) {
 }(Array.prototype, {}));
 
 _.extend(
-    DOM.prototype,
-    { constructor: DOM },
+    D.prototype,
+    { constructor: D },
     arrayProto,
     array.fn,
     selectors.fn,
@@ -151,13 +151,13 @@ _.extend(
 
 // Expose the prototype so that
 // it can be hooked into for plugins
-DOM.fn = DOM.prototype;
+D.fn = D.prototype;
 
-module.exports = window.D = DOM;
+module.exports = window.D = D;
 
 // TODO: Make this part of the build configuration
 if (typeof define === 'function' && define.amd) {
     define('D', [], function() {
-        return DOM;
+        return D;
     });
 }
