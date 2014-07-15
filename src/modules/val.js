@@ -206,7 +206,7 @@ module.exports = {
 
             .args(Array)
             .use(function(arr) {
-                var dom = this,
+                var d = this,
                     len = this.length;
                 _.each(arr, function(val, idx) {
                     if (idx >= len) { return false; }

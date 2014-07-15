@@ -92,13 +92,13 @@ var _getSiblings = function(context) {
         return _.flatten(result);
     },
 
-    _getParentsUntil = function(dom, stopSelector) {
+    _getParentsUntil = function(d, stopSelector) {
         var idx = 0,
-            len = dom.length,
+            len = d.length,
             parents,
             result = [];
         for (; idx < len; idx++) {
-            parents = _crawlUpNode(dom[idx], null, stopSelector);
+            parents = _crawlUpNode(d[idx], null, stopSelector);
             result.push(parents);
         }
         return _.flatten(result);
@@ -172,14 +172,14 @@ var _getSiblings = function(context) {
         return result;
     },
 
-    _getPositional = function(getter, dom, selector) {
+    _getPositional = function(getter, d, selector) {
         var result = [],
             idx,
-            len = dom.length,
+            len = d.length,
             sibling;
 
         for (idx = 0; idx < len; idx++) {
-            sibling = getter(dom[idx]);
+            sibling = getter(d[idx]);
             if (sibling && (!selector || Fizzle.is(selector).match(sibling))) {
                 result.push(sibling);
             }
@@ -188,10 +188,10 @@ var _getSiblings = function(context) {
         return result;
     },
 
-    _getPositionalAll = function(getter, dom, selector) {
+    _getPositionalAll = function(getter, d, selector) {
         var result = [],
             idx,
-            len = dom.length,
+            len = d.length,
             siblings,
             filter;
 
@@ -200,7 +200,7 @@ var _getSiblings = function(context) {
         }
 
         for (idx = 0; idx < len; idx++) {
-            siblings = getter(dom[idx]);
+            siblings = getter(d[idx]);
             if (selector) {
                 siblings = _.filter(siblings, filter);
             }
@@ -210,10 +210,10 @@ var _getSiblings = function(context) {
         return result;
     },
 
-    _getPositionalUntil = function(getter, dom, selector) {
+    _getPositionalUntil = function(getter, d, selector) {
         var result = [],
             idx,
-            len = dom.length,
+            len = d.length,
             siblings,
             iterator;
 
@@ -229,7 +229,7 @@ var _getSiblings = function(context) {
         }
 
         for (idx = 0; idx < len; idx++) {
-            siblings = getter(dom[idx]);
+            siblings = getter(d[idx]);
 
             if (selector) {
                 _.each(siblings, iterator);

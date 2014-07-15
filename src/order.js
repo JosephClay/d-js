@@ -53,10 +53,10 @@ var _isNode = function(b, flag, a) {
 module.exports = {
 
     /**
-     * Sorts an array of DOM elements in-place (i.e., mutates the original array)
+     * Sorts an array of D elements in-place (i.e., mutates the original array)
      * in document order and returns whether any duplicates were found.
      * @function
-     * @param {Element[]} array          Array of DOM elements.
+     * @param {Element[]} array          Array of D elements.
      * @param {Boolean}  [reverse=false] If a truthy value is passed, the given array will be reversed.
      * @returns {Boolean} true if any duplicates were found, otherwise false.
      * @see jQuery src/selector-native.js:37
@@ -118,8 +118,8 @@ module.exports = {
 
     /**
      * Determines whether node `a` contains node `b`.
-     * @param {Element} a DOM element node
-     * @param {Element} b DOM element node
+     * @param {Element} a D element node
+     * @param {Element} b D element node
      * @returns {Boolean} true if node `a` contains node `b`; otherwise false.
      */
     contains: function(a, b) {
