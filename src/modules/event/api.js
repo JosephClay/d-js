@@ -115,11 +115,10 @@ module.exports = {
 
             .expose(),
 
-
-
         //  TODO: Don't use the stupid 1 on the end
         one: function(types, selector, data, fn) {
-            return this.on(types, selector, data, fn, 1);
+            return this.once.apply(this, arguments);
+            // return this.on(types, selector, data, fn, 1);
         },
 
         off: overload()
