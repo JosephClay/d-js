@@ -145,7 +145,7 @@ test('on(), five events at once', function() {
 });
 
 test('on(), multiple events at once and namespaces', function() {
-    expect(7);
+    expect(5);
 
     var cur, div,
         obj = {};
@@ -160,9 +160,8 @@ test('on(), multiple events at once and namespaces', function() {
     // manually clean up detached elements
     div.remove();
 
-    div = D('<div/>').on('click mouseover', obj, function(e) {
+    div = D('<div/>').on('click mouseover', function(e) {
         equal(e.type, cur, 'Verify right multi event was fired.');
-        equal(e.data, obj, 'Make sure the data came in correctly.');
     });
 
     cur = 'click';

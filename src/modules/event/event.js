@@ -19,7 +19,7 @@ var _           = require('_'),
         right : 3
     };
 
-var _add = function(elem, eventStr, handler, selector) {
+var _add = function(elem, eventStr, handler, data, selector) {
     // Don't attach events to text/comment nodes
     var nodeType = elem.nodeType;
     if (nodeType === _nodeType.TEXT ||
