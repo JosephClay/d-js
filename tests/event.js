@@ -6,7 +6,7 @@ test('null or undefined handler', function() {
     // Supports Fixes bug #7229
     D('#firstp').on('click', null);
     ok(true, 'Passing a null handler will not throw an exception');
-    
+
     D('#firstp').on('click', undefined);
     ok(true, 'Passing an undefined handler will not throw an exception');
 });
@@ -18,9 +18,8 @@ test('on() with non-null,defined data', function() {
         equal(data, 0, 'non-null, defined data (zero) is correctly passed');
     };
 
-    debugger;
     D('#foo').on('foo.on', handler);
-    D('div').on('foo.delegate', '#foo', handler);
+    D('#dl').on('foo.delegate', '#foo', handler);
 
     D('#foo').trigger('foo', 0);
 
@@ -61,7 +60,7 @@ test('Handler changes and .trigger() order', function() {
 TODO: Rewrite - using D._data
 test('on(), with data', function() {
     expect(4);
-    
+
     var test, handler, handler2;
 
     handler = function(event) {
@@ -95,6 +94,7 @@ test('click(), with data', function() {
 });
 */
 
+/* not supporting, crutch for bad design
 test('on(), with data, trigger with data', function() {
     expect(4);
 
@@ -106,6 +106,7 @@ test('on(), with data, trigger with data', function() {
     };
     D('#firstp').on('click', {foo: 'bar'}, handler).trigger('click', [{bar: 'foo'}]).off('click', handler);
 });
+*/
 
 test('on(), multiple events at once', function() {
     expect(2);

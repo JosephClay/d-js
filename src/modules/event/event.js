@@ -79,8 +79,8 @@ var _add = function(elem, eventStr, handler, selector) {
 
         var handlers;
         // Init the event handler queue if we're the first
-        if (!(handlers = eventStrInstances[type])) {
-            handlers = eventStrInstances[type] = [];
+        if (!(handlers = eventData[type])) {
+            handlers = eventData[type] = [];
             handlers.delegateCount = 0;
 
             // Only use add the event if the special events handler returns false
@@ -136,7 +136,7 @@ var _remove = function(elem, types, selector, mappedTypes) {
 
         var special = _special[type] || {};
         type = (selector ? special.delegateType : special.bindType) || type;
-        
+
         var handlers = events[type] || [];
         tmp = tmp[2] && new RegExp('(^|\\.)' + namespaces.join('\\.(?:.*\\.|)') + '(\\.|$)');
 
@@ -226,10 +226,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     event.target = event.target || elem;
 
     // Clone any incoming data and prepend the event, creating the handler arg list
-    data = !_.exists(data) ?
-        [event] :
-        // NOTE: this was jQuery.makeArray - _.flatten should be equivalent
-        _.flatten([event], data);
+    data = !_.exists(data) ? [event] : [event, data];
 
     // Allow special events to draw outside the lines
     var special = _special[type] || {};
@@ -268,7 +265,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
         // jQuery handler
         var eventData = _data.get(cur, _EVENT_KEY) || {};
         handle = eventData[event.type] && eventData.handle;
-        debugger;
+
         if (handle) {
             handle.apply(cur, data);
         }

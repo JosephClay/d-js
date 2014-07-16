@@ -49,7 +49,7 @@ Event.prototype = {
 
         // If preventDefault exists, run it on the original event
         if (e.preventDefault) {
-            
+
             e.preventDefault();
 
         } else {
@@ -61,7 +61,7 @@ Event.prototype = {
     stopPropagation: function() {
         var e = this.originalEvent;
 
-        this.isPropagationStopped = returnTrue;
+        this.isPropagationStopped = _utils.returnTrue;
         if (!e) { return; }
 
         // If stopPropagation exists, run it on the original event
