@@ -239,7 +239,7 @@ var _ = {
         if (!obj || !iterator) { return; }
 
         // Array-like
-        if (obj.length) {
+        if (obj.length !== undefined) {
             var idx = 0, length = obj.length;
             for (; idx < length; idx++) {
                 if (iterator(obj[idx], idx) === false) {
