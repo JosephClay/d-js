@@ -215,7 +215,7 @@ module.exports = {
 
             .args(String, Function)
             .use(function(attr, fn) {
-                return _.each(this, function(elem, idx) {
+                return this.each(function(elem, idx) {
                     var oldAttr = _getAttribute(elem, attr),
                         result  = fn.call(elem, idx, oldAttr);
                     if (!_.exists(result)) { return; }

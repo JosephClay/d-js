@@ -68,7 +68,7 @@ module.exports = {
         offset: overload()
             .args(O.any(Object, Function))
             .use(function(posOrIterator) {
-                return _.each(this, function(elem, idx) {
+                return this.each(function(elem, idx) {
                     _setOffset(elem, idx, posOrIterator);
                 });
             })
