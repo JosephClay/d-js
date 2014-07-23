@@ -90,23 +90,17 @@ var _valHooks = {
 
 };
 
-// Radios and checkboxes getter/setter
-_.each(['radio', 'checkbox'], function(type) {
-    _valHooks[type] = {
-        set: function(elem, value) {
-            if (_.isArray(value)) {
-                return (elem.checked = _.indexOf(value, _getVal(elem)) >= 0);
+// Radio and checkbox getter for Webkit
+if (!_SUPPORTS.checkOn) {
+    _.each(['radio', 'checkbox'], function(type) {
+        _valHooks[type] = {
+            get: function(elem) {
+                // Support: Webkit - '' is returned instead of 'on' if a value isn't specified
+                return elem.getAttribute('value') === null ? 'on' : elem.value;
             }
         }
-    };
-
-    if (!_SUPPORTS.checkOn) {
-        _valHooks[type].get = function(elem) {
-            // Support: Webkit - '' is returned instead of 'on' if a value isn't specified
-            return elem.getAttribute('value') === null ? 'on' : elem.value;
-        };
-    }
-});
+    });
+}
 
 var _getVal = function(elem) {
     if (!elem || (elem.nodeType !== _NODE_TYPE.ELEMENT)) { return; }
