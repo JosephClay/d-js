@@ -40,6 +40,10 @@ var _ = {
     // NOTE: In older browsers, this will be overwritten below
     isArray: Array.isArray,
 
+    isArrayLike: function(obj) {
+        return _.isArray(obj) || _.isNumber(obj.length);
+    },
+
     // NodeList check. For our purposes, a node list
     // and an HTMLCollection are the same
     isNodeList: function(obj) {
@@ -215,6 +219,19 @@ var _ = {
             arr.push(obj[key]);
         }
         return arr;
+    },
+
+    makeArray: function(arg) {
+        if (arg === null || arg === undefined) {
+            return [];
+        }
+        if (arg.slice === _slice) {
+            return arg.slice();
+        }
+        if (_.isArrayLike(arg)) {
+            return _slice.call(arg);
+        }
+        return [ arg ];
     },
 
     // Doesn't a very simple case of array to object.
