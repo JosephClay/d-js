@@ -2,6 +2,7 @@ var _NODE_TYPE = require('./nodeType'),
     _id        = 0,
     _toString  = Object.prototype.toString,
     _indexOf   = Array.prototype.indexOf,
+    _slice     = Array.prototype.slice,
     _isTruthy  = function(arg) { return !!arg; };
 
 var _ = {
@@ -195,7 +196,7 @@ var _ = {
             return [];
         }
         if (_.isArray(obj)) {
-            return Array.prototype.slice.call(obj);
+            return _slice.call(obj);
         }
 
         var arr,
