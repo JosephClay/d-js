@@ -25,7 +25,7 @@ var _valHooks = {
     option: {
         get: function(elem) {
             var val = elem.getAttribute('value');
-            return _.exists(val) ? val : _text.get(elem);
+            return _.string.trim(_.exists(val) ? val : _text.get(elem));
         }
     },
 
