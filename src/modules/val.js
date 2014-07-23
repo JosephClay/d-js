@@ -68,13 +68,13 @@ var _valHooks = {
         set: function(elem, value) {
             var optionSet, option,
                 options = elem.options,
-                values  = jQuery.makeArray(value),
+                values  = _.makeArray(value),
                 idx     = options.length;
 
             while (idx--) {
                 option = options[idx];
 
-                if (jQuery.inArray(jQuery.valHooks.option.get(option), values) >= 0) {
+                if (_.indexOf(values, _valHooks.option.get(option)) >= 0) {
                     option.selected = optionSet = true;
                 } else {
                     option.selected = false;
@@ -95,7 +95,7 @@ _.each(['radio', 'checkbox'], function(type) {
     _valHooks[type] = {
         set: function(elem, value) {
             if (_.isArray(value)) {
-                return (elem.checked = jQuery.inArray(jQuery(elem).val(), value) >= 0);
+                return (elem.checked = _.indexOf(value, _getVal(elem)) >= 0);
             }
         }
     };
