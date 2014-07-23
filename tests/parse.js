@@ -28,7 +28,7 @@ test('D.parseHTML', function() {
 });
 
 test('D("html")', function() {
-    expect(18);
+    expect(17);
 
     D.foo = false;
     var script = D('<script>D.foo="test";</script>')[0];
@@ -61,7 +61,6 @@ test('D("html")', function() {
     ok(D('<table></table>')[0], 'Create a table with closing tag.');
 
     equal(D('element[attribute="<div></div>"]').length, 0, 'When html is within brackets, do not recognize as html.');
-    equal(D('element:not(<div></div>)').length, 0, 'When html is within parens, do not recognize as html.' );
     equal(D('\\<div\\>').length, 0, 'Ignore escaped html characters' );
 });
 
