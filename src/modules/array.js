@@ -1,16 +1,16 @@
 var _      = require('_'),
     _order = require('../order');
 
-var _slice = (function(_slice) {
+var _slice = (function(slice) {
         return function(arr, start, end) {
             // Exit early for empty array
             if (!arr || !arr.length) { return []; }
 
             // End, naturally, has to be higher than 0 to matter,
             // so a simple existence check will do
-            if (end) { return _slice.call(arr, start, end); }
+            if (end) { return slice.call(arr, start, end); }
 
-            return _slice.call(arr, start || 0);
+            return slice.call(arr, start || 0);
         };
     }([].slice)),
 
