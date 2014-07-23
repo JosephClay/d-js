@@ -124,8 +124,22 @@ var _getVal = function(elem) {
     return _.isString(val) ? _utils.normalizeNewlines(val) : val;
 };
 
+var _stringify = function(value) {
+    if (!_.exists(value)) {
+        return '';
+    }
+    return '' + value;
+};
+
 var _setVal = function(elem, value) {
     if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
+
+    // Stringify values
+    if (_.isArray(value)) {
+        value = _.map(value, _stringify);
+    } else {
+        value = _stringify(value);
+    }
 
     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
     if (hook && hook.set) {
@@ -173,9 +187,8 @@ module.exports = {
             })
 
             // Setters
-            .args(O.any(String, Number))
+            .args(O.any(String, Number, Array))
             .use(function(value) {
-                value = '' + value;
                 return _.each(this, function(elem) {
                     _setVal(elem, value);
                 });
@@ -194,29 +207,12 @@ module.exports = {
                     if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
-                    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
 
-                    if (hook && hook.set) {
-                        hook.set(elem, value);
-                    } else {
-                        elem.setAttribute('value', value);
-                    }
+                    _setVal(elem, value);
                 });
-            })
-
-            .args(Array)
-            .use(function(arr) {
-                var d = this,
-                    len = this.length;
-                _.each(arr, function(val, idx) {
-                    if (idx >= len) { return false; }
-                    _setVal(d[idx], '' + val);
-                });
-                return this;
             })
 
             .fallback(function(value) {
-                value = '' + value;
                 return _.each(this, function(elem) {
                     _setVal(elem, value);
                 });
