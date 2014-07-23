@@ -53,7 +53,7 @@ test('D("html")', function() {
     ok(D('<input/>').attr('type', 'hidden'), 'Create an input and set the type.');
 
     var j = D('<span>hi</span> there <!-- mon ami -->');
-    ok(j.length >= 2, 'Check node,textnode,comment creation (some browsers delete comments)');
+    equal(j.length, 1, 'Only return element nodes');
 
     ok(!D('<option>test</option>')[0].selected, 'Make sure that options are auto-selected');
 
