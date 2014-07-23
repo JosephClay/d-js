@@ -52,6 +52,8 @@ var _empty = function(arr) {
         }
     },
 
+    // TODO: IE6-8 copies events bound via attachEvent when using cloneNode.
+    //       See jquery.js:5401
     _clone = function(elem) {
         return elem.cloneNode(true);
     },
