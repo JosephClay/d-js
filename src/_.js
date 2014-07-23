@@ -41,7 +41,19 @@ var _ = {
     isArray: Array.isArray,
 
     isArrayLike: function(obj) {
-        return _.isArray(obj) || _.isNumber(obj.length);
+        if (!_.exists(obj)) {
+            return false;
+        }
+        if (_.isArray(obj)) {
+            return true;
+        }
+        if (_.isString(obj)) {
+            return false;
+        }
+        if (_.isNumber(obj.length) && ('0' in obj)) {
+            return true;
+        }
+        return false;
     },
 
     // NodeList check. For our purposes, a node list
