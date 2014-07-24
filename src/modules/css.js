@@ -80,10 +80,14 @@ var _hide = function(elem) {
             }
 
             var width = elem.offsetWidth;
-            return (width === 0 &&
-                    _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
-                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'width'); }) :
-                            _getWidthOrHeight(elem, 'width'); // TODO: Eeewwww
+            if (width === 0) {
+                var computedStyle = _getComputedStyle(elem);
+                if (_regex.display.isNoneOrTable(computedStyle.display)) {
+                    return _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'width'); });
+                }
+            }
+
+            return _getWidthOrHeight(elem, 'width');
         },
         set: function(elem, val) {
             elem.style.width = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
@@ -101,10 +105,14 @@ var _hide = function(elem) {
             }
 
             var height = elem.offsetHeight;
-            return (height === 0 &&
-                    _regex.display.isNoneOrTable(_getComputedStyle(elem).display)) ?
-                        _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'height'); }) :
-                            _getWidthOrHeight(elem, 'height');
+            if (height === 0) {
+                var computedStyle = _getComputedStyle(elem);
+                if (_regex.display.isNoneOrTable(computedStyle.display)) {
+                    return _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'height'); });
+                }
+            }
+
+            return _getWidthOrHeight(elem, 'height');
         },
 
         set: function(elem, val) {
