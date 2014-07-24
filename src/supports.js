@@ -69,5 +69,8 @@ module.exports = _.extend(support, {
     getAttribute: !!a.style.getAttribute,
 
     // Support: IE9+, modern browsers
-    getElementsByClassName: !!a.getElementsByClassName
+    getElementsByClassName: !!a.getElementsByClassName,
+
+    // Support: IE9+, modern browsers
+    getComputedStyle: !!window.getComputedStyle
 });
