@@ -82,6 +82,9 @@ var _hide = function(elem) {
             var width = elem.offsetWidth;
             if (width === 0) {
                 var computedStyle = _getComputedStyle(elem);
+                if (!computedStyle) {
+                    return 0;
+                }
                 if (_regex.display.isNoneOrTable(computedStyle.display)) {
                     return _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'width'); });
                 }
@@ -107,6 +110,9 @@ var _hide = function(elem) {
             var height = elem.offsetHeight;
             if (height === 0) {
                 var computedStyle = _getComputedStyle(elem);
+                if (!computedStyle) {
+                    return 0;
+                }
                 if (_regex.display.isNoneOrTable(computedStyle.display)) {
                     return _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'height'); });
                 }
