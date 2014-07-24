@@ -4,7 +4,8 @@ var _         = require('_'),
     select    = document.createElement('select'),
     option    = select.appendChild(document.createElement('option')),
     input     = document.createElement('input'),
-    textarea  = document.createElement('textarea');
+    textarea  = document.createElement('textarea'),
+    tbody     = document.createElement('tbody');
 
 // Support: IE < 9 (lack submit/change bubble), Firefox 23+ (lack focusin event)
 var support = {};
@@ -72,5 +73,13 @@ module.exports = _.extend(support, {
     getElementsByClassName: !!a.getElementsByClassName,
 
     // Support: IE9+, modern browsers
-    getComputedStyle: !!window.getComputedStyle
+    getComputedStyle: !!window.getComputedStyle,
+
+    // Support: IE9+, modern browsers
+    // innerHTML on tbody elements is readOnly in IE8
+    // See: http://stackoverflow.com/a/4729743/467582
+    writableTbody: (function() {
+        tbody.innerHTML = '<tr><td></td></tr>';
+        return !!tbody.innerHTML;
+    }())
 });

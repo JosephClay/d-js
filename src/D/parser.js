@@ -1,5 +1,22 @@
 var _regex                 = require('../regex'),
+    _supports              = require('../supports'),
     _MAX_SINGLE_TAG_LENGTH = 30;
+
+var _hooks = {
+    dflt: function(parentTagName, htmlStr) {
+        var parent = document.createElement(parentTagName);
+        parent.innerHTML = htmlStr;
+        return parent;
+    }
+};
+
+if (!_supports.writableTbody) {
+    _hooks.tbody = function(parentTagName, htmlStr) {
+        var parent = document.createElement('div');
+        parent.innerHTML = '<table>' + htmlStr + '</table>';
+        return parent.firstChild.firstChild;
+    };
+}
 
 var _parseSingleTag = function(htmlStr) {
     if (htmlStr.length > _MAX_SINGLE_TAG_LENGTH) { return null; }
@@ -15,9 +32,8 @@ var _parse = function(htmlStr) {
     if (singleTag) { return singleTag; }
 
     var parentTagName = _regex.getParentTagName(htmlStr),
-        parent = document.createElement(parentTagName);
-
-    parent.innerHTML = htmlStr;
+        hook          = _hooks[parentTagName] || _hooks.dflt,
+        parent        = hook(parentTagName, htmlStr);
 
     var child,
         idx = parent.children.length,
