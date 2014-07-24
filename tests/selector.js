@@ -85,7 +85,7 @@ test('selectors with comma', function() {
 });
 
 test('child and adjacent', function() {
-    expect(25);
+    expect(24);
 
     var nothiddendiv;
 
@@ -110,7 +110,6 @@ test('child and adjacent', function() {
     t('Multiple sibling combinators doesnt miss general siblings', '#siblingTest > em:first-child + em ~ span', ['siblingspan']);
 
     equal(D('#listWithTabIndex').length, 1, 'Parent div for next test is found via ID (#8310)');
-    equal(D('#listWithTabIndex li:eq(2) ~ li').length, 2, 'Find by general sibling combinator (#8310)');
     equal(D('#__sizzle__').length, 0, 'Make sure the temporary id assigned by sizzle is cleared out (#8310)');
     equal(D('#listWithTabIndex').length, 1, 'Parent div for previous test is still found via ID (#8310)');
 
