@@ -7,7 +7,8 @@ var _         = require('_'),
     _split    = _.string.split,
     _isEmpty  = _.string.isEmpty;
 
-var _impl = _SUPPORTS.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
+var _impl = _SUPPORTS.classList ? require('./classes/classes-modern')
+                                : require('./classes/classes-legacy');
 
 var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
