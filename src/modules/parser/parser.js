@@ -1,30 +1,6 @@
 var _regex                 = require('../regex'),
-    _supports              = require('../supports'),
+    _hooks                 = require('./hooks'),
     _MAX_SINGLE_TAG_LENGTH = 30;
-
-var _hooks = {
-    dflt: function(parentTagName, htmlStr) {
-        var parent = document.createElement(parentTagName);
-        parent.innerHTML = htmlStr;
-        return parent;
-    }
-};
-
-if (!_supports.writableTbody) {
-    _hooks.tbody = function(parentTagName, htmlStr) {
-        var parent = document.createElement('div');
-        parent.innerHTML = '<table>' + htmlStr + '</table>';
-        return parent.firstChild.firstChild;
-    };
-}
-
-if (!_supports.writableSelect) {
-    _hooks.select = function(parentTagName, htmlStr) {
-        var parent = document.createElement('div');
-        parent.innerHTML = '<select>' + htmlStr + '</select>';
-        return parent.firstChild;
-    };
-}
 
 var _parseSingleTag = function(htmlStr) {
     if (htmlStr.length > _MAX_SINGLE_TAG_LENGTH) { return null; }

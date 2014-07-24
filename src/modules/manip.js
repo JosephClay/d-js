@@ -9,7 +9,7 @@ var _         = require('_'),
 
     _data     = require('./data'),
 
-    parser    = require('../D/parser'),
+    parser    = require('./parser/parser'),
     utils     = require('../utils');
 
 var _empty = function(arr) {

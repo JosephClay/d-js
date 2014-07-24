@@ -8,7 +8,7 @@ require('./o.custom');
 
 var _ = require('_'),
 
-    parser      = require('./D/parser'),
+    parser      = require('./modules/parser/parser'),
     utils       = require('./utils'),
     array       = require('./modules/array'),
     onready     = require('./modules/onready'),
