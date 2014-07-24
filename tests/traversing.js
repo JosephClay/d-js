@@ -339,7 +339,7 @@ test('has(Element)', function() {
     obj = D('#qunit-fixture').has(D('#sndp')[0]);
     deepEqual(obj.get(), q('qunit-fixture'), 'Keeps elements that have the element as a descendant');
 
-    detached = D('<a><b><i/></b></a>');
+    detached = D('<a><b><i></i></b></a>');
     deepEqual(detached.has(detached.find('i')[0]).get(), detached.get(), '...Even when detached');
 
     multipleParent = D('#qunit-fixture, #header').has(D('#sndp')[0]);
@@ -354,7 +354,7 @@ test('has(Selector)', function() {
     obj = D('#qunit-fixture').has('#sndp');
     deepEqual(obj.get(), q('qunit-fixture'), 'Keeps elements that have any element matching the selector as a descendant');
 
-    detached = D('<a><b><i/></b></a>');
+    detached = D('<a><b><i></i></b></a>');
     deepEqual(detached.has('i').get(), detached.get(), '...Even when detached');
 
     multipleParent = D('#qunit-fixture, #header').has('#sndp');
@@ -375,7 +375,7 @@ test('has(Arrayish)', function() {
     simple = D('#qunit-fixture').has(D('#sndp'));
     deepEqual(simple.get(), q('qunit-fixture'), 'Keeps elements that have any element in the D list as a descendant');
 
-    detached = D('<a><b><i/></b></a>');
+    detached = D('<a><b><i></i></b></a>');
     deepEqual(detached.has(detached.find('i')).get(), detached.get(), '...Even when detached');
 
     multipleParent = D('#qunit-fixture, #header').has(D('#sndp'));
