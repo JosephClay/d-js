@@ -2,8 +2,8 @@ var _         = require('_'),
     overload  = require('overload'),
     O         = overload.O,
 
-    _utils    = require('../../utils');
-    _event    = require('./event');
+    _utils    = require('../../utils'),
+    _event    = require('./event'),
     _specials = require('./eventSpecials');
 
 module.exports = {
