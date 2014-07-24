@@ -64,9 +64,9 @@ var _hide = function(elem) {
     _getComputedStyle = (function() {
         return _SUPPORTS.currentStyle ?
             function(elem) { return elem.currentStyle; } :
-                // Avoids an 'Illegal Invocation' error (Chrome)
-                // Avoids a 'TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element' error (Firefox)
-                function(elem) { return _.isElement(elem) ? window.getComputedStyle(elem) : null; };
+            // Avoids an 'Illegal Invocation' error (Chrome)
+            // Avoids a 'TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element' error (Firefox)
+            function(elem) { return _.isElement(elem) ? window.getComputedStyle(elem) : null; };
     }()),
 
     _width = {
