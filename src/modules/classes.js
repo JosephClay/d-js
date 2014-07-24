@@ -1,11 +1,12 @@
-var _         = require('_'),
-    overload  = require('overload'),
-    O         = overload.O,
+var _NODE_TYPE = require('../nodeType'),
+    _SUPPORTS  = require('../supports'),
 
-    _SUPPORTS = require('../supports'),
+    _          = require('_'),
+    overload   = require('overload'),
+    O          = overload.O,
 
-    _split    = _.string.split,
-    _isEmpty  = _.string.isEmpty;
+    _split     = _.string.split,
+    _isEmpty   = _.string.isEmpty;
 
 var _impl = _SUPPORTS.classList ? require('./classes/classes-modern')
                                 : require('./classes/classes-legacy');
@@ -13,6 +14,7 @@ var _impl = _SUPPORTS.classList ? require('./classes/classes-modern')
 var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
         while (elemIdx--) {
+            if (elems[elemIdx].nodeType !== _NODE_TYPE.ELEMENT) { continue; }
             if (_impl.hasClass(elems[elemIdx], name)) { return true; }
         }
         return false;
@@ -23,6 +25,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
         if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
+            if (elems[elemIdx].nodeType !== _NODE_TYPE.ELEMENT) { continue; }
             _impl.addClasses(elems[elemIdx], names);
         }
     },
@@ -32,6 +35,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
         if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
+            if (elems[elemIdx].nodeType !== _NODE_TYPE.ELEMENT) { continue; }
             _impl.removeClasses(elems[elemIdx], names);
         }
     },
@@ -39,6 +43,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
     _removeAllClasses = function(elems) {
         var elemIdx = elems.length;
         while (elemIdx--) {
+            if (elems[elemIdx].nodeType !== _NODE_TYPE.ELEMENT) { continue; }
             elems[elemIdx].className = '';
         }
     },
@@ -48,6 +53,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
         if (!_.isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
+            if (elems[elemIdx].nodeType !== _NODE_TYPE.ELEMENT) { continue; }
             _impl.toggleClasses(elems[elemIdx], names);
         }
     };
