@@ -1,4 +1,4 @@
-var _regex                 = require('../regex'),
+var _regex                 = require('../../regex'),
     _hooks                 = require('./hooks'),
     _MAX_SINGLE_TAG_LENGTH = 30;
 
