@@ -3,6 +3,9 @@ var _              = require('_'),
     _data          = require('../data'),
     _event         = require('./event');
 
+// TODO: Remove.  This is needed to prevent IE8 from failing catastrophically.
+return;
+
 if (!_supports.submitBubbles) {
     // IE change delegation and checkbox/radio fix
     _event.special.change = {
