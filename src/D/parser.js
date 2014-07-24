@@ -18,6 +18,14 @@ if (!_supports.writableTbody) {
     };
 }
 
+if (!_supports.writableSelect) {
+    _hooks.select = function(parentTagName, htmlStr) {
+        var parent = document.createElement('div');
+        parent.innerHTML = '<select>' + htmlStr + '</select>';
+        return parent.firstChild;
+    };
+}
+
 var _parseSingleTag = function(htmlStr) {
     if (htmlStr.length > _MAX_SINGLE_TAG_LENGTH) { return null; }
 

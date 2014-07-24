@@ -81,5 +81,13 @@ module.exports = _.extend(support, {
     writableTbody: (function() {
         tbody.innerHTML = '<tr><td></td></tr>';
         return !!tbody.innerHTML;
+    }()),
+
+    // Support: IE9+, modern browsers
+    // the only workaround seems to be use outerHTML and include your <select> in the string
+    // See: http://stackoverflow.com/questions/4729644/cant-innerhtml-on-tbody-in-ie
+    writableSelect: (function() {
+        select.innerHTML = '<option></option>';
+        return select.children && select.children.length;
     }())
 });

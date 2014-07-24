@@ -59,7 +59,8 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
         'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
         'tbody':    /^<(?:tr)\b/,
         'tr':       /^<(?:td|th)\b/,
-        'colgroup': /^<(?:col)\b/
+        'colgroup': /^<(?:col)\b/,
+        'select':   /^<(?:option)\b/
     },
 
     _NOT_WHITE           = /\S+/g;
