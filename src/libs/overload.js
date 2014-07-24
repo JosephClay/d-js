@@ -134,7 +134,8 @@ var _getConfigurationType = function(val) {
 	if (val === undefined) { return _types[sUndefined]; }
 
 	// we have something, but don't know what
-	if (val.name === undefined) {
+	if (!val.name) {
+		if (val === root[sElement]) { return _types[sElement]; }
 		if (val !== +val) { return _types[sNaN]; } // NaN check
 		return _types[sInfinity]; // Infinity check
 	}
