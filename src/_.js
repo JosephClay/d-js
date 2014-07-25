@@ -90,7 +90,7 @@ var _ = {
         for (; idx < len; idx++) {
             value = arr[idx];
 
-            if (_.isArray(value) || _.isNodeList(value)) {
+            if (_.isArrayLike(value)) {
                 result = result.concat(_.flatten(value));
             } else {
                 result.push(value);
