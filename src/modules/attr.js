@@ -114,6 +114,10 @@ var _hooks = {
                 if (val === null || val === undefined) {
                     val = elem.defaultValue;
                 }
+                // IE8
+                if (!_SUPPORTS.buttonValue && val === '' && _utils.isNodeName(elem, 'button')) {
+                    val = elem.getAttribute('value');
+                }
                 return _utils.normalizeNewlines(val);
             },
             set: function(elem, value) {

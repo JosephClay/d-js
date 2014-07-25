@@ -1,6 +1,7 @@
 var _         = require('_'),
     div       = require('./div'),
     a         = div.getElementsByTagName('a')[0],
+    button    = div.getElementsByTagName('button')[0],
     select    = document.createElement('select'),
     option    = select.appendChild(document.createElement('option')),
     input     = document.createElement('input'),
@@ -101,5 +102,11 @@ module.exports = _.extend(support, {
         var i = document.createElement('input');
         i.setAttribute('value', '');
         return i.getAttribute('value') === '';
+    }()),
+
+    // Support: IE9+, modern browsers
+    buttonValue: (function() {
+        button.setAttribute('value', 'foobar');
+        return button.value === 'foobar';
     }())
 });
