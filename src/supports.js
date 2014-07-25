@@ -43,8 +43,12 @@ module.exports = _.extend(support, {
     // (IE normalizes it by default)
     hrefNormalized: a.getAttribute('href') === '/a',
 
-    // Check the default checkbox/radio value ('' on WebKit; 'on' elsewhere)
-    checkOn: !!input.value,
+    // Check the default checkbox/radio value ('' in older WebKit; 'on' elsewhere)
+    checkOn: (function() {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'radio');
+        return !!input.value;
+    }()),
 
     // Check if an input maintains its value after becoming a radio
     // Support: Modern browsers only (NOT IE <= 11)
