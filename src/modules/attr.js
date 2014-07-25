@@ -46,12 +46,24 @@ var _isDataKey = function(key) {
         return keys;
     };
 
+var _hasAttr = _SUPPORTS.inputValueAttr
+    // IE9+, modern browsers
+    ? function(elem, attr) { return elem.hasAttribute(attr); }
+    // IE8
+    : function(elem, attr) {
+        // In IE8, input.hasAttribute('value') returns false if the value is empty ("")
+        if (_utils.normalNodeName(elem) === 'input' && attr === 'value') {
+            return true;
+        }
+        return elem.hasAttribute(attr);
+    };
+
 var _boolHook = {
     is: function(attrName) {
         return _selector.isBooleanAttribute(attrName);
     },
     get: function(elem, attrName) {
-        if (elem.hasAttribute(attrName)) {
+        if (_hasAttr(elem, attrName)) {
             return _attrNameLowerCache.getOrSet(attrName, function() {
                 return attrName.toLowerCase();
             });
@@ -98,6 +110,10 @@ var _hooks = {
                 if (val === null || val === undefined) {
                     val = elem.getAttribute('value');
                 }
+                // IE8
+                if (val === null || val === undefined) {
+                    val = elem.defaultValue;
+                }
                 return _utils.normalizeNewlines(val);
             },
             set: function(elem, value) {
@@ -111,7 +127,7 @@ var _hooks = {
     },
 
     _getAttribute = function(elem, attr) {
-        if (!_isElementNode(elem) || !elem.hasAttribute(attr)) { return; }
+        if (!_isElementNode(elem) || !_hasAttr(elem, attr)) { return; }
 
         if (_boolHook.is(attr)) {
             return _boolHook.get(elem, attr);

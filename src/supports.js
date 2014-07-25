@@ -89,5 +89,13 @@ module.exports = _.extend(support, {
     writableSelect: (function() {
         select.innerHTML = '<option></option>';
         return select.children && select.children.length;
+    }()),
+
+    // Support: IE9+, modern browsers
+    // Use defaultValue in place of getAttribute("value")
+    inputValueAttr: (function() {
+        var i = document.createElement('input');
+        i.setAttribute('value', '');
+        return i.getAttribute('value') === '';
     }())
 });
