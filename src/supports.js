@@ -73,16 +73,16 @@ module.exports = _.extend(support, {
     }()),
 
     // Support: IE9+, modern browsers
-    getPropertyValue: !!a.style.getPropertyValue,
+    getPropertyValue:       !!a.style.getPropertyValue,
 
     // Support: IE8
-    getAttribute: !!a.style.getAttribute,
+    getAttribute:           !!a.style.getAttribute,
 
     // Support: IE9+, modern browsers
     getElementsByClassName: !!a.getElementsByClassName,
 
     // Support: IE9+, modern browsers
-    getComputedStyle: !!window.getComputedStyle,
+    getComputedStyle:       !!window.getComputedStyle,
 
     // Support: IE9+, modern browsers
     // innerHTML on tbody elements is readOnly in IE8
