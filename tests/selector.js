@@ -224,6 +224,20 @@ test('attributes', function() {
    );
 });
 
+test('find elements', function() {
+    expect(4);
+
+    var $divs = D('<div><a>a</a></div><div><b>b</b></div><div><i>i</i></div>');
+    var a = $divs[0].firstChild;
+    var b = $divs[1].firstChild;
+    var i = $divs[2].firstChild;
+
+    equal($divs.find(a).length, 1, 'Find DOM element within first matched element');
+    equal($divs.find(b).length, 1, 'Find DOM element within second matched element');
+    equal($divs.find(i).length, 1, 'Find DOM element within third matched element');
+    equal($divs.find($divs.find('a, b, i')).length, 3, 'Find DOM elements within all matched elements')
+});
+
 test('disconnected nodes', function() {
     expect(1);
 
