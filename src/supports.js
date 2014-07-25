@@ -46,8 +46,12 @@ module.exports = _.extend(support, {
     checkOn: !!input.value,
 
     // Check if an input maintains its value after becoming a radio
-    // Support: IE9, IE10
-    radioValue: input.value === 't',
+    // Support: Modern browsers only (NOT IE <= 11)
+    radioValue: (function() {
+        input.value = 't';
+        input.setAttribute('type', 'radio');
+        return input.value === 't';
+    }()),
 
     // Make sure that the options inside disabled selects aren't marked as disabled
     // (WebKit marks them as disabled)
