@@ -4,7 +4,6 @@ var _         = require('_'),
     button    = div.getElementsByTagName('button')[0],
     select    = document.createElement('select'),
     option    = select.appendChild(document.createElement('option')),
-    input     = document.createElement('input'),
     textarea  = document.createElement('textarea'),
     tbody     = document.createElement('tbody');
 
@@ -53,6 +52,7 @@ module.exports = _.extend(support, {
     // Check if an input maintains its value after becoming a radio
     // Support: Modern browsers only (NOT IE <= 11)
     radioValue: (function() {
+        var input = document.createElement('input');
         input.value = 't';
         input.setAttribute('type', 'radio');
         return input.value === 't';
@@ -103,9 +103,9 @@ module.exports = _.extend(support, {
     // Support: IE9+, modern browsers
     // Use defaultValue in place of getAttribute("value")
     inputValueAttr: (function() {
-        var i = document.createElement('input');
-        i.setAttribute('value', '');
-        return i.getAttribute('value') === '';
+        var input = document.createElement('input');
+        input.setAttribute('value', '');
+        return input.getAttribute('value') === '';
     }()),
 
     // Support: IE9+, modern browsers
