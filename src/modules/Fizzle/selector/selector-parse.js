@@ -58,7 +58,6 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
             '*(even|odd|(([+-]|)(\\d*)n|)' + _whitespace + '*(?:([+-]|)' + _whitespace +
             '*(\\d+)|))' + _whitespace + '*\\)|)', 'i'),
 
-        // Note: Using double quotes due to parsing weirdness
         bool:   new RegExp("^(?:" + _booleans + ")$", "i"),
 
         // For use in libraries implementing .is()
