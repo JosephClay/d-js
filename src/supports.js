@@ -35,7 +35,7 @@ module.exports = _.extend(support, {
 
     // Make sure that element opacity exists
     // (IE uses filter instead)
-    // Use a regex to work around a WebKit issue. See #5145
+    // Use a regex to work around a WebKit issue. See jQuery #5145
     opacity: (/^0.55$/).test(div.style.opacity),
 
     // Make sure that URLs aren't manipulated
@@ -87,14 +87,13 @@ module.exports = _.extend(support, {
     // Support: IE9+, modern browsers
     // innerHTML on tbody elements is readOnly in IE8
     // See: http://stackoverflow.com/a/4729743/467582
-    writableTbody: (function() {
+    writableTbody: _test('tbody', function(tbody) {
         tbody.innerHTML = '<tr><td></td></tr>';
         return !!tbody.innerHTML;
     }()),
 
     // Support: IE9+, modern browsers
-    // the only workaround seems to be use outerHTML and include your <select> in the string
-    // See: http://stackoverflow.com/questions/4729644/cant-innerhtml-on-tbody-in-ie
+    // The only workaround seems to be use outerHTML and include your <select> in the string
     writableSelect: (function() {
         select.innerHTML = '<option></option>';
         return select.children && select.children.length;
