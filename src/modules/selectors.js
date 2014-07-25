@@ -38,7 +38,7 @@ var _findWithin = function(selector, context) {
         // Convert selector to an array of elements
         selector = _.isElement(selector) ? [ selector ] : selector;
 
-        descendants = context[0].querySelectorAll('*');
+        descendants = _.flatten(_.map(context, function(elem) { return elem.querySelectorAll('*'); }));
         results = _.filter(descendants, function(descendant) { return selector.indexOf(descendant) > -1; });
     } else {
         query = Fizzle.query(selector);
