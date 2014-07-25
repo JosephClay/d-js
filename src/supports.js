@@ -1,16 +1,20 @@
-var _         = require('_'),
-    div       = require('./div'),
-    a         = div.getElementsByTagName('a')[0],
-    button    = div.getElementsByTagName('button')[0],
-    select    = document.createElement('select'),
-    option    = select.appendChild(document.createElement('option')),
-    textarea  = document.createElement('textarea'),
-    tbody     = document.createElement('tbody');
+var _      = require('_'),
+    div    = require('./div'),
+    a      = div.getElementsByTagName('a')[0],
+    button = div.getElementsByTagName('button')[0],
+    select = document.createElement('select'),
+    option = select.appendChild(document.createElement('option'));
+
+var _test = function(tagName, testFn) {
+    // Avoid variable references to elements to prevent memory leaks in IE.
+    return testFn(document.createElement(tagName));
+};
+
+var support = {};
 
 // Support: IE < 9 (lack submit/change bubble), Firefox 23+ (lack focusin event)
-var support = {};
 _.each([ 'submit', 'change', 'focusin' ], function(type) {
-    var eventName = 'on' + type,
+    var eventName   = 'on' + type,
         supportName = type + 'Bubbles';
 
     if (!(support[supportName] = eventName in window)) {
@@ -43,20 +47,18 @@ module.exports = _.extend(support, {
     hrefNormalized: a.getAttribute('href') === '/a',
 
     // Check the default checkbox/radio value ('' in older WebKit; 'on' elsewhere)
-    checkOn: (function() {
-        var input = document.createElement('input');
+    checkOn: _test('input', function(input) {
         input.setAttribute('type', 'radio');
         return !!input.value;
-    }()),
+    }),
 
     // Check if an input maintains its value after becoming a radio
     // Support: Modern browsers only (NOT IE <= 11)
-    radioValue: (function() {
-        var input = document.createElement('input');
+    radioValue: _test('input', function(input) {
         input.value = 't';
         input.setAttribute('type', 'radio');
         return input.value === 't';
-    }()),
+    }),
 
     // Make sure that the options inside disabled selects aren't marked as disabled
     // (WebKit marks them as disabled)
@@ -67,10 +69,10 @@ module.exports = _.extend(support, {
 
     // Modern browsers normalize \r\n to \n in textarea values,
     // but IE <= 11 (and possibly newer) do not.
-    valueNormalized: (function() {
+    valueNormalized: _test('textarea', function(textarea) {
         textarea.value = '\r\n';
         return textarea.value === '\n';
-    }()),
+    }),
 
     // Support: IE9+, modern browsers
     getPropertyValue:       !!a.style.getPropertyValue,
@@ -90,22 +92,21 @@ module.exports = _.extend(support, {
     writableTbody: _test('tbody', function(tbody) {
         tbody.innerHTML = '<tr><td></td></tr>';
         return !!tbody.innerHTML;
-    }()),
+    }),
 
     // Support: IE9+, modern browsers
     // The only workaround seems to be use outerHTML and include your <select> in the string
     writableSelect: (function() {
         select.innerHTML = '<option></option>';
-        return select.children && select.children.length;
+        return !!(select.children && select.children.length);
     }()),
 
     // Support: IE9+, modern browsers
-    // Use defaultValue in place of getAttribute("value")
-    inputValueAttr: (function() {
-        var input = document.createElement('input');
+    // Use defaultValue property instead of getAttribute("value")
+    inputValueAttr: _test('input', function(input) {
         input.setAttribute('value', '');
         return input.getAttribute('value') === '';
-    }()),
+    }),
 
     // Support: IE9+, modern browsers
     buttonValue: (function() {
@@ -113,3 +114,6 @@ module.exports = _.extend(support, {
         return button.value === 'foobar';
     }())
 });
+
+// Prevent memory leaks in IE
+div = a = button = select = option = null;
