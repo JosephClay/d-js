@@ -63,11 +63,12 @@ var _ = {
     },
 
     // NodeList check. For our purposes, a NodeList and an HTMLCollection are the same.
-    // NOTE: This fails in IE8 on DispStaticNodeList objects.
-    // There is no reasonable way (that I know of) to detect a DispStaticNodeList
-    // object in IE8 (go ahead, try Googling it...  I dare you).
     isNodeList: function(obj) {
-        return !!(obj && (obj instanceof NodeList || obj instanceof HTMLCollection));
+        return !!(obj && (
+            obj instanceof NodeList ||
+            obj instanceof HTMLCollection ||
+            obj.item === '[object StaticNodeList]' // IE8 DispStaticNodeList object returned by querySelectorAll()
+        ));
     },
 
     // Window check
