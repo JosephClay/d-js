@@ -50,6 +50,12 @@ var _ = {
         if (_.isString(obj)) {
             return false;
         }
+        if (_.isNodeList(obj)) {
+            return true;
+        }
+        if (_.isArguments(obj)) {
+            return true;
+        }
         if (_.isNumber(obj.length) && ('0' in obj)) {
             return true;
         }
