@@ -1,4 +1,6 @@
-var _ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?=\s*(['"]?)(.*?[^\\]|[^\\]*)\1\s*\]/g,
+var _SUPPORTS           = require('../../../supports'),
+
+    _ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?(?:=\s*(['"]?)(.*?[^\\]|[^\\]*))?\1\s*\]/g,
     _PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
     _CAPTURE_SELECT     = /(:[^\s^(]+)\(([^\)]+)\)/g,
 
@@ -46,10 +48,32 @@ var _captureReplace = function(str, positions) {
     });
 };
 
+var _booleanSelectorReplace = _SUPPORTS.selectedSelector
+    // IE10+, modern browsers
+    ? function(str) { return str; }
+    // IE8-9
+    : function(str) {
+        var positions = _getAttributePositions(str),
+            idx = positions.length,
+            pos,
+            selector;
+
+        while (idx--) {
+            pos = positions[idx];
+            selector = str.substring(pos[0], pos[1]);
+            if (selector === '[selected]') {
+                str = str.substring(0, pos[0]) + '[selected="selected"]' + str.substring(pos[1]);
+            }
+        }
+
+        return str;
+    };
+
 module.exports = function(str) {
     return _pseudoCache.getOrSet(str, function() {
         var attrPositions = _getAttributePositions(str);
         str = _pseudoReplace(str, attrPositions);
+        str = _booleanSelectorReplace(str);
         return _captureReplace(str, attrPositions);
     });
 };
