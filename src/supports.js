@@ -112,7 +112,27 @@ module.exports = _.extend(support, {
     buttonValue: (function() {
         button.setAttribute('value', 'foobar');
         return button.value === 'foobar';
-    }())
+    }()),
+
+    disabledSelector: _test('div', function(div) {
+        div.innerHTML = '<input disabled />';
+        try {
+            return div.querySelectorAll('input:disabled').length > 0;
+        } catch (e) {
+            // IE8
+        }
+        return false;
+    }),
+
+    checkedSelector: _test('div', function(div) {
+        div.innerHTML = '<input type="checkbox" checked />';
+        try {
+            return div.querySelectorAll('input:checked').length > 0;
+        } catch (e) {
+            // IE8
+        }
+        return false;
+    })
 });
 
 // Prevent memory leaks in IE

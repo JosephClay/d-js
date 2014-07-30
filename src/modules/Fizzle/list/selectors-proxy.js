@@ -1,4 +1,6 @@
-module.exports = {
+var _SUPPORTS = require('../../../supports');
+
+var proxy = {
     // DOC: Document these selectors
     ':child-even' : ':nth-child(even)',
     ':child-odd'  : ':nth-child(odd)',
@@ -12,9 +14,26 @@ module.exports = {
     ':button'     : '[type="button"]',
     ':image'      : '[type="image"]',
     ':input'      : '[type="input"]',
-    ':file'       : '[type="file"]',
-    ':enabled'    : ':not([disabled])',
-    ':disabled'   : '[disabled]',
-    ':selected'   : '[selected]',
-    ':checked'    : '[checked="checked"]'
+    ':file'       : '[type="file"]'
 };
+
+// IE8
+if (!_SUPPORTS.disabledSelector) {
+    proxy[':disabled'] = '[disabled]';
+
+    // DOC: No good way to polyfill this.
+    // proxy[':enabled']  = ':not([disabled])';
+}
+
+// IE8
+if (!_SUPPORTS.checkedSelector) {
+    proxy[':checked']  = '[checked]';
+    proxy[':selected'] = '[selected]';
+}
+// IE9+ and modern browsers
+else {
+    // See https://developer.mozilla.org/en-US/docs/Web/CSS/:checked
+    proxy[':selected'] = ':checked';
+}
+
+module.exports = proxy;
