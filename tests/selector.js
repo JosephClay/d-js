@@ -187,6 +187,9 @@ test('attributes', function() {
 
     t('Underscores dont need escaping', 'input[id="types_all"]', ['types_all']);
 
+    // Note: The following 2 tests will fail in IE 8-9 because those browsers
+    // automatically change <input type="search|range|etc."> to <input type="text">.
+    // There is no way (that I know of) to prevent or even detect this change.
     t('input[type=text]', '#form input[type=text]', ['text1', 'text2', 'hidden2', 'name']);
     t('input[type=search]', '#form input[type=search]', ['search']);
 
