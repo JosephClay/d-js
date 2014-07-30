@@ -129,7 +129,7 @@ module.exports = _.extend(support, {
     checkedSelector: _test('div', function(div) {
         div.innerHTML = '<input type="checkbox" checked />';
         try {
-            return div.querySelectorAll('input:checked').length > 0;
+            return !!div.querySelector('input:checked');
         } catch (e) {
             // IE8
         }
