@@ -51,11 +51,17 @@ var _hasAttr = _SUPPORTS.inputValueAttr
     ? function(elem, attr) { return elem.hasAttribute(attr); }
     // IE8
     : function(elem, attr) {
+        var nodeName = _utils.normalNodeName(elem);
         // In IE8, input.hasAttribute('value') returns false
         // and input.getAttributeNode('value') returns null
         // if the value is empty ("").
-        if (_utils.normalNodeName(elem) === 'input' && attr === 'value') {
+        if (nodeName === 'input' && attr === 'value') {
             return true;
+        }
+        // In IE8, option.hasAttribute('selected') always returns false.
+        // Seriously.
+        if (nodeName === 'option' && attr === 'selected') {
+            return elem.getAttributeNode(attr) !== null;
         }
         return elem.hasAttribute(attr);
     };
