@@ -114,6 +114,7 @@ module.exports = _.extend(support, {
         return button.value === 'foobar';
     }()),
 
+    // Support: IE9+, modern browsers
     disabledSelector: _test('div', function(div) {
         div.innerHTML = '<input disabled />';
         try {
@@ -124,6 +125,7 @@ module.exports = _.extend(support, {
         return false;
     }),
 
+    // Support: IE9+, modern browsers
     checkedSelector: _test('div', function(div) {
         div.innerHTML = '<input type="checkbox" checked />';
         try {
