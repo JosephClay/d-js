@@ -7,11 +7,41 @@ var _ = require('_'),
 
     _nodeNameCache = _cache(),
 
-    _returnThis    = function() { return this; };
+    _flagParsedNode,
+    _isParsedNode,
+
+    _returnTrue    = function() { return true;  },
+    _returnFalse   = function() { return false; },
+    _returnThis    = function() { return this;  };
+
+// IE9+, modern browsers
+if (_SUPPORTS.detachedCreateElement) {
+    _flagParsedNode = _.noop;
+    _isParsedNode   = _returnFalse;
+}
+// IE8
+else {
+    _flagParsedNode = function(elem) {
+        if (!elem || !elem.parentNode) { return; }
+
+        // IE8 creates a unique Document Fragment for every detached DOM node.
+        // Mark it as bogus so we know to ignore it elsewhere when checking parentNode.
+        elem.parentNode.isParsedNode = true;
+    };
+    _isParsedNode   = function(elem) {
+        return !!(elem && elem.parentNode && elem.parentNode.isParsedNode);
+    };
+}
 
 module.exports = {
     isAttached: function(elem) {
-        return !!(elem && elem.ownerDocument && elem !== document && elem.parentNode && elem.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT);
+        return !!(elem
+            && elem.ownerDocument
+            && elem !== document
+            && elem.parentNode
+            && elem.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT
+            && elem.parentNode.isParseHtmlFragment !== true
+        );
     },
 
     isHtml: function(text) {
@@ -61,14 +91,11 @@ module.exports = {
         return str && _SUPPORTS.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
     },
 
-    returnTrue: function() {
-        return true;
-    },
+    returnTrue:  _returnTrue,
+    returnFalse: _returnFalse,
+    returnThis:  _returnThis,
+    identity:    _returnThis,
 
-    returnFalse: function() {
-        return false;
-    },
-
-    returnThis: _returnThis,
-    identity: _returnThis
+    flagParsedNode: _flagParsedNode,
+    isParsedNode:   _isParsedNode
 };

@@ -1,5 +1,6 @@
 var _regex                 = require('../../regex'),
     _hooks                 = require('./hooks'),
+    _utils                 = require('../../utils'),
     _MAX_SINGLE_TAG_LENGTH = 30;
 
 var _parseSingleTag = function(htmlStr) {
@@ -8,7 +9,12 @@ var _parseSingleTag = function(htmlStr) {
     var singleTagMatch = _regex.singleTagMatch(htmlStr);
     if (!singleTagMatch) { return null; }
 
-    return [ document.createElement(singleTagMatch[1]) ];
+    var elem = document.createElement(singleTagMatch[1]);
+
+    // IE8
+    _utils.flagParsedNode(elem);
+
+    return [ elem ];
 };
 
 var _parse = function(htmlStr) {
@@ -26,6 +32,9 @@ var _parse = function(htmlStr) {
     while (idx--) {
         child = parent.children[idx];
         parent.removeChild(child);
+
+        // IE8
+        _utils.flagParsedNode(child);
 
         // http://jsperf.com/js-push-vs-index11/2
         arr[idx] = child;

@@ -30,6 +30,8 @@ _.each([ 'submit', 'change', 'focusin' ], function(type) {
 module.exports = _.extend(support, {
     classList:     !!div.classList,
     currentStyle:  !!div.currentStyle,
+
+    // Support: IE9+, modern browsers
     matchesSelector: div.matches               ||
                      div.matchesSelector       ||
                      div.msMatchesSelector     ||
@@ -140,6 +142,11 @@ module.exports = _.extend(support, {
     selectedSelector: _test('select', function(select) {
         select.innerHTML = '<option value="1">1</option><option value="2" selected>2</option>';
         return !!select.querySelector('option[selected]');
+    }),
+
+    // Support: IE9+, modern browsers
+    detachedCreateElement: _test('div', function(div) {
+        return !div.parentNode;
     })
 });
 
