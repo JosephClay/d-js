@@ -51,7 +51,9 @@ var _hasAttr = _SUPPORTS.inputValueAttr
     ? function(elem, attr) { return elem.hasAttribute(attr); }
     // IE8
     : function(elem, attr) {
-        // In IE8, input.hasAttribute('value') returns false if the value is empty ("")
+        // In IE8, input.hasAttribute('value') returns false
+        // and input.getAttributeNode('value') returns null
+        // if the value is empty ("").
         if (_utils.normalNodeName(elem) === 'input' && attr === 'value') {
             return true;
         }
