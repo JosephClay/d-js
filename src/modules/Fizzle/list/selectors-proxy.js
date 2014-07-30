@@ -17,7 +17,7 @@ var proxy = {
     ':file'       : '[type="file"]',
 
     // See https://developer.mozilla.org/en-US/docs/Web/CSS/:checked
-    ':selected'   : '[selected]'
+    ':selected'   : '[selected="selected"]'
 };
 
 // IE8
