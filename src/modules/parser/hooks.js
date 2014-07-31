@@ -1,6 +1,6 @@
 var _supports = require('../../supports');
 
-var _hooks = {
+var hooks = {
     dflt: function(parentTagName, htmlStr) {
         var parent = document.createElement(parentTagName);
         parent.innerHTML = htmlStr;
@@ -10,7 +10,7 @@ var _hooks = {
 
 // IE8
 if (!_supports.writableTbody) {
-    _hooks.tbody = function(parentTagName, htmlStr) {
+    hooks.tbody = function(parentTagName, htmlStr) {
         var parent = document.createElement('div');
         parent.innerHTML = '<table>' + htmlStr + '</table>';
         return parent.firstChild.firstChild;
@@ -19,11 +19,11 @@ if (!_supports.writableTbody) {
 
 // IE8
 if (!_supports.writableSelect) {
-    _hooks.select = function(parentTagName, htmlStr) {
+    hooks.select = function(parentTagName, htmlStr) {
         var parent = document.createElement('div');
         parent.innerHTML = '<select>' + htmlStr + '</select>';
         return parent.firstChild;
     };
 }
 
-module.exports = _hooks;
+module.exports = hooks;
