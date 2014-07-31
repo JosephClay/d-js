@@ -8,6 +8,7 @@ var _hooks = {
     }
 };
 
+// IE8
 if (!_supports.writableTbody) {
     _hooks.tbody = function(parentTagName, htmlStr) {
         var parent = document.createElement('div');
@@ -16,6 +17,7 @@ if (!_supports.writableTbody) {
     };
 }
 
+// IE8
 if (!_supports.writableSelect) {
     _hooks.select = function(parentTagName, htmlStr) {
         var parent = document.createElement('div');
