@@ -55,6 +55,10 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
 
     _SINGLE_TAG          = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 
+    /**
+     * Map of parent tag names to the child tags that require them.
+     * @type {Object}
+     */
     _PARENT_MAP          = {
         'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
         'tbody':    /^<(?:tr)\b/,
