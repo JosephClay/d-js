@@ -55,7 +55,7 @@ test('D("html")', function() {
     var j = D('<span>hi</span> there <!-- mon ami -->');
     equal(j.length, 1, 'Only return element nodes');
 
-    ok(!D('<option>test</option>')[0].selected, 'Make sure that options are auto-selected');
+    ok(!D('<option>test</option>')[0].selected, 'Make sure that options are not auto-selected');
 
     ok(D('<div></div>')[0], 'Create a div with closing tag.');
     ok(D('<table></table>')[0], 'Create a table with closing tag.');
