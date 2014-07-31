@@ -1,6 +1,7 @@
-var _regex                 = require('../../regex'),
-    _hooks                 = require('./hooks'),
-    _utils                 = require('../../utils'),
+var _regex = require('../../regex'),
+    _utils = require('../../utils'),
+    _hooks = require('./hooks'),
+
     _MAX_SINGLE_TAG_LENGTH = 30;
 
 var _parseSingleTag = function(htmlStr) {
