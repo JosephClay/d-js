@@ -495,7 +495,7 @@ test('contents() sort direction', function() {
     expect(8);
 
     var trim = function(str) {
-        return str.replace(/^\s+|\s+$/g, '');
+        return !str ? str : str.replace(/^\s+|\s+$/g, '');
     };
 
     var elems      = D('#ap, #select1 > *, #moretests > form'),
