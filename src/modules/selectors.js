@@ -53,7 +53,8 @@ var _filter = function(arr, qualifier) {
     if (!qualifier) { return arr; }
 
     // Function
-    if (_.isFunction(qualifier)) {
+    // When IE8 support is removed, this can be reverted back to _.isFunction()
+    if (_.isReallyFunction(qualifier)) {
         return _.filter(arr, qualifier);
     }
 

@@ -344,4 +344,23 @@ if (typeof ('') === 'string') {
     };
 }
 
+/**
+ * Determines if the given value really, really, REALLY is a function.
+ *
+ * Workaround for Chakra JIT compiler bug in IE11 running in IE8 compat mode
+ * in which a JIT'ed _.isFunction() returns true for host objects (e.g., DOM nodes),
+ * which is obviously wrong.
+ *
+ * This function should be removed when IE8 support is dropped.
+ *
+ * @param {*} val Any value
+ * @return {Boolean} true if the given value REALLY is a function, otherwise false.
+ *
+ * @see https://github.com/jashkenas/underscore/issues/1621
+ * @see http://jsbin.com/lalovahu/1
+ */
+_.isReallyFunction = function(val) {
+    return typeof val === 'function' || false;
+};
+
 module.exports = _;
