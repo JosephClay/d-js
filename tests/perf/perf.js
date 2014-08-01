@@ -58,7 +58,7 @@
 		'D: construct(html, obj)': createWithContext(D, html, obj)
 	});
 
-	// HTML Tests ==========================
+	// HTML ==========================
 	var htmlStr = '<div><ul><li></li><li></li><li></li></ul></div>';
 	var parseHtml = function(ctx) {
 		return function() {
@@ -77,6 +77,21 @@
 		'jQuery: parseHtml (large)': parseHtml($),
 		'D: parseHtml (large)': parseHtml(D)
 	});
+
+	// Find ==========================
+	var $ctx = $('div'),
+		Dctx = D('div');
+		finder = function(ctx) {
+			return function() {
+				ctx.find('> .foo');
+			};
+		};
+	profiler.testSet({
+		iterate: 1000,
+		'jQuery: find': finder($ctx),
+		'D: find': finder(Dctx)
+	});
+
 
 /*
 	// Text Tests ==========================
