@@ -11,20 +11,22 @@
 				ctx(thing, thing2);
 			};
 		};
-
+/* Both run inconsequentially fast
 	profiler.testSet({
 		iterate: 1000,
 		'jQuery: construct()': create($),
 		'D: construct()': create(D)
 	});
+*/
 
 	var element = document.body;
+/* Both run inconsequentially fast
 	profiler.testSet({
 		iterate: 1000,
 		'jQuery: construct(element)': create($, element),
 		'D: construct(element)': create(D, element)
 	});
-
+*/
 	var elements = [element, element, element];
 	profiler.testSet({
 		iterate: 1000,
@@ -47,11 +49,13 @@
 	});
 
 	var obj = { 'data-num': 0 };
+/* Both run inconsequentially fast
 	profiler.testSet({
 		iterate: 1000,
 		'jQuery: construct(element, obj)': createWithContext($, element, obj),
 		'D: construct(element, obj)': createWithContext(D, element, obj)
 	});
+*/
 	profiler.testSet({
 		iterate: 1000,
 		'jQuery: construct(html, obj)': createWithContext($, html, obj),
@@ -91,7 +95,6 @@
 		'jQuery: find': finder($ctx),
 		'D: find': finder(Dctx)
 	});
-
 
 /*
 	// Text Tests ==========================
