@@ -34,7 +34,7 @@
 
 	var query = 'div > *';
 	profiler.testSet({
-		iterate: 1000,
+		iterate: 100000,
 		'jQuery: construct(query)': create($, query),
 		'D: construct(query)': create(D, query)
 	});
