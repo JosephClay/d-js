@@ -36,6 +36,14 @@ var _determineMethod = function(selector) {
     },
     _uniqueId = function() {
         return _ID_PREFIX + _.uniqueId();
+    },
+    _fromDomArrayToArray = function(arrayLike) {
+        var idx = arrayLike.length,
+            arr = new Array(idx);
+        while (idx--) {
+            arr[idx] = arrayLike[idx];
+        }
+        return arr;
     };
 
 var Selector = function(str) {
@@ -127,9 +135,8 @@ Selector.prototype = {
             return [];
         }
 
-        // If it's an id, return it as an array, otherwise, toArray
-        // to keep from returning out NodeLists and HTMLCollections
-        return _.isElement(selection) || !selection.length ? [selection] : _.toArray(selection);
+        // If it's an id, return it as an array
+        return _.isElement(selection) || !selection.length ? [selection] : _fromDomArrayToArray(selection);
     }
 };
 
