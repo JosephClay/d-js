@@ -12,7 +12,10 @@ Query.prototype = {
             result.push(this._find(arr[idx]));
         }
 
-        result = _.flatten(result);
+        // if there's only one arr in result, we can
+        // use that and skip flattening
+        result = result.length === 1 ? result[0] : _.flatten(result);
+
         return result;
     },
     _find: function(context) {
