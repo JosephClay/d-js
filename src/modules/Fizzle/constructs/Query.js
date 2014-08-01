@@ -9,13 +9,8 @@ Query.prototype = {
         var result = [],
             idx = 0, length = isNew ? 1 : arr.length;
         for (; idx < length; idx++) {
-            result.push(this._find(arr[idx]));
+            result.push.apply(result, this._find(arr[idx]));
         }
-
-        // if there's only one arr in result, we can
-        // use that and skip flattening
-        result = result.length === 1 ? result[0] : _.flatten(result);
-
         return result;
     },
     _find: function(context) {
@@ -23,9 +18,8 @@ Query.prototype = {
             selectors = this._selectors,
             idx = 0, length = selectors.length;
         for (; idx < length; idx++) {
-            result.push(selectors[idx].exec(context));
+            result.push.apply(result, selectors[idx].exec(context));
         }
-
         return result;
     }
 };
