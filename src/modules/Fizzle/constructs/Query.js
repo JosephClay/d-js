@@ -1,9 +1,9 @@
-var _      = require('_'),
-    _array = require('../../array');
+var _ = require('_');
 
 var Query = module.exports = function(selectors) {
     this._selectors = selectors;
 };
+
 Query.prototype = {
     exec: function(arr, isNew) {
         var result = [],
@@ -13,7 +13,6 @@ Query.prototype = {
         }
 
         result = _.flatten(result);
-        _array.elementSort(result);
         return result;
     },
     _find: function(context) {
