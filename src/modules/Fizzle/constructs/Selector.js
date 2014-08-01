@@ -83,7 +83,7 @@ Selector.prototype = {
 
         if (this.isChildOrSiblingSelect) {
             id = context.id;
-            if (!_.exists(id)) {
+            if (id === '' || !_.exists(id)) {
                 newId = _uniqueId();
                 context.id = newId;
                 idApplied = true;
