@@ -1,5 +1,3 @@
-var _ = require('_');
-
 var Query = module.exports = function(selectors) {
     this._selectors = selectors;
 };
