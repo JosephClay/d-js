@@ -1,4 +1,4 @@
-(function($, D) {
+(function($, D, Z) {
 
 	// Object Creation ==========================
 	var create = function(ctx, thing) {
@@ -31,21 +31,24 @@
 	profiler.testSet({
 		iterate: 1000,
 		'jQuery: construct(elements)': create($, elements),
-		'D: construct(elements)': create(D, elements)
+		'D: construct(elements)': create(D, elements),
+		'Zepto: construct(elements)': create(Z, elements)
 	});
 
-	var query = 'div > *';
+	var query = '#foo ul.div > li.bar:not(:checked) input[type="file"]';
 	profiler.testSet({
 		iterate: 100000,
 		'jQuery: construct(query)': create($, query),
-		'D: construct(query)': create(D, query)
+		'D: construct(query)': create(D, query),
+		'Zepto: construct(query)': create(Z, query)
 	});
 
 	var html = '<div></div>';
 	profiler.testSet({
-		iterate: 1000,
+		iterate: 10000,
 		'jQuery: construct(html)': create($, html),
-		'D: construct(html)': create(D, html)
+		'D: construct(html)': create(D, html),
+		'Zepto: construct(html)': create(Z, html)
 	});
 
 	var obj = { 'data-num': 0 };
@@ -59,7 +62,8 @@
 	profiler.testSet({
 		iterate: 1000,
 		'jQuery: construct(html, obj)': createWithContext($, html, obj),
-		'D: construct(html, obj)': createWithContext(D, html, obj)
+		'D: construct(html, obj)': createWithContext(D, html, obj),
+		'Zepto: construct(html, obj)': createWithContext(Z, html, obj)
 	});
 
 	// HTML ==========================
@@ -85,6 +89,7 @@
 	// Find ==========================
 	var $ctx = $('div'),
 		Dctx = D('div');
+		Zctx = Zepto('div');
 		finder = function(ctx) {
 			return function() {
 				ctx.find('> .foo');
@@ -118,4 +123,4 @@
 	});
 */
 
-}(jQuery, D));
+}(jQuery, D, Zepto));
