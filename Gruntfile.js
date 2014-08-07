@@ -96,7 +96,10 @@ module.exports = function(grunt) {
             },
             buildInternal: {
                 options: {
-                    globals: {},
+                    globals: {
+                        'window': 'window',
+                        'document': 'document'
+                    },
                     aliases: {
                         '_':        '/_.js',
                         'overload': '/libs/overload.js',
