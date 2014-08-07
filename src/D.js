@@ -82,8 +82,8 @@ _.extend(D,
     data.D,
     deferred.D,
     when.D,
-    eventObj.D,
-{
+    eventObj.D, {
+
     each:    array.each,
     forEach: array.each,
 
@@ -92,10 +92,10 @@ _.extend(D,
 
     // proxy ajax to xaja
     ajax: xaja.ajax,
-    get: xaja.get,
+    get:  xaja.get,
     post: xaja.post,
-    put: xaja.put,
-    del: xaja.del,
+    put:  xaja.put,
+    del:  xaja.del,
 
     noConflict: function() {
         if (_hasMoreConflict) {
