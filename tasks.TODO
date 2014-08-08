@@ -1,2 +1,3 @@
  ☐ Proxy Overload error to D.error
+ ☐ instanceOf D checks in noConflict will fail
  ☐ Remove _.isObject, nothing should be using that

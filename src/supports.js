@@ -147,7 +147,9 @@ module.exports = _.extend(support, {
     // Support: IE9+, modern browsers
     detachedCreateElement: _test('div', function(div) {
         return !div.parentNode;
-    })
+    }),
+
+    w3Event: !!div.addEventListener
 });
 
 // Prevent memory leaks in IE

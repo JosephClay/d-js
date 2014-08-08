@@ -106,3 +106,56 @@ if (!_supports.changeBubbles) {
         };
     });
 }
+
+/*
+    special: {
+        load: {
+            // Prevent triggered image.load events from bubbling to window.load
+            noBubble: true
+        },
+        focus: {
+            // Fire native event if possible so blur/focus sequence is correct
+            trigger: function() {
+                if ( this !== safeActiveElement() && this.focus ) {
+                    this.focus();
+                    return false;
+                }
+            },
+            delegateType: "focusin"
+        },
+        blur: {
+            trigger: function() {
+                if ( this === safeActiveElement() && this.blur ) {
+                    this.blur();
+                    return false;
+                }
+            },
+            delegateType: "focusout"
+        },
+        click: {
+            // For checkbox, fire native event so checked state will be right
+            trigger: function() {
+                if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
+                    this.click();
+                    return false;
+                }
+            },
+
+            // For cross-browser consistency, don't fire native .click() on links
+            _default: function( event ) {
+                return jQuery.nodeName( event.target, "a" );
+            }
+        },
+
+        beforeunload: {
+            postDispatch: function( event ) {
+
+                // Support: Firefox 20+
+                // Firefox doesn't alert if the returnValue field is not set.
+                if ( event.result !== undefined && event.originalEvent ) {
+                    event.originalEvent.returnValue = event.result;
+                }
+            }
+        }
+    },
+ */

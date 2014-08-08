@@ -9,7 +9,31 @@ var _         = require('_'),
 module.exports = {
     fn: {
 
-        on: function(types, selector, data, fn, /*INTERNAL*/ one) {
+        on: overload()
+
+            .args(String, String, Function)
+            .use(function() {
+
+            })
+
+            .args(String, Function)
+            .use(function(eventName, fn) {
+                _.each(this, function(elem) {
+                    _event.subscribe(elem, eventName, '', fn);
+                });
+                return this;
+            })
+
+            .args(Object)
+            .use(function() {
+
+            })
+
+            .expose(),
+
+
+
+        function(types, selector, data, fn, /*INTERNAL*/ one) {
             // Types can be a map of types/handlers
             if (_.isObject(types)) {
 
