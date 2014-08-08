@@ -53,6 +53,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-rquirejs');
 
     grunt.initConfig({
@@ -109,9 +110,16 @@ module.exports = function(grunt) {
                     micro_paths: false,
                 }
             }
+        },
+        uglify: {
+            release: {
+                files: {
+                    'dist/D.min.js': ['dist/D.js']
+                }
+            }
         }
     });
 
-    grunt.registerTask('default', ['rquire', 'watch']);
-    grunt.registerTask('build', ['rquire']);
+    grunt.registerTask('build', ['rquire', 'uglify']);
+    grunt.registerTask('default', ['build', 'watch']);
 };
