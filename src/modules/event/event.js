@@ -58,6 +58,7 @@ var _           = require('_'),
         return eventData;
     };
 
+// TODO: Address data structure
 var _subscribe = function(eventData, eventStr, selector) {
     var tmp = _regex.typeNamespace(eventStr) || [],
         type = tmp[1],
@@ -262,6 +263,147 @@ var _remove = function(elem, eventName, selector, mappedTypes) {
         _data.remove(elem, _EVENT_KEY);
     }
 };
+
+// TODO: Trigger is not done - needs help
+var _trigger = function(event, data, elem, onlyHandlers) {
+    var eventPath = [elem || document],
+        type = event.type || event,
+        namespaces = event.namespace ? event.namespace.split('.') : [];
+
+    var cur, tmp;
+    cur = tmp = elem = elem || document;
+
+    // Don't do events on text and comment nodes
+    if (elem.nodeType === _nodeType.TEXT || elem.nodeType === _nodeType.COMMENT) {
+        return;
+    }
+
+    // focus/blur morphs to focusin/out; ensure we're not firing them right now
+    if (_regex.focusMorph(type + D.event.triggered)) {
+        return;
+    }
+
+    if (type.indexOf('.') >= 0) {
+        // Namespaced trigger; create a regexp to match event type in handle()
+        namespaces = type.split('.');
+        type = namespaces.shift();
+        namespaces.sort();
+    }
+    var ontype = type.indexOf(':') < 0 && 'on' + type;
+
+    // Caller can pass in a Event object, Object, or just an event type string
+    event = event[_eventUtils.id] ?
+        event :
+        _.extend(new Event(event), event);
+
+    // Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
+    event.isTrigger = onlyHandlers ? 2 : 3;
+    event.namespace = namespaces.join('.');
+    event.namespaceRegex = event.namespace ?
+        new RegExp('(^|\\.)' + namespaces.join('\\.(?:.*\\.|)') + '(\\.|$)') :
+        null;
+
+    // Clean up the event in case it is being reused
+    event.result = undefined;
+    event.target = event.target || elem;
+
+    // Clone any incoming data and prepend the event, creating the handler arg list
+    data = !_.exists(data) ? [event] : [event, data];
+
+    // Allow special events to draw outside the lines
+    var special = _special[type] || {};
+    if (!onlyHandlers && special.trigger && special.trigger.apply(elem, data) === false) {
+        return;
+    }
+
+    // Determine event propagation path in advance, per W3C events spec (#9951)
+    // Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+    var bubbleType;
+    if (!onlyHandlers && !special.noBubble && !_.isWindow(elem)) {
+
+        bubbleType = special.delegateType || type;
+        if (!_regex.focusMorph(bubbleType + type)) {
+            cur = cur.parentNode;
+        }
+        for (; cur; cur = cur.parentNode) {
+            eventPath.push(cur);
+            tmp = cur;
+        }
+
+        // Only add window if we got to document (e.g., not detached DOM)
+        if (tmp === (elem.ownerDocument || document)) {
+            eventPath.push(tmp.defaultView || tmp.parentWindow || window);
+        }
+    }
+
+    // Fire handlers on the event path
+    var idx = 0, handle;
+    while ((cur = eventPath[idx++]) && !event.isPropagationStopped()) {
+
+        event.type = idx > 1 ?
+            bubbleType :
+            special.bindType || type;
+
+        // jQuery handler
+        var eventData = _data.get(cur, _EVENT_KEY) || {};
+        handle = eventData[event.type] && eventData.handle;
+
+        if (handle) {
+            handle.apply(cur, data);
+        }
+
+        // Native handler
+        handle = ontype && cur[ontype];
+        // NOTE: Pulled out jQuery.acceptData(cur) as we don't allow non-element types
+        if (handle && handle.apply) {
+            event.result = handle.apply(cur, data);
+            if (event.result === false) {
+                event.preventDefault();
+            }
+        }
+    }
+    event.type = type;
+
+    // If nobody prevented the default action, do it now
+    if (!onlyHandlers && !event.isDefaultPrevented()) {
+
+        // NOTE: Pulled out jQuery.acceptData(elem) as we don't allow non-element types
+        if (!special._default || special._default.apply(eventPath.pop(), data) === false) {
+
+            // Call a native DOM method on the target with the same name name as the event.
+            // Can't use an .isFunction() check here because IE6/7 fails that test.
+            // Don't do default actions on window, that's where global variables be (#6170)
+            if (ontype && elem[type] && !_.isWindow(elem)) {
+
+                // Don't re-trigger an onFOO event when we call its FOO() method
+                tmp = elem[ontype];
+
+                if (tmp) {
+                    elem[ontype] = null;
+                }
+
+                // Prevent re-triggering of the same event, since we already bubbled it above
+                D.event.triggered = type;
+
+                try {
+                    elem[type]();
+                } catch (e) {
+                    // IE < 9 dies on focus/blur to hidden element (#1486, #12518)
+                    // only reproducible on winXP IE8 native, not IE9 in IE8 mode
+                }
+
+                D.event.triggered = undefined;
+
+                if (tmp) {
+                    elem[ontype] = tmp;
+                }
+            }
+        }
+    }
+
+    return event.result;
+};
+
 
 module.exports = {
     add: function(elem, eventStr, selector, fn) {
