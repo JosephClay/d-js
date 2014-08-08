@@ -67,9 +67,6 @@ var _subscribe = function(eventData, eventStr, selector) {
     // There *must* be a type, no attaching namespace-only handlers
     if (!type) { return; }
 
-    // If event changes its type, use the special event handlers for the changed type
-    var special = _special[type] || _NOOP_OBJ;
-
     // handleObj is passed to all event handlers
     var handleObj = {
         type     : type,
@@ -84,9 +81,11 @@ var _subscribe = function(eventData, eventStr, selector) {
         handlers = eventData[type] = [];
         handlers.delegateCount = 0;
 
-        _addEventListener(elem, type, function(e) {
+        handleObj.fn = function(e) {
             _dispatch(e, elem, arguments);
-        });
+        };
+
+        _addEventListener(elem, type, handleObj.fn);
     }
 
     // Add to the element's handler list, delegates in front
@@ -201,6 +200,69 @@ var _getHandlerQueue = function(elem, event, handlers) {
     return handlerQueue;
 };
 
+var _remove = function(elem, eventName, selector, mappedTypes) {
+    // Get the elemData but only if it's been set.
+    // No need to go further if it hasn't
+    var elemData = _data.has(elem) && _data.get(elem),
+        events;
+    if (!elemData || !(events = elemData[_EVENT_KEY])) { return; }
+
+    // Once for each type.namespace in eventName; type may be omitted
+    var eventStrInstances = _regex.matchNotWhite(eventName) || [''],
+        idx = eventStrInstances.length;
+    while (idx--) {
+        var eventNameSplit = _regex.typeNamespace(eventStrInstances[idx]) || [],
+            type           = eventNameSplit[1],
+            origType       = type,
+            namespaces     = eventNameSplit[2];
+
+        // Unbind all events (on this namespace, if provided) for the element
+        if (!type) {
+            for (type in events) {
+                _remove(elem, type + eventStrInstances[idx], selector, true);
+            }
+            continue;
+        }
+
+        var handlers = events[type] || [],
+            namespaceRegex = namespaces && new RegExp('(^|\\.)' + namespaces.join('\\.(?:.*\\.|)') + '(\\.|$)'),
+            origCount, i, handleObj;
+
+        origCount = i = handlers.length;
+
+        // Remove matching events
+        while (i--) {
+            handleObj = handlers[i];
+
+            if (
+                (mappedTypes     || origType === handleObj.origType) &&
+                (!namespaceRegex || namespaceRegex.test(handleObj.namespace))
+            ) {
+                handlers.splice(i, 1);
+
+                if (handleObj.selector) {
+                    handlers.delegateCount--;
+                }
+            }
+
+            if (origCount && !handlers.length) {
+                _removeEventListener(elem, type, elemData.fn);
+            }
+        }
+
+        if (origCount && !handlers.length) {
+            delete events[type];
+        }
+    }
+
+    // Remove the events if it's no longer used
+    if (!_.hasSize(events)) {
+        // removeData also checks for emptiness and clears the events if empty
+        // so use it instead of delete
+        _data.remove(elem, _EVENT_KEY);
+    }
+};
+
 module.exports = {
     add: function(elem, eventStr, selector, fn) {
         // Don't attach events to text/comment nodes
@@ -219,5 +281,5 @@ module.exports = {
         elem = null;
     },
 
-    dispatch: _dispatch
+    remove: _remove
 };

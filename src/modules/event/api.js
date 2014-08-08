@@ -94,35 +94,35 @@ module.exports = {
             // dont allow functions in the off, allow an array
             // of strings instead...
             .args(Array)
-            .use(function(arr) {
+            .use(function(eventNames) {
                 return _.each(this, function(elem) {
-                    _.each(arr, function(evt) {
-                        _event.remove(elem, evt);
+                    _.each(eventNames, function(eventName) {
+                        _event.remove(elem, eventName);
                     });
                 });
             })
 
             // ...and, of course, allow a selector
             .args(Array, String)
-            .use(function(arr, selector) {
+            .use(function(eventNames, selector) {
                 return _.each(this, function(elem) {
-                    _.each(arr, function(evt) {
-                        _event.remove(elem, evt, selector);
+                    _.each(eventNames, function(eventName) {
+                        _event.remove(elem, eventName, selector);
                     });
                 });
             })
 
             .args(String)
-            .use(function(evt) {
+            .use(function(eventName) {
                 return _.each(this, function(elem) {
-                    _event.remove(elem, evt);
+                    _event.remove(elem, eventName);
                 });
             })
 
             .args(String, String)
-            .use(function(evt, selector) {
+            .use(function(eventName, selector) {
                 return _.each(this, function(elem) {
-                    _event.remove(elem, evt, selector);
+                    _event.remove(elem, eventName, selector);
                 });
             })
 
