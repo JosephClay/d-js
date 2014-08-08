@@ -74,8 +74,8 @@ var _empty = function(arr) {
 
             } else if (_.isString(result)) {
 
-                if (utils.isHTML(value)) {
-                    _appendPrependArrayToElem(elem, parser.parseHtml(value), pender);
+                if (utils.isHTML(result)) {
+                    _appendPrependArrayToElem(elem, parser.parseHtml(result), pender);
                     return this;
                 }
 
