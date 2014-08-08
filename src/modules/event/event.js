@@ -202,7 +202,7 @@ var _getHandlerQueue = function(elem, event, handlers) {
 };
 
 module.exports = {
-    subscribe: function(elem, eventStr, selector, fn) {
+    add: function(elem, eventStr, selector, fn) {
         // Don't attach events to text/comment nodes
         var nodeType = elem.nodeType;
         if (nodeType === _nodeType.TEXT || nodeType === _nodeType.COMMENT) { return; }

@@ -12,98 +12,43 @@ module.exports = {
         on: overload()
 
             .args(String, String, Function)
-            .use(function() {
-
+            .use(function(eventName, selector, fn) {
+                _.each(this, function(elem) {
+                    _event.add(elem, eventName, selector, fn);
+                });
+                return this;
             })
 
             .args(String, Function)
             .use(function(eventName, fn) {
                 _.each(this, function(elem) {
-                    _event.subscribe(elem, eventName, '', fn);
+                    _event.add(elem, eventName, '', fn);
+                });
+                return this;
+            })
+
+            .args(Object, String)
+            .use(function(obj, selector) {
+                _.each(this, function(elem) {
+                    _.each(obj, function(fn, eventName) {
+                        _event.add(elem, eventName, selector, fn);
+                    });
                 });
                 return this;
             })
 
             .args(Object)
-            .use(function() {
-
+            .use(function(obj) {
+                _.each(this, function(elem) {
+                    _.each(obj, function(fn, eventName) {
+                        _event.add(elem, eventName, '', fn);
+                    });
+                });
+                return this;
             })
 
             .expose(),
 
-/*
-
-        function(types, selector, data, fn, one) {
-            // Types can be a map of types/handlers
-            if (_.isObject(types)) {
-
-                // ( types-Object, selector, data )
-                if (!_.isString(selector)) {
-                    // ( types-Object, data )
-                    data = data || selector;
-                    selector = undefined;
-                }
-
-                var type;
-                for (type in types) {
-                    this.on(type, selector, data, types[type], one);
-                }
-
-                return this;
-            }
-
-            if (!_.exists(data) && !_.exists(fn)) {
-
-                // ( types, fn )
-                fn = selector;
-                data = selector = undefined;
-
-            } else if (!_.exists(fn)) {
-
-                if (_.isString(selector)) {
-
-                    // ( types, selector, fn )
-                    fn = data;
-                    data = undefined;
-
-                } else {
-
-                    // ( types, data, fn )
-                    fn = data;
-                    data = selector;
-                    selector = undefined;
-
-                }
-            }
-
-            if (fn === false) {
-
-                fn = _utils.returnFalse;
-
-            } else if (!fn) {
-
-                return this;
-
-            }
-
-            // TODO: Make this self removing by adding a unique namespace and then unbinding that namespace
-            var origFn;
-            if (one === 1) {
-                origFn = fn;
-                fn = function(event) {
-                    // Can use an empty set, since event contains the info
-                    // TODO: Address this
-                    jQuery().off(event);
-                    return origFn.apply( this, arguments );
-                };
-            }
-
-            return _.each(this, function(elem) {
-                _event.add(elem, types, fn, data, selector);
-            });
-        },
-
-*/
         once: overload()
             .args(Object)
             .use(function(events) {
@@ -139,8 +84,7 @@ module.exports = {
 
             .expose(),
 
-        //  TODO: Don't use the stupid 1 on the end
-        one: function(types, selector, data, fn) {
+        one: function() {
             return this.once.apply(this, arguments);
         },
 
