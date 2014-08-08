@@ -31,9 +31,9 @@ module.exports = {
 
             .expose(),
 
+/*
 
-
-        function(types, selector, data, fn, /*INTERNAL*/ one) {
+        function(types, selector, data, fn, one) {
             // Types can be a map of types/handlers
             if (_.isObject(types)) {
 
@@ -103,7 +103,7 @@ module.exports = {
             });
         },
 
-
+*/
         once: overload()
             .args(Object)
             .use(function(events) {
