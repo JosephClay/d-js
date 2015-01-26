@@ -3,18 +3,18 @@
     <head>
         <meta charset="utf-8">
         <title>D.js</title>
-        <link rel="stylesheet" href="tests/libs/qunit.css">
+        <link rel="stylesheet" href="libs/qunit.css">
 
         <!-- For IE8 -->
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
 
         <!-- For unit tests -->
-        <script src="tests/libs/underscore.js"></script>
-        <script src="tests/libs/jquery.js"></script>
-        <script src="tests/libs/qunit.js"></script>
+        <script src="libs/underscore.js"></script>
+        <script src="libs/jquery.js"></script>
+        <script src="libs/qunit.js"></script>
 
         <!-- Dependencies -->
-        <script src="dist/D.internal.js"></script>
+        <script src="../dist/D.internal.js"></script>
     </head>
     <body id="body">
         <div id="qunit"></div>
@@ -370,22 +370,22 @@
             };
         </script>
 
-        <script src="tests/setup.js"></script>
-        <script src="tests/core.js"></script>
-        <script src="tests/ready.js"></script>
+        <script src="unit/setup.js"></script>
+        <script src="unit/core.js"></script>
+        <script src="unit/ready.js"></script>
 
         <!-- TODO: Uncomment when events are implemented -->
-        <!--script src="tests/event.js"></script-->
+        <!--script src="unit/event.js"></script-->
 
-        <script src="tests/traversing.js"></script>
-        <script src="tests/attributes.js"></script>
-        <script src="tests/classes.js"></script>
-        <script src="tests/dimensions.js"></script>
-        <script src="tests/offset.js"></script>
-        <script src="tests/parse.js"></script>
-        <script src="tests/conflict.js"></script>
-        <script src="tests/selector.js"></script>
-        <script src="tests/data.js"></script>
-        <script src="tests/fizzle.js"></script>
+        <script src="unit/traversing.js"></script>
+        <script src="unit/attributes.js"></script>
+        <script src="unit/classes.js"></script>
+        <script src="unit/dimensions.js"></script>
+        <script src="unit/offset.js"></script>
+        <script src="unit/parse.js"></script>
+        <script src="unit/conflict.js"></script>
+        <script src="unit/selector.js"></script>
+        <script src="unit/data.js"></script>
+        <script src="unit/fizzle.js"></script>
     </body>
 </html>

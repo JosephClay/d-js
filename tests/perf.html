@@ -3,9 +3,13 @@
 	<head>
 		<title>Profiler</title>
 
-		<link rel="stylesheet" href="tests/perf/styles.css">
-		<script src="tests/libs/jquery.js"></script>
-		<script src="dist/D.internal.js"></script>
+		<link rel="stylesheet" href="perf/styles.css">
+
+		<!-- For IE8 -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+
+		<script src="libs/jquery.js"></script>
+		<script src="../dist/D.internal.js"></script>
 	</head>
 	<body>
 		<script id="test-html" type="x/template">
@@ -222,7 +226,7 @@
 			</div>
 		</div>
 
-		<script src="tests/perf/profiler.js"></script>
-		<script src="tests/perf/perf.js"></script>
+		<script src="perf/profiler.js"></script>
+		<script src="perf/perf.js"></script>
 	</body>
 </html>
