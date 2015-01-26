@@ -1,5 +1,5 @@
 var _ = require('underscore'),
-
+    string = require('../../../string'),
     overload = require('overload-js'),
     o = overload.o,
 
@@ -141,7 +141,7 @@ var _determineMethod = function(selector) {
     };
 
 var Selector = function(str) {
-    var selector                = _.string.trim(str),
+    var selector                = string.trim(str),
         isChildOrSiblingSelect  = (selector[0] === '>' || selector[0] === '+'),
         method                  = isChildOrSiblingSelect ? _QUERY_SELECTOR_ALL : _determineMethod(selector);
 

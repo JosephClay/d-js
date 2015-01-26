@@ -1,5 +1,3 @@
-var _ = require('underscore');
-
 /**
  * From Sizzle.js `createCache()`:
  * Use (key + ' ') to avoid collision with native prototype properties.

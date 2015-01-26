@@ -1,6 +1,6 @@
 var _      = require('underscore'),
     _cache = require('../../cache'),
-    _split = _.string.split,
+    _split = require('../../string').split,
 
     _getCache    = _cache(),
     _hasCache    = _cache.biLevel(),

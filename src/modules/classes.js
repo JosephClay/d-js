@@ -5,8 +5,9 @@ var _NODE_TYPE = require('node-type'),
     overload   = require('overload-js'),
     o          = overload.o,
 
-    _split     = _.string.split,
-    _isEmpty   = _.string.isEmpty;
+    string     = require('../string'),
+    _split     = string.split,
+    _isEmpty   = string.isEmpty;
 
 var _impl = _SUPPORTS.classList ? require('./classes/classes-modern')
                                 : require('./classes/classes-legacy');

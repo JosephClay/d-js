@@ -1,6 +1,7 @@
 var _            = require('underscore'),
     overload     = require('overload-js'),
     o            = overload.o,
+    string       = require('../string'),
 
     _SUPPORTS    = require('../supports'),
     _NODE_TYPE   = require('node-type'),
@@ -281,7 +282,7 @@ var _hooks = {
                 filter = currentStyle && currentStyle.filter || style.filter || '';
 
             // if setting opacity to 1, and no other filters exist - remove the filter attribute
-            if (value >= 1 || value === '' && _.string.trim(filter.replace(_regex.alpha, '')) === '') {
+            if (value >= 1 || value === '' && string.trim(filter.replace(_regex.alpha, '')) === '') {
 
                 // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
                 // if 'filter:' is present at all, clearType is disabled, we want to avoid this

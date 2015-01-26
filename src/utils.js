@@ -1,4 +1,5 @@
 var _ = require('underscore'),
+    string = require('./string'),
 
     _SUPPORTS      = require('./supports'),
     _NODE_TYPE     = require('node-type'),
@@ -35,19 +36,20 @@ else {
 
 module.exports = {
     isAttached: function(elem) {
-        return !!(elem
-            && elem.ownerDocument
-            && elem !== document
-            && elem.parentNode
-            && elem.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT
-            && elem.parentNode.isParseHtmlFragment !== true
+        return !!(
+            elem                                                      &&
+            elem.ownerDocument                                        &&
+            elem !== document                                         &&
+            elem.parentNode                                           &&
+            elem.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT &&
+            elem.parentNode.isParseHtmlFragment !== true
         );
     },
 
     isHtml: function(text) {
         if (!_.isString(text)) { return false; }
 
-        text = _.string.trim(text);
+        text = string.trim(text);
 
         return (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
     },

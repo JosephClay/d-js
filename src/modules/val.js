@@ -1,6 +1,7 @@
 var _          = require('underscore'),
     overload   = require('overload-js'),
     o          = overload.o,
+    string     = require('../string'),
 
     _SUPPORTS  = require('../supports'),
     _NODE_TYPE = require('node-type'),
@@ -25,7 +26,7 @@ var _valHooks = {
     option: {
         get: function(elem) {
             var val = elem.getAttribute('value');
-            return _.string.trim(_.exists(val) ? val : _text.get(elem));
+            return string.trim(_.exists(val) ? val : _text.get(elem));
         }
     },
 
