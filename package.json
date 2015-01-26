@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "node-type": "./local_modules/node-type",
-    "overload-js": "^0.1.1",
+    "overload-js": "^0.3.0",
     "underscore": "./local_modules/underscore",
     "xaja-js": "0.0.9"
   },
