@@ -1,5 +1,0 @@
-- Pass null as NULL and change all uses to use the constant.
-- Pull items out of objects - keys don't minify
-- create _ helper to explode strings into arrays e.g. 'foo|bar|baz' -> ['foo', 'bar', 'baz']
-- Pass window, document, undefined to encapsulation
-- rquire optimized build

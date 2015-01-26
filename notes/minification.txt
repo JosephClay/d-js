@@ -1,0 +1,2 @@
+- Pass null as NULL and change all uses to use the constant.
+- Pull items out of objects - keys don't minify
