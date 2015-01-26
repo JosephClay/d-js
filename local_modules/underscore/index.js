@@ -1,18 +1,23 @@
 var _NODE_TYPE = require('node-type'),
-    _id        = 0,
-    _toString  = Object.prototype.toString,
-    _indexOf   = Array.prototype.indexOf,
-    _slice     = Array.prototype.slice,
-    _isTruthy  = function(arg) { return !!arg; };
+    
+    id        = 0,
+    
+    objProto   = Object.prototype,
+    arrProto   = Array.prototype,
 
-var _ = {
+    toString   = objProto.toString,
+    indexOf    = arrProto.indexOf,
+    slice      = arrProto.slice,
+    isTruthy   = function(arg) { return !!arg; };
+
+var _ = module.exports = {
 
     noop: function() {},
 
     now: Date.now || function() { return new Date().getTime(); },
 
     uniqueId: function() {
-        return _id++;
+        return id++;
     },
 
     exists: function(obj) {
@@ -78,7 +83,7 @@ var _ = {
 
     // Supports IE8 via obj.callee (see http://stackoverflow.com/a/10645766/467582)
     isArguments: function(obj) {
-        return !!(obj && (_toString.call(obj) === '[object Arguments]' || obj.callee));
+        return !!(obj && (toString.call(obj) === '[object Arguments]' || obj.callee));
     },
 
     // Flatten that also checks if value is a NodeList
@@ -172,7 +177,7 @@ var _ = {
     filter: function(arr, iterator) {
         var results = [];
         if (!arr || !arr.length) { return results; }
-        iterator = iterator || _isTruthy;
+        iterator = iterator || isTruthy;
 
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
@@ -221,7 +226,7 @@ var _ = {
             return [];
         }
         if (_.isArray(obj)) {
-            return _slice.call(obj);
+            return slice.call(obj);
         }
 
         var arr,
@@ -246,11 +251,11 @@ var _ = {
         if (arg === null || arg === undefined) {
             return [];
         }
-        if (arg.slice === _slice) {
+        if (arg.slice === slice) {
             return arg.slice();
         }
         if (_.isArrayLike(arg)) {
-            return _slice.call(arg);
+            return slice.call(arg);
         }
         return [ arg ];
     },
@@ -268,10 +273,10 @@ var _ = {
     },
 
     indexOf: function(arr, item) {
-        if (arr.indexOf === _indexOf) {
+        if (arr.indexOf === indexOf) {
             return arr.indexOf(item);
         }
-        return _indexOf.call(arr, item);
+        return indexOf.call(arr, item);
     },
 
     each: function(obj, iterator) {
@@ -321,7 +326,7 @@ var types = _.splt('Array|Function|String|Number|Date|RegExp'),
     idx = types.length,
     generateCheck = function(name) {
         return function(obj) {
-            return !!obj && _toString.call(obj) === '[object ' + name + ']';
+            return !!obj && toString.call(obj) === '[object ' + name + ']';
         };
     },
     name;
@@ -362,5 +367,3 @@ if (typeof ('') === 'string') {
 _.isReallyFunction = function(val) {
     return typeof val === 'function' || false;
 };
-
-module.exports = _;
