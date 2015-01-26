@@ -6,7 +6,7 @@ var _          = require('underscore'),
     _NODE_TYPE = require('node-type'),
 
     _utils     = require('../utils'),
-    _cache     = require('../cache'),
+    _cache     = require('cache'),
 
     _selector  = require('./Fizzle/selector/selector-parse'),
 

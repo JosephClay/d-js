@@ -2,7 +2,7 @@ var _          = require('underscore'),
     overload   = require('overload-js'),
     o          = overload.o,
 
-    _cache     = require('../cache'),
+    _cache     = require('cache'),
 
     _dataCache = _cache.biLevel(),
 

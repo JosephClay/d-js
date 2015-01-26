@@ -11,6 +11,7 @@
     "node-type": "./local_modules/node-type",
     "overload-js": "^0.3.0",
     "underscore": "./local_modules/underscore",
+    "cache": "./local_modules/cache",
     "xaja-js": "0.0.9"
   },
   "devDependencies": {
@@ -22,7 +23,8 @@
     "vinyl-source-stream": "^1.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cls && gulp && gulp dev"
   },
   "repository": {
     "type": "git",

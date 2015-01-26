@@ -1,6 +1,6 @@
 var _                 = require('underscore'),
 
-    _cache            = require('./cache'),
+    _cache            = require('cache'),
 
     _camelCache         = _cache(),
     _displayCache       = _cache(),

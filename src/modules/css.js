@@ -7,7 +7,7 @@ var _            = require('underscore'),
     _NODE_TYPE   = require('node-type'),
 
     _utils       = require('../utils'),
-    _cache       = require('../cache'),
+    _cache       = require('cache'),
     _regex       = require('../regex'),
 
     _cssKeyCache = _cache();

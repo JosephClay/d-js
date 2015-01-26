@@ -13,7 +13,7 @@ var _ = require('underscore'),
     _SUPPORTS  = require('../../../supports'),
     _NODE_TYPE = require('node-type'),
 
-    _cache = require('../../../cache'),
+    _cache = require('cache'),
     _regex = require('../../../regex'),
 
     _querySelectorCache = _cache(),

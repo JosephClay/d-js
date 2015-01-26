@@ -4,7 +4,7 @@ var _SUPPORTS           = require('../../../supports'),
     _PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
     _CAPTURE_SELECT     = /(:[^\s^(]+)\(([^\)]+)\)/g,
 
-    _cache              = require('../../../cache'),
+    _cache              = require('cache'),
     _pseudoCache        = _cache(),
 
     _proxySelectors     = require('../list/selectors-proxy'),

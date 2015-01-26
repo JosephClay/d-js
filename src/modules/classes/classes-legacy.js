@@ -1,5 +1,5 @@
 var _      = require('underscore'),
-    _cache = require('../../cache'),
+    _cache = require('cache'),
     _split = require('../../string').split,
 
     _getCache    = _cache(),
