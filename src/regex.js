@@ -66,7 +66,7 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
         select:   /^<(?:option)\b/
     },
 
-    _NOT_WHITE           = /\S+/g;
+    _NOT_WHITE = /\S+/g;
 
 var _camelCase = function(match, letter) {
     return letter.toUpperCase();
