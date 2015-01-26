@@ -1,11 +1,11 @@
-var D = require('./D');
+var D = require('./index');
 
-module.exports = D.__INTERNAL = {
-
+D.__INTERNAL = {
     fizzle: {
         selector: {
             parser: require('./modules/Fizzle/selector/selector-parse')
         }
     }
-
 };
+
+module.exports = D;
