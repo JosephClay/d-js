@@ -46,8 +46,7 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
     _NUM_NON_PX          = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i'),
 
     _WHITESPACE          = '[\\x20\\t\\r\\n\\f]',
-    _NEEDS_CONTEXT       = new RegExp('^' + _WHITESPACE + '*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(' +
-                                _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i'),
+    _NEEDS_CONTEXT       = new RegExp('^' + _WHITESPACE + '*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(' + _WHITESPACE + '*((?:-\\d)?\\d*)' + _WHITESPACE + '*\\)|)(?=[^-]|$)', 'i'),
 
     _FOCUS_MORPH         = /^(?:focusinfocus|focusoutblur)$/,
     _MOUSE_EVENT         = /^(?:mouse|contextmenu)|click/,
