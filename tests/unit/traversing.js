@@ -1,6 +1,6 @@
 module('traversing');
 
-var _NODE_TYPE = {
+var NODE_TYPE = {
     ELEMENT:                1,
     ATTRIBUTE:              2,
     TEXT:                   3,
@@ -15,7 +15,7 @@ var _NODE_TYPE = {
     NOTATION:              12
 };
 
-var _NODE_TYPE_NAME = {
+var NODE_TYPE_NAME = {
      1: 'ELEMENT',
      2: 'ATTRIBUTE',
      3: 'TEXT',
@@ -32,7 +32,7 @@ var _NODE_TYPE_NAME = {
 
 var _getParent = function(node) {
     // Fragment check for IE8
-    return (node && node.parentNode && node.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT) ? node.parentNode : null;
+    return (node && node.parentNode && node.parentNode.nodeType !== NODE_TYPE.DOCUMENT_FRAGMENT) ? node.parentNode : null;
 };
 
 test('find(String)', function() {
@@ -505,24 +505,24 @@ test('contents() sort direction', function() {
         secondLast = nodes[nodes.length - 2],
         last       = nodes[nodes.length - 1];
 
-    equal(_NODE_TYPE_NAME[first.nodeType], 'TEXT',
+    equal(NODE_TYPE_NAME[first.nodeType], 'TEXT',
         'First node should be text');
     equal(trim(first.nodeValue), 'Here are some links in a normal paragraph:',
         'First node should have the correct nodeValue');
 
-    equal(_NODE_TYPE_NAME[second.nodeType], 'ELEMENT',
+    equal(NODE_TYPE_NAME[second.nodeType], 'ELEMENT',
         'Second node should be an element');
     equal(second.id, 'google',
         'Second node should have the correct id');
 
     // The following tests will fail in IE8 because it excludes text nodes that contain only whitespace.
 
-    equal(_NODE_TYPE_NAME[secondLast.nodeType], 'ELEMENT',
+    equal(NODE_TYPE_NAME[secondLast.nodeType], 'ELEMENT',
         'Second-last node should be an element');
     equal(secondLast.id, 'checkedtest',
         'Second-last node should have the correct id');
 
-    equal(_NODE_TYPE_NAME[last.nodeType], 'TEXT',
+    equal(NODE_TYPE_NAME[last.nodeType], 'TEXT',
         'Last node should be text');
     equal(trim(last.nodeValue), '',
         'Last node should have the correct nodeValue');

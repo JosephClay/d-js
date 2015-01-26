@@ -3,7 +3,7 @@ var _          = require('underscore'),
     o          = overload.o,
 
     _SUPPORTS  = require('../supports'),
-    _NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('node-type'),
 
     _utils     = require('../utils'),
     _cache     = require('cache'),
@@ -135,7 +135,7 @@ var _hooks = {
     },
 
     _isElementNode = function(elem) {
-        return elem && elem.nodeType === _NODE_TYPE.ELEMENT;
+        return elem && elem.nodeType === NODE_TYPE.ELEMENT;
     },
 
     _getAttribute = function(elem, attr) {

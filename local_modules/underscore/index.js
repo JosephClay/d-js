@@ -1,4 +1,4 @@
-var _NODE_TYPE = require('node-type'),
+var NODE_TYPE = require('node-type'),
     
     id        = 0,
     
@@ -39,7 +39,7 @@ var _ = module.exports = {
     },
 
     isElement: function(obj) {
-        return !!(obj && obj.nodeType === _NODE_TYPE.ELEMENT);
+        return !!(obj && obj.nodeType === NODE_TYPE.ELEMENT);
     },
 
     // NOTE: In older browsers, this will be overwritten below
@@ -321,7 +321,8 @@ var _ = module.exports = {
 
 };
 
-// Add some isType methods (only if they do NOT already exist): isArray, isFunction, isString, isNumber, isDate, isRegExp.
+// Add some isType methods (only if they do NOT already exist):
+// isArray, isFunction, isString, isNumber, isDate, isRegExp.
 var types = _.splt('Array|Function|String|Number|Date|RegExp'),
     idx = types.length,
     generateCheck = function(name) {

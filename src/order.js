@@ -1,4 +1,4 @@
-var _NODE_TYPE = require('node-type'),
+var NODE_TYPE = require('node-type'),
     _DOC_POS   = require('./docPos'),
 
     _utils     = require('./utils');
@@ -123,14 +123,14 @@ module.exports = {
      * @returns {Boolean} true if node `a` contains node `b`; otherwise false.
      */
     contains: function(a, b) {
-        var aDown = a.nodeType === _NODE_TYPE.DOCUMENT ? a.documentElement : a,
+        var aDown = a.nodeType === NODE_TYPE.DOCUMENT ? a.documentElement : a,
             bUp   = _utils.isAttached(b) ? b.parentNode : null;
 
         if (a === bUp) {
             return true;
         }
 
-        if (bUp && bUp.nodeType === _NODE_TYPE.ELEMENT) {
+        if (bUp && bUp.nodeType === NODE_TYPE.ELEMENT) {
             // Modern browsers (IE9+)
             if (a.compareDocumentPosition) {
                 return _isNode(bUp, _DOC_POS.CONTAINED_BY, a);

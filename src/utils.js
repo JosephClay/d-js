@@ -2,7 +2,7 @@ var _ = require('underscore'),
     string = require('./string'),
 
     _SUPPORTS      = require('./supports'),
-    _NODE_TYPE     = require('node-type'),
+    NODE_TYPE     = require('node-type'),
 
     _cache         = require('cache'),
 
@@ -41,7 +41,7 @@ module.exports = {
             elem.ownerDocument                                        &&
             elem !== document                                         &&
             elem.parentNode                                           &&
-            elem.parentNode.nodeType !== _NODE_TYPE.DOCUMENT_FRAGMENT &&
+            elem.parentNode.nodeType !== NODE_TYPE.DOCUMENT_FRAGMENT &&
             elem.parentNode.isParseHtmlFragment !== true
         );
     },

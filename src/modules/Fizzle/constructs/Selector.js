@@ -11,7 +11,7 @@ var _ = require('underscore'),
     _QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
     _SUPPORTS  = require('../../../supports'),
-    _NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('node-type'),
 
     _cache = require('cache'),
     _regex = require('../../../regex'),

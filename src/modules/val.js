@@ -4,7 +4,7 @@ var _          = require('underscore'),
     string     = require('../string'),
 
     _SUPPORTS  = require('../supports'),
-    _NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('node-type'),
 
     _utils     = require('../utils'),
     _div       = require('../div');
@@ -104,7 +104,7 @@ if (!_SUPPORTS.checkOn) {
 }
 
 var _getVal = function(elem) {
-    if (!elem || (elem.nodeType !== _NODE_TYPE.ELEMENT)) { return; }
+    if (!elem || (elem.nodeType !== NODE_TYPE.ELEMENT)) { return; }
 
     var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
     if (hook && hook.get) {
@@ -127,7 +127,7 @@ var _stringify = function(value) {
 };
 
 var _setVal = function(elem, value) {
-    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
+    if (elem.nodeType !== NODE_TYPE.ELEMENT) { return; }
 
     // Stringify values
     if (_.isArray(value)) {
@@ -199,7 +199,7 @@ module.exports = {
             .args(Function)
             .use(function(iterator) {
                 return _.each(this, function(elem, idx) {
-                    if (elem.nodeType !== _NODE_TYPE.ELEMENT) { return; }
+                    if (elem.nodeType !== NODE_TYPE.ELEMENT) { return; }
 
                     var value = iterator.call(elem, idx, _getVal(elem));
 

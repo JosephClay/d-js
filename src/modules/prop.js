@@ -3,7 +3,7 @@ var _          = require('underscore'),
     o          = overload.o,
 
     _SUPPORTS  = require('../supports'),
-    _NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('node-type'),
 
     _regex     = require('../regex');
 
@@ -74,7 +74,7 @@ var _getOrSetProp = function(elem, name, value) {
     var nodeType = elem.nodeType;
 
     // don't get/set properties on text, comment and attribute nodes
-    if (!elem || nodeType === _NODE_TYPE.TEXT || nodeType === _NODE_TYPE.COMMENT || nodeType === _NODE_TYPE.ATTRIBUTE) {
+    if (!elem || nodeType === NODE_TYPE.TEXT || nodeType === NODE_TYPE.COMMENT || nodeType === NODE_TYPE.ATTRIBUTE) {
         return;
     }
 
