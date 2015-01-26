@@ -27,7 +27,7 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
     _OPACITY             = /opacity\s*=\s*([^)]*)/,
 
     // Matches dashed string for camelizing
-    _DASH_CATCH = /-([\da-z])/gi,
+    _DASH_CATCH          = /-([\da-z])/gi,
 
     // Matches "none" or a table type e.g. "table",
     // "table-cell" etc...
