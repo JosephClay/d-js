@@ -1,7 +1,7 @@
-var _ = require('_'),
+var _ = require('underscore'),
 
     _SUPPORTS      = require('./supports'),
-    _NODE_TYPE     = require('./nodeType'),
+    _NODE_TYPE     = require('node-type'),
 
     _cache         = require('./cache'),
 

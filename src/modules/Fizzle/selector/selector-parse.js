@@ -2,7 +2,7 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-var _ = require('_'),
+var _ = require('underscore'),
 
     _cache         = require('../../../cache'),
     _tokenCache    = _cache(),

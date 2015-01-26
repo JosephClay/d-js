@@ -1,8 +1,8 @@
-var _           = require('_'),
-    overload    = require('overload'),
+var _           = require('underscore'),
+    overload    = require('overload-js'),
     O           = overload.O,
 
-    _NODE_TYPE  = require('../nodeType'),
+    _NODE_TYPE  = require('node-type'),
 
     _utils      = require('../utils'),
     _array      = require('./array'),

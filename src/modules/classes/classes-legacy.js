@@ -1,4 +1,4 @@
-var _      = require('_'),
+var _      = require('underscore'),
     _cache = require('../../cache'),
     _split = _.string.split,
 

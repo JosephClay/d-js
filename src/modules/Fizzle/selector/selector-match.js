@@ -1,5 +1,5 @@
 var _SUPPORTS  = require('../../../supports'),
-    _NODE_TYPE = require('../../../nodeType'),
+    _NODE_TYPE = require('node-type'),
 
     _matchesSelector = _SUPPORTS.matchesSelector;
 

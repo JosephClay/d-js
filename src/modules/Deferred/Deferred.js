@@ -6,7 +6,7 @@
      * @readonly
      * @enum {Number}
      */
-var _ = require('_');
+var _ = require('underscore');
 
 var _DEFERRED_STATUS = {
         idle:       0,

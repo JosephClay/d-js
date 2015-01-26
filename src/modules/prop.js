@@ -1,9 +1,9 @@
-var _          = require('_'),
-    overload   = require('overload'),
+var _          = require('underscore'),
+    overload   = require('overload-js'),
     O          = overload.O,
 
     _SUPPORTS  = require('../supports'),
-    _NODE_TYPE = require('../nodeType'),
+    _NODE_TYPE = require('node-type'),
 
     _regex     = require('../regex');
 

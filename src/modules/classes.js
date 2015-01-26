@@ -1,8 +1,8 @@
-var _NODE_TYPE = require('../nodeType'),
+var _NODE_TYPE = require('node-type'),
     _SUPPORTS  = require('../supports'),
 
-    _          = require('_'),
-    overload   = require('overload'),
+    _          = require('underscore'),
+    overload   = require('overload-js'),
     O          = overload.O,
 
     _split     = _.string.split,

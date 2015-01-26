@@ -1,5 +1,5 @@
-var _          = require('_'),
-    overload   = require('overload'),
+var _          = require('underscore'),
+    overload   = require('overload-js'),
     O          = overload.O,
 
     _cache     = require('../cache'),

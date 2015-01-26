@@ -1,4 +1,4 @@
-var _ = require('_');
+var _ = require('underscore');
 
 var _getTop = function(elem, val) {
         return elem.scrollTop;

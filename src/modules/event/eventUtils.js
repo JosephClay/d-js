@@ -1,4 +1,4 @@
-var _    = require('_'),
+var _    = require('underscore'),
     _div = require('../../div');
 
 module.exports = {

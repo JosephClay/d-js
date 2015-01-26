@@ -1,4 +1,4 @@
-var _         = require('_'),
+var _         = require('underscore'),
 
     _deferObj = require('./Deferred'),
     _Deferred  = _deferObj.Deferred,

@@ -1,4 +1,4 @@
-var _ = require('_'),
+var _ = require('underscore'),
 
     _cache = require('../../cache'),
 
@@ -18,7 +18,7 @@ var _toSelectors = function(str) {
     // noop on the Query and Is level and is the exception
     // instead of the rule
     var selectors = _parse.subqueries(str) || [];
-    
+
     // Normalize each of the selectors...
     selectors = _.map(selectors, _normalize);
 

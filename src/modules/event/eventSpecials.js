@@ -1,10 +1,10 @@
-var _              = require('_'),
+var _              = require('underscore'),
     _supports      = require('../../supports'),
     _data          = require('../data'),
     _event         = require('./event');
 
 // TODO: Remove.  This is needed to prevent IE8 from failing catastrophically.
-return;
+// return;
 
 if (!_supports.submitBubbles) {
     // IE change delegation and checkbox/radio fix

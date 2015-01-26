@@ -1,4 +1,4 @@
-var _      = require('_'),
+var _      = require('underscore'),
     _order = require('../order');
 
 var _slice = (function(slice) {

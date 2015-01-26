@@ -1,6 +1,6 @@
-var _ = require('_'),
+var _ = require('underscore'),
 
-    overload = require('overload'),
+    overload = require('overload-js'),
     O = overload.O,
 
     _ID_PREFIX = 'D-uniqueId-',
@@ -11,7 +11,7 @@ var _ = require('_'),
     _QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
     _SUPPORTS  = require('../../../supports'),
-    _NODE_TYPE = require('../../../nodeType'),
+    _NODE_TYPE = require('node-type'),
 
     _cache = require('../../../cache'),
     _regex = require('../../../regex'),

@@ -1,4 +1,4 @@
-var _NODE_TYPE = require('./nodeType'),
+var _NODE_TYPE = require('node-type'),
     _DOC_POS   = require('./docPos'),
 
     _utils     = require('./utils');

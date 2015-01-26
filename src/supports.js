@@ -1,4 +1,4 @@
-var _      = require('_'),
+var _      = require('underscore'),
     div    = require('./div'),
     a      = div.getElementsByTagName('a')[0],
     button = div.getElementsByTagName('button')[0],

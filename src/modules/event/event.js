@@ -1,7 +1,7 @@
-var _           = require('_'),
+var _           = require('underscore'),
 
     Event       = require('./E'),
-    _nodeType   = require('../../nodeType'),
+    _nodeType   = require('node-type'),
     _regex      = require('../../regex'),
     _utils      = require('../../utils'),
     _array      = require('../array'),
