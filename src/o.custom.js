@@ -2,7 +2,7 @@ var _ = require('underscore'),
     overload = require('overload-js');
 
 // Configure overload to throw type errors
-overload.prototype.err = function() {
+overload.err = function() {
     throw new TypeError();
 };
 
@@ -37,5 +37,3 @@ overload.defineTypes({
         return val === document || _.isWindow(val) || _.isElement(val);
     }
 });
-
-module.exports = overload.o;
