@@ -38,4 +38,4 @@ overload.defineTypes({
     }
 });
 
-module.exports = overload.O;
+module.exports = overload.o;

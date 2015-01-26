@@ -1,6 +1,6 @@
 var _          = require('underscore'),
     overload   = require('overload-js'),
-    O          = overload.O,
+    o          = overload.o,
 
     _SUPPORTS  = require('../supports'),
     _NODE_TYPE = require('node-type'),
@@ -181,14 +181,14 @@ module.exports = {
             })
 
             // Setters
-            .args(O.any(String, Number, Array))
+            .args(o.any(String, Number, Array))
             .use(function(value) {
                 return _.each(this, function(elem) {
                     _setVal(elem, value);
                 });
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return _.each(this, function(elem) {
                     _setVal(elem, '');

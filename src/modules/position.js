@@ -1,6 +1,6 @@
 var _        = require('underscore'),
     overload = require('overload-js'),
-    O        = overload.O,
+    o        = overload.o,
 
     _utils   = require('../utils'),
 
@@ -66,14 +66,14 @@ module.exports = {
         },
 
         offset: overload()
-            .args(O.any(Object, Function))
+            .args(o.any(Object, Function))
             .use(function(posOrIterator) {
                 return _.each(this, function(elem, idx) {
                     _setOffset(elem, idx, posOrIterator);
                 });
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })

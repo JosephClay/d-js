@@ -1,6 +1,6 @@
 var _        = require('underscore'),
     overload = require('overload-js'),
-    O        = overload.O,
+    o        = overload.o,
 
     _css     = require('./css');
 
@@ -56,7 +56,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -79,7 +79,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -93,7 +93,7 @@ module.exports = {
             .expose(),
 
         innerWidth: overload()
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -107,7 +107,7 @@ module.exports = {
             .expose(),
 
         innerHeight: overload()
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -121,7 +121,7 @@ module.exports = {
             .expose(),
 
         outerWidth: overload()
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -135,7 +135,7 @@ module.exports = {
             .expose(),
 
         outerHeight: overload()
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })

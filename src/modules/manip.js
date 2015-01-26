@@ -1,6 +1,6 @@
 var _         = require('underscore'),
     overload  = require('overload-js'),
-    O         = overload.O,
+    o         = overload.o,
 
     _selector = require('./selectors'),
     _array    = require('./array'),
@@ -165,7 +165,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.collection)
+            .args(o.collection)
             .use(function(arr) {
                 _appendPrependMergeArray(this, arr, _append);
                 return this;
@@ -180,7 +180,7 @@ module.exports = {
         insertAfter: function() { return this; },
 
         appendTo: overload()
-            .args(O.D)
+            .args(o.D)
             .use(function(d) {
                 d.append(this);
                 return this;
@@ -224,7 +224,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.collection)
+            .args(o.collection)
             .use(function(arr) {
                 _appendPrependMergeArray(this, arr, _prepend);
                 return this;
@@ -233,7 +233,7 @@ module.exports = {
             .expose(),
 
         prependTo: overload()
-            .args(O.D)
+            .args(o.D)
             .use(function(d) {
                 d.prepend(this);
                 return this;
@@ -263,7 +263,7 @@ module.exports = {
             })
 
             // Array of elements
-            .args(O.collection)
+            .args(o.collection)
             .use(function(arr) {
                 var elems = _array.unique(
                     [].concat(this.get(), _.toArray(arr))
@@ -273,7 +273,7 @@ module.exports = {
             })
 
             // Single element
-            .args(O.any(O.window, O.document, Element))
+            .args(o.any(o.window, o.document, Element))
             .use(function(elem) {
                 var elems = _array.unique(
                     [].concat(this.get(), [ elem ])

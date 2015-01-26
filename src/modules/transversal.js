@@ -1,6 +1,6 @@
 var _           = require('underscore'),
     overload    = require('overload-js'),
-    O           = overload.O,
+    o           = overload.o,
 
     _NODE_TYPE  = require('node-type'),
 
@@ -274,12 +274,12 @@ module.exports = {
                 return D(selector).indexOf(first);
             })
 
-            .args(O.any(Element, O.window, O.document))
+            .args(o.any(Element, o.window, o.document))
             .use(function(elem) {
                 return this.indexOf(elem);
             })
 
-            .args(O.D)
+            .args(o.D)
             .use(function(d) {
                 return this.indexOf(d[0]);
             })

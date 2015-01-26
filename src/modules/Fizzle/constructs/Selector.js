@@ -1,7 +1,7 @@
 var _ = require('underscore'),
 
     overload = require('overload-js'),
-    O = overload.O,
+    o = overload.o,
 
     _ID_PREFIX = 'D-uniqueId-',
 

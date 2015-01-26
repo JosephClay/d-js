@@ -1,6 +1,6 @@
 var _         = require('underscore'),
     overload  = require('overload-js'),
-    O         = overload.O,
+    o         = overload.o,
 
     _utils    = require('../../utils'),
     _event    = require('./event'),

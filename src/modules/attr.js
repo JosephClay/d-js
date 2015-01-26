@@ -1,6 +1,6 @@
 var _          = require('underscore'),
     overload   = require('overload-js'),
-    O          = overload.O,
+    o          = overload.o,
 
     _SUPPORTS  = require('../supports'),
     _NODE_TYPE = require('node-type'),
@@ -219,7 +219,7 @@ module.exports = {
                 return _getAttribute(this[0], attr);
             })
 
-            .args(String, O.any(String, Number, Boolean))
+            .args(String, o.any(String, Number, Boolean))
             .use(function(attr, value) {
                 _setAttributes(this, attr, value);
                 return this;
@@ -277,7 +277,7 @@ module.exports = {
                 return this;
             })
 
-            .args(String, O.wild)
+            .args(String, o.wild)
             .use(function(key, value) {
                 var idx = this.length;
                 while (idx--) {

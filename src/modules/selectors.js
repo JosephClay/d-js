@@ -1,6 +1,6 @@
 var _        = require('underscore'),
     overload = require('overload-js'),
-    O        = overload.O,
+    o        = overload.o,
 
     _utils   = require('../utils'),
     _array   = require('./array'),
@@ -78,7 +78,7 @@ module.exports = {
     fn: {
         // TODO: Optimize this method
         has: overload()
-            .args(O.selector)
+            .args(o.selector)
             .use(function(target) {
                 var targets = this.find(target),
                     idx,
@@ -107,7 +107,7 @@ module.exports = {
                 return is.any(this);
             })
 
-            .args(O.collection)
+            .args(o.collection)
             .use(function(arr) {
 
                 return _.any(this, function(elem) {
@@ -136,7 +136,7 @@ module.exports = {
 
             })
 
-            .args(O.any(null, undefined, Number, Object))
+            .args(o.any(null, undefined, Number, Object))
             .use(function() {
                 return false;
             })
@@ -153,7 +153,7 @@ module.exports = {
                 );
             })
 
-            .args(O.collection)
+            .args(o.collection)
             .use(function(arr) {
                 arr = _.toArray(arr);
 
@@ -187,14 +187,14 @@ module.exports = {
 
             })
 
-            .args(O.any(null, undefined, Number, Object))
+            .args(o.any(null, undefined, Number, Object))
             .use(function() {
                 return this;
             })
             .expose(),
 
         find: overload()
-            .args(O.selector)
+            .args(o.selector)
             .use(function(selector) {
 
                 var result = _findWithin(selector, this);
@@ -220,7 +220,7 @@ module.exports = {
 
             })
 
-            .args(O.collection)
+            .args(o.collection)
             .use(function(arr) {
 
                 return D(
@@ -254,7 +254,7 @@ module.exports = {
 
             })
 
-            .args(O.any(null, undefined, Number))
+            .args(o.any(null, undefined, Number))
             .use(function() {
                 return D();
             })

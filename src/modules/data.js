@@ -1,6 +1,6 @@
 var _          = require('underscore'),
     overload   = require('overload-js'),
-    O          = overload.O,
+    o          = overload.o,
 
     _cache     = require('../cache'),
 
@@ -78,13 +78,13 @@ module.exports = {
     D: {
         data: overload()
             // NOTE: NodeList || HtmlCollection support?
-            .args(O.element, String, O.wild)
+            .args(o.element, String, o.wild)
             .use(_setData)
 
-            .args(O.element, String)
+            .args(o.element, String)
             .use(_getData)
 
-            .args(O.element, Object)
+            .args(o.element, Object)
             .use(function(elem, map) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -95,24 +95,24 @@ module.exports = {
                 return map;
             })
 
-            .args(O.element)
+            .args(o.element)
             .use(_getAllData)
 
             .expose(),
 
         hasData: overload()
-            .args(O.element)
+            .args(o.element)
             .use(_hasData)
             .expose(),
 
         removeData: overload()
             // NOTE: NodeList || HtmlCollection support?
             // Remove single key
-            .args(O.element, String)
+            .args(o.element, String)
             .use(_removeData)
 
             // Remove multiple keys
-            .args(O.element, Array)
+            .args(o.element, Array)
             .use(function(elem, array) {
                 var id;
                 if (!(id = _getId(elem))) { return; }
@@ -123,7 +123,7 @@ module.exports = {
             })
 
             // Remove all data
-            .args(O.element)
+            .args(o.element)
             .use(_removeAllData)
 
             .expose()
@@ -132,7 +132,7 @@ module.exports = {
     fn: {
         data: overload()
             // Set key's value
-            .args(String, O.wild)
+            .args(String, o.wild)
             .use(function(key, value) {
                 var idx = this.length,
                     id,

@@ -3,7 +3,7 @@ var _NODE_TYPE = require('node-type'),
 
     _          = require('underscore'),
     overload   = require('overload-js'),
-    O          = overload.O,
+    o          = overload.o,
 
     _split     = _.string.split,
     _isEmpty   = _.string.isEmpty;
@@ -90,7 +90,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -128,7 +128,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })
@@ -136,7 +136,7 @@ module.exports = {
             .expose(),
 
         toggleClass: overload()
-            .args(O.any(String, Array))
+            .args(o.any(String, Array))
             .use(function(names) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
@@ -148,7 +148,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(String, Array), O.wild)
+            .args(o.any(String, Array), o.wild)
             .use(function(names, shouldAdd) {
                 if (!this.length || _isEmpty(names) || !names.length) { return this; }
 
@@ -164,7 +164,7 @@ module.exports = {
                 return this;
             })
 
-            .args(O.any(null, undefined))
+            .args(o.any(null, undefined))
             .use(function() {
                 return this;
             })

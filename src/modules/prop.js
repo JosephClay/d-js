@@ -1,6 +1,6 @@
 var _          = require('underscore'),
     overload   = require('overload-js'),
-    O          = overload.O,
+    o          = overload.o,
 
     _SUPPORTS  = require('../supports'),
     _NODE_TYPE = require('node-type'),
@@ -106,7 +106,7 @@ module.exports = {
                 return _getOrSetProp(first, prop);
             })
 
-            .args(String, O.any(String, Number, Boolean))
+            .args(String, o.any(String, Number, Boolean))
             .use(function(prop, value) {
                 return _.each(this, function(elem) {
                     _getOrSetProp(elem, prop, value);

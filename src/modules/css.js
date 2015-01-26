@@ -1,6 +1,6 @@
 var _            = require('underscore'),
     overload     = require('overload-js'),
-    O            = overload.O,
+    o            = overload.o,
 
     _SUPPORTS    = require('../supports'),
     _NODE_TYPE   = require('node-type'),
@@ -355,7 +355,7 @@ module.exports = {
 
     fn: {
         css: overload()
-            .args(String, O.any(String, Number))
+            .args(String, o.any(String, Number))
             .use(function(name, value) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
