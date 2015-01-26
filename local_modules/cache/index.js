@@ -6,6 +6,7 @@
  * @returns {String}
  * @private
  */
+// TODO: No longer need _safe
 var _safe = function(key) { return key; };
 
 var _getterSetter = function() {
@@ -78,11 +79,9 @@ var _getterSetter = function() {
         };
     };
 
-var api = function() {
+var api = module.exports = function() {
     return _getterSetter();
 };
 api.biLevel = function() {
     return _biLevelGetterSetter();
 };
-
-module.exports = api;
