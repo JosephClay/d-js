@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "jQuery-esque DOM maniplation library",
   "main": "src/index.js",
+  "private": true,
   "directories": {
     "test": "tests"
   },
