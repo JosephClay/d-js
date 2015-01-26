@@ -1,1 +1,0 @@
-(function(window, document, _, overload, signal, undefined) {
