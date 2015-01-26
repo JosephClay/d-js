@@ -1,10 +1,7 @@
 var _          = require('underscore'),
     overload   = require('overload-js'),
     o          = overload.o,
-
-    _cache     = require('cache'),
-
-    _dataCache = _cache.biLevel(),
+    cache      = require('cache')(2),
 
     _ACCESSOR  = '__D_id__ ',
 
@@ -27,36 +24,36 @@ var _          = require('underscore'),
     _getAllData = function(elem) {
         var id;
         if (!(id = _getId(elem))) { return; }
-        return _dataCache.get(id);
+        return cache.get(id);
     },
 
     _getData = function(elem, key) {
         var id;
         if (!(id = _getId(elem))) { return; }
-        return _dataCache.get(id, key);
+        return cache.get(id, key);
     },
 
     _hasData = function(elem) {
         var id;
         if (!(id = _getId(elem))) { return false; }
-        return _dataCache.has(id);
+        return cache.has(id);
     },
 
     _setData = function(elem, key, value) {
         var id = _getOrSetId(elem);
-        return _dataCache.set(id, key, value);
+        return cache.set(id, key, value);
     },
 
     _removeAllData = function(elem) {
         var id;
         if (!(id = _getId(elem))) { return; }
-        _dataCache.remove(id);
+        cache.remove(id);
     },
 
     _removeData = function(elem, key) {
         var id;
         if (!(id = _getId(elem))) { return; }
-        _dataCache.remove(id, key);
+        cache.remove(id, key);
     };
 
 module.exports = {
@@ -90,7 +87,7 @@ module.exports = {
                 if (!(id = _getId(elem))) { return; }
                 var key;
                 for (key in map) {
-                    _dataCache.set(id, key, map[key]);
+                    cache.set(id, key, map[key]);
                 }
                 return map;
             })
@@ -118,7 +115,7 @@ module.exports = {
                 if (!(id = _getId(elem))) { return; }
                 var idx = array.length;
                 while (idx--) {
-                    _dataCache.remove(id, array[idx]);
+                    cache.remove(id, array[idx]);
                 }
             })
 
@@ -142,7 +139,7 @@ module.exports = {
                     if (!_.isElement(elem)) { continue; }
 
                     id = _getOrSetId(this[idx]);
-                    _dataCache.set(id, key, value);
+                    cache.set(id, key, value);
                 }
                 return this;
             })
@@ -160,7 +157,7 @@ module.exports = {
 
                     id = _getOrSetId(this[idx]);
                     for (key in map) {
-                        _dataCache.set(id, key, map[key]);
+                        cache.set(id, key, map[key]);
                     }
                 }
                 return map;
@@ -172,7 +169,7 @@ module.exports = {
                 var first = this[0],
                     id;
                 if (!first || !(id = _getId(first))) { return; }
-                return _dataCache.get(id, key);
+                return cache.get(id, key);
             })
 
             // Get all data
@@ -181,7 +178,7 @@ module.exports = {
                 var first = this[0],
                     id;
                 if (!first || !(id = _getId(first))) { return; }
-                return _dataCache.get(id);
+                return cache.get(id);
             })
 
             .expose(),
@@ -197,7 +194,7 @@ module.exports = {
                 while (idx--) {
                     elem = this[idx];
                     if (!(id = _getId(elem))) { continue; }
-                    _dataCache.remove(id, key);
+                    cache.remove(id, key);
                 }
                 return this;
             })
@@ -213,7 +210,7 @@ module.exports = {
                     if (!(id = _getId(elem))) { continue; }
                     var arrIdx = array.length;
                     while (arrIdx--) {
-                        _dataCache.remove(id, array[arrIdx]);
+                        cache.remove(id, array[arrIdx]);
                     }
                 }
                 return this;
@@ -228,7 +225,7 @@ module.exports = {
                 while (idx--) {
                     elem = this[idx];
                     if (!(id = _getId(elem))) { continue; }
-                    _dataCache.remove(id);
+                    cache.remove(id);
                 }
                 return this;
             })

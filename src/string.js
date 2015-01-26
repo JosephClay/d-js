@@ -1,5 +1,5 @@
 var _     = require('underscore'),
-    cache = require('cache').biLevel(),
+    cache = require('cache')(2),
     
     R_TRIM       = /^\s+|\s+$/g,
     R_SPACE      = /\s+/g,

@@ -3,10 +3,10 @@ var _      = require('underscore'),
     _split = require('../../string').split,
 
     _getCache    = _cache(),
-    _hasCache    = _cache.biLevel(),
-    _addCache    = _cache.biLevel(),
-    _removeCache = _cache.biLevel(),
-    _toggleCache = _cache.biLevel();
+    _hasCache    = _cache(2),
+    _addCache    = _cache(2),
+    _removeCache = _cache(2),
+    _toggleCache = _cache(2);
 
 var _hasClass = function(elem, name) {
         var elemClassNames = _split(elem.className),

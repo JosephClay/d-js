@@ -15,25 +15,25 @@ var isCollection = function(val) {
 };
 
 overload.defineTypes({
-    'D': function(val) {
+    D: function(val) {
         return val && isD(val);
     },
-    'nodeList': function(val) {
+    nodeList: function(val) {
         return _.isNodeList(val);
     },
-    'window': function(val) {
+    window: function(val) {
         return _.isWindow(val);
     },
-    'document': function(val) {
+    document: function(val) {
         return val && val === document;
     },
-    'selector': function(val) {
+    selector: function(val) {
         return val && (_.isString(val) || _.isFunction(val) || _.isElement(val) || isCollection(val));
     },
-    'collection': function(val) {
+    collection: function(val) {
         return val && isCollection(val);
     },
-    'element': function(val) {
+    element: function(val) {
         return val === document || _.isWindow(val) || _.isElement(val);
     }
 });

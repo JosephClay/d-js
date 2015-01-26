@@ -79,9 +79,6 @@ var _getterSetter = function() {
         };
     };
 
-var api = module.exports = function() {
-    return _getterSetter();
-};
-api.biLevel = function() {
-    return _biLevelGetterSetter();
+module.exports = function(lvl) {
+    return lvl === 2 ? _biLevelGetterSetter() : _getterSetter();
 };
