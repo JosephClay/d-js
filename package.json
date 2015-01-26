@@ -1,7 +1,7 @@
 {
   "name": "d.js",
   "version": "1.0.0",
-  "description": "d.js",
+  "description": "jQuery-esque DOM maniplation library",
   "main": "src/index.js",
   "directories": {
     "test": "tests"
