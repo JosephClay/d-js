@@ -1,3 +1,8 @@
  ☐ Proxy Overload error to D.error
  ☐ Remove _.isObject, nothing should be using that
  ☐ _.parseInt to +''
+ ☐ _.contains would be useful
+ ☐ make es5+
+   ☐ Array.isArray
+   ☐ Date.now
+   ☐ assume indexOf
