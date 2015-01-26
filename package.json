@@ -1,14 +1,36 @@
 {
-  "devDependencies": {
-    "grunt": "^0.4.4",
-    "grunt-contrib-concat": "^0.4.0",
-    "grunt-contrib-rename": "0.0.3",
-    "browserify": "^3.46.1",
-    "grunt-browserify": "^2.0.8",
-    "grunt-contrib-watch": "^0.6.1"
+  "name": "d.js",
+  "version": "1.0.0",
+  "description": "d.js",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
   },
   "dependencies": {
-    "grunt-rquirejs": "^0.1.9",
-    "grunt-contrib-uglify": "^0.5.1"
-  }
+    "node-type": "./local_modules/node-type",
+    "overload-js": "^0.1.1",
+    "underscore": "./local_modules/underscore",
+    "xaja-js": "0.0.9"
+  },
+  "devDependencies": {
+    "browserify": "^6.3.3",
+    "gulp": "^3.8.10",
+    "gulp-util": "^3.0.2",
+    "through2": "^0.6.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JosephClay/D.js.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JosephClay/D.js/issues"
+  },
+  "homepage": "https://github.com/JosephClay/D.js"
 }
