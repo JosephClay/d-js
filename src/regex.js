@@ -58,12 +58,12 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
      * Map of parent tag names to the child tags that require them.
      * @type {Object}
      */
-    _PARENT_MAP          = {
-        'table':    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
-        'tbody':    /^<(?:tr)\b/,
-        'tr':       /^<(?:td|th)\b/,
-        'colgroup': /^<(?:col)\b/,
-        'select':   /^<(?:option)\b/
+    _PARENT_MAP = {
+        table:    /^<(?:tbody|tfoot|thead|colgroup|caption)\b/,
+        tbody:    /^<(?:tr)\b/,
+        tr:       /^<(?:td|th)\b/,
+        colgroup: /^<(?:col)\b/,
+        select:   /^<(?:option)\b/
     },
 
     _NOT_WHITE           = /\S+/g;
