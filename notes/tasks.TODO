@@ -6,3 +6,4 @@
    ☐ Array.isArray
    ☐ Date.now
    ☐ assume indexOf
+   ☐ remove IE8 code
