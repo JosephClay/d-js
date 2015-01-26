@@ -17,7 +17,7 @@ gulp.task('default', function() {
 });
 
 gulp.task('internal', function() {
-    browserify('./src/index.js', {
+    browserify('./src/internal-index.js', {
             standalone: 'D',
             debug: true
         })
@@ -30,6 +30,6 @@ gulp.task('internal', function() {
 
 gulp.task('dev', function() {
     gulp.watch('./src/**/*.js', function() {
-        gulp.start('default');
+        gulp.start(['default', 'internal']);
     });
 });
