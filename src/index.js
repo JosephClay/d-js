@@ -6,7 +6,7 @@ require('./_.string');
 // Configure O with string custom types
 require('./o.custom');
 
-var _ = require('_'),
+var _ = require('underscore'),
 
     parser      = require('./modules/parser/parser'),
     utils       = require('./utils'),
@@ -28,7 +28,7 @@ var _ = require('_'),
     deferred    = require('./modules/Deferred/Deferred'),
     when        = require('./modules/Deferred/when'),
 
-    xaja        = require('./libs/xaja');
+    xaja        = require('xaja-js');
 
 // Store previous reference
 var _prevD = window.D;
@@ -153,11 +153,4 @@ _.extend(
 // it can be hooked into for plugins
 D.fn = D.prototype;
 
-module.exports = window.D = D;
-
-// TODO: Make this part of the build configuration
-if (typeof define === 'function' && define.amd) {
-    define('D', [], function() {
-        return D;
-    });
-}
+module.exports =  D;
