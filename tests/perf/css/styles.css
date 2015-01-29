@@ -1,0 +1,344 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: " ";
+}
+.clearfix:after {
+  clear: both;
+}
+.center-block {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+.pull-right {
+  float: right !important;
+}
+.pull-left {
+  float: left !important;
+}
+.hide {
+  display: none !important;
+}
+.show {
+  display: block !important;
+}
+.invisible {
+  visibility: hidden;
+}
+.text-hide {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+.affix {
+  position: fixed;
+}
+.visually-hidden {
+  position: absolute;
+  border: 0;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+}
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body {
+  color: #080d36;
+  font-size: 15px;
+  font-family: 'Open Sans', sans-serif;
+  background: url('img/furley.png') repeat 0 0;
+}
+a[href] {
+  color: #1c298a;
+  text-decoration: none;
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  padding-left: 100px;
+  line-height: 50px;
+  background: rgba(0, 0, 0, 0.1);
+}
+header:before {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  content: '';
+  width: 50px;
+  background: rgba(0, 0, 0, 0.1);
+}
+.header-container {
+  position: relative;
+  width: 700px;
+}
+.run {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+main {
+  width: 700px;
+  margin: 100px 0 0 100px;
+}
+.test-overview {
+  margin-bottom: 20px;
+}
+.test-overview-item {
+  float: left;
+  font-size: 13px;
+  font-weight: bold;
+}
+.test-overview-item.test {
+  width: 450px;
+}
+.test-overview-item.runtime {
+  width: 150px;
+}
+.test-set {
+  position: relative;
+  margin: 0 0 20px 0;
+}
+.test-title {
+  display: block;
+  width: 100%;
+  height: 35px;
+  padding: 0 15px;
+  line-height: 34px;
+  background: rgba(0, 0, 0, 0.1);
+}
+.test-line {
+  position: relative;
+  height: 35px;
+  border: 1px solid #666;
+  border-bottom: none;
+  line-height: 34px;
+  background: #fff;
+}
+.test-line:last-child {
+  border-bottom: 1px solid #666;
+}
+.test-line.faster:after {
+  color: #1a711a;
+}
+.test-line.slower:after {
+  color: #d9534f;
+}
+.test-line[data-comparison]:after {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  content: attr(data-comparison);
+  margin: 0 0 0 10px;
+  font-size: 11px;
+}
+.test-line.pending .test,
+.test-line.pending .runtime {
+  border-right: none;
+}
+.test-line.pending .runtime {
+  color: #fff;
+}
+.test-line.pending .test-bar {
+  display: none;
+}
+.test-line.pending .opts:before {
+  display: block;
+  content: 'pending...';
+}
+.test-cell {
+  position: relative;
+  z-index: 1;
+  height: 34px;
+  float: left;
+  padding: 0 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.test-cell.test {
+  width: 450px;
+  border-right: 1px solid #666;
+}
+.test-cell.runtime {
+  width: 150px;
+  border-right: 1px solid #666;
+}
+.test-cell.opts {
+  width: 98px;
+}
+.test-bar {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  opacity: 0.3;
+  -webkit-transition: width 300ms ease;
+  -moz-transition: width 300ms ease;
+  -o-transition: width 300ms ease;
+  transition: width 300ms ease;
+}
+.faster .test-bar {
+  background: #5cb85c;
+}
+.slower .test-bar {
+  background: #d9534f;
+}

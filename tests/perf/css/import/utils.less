@@ -1,0 +1,247 @@
+// ==============================================
+// Shadows
+// ==============================================
+.shadow(@shadow: 0 3px 5px rgba(0, 0, 0, 0.3)) {
+  -webkit-box-shadow: @shadow;
+     -moz-box-shadow: @shadow;
+          box-shadow: @shadow;
+}
+
+.no-shadow() {
+  -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+          box-shadow: none;
+}
+
+// ==============================================
+// Opacity
+// ==============================================
+.opacity(@opacity) {
+  opacity: @opacity;
+
+  // IE8 filter
+  // @opacity-ie: (@opacity * 100);
+  // filter: ~"alpha(opacity=@{opacity-ie})";
+}
+
+// ==============================================
+// Radius
+// ==============================================
+.radius(@t: 5px; @r: 5px; @b: 5px; @l: 5px) {
+  -webkit-border-radius: @t @r @b @l;
+          border-radius: @t @r @b @l;
+}
+
+.radius(@r: 5px) {
+  -webkit-border-radius: @r;
+          border-radius: @r;
+}
+
+.radius-clip() {
+  -moz-background-clip: padding;
+       background-clip: padding-box;
+}
+
+.no-radius() {
+  .radius(0);
+}
+
+// ==============================================
+// Transitioning
+// ==============================================
+.transition(@arguments: all 200ms ease) {
+  -webkit-transition: @arguments;
+     -moz-transition: @arguments;
+       -o-transition: @arguments;
+          transition: @arguments;
+}
+
+.transitions(@arguments) {
+  -webkit-transition: @arguments;
+     -moz-transition: @arguments;
+       -o-transition: @arguments;
+          transition: @arguments;
+}
+
+.transition-delay(@transition-delay) {
+  -webkit-transition-delay: @transition-delay;
+          transition-delay: @transition-delay;
+}
+
+.transition-duration(@transition-duration) {
+  -webkit-transition-duration: @transition-duration;
+          transition-duration: @transition-duration;
+}
+
+.transition-transform(@transition) {
+  -webkit-transition: -webkit-transform @transition;
+     -moz-transition: -moz-transform @transition;
+       -o-transition: -o-transform @transition;
+          transition: transform @transition;
+}
+
+.no-transition() {
+  -webkit-transition: none;
+     -moz-transition: none;
+       -o-transition: none;
+          transition: none;
+}
+
+// ==============================================
+// Transformations
+// ==============================================
+.transform(@arg) {
+  -webkit-transform: @arg;
+      -ms-transform: @arg; // IE9+
+          transform: @arg;
+}
+
+.rotate(@degrees) {
+  -webkit-transform: rotate(@degrees);
+      -ms-transform: rotate(@degrees); // IE9+
+          transform: rotate(@degrees);
+}
+
+.scale(@ratio) {
+  -webkit-transform: scale(@ratio);
+      -ms-transform: scale(@ratio); // IE9+
+          transform: scale(@ratio);
+}
+
+.translate(@x, @y) {
+  -webkit-transform: translate(@x, @y);
+      -ms-transform: translate(@x, @y); // IE9+
+          transform: translate(@x, @y);
+}
+
+.translateX(@x) {
+  -webkit-transform: translateX(@x);
+      -ms-transform: translateX(@x); // IE9+
+          transform: translateX(@x);
+}
+
+.translateY(@y) {
+  -webkit-transform: translateY(@y);
+      -ms-transform: translateY(@y); // IE9+
+          transform: translateY(@y);
+}
+
+.translateZ(@z) {
+  -webkit-transform: translateZ(@z);
+      -ms-transform: translateZ(@z); // IE9+
+          transform: translateZ(@z);
+}
+
+.skew(@x, @y) {
+  -webkit-transform: skew(@x, @y);
+      -ms-transform: skewX(@x) skewY(@y); // See https://github.com/twbs/bootstrap/issues/4885; IE9+
+          transform: skew(@x, @y);
+}
+
+.translate3d(@x, @y, @z) {
+  -webkit-transform: translate3d(@x, @y, @z);
+          transform: translate3d(@x, @y, @z);
+}
+
+// ==============================================
+// Box Model
+// ==============================================
+.border-box() {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.content-box() {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}
+
+// Center-align a block level element
+.center-block() {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// ==============================================
+// Sizing
+// ==============================================
+.size(@width, @height) {
+  width: @width;
+  height: @height;
+}
+.size(@thesize) {
+  .size(@thesize, @thesize);
+}
+
+.square(@size) {
+  .size(@size);
+}
+
+.circle(@size) {
+  .size(@size);
+  .radius(50%);
+}
+
+// ==============================================
+// Text
+// ==============================================
+.hyphens(@mode: auto) {
+  word-wrap: break-word;
+  -webkit-hyphens: @mode;
+     -moz-hyphens: @mode;
+      -ms-hyphens: @mode; // IE10+
+       -o-hyphens: @mode;
+          hyphens: @mode;
+}
+
+// Ellipsis a block of text.
+// Element must be display: block; or inline-block
+.ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ==============================================
+// Misc
+// ==============================================
+.user-select(@select) {
+  -webkit-user-select: @select;
+     -moz-user-select: @select;
+      -ms-user-select: @select; // IE10+
+       -o-user-select: @select;
+          user-select: @select;
+}
+
+.resizable(@direction) {
+  resize: @direction; // Options: horizontal, vertical, both
+  overflow: auto; // Safari fix
+}
+
+.promote-to-layer() {
+  -webkit-transform: translateZ(0);
+     -moz-transform: translateZ(0);
+       -o-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+          transform: translateZ(0);
+}
+
+.rgba(@r: 0; @g: 0; @b: 0; @a: 1) {
+  background: rgb(@r, @g, @b);
+  background: rgba(@r, @g, @b, @a);
+}
+
+// from https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css#L125
+.visually-hidden {
+    position: absolute;
+    border: 0;
+    clip: rect(0 0 0 0);
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+}

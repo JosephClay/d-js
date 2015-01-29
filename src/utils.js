@@ -1,12 +1,8 @@
-var _ = require('underscore'),
-    string = require('./string'),
-
-    _SUPPORTS      = require('./supports'),
+var _             = require('underscore'),
+    string        = require('./string'),
+    SUPPORTS      = require('./supports'),
     NODE_TYPE     = require('node-type'),
-
-    _cache         = require('cache'),
-
-    _nodeNameCache = _cache(),
+    cache         = require('cache')(),
 
     _flagParsedNode,
     _isParsedNode,
@@ -16,7 +12,7 @@ var _ = require('underscore'),
     _returnThis    = function() { return this;  };
 
 // IE9+, modern browsers
-if (_SUPPORTS.detachedCreateElement) {
+if (SUPPORTS.detachedCreateElement) {
     _flagParsedNode = _.noop;
     _isParsedNode   = _returnFalse;
 }
@@ -41,7 +37,7 @@ module.exports = {
             elem.ownerDocument                                        &&
             elem !== document                                         &&
             elem.parentNode                                           &&
-            elem.parentNode.nodeType !== NODE_TYPE.DOCUMENT_FRAGMENT &&
+            elem.parentNode.nodeType !== NODE_TYPE.DOCUMENT_FRAGMENT  &&
             elem.parentNode.isParseHtmlFragment !== true
         );
     },
@@ -56,16 +52,16 @@ module.exports = {
 
     normalNodeName: function(elem) {
         var nodeName = elem.nodeName;
-        return _nodeNameCache.getOrSet(nodeName, function() {
+        return cache.getOrSet(nodeName, function() {
             return nodeName.toLowerCase();
         });
     },
 
     isNodeName: function(elem, name) {
-        var nodeName = _nodeNameCache.getOrSet(elem.nodeName, function() {
+        var nodeName = cache.getOrSet(elem.nodeName, function() {
                 return elem.nodeName.toLowerCase();
             }),
-            compareName = _nodeNameCache.getOrSet(name, function() {
+            compareName = cache.getOrSet(name, function() {
                 return name.toLowerCase();
             });
 
@@ -90,7 +86,7 @@ module.exports = {
     },
 
     normalizeNewlines: function(str) {
-        return str && _SUPPORTS.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
+        return str && SUPPORTS.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
     },
 
     returnTrue:  _returnTrue,

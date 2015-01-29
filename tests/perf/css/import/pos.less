@@ -1,0 +1,23 @@
+#pos {
+  .t(@a: 0) { top: @a; }
+  .r(@a: 0) { right: @a; }
+  .b(@a: 0) { bottom: @a; }
+  .l(@a: 0) { left: @a; }
+
+  .tl(@a: 0; @b: @a) { top: @a; left: @b; }
+  .tr(@a: 0; @b: @a) { top: @a; right: @b; }
+  .bl(@a: 0; @b: @a) { bottom: @a; left: @b; }
+  .br(@a: 0; @b: @a) { bottom: @a; right: @b; }
+  .tb(@a: 0; @b: @a) { top: @a; bottom: @b; }
+  .lr(@a: 0; @b: @a) { left: @a; right: @b; }
+
+  .trbl(@a: 0; @b: @a; @c: @a; @d: @a) { top: @a; right: @b; bottom: @c; left: @d; }
+
+  .fix() { position: fixed; }
+  .fixed() { position: fixed; }
+
+  .static() { position: static; }
+  .abs() { position: absolute; }
+  .rel() { position: relative; }
+  .z(@z: 0) { z-index: @z; }
+}

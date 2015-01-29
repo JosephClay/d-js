@@ -36,7 +36,7 @@ var D = function(arg, attrs) {
     if (!(this instanceof D)) { return new D(arg, attrs); }
 
     // Nothin
-    if (!arg) { return; }
+    if (arg === null || arg === undefined) { return; }
 
     // Element
     if (arg.nodeType || arg === window || arg === document) {
