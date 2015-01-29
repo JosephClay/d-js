@@ -191,7 +191,8 @@ table {
 }
 body {
   color: #080d36;
-  font-size: 15px;
+  line-height: 17px;
+  font-size: 13px;
   font-family: 'Open Sans', sans-serif;
   background: url('img/furley.png') repeat 0 0;
 }
@@ -203,27 +204,12 @@ a[href]:hover {
   text-decoration: underline;
 }
 header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  padding-left: 100px;
-  line-height: 50px;
-  background: rgba(0, 0, 0, 0.1);
-}
-header:before {
-  position: fixed;
-  top: 50px;
-  left: 0;
-  bottom: 0;
-  content: '';
-  width: 50px;
-  background: rgba(0, 0, 0, 0.1);
+  margin: 0 0 20px 0;
+  padding: 50px 0 0 50px;
 }
 .header-container {
   position: relative;
-  width: 700px;
+  width: 500px;
 }
 .run {
   position: absolute;
@@ -235,21 +221,23 @@ header:before {
 }
 main {
   width: 700px;
-  margin: 100px 0 0 100px;
+  margin: 0 0 0 50px;
+  padding: 0 0 100px 0;
+}
+.test {
+  width: 400px;
+}
+.opts {
+  width: 100px;
+  text-align: right;
 }
 .test-overview {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .test-overview-item {
   float: left;
   font-size: 13px;
   font-weight: bold;
-}
-.test-overview-item.test {
-  width: 450px;
-}
-.test-overview-item.runtime {
-  width: 150px;
 }
 .test-set {
   position: relative;
@@ -257,22 +245,11 @@ main {
 }
 .test-title {
   display: block;
-  width: 100%;
-  height: 35px;
-  padding: 0 15px;
-  line-height: 34px;
-  background: rgba(0, 0, 0, 0.1);
+  margin: 0 0 5px 0;
 }
 .test-line {
   position: relative;
-  height: 35px;
-  border: 1px solid #666;
-  border-bottom: none;
-  line-height: 34px;
-  background: #fff;
-}
-.test-line:last-child {
-  border-bottom: 1px solid #666;
+  margin: 0 0 5px 0;
 }
 .test-line.faster:after {
   color: #1a711a;
@@ -288,13 +265,6 @@ main {
   margin: 0 0 0 10px;
   font-size: 11px;
 }
-.test-line.pending .test,
-.test-line.pending .runtime {
-  border-right: none;
-}
-.test-line.pending .runtime {
-  color: #fff;
-}
 .test-line.pending .test-bar {
   display: none;
 }
@@ -305,31 +275,19 @@ main {
 .test-cell {
   position: relative;
   z-index: 1;
-  height: 34px;
+  min-height: 1px;
   float: left;
-  padding: 0 15px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.test-cell.test {
-  width: 450px;
-  border-right: 1px solid #666;
-}
-.test-cell.runtime {
-  width: 150px;
-  border-right: 1px solid #666;
-}
-.test-cell.opts {
-  width: 98px;
-}
 .test-bar {
   position: absolute;
   z-index: 0;
-  top: 0;
+  top: 100%;
   left: 0;
-  bottom: 0;
   width: 0;
+  height: 3px;
   opacity: 0.3;
   -webkit-transition: width 300ms ease;
   -moz-transition: width 300ms ease;

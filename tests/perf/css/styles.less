@@ -21,7 +21,8 @@
 body {
     color: #080d36;
     
-    font-size: 15px;
+    line-height: 17px;
+    font-size: 13px;
     font-family: 'Open Sans', sans-serif;
 
     background: url('img/furley.png') repeat 0 0;
@@ -37,33 +38,13 @@ a[href] {
 }
 
 header {
-    #pos.abs();
-    #pos.tl();
-
-    .size(100%, 50px);
-
-    padding-left: 100px;
-
-    line-height: 50px;
-
-    background: rgba(0,0,0,0.1);
-
-    &:before {
-        #pos.fixed();
-        #pos.tl(50px, 0);
-        #pos.b();
-        
-        content: '';
-
-        width: 50px;
-        
-        background: rgba(0,0,0,0.1);
-    }
+    margin: 0 0 20px 0;
+    padding: 50px 0 0 50px;
 }
     .header-container {
         #pos.rel();
 
-        width: 700px;
+        width: 500px;
     }
         .run {
             #pos.abs();
@@ -74,21 +55,21 @@ header {
 main {
     width: 700px;
 
-    margin: 100px 0 0 100px;
+    margin: 0 0 0 50px;
+    padding: 0 0 100px 0;
 }
 
+.test { width: 400px; }
+.opts { width: 100px; text-align: right; }
+
 .test-overview {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
     .test-overview-item {
         float: left;
 
         font-size: 13px;
         font-weight: bold;
-
-        &.test    { width: 450px; }
-        &.runtime { width: 150px; }
-        // &.opts { width: 100px; }
     }
 
 .test-set {
@@ -98,28 +79,13 @@ main {
 }
     .test-title {
         display: block;
-
-        .size(100%, 35px);
-
-        padding: 0 15px;
-
-        line-height: 35px - 1;
-
-        background: rgba(0,0,0,0.1);
+        margin: 0 0 5px 0;
     }
     .test-line {
         #pos.rel();
 
-        height: 35px;
+        margin: 0 0 5px 0;
 
-        border: 1px solid #666;
-        border-bottom: none;
-
-        line-height: 35px - 1;
-
-        background: #fff;
-
-        &:last-child { border-bottom: 1px solid #666; }
         &.faster { &:after { color: #1a711a; } }
         &.slower { &:after { color: #d9534f; } }
 
@@ -137,15 +103,6 @@ main {
         }
 
         &.pending {
-            .test,
-            .runtime {
-                border-right: none;
-            }
-            
-            .runtime {
-                color: #fff;
-            }
-
             .test-bar { display: none; }
 
             .opts {
@@ -160,28 +117,23 @@ main {
             #pos.rel();
             #pos.z(1);
 
-            height: 34px;
+            min-height: 1px;
 
             float: left;
-
-            padding: 0 15px;
 
             // ellipsis
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-
-            &.test    { width: 450px; border-right: 1px solid #666; }
-            &.runtime { width: 150px; border-right: 1px solid #666; }
-            &.opts    { width: 100px - 2; } // -2 for two borders above
         }
         .test-bar {
             #pos.abs();
             #pos.z(0);
-            #pos.tl();
-            #pos.b();
+            #pos.tl(100%, 0);
+
 
             width: 0;
+            height: 3px;
 
             opacity: 0.3;
 

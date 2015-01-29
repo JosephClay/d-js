@@ -14,7 +14,6 @@ module.exports = backbone.Model.extend({
             },
             onComplete: function(e) {
                 self.trigger('complete');
-                self.set('elapsed', e.target.times.elapsed);
                 self.set('hz', e.target.hz);
             }
         });

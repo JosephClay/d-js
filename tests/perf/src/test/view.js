@@ -13,10 +13,7 @@ module.exports = backbone.View.extend({
 
     initialize: function() {
         var self = this;
-        this.model.on('change:elapsed', function(model, elapsed) {
-                self._runtime().text(humanize.ms(humanize.number(elapsed)));
-            })
-            .on('change:hz', function(model, hz) {
+        this.model.on('change:hz', function(model, hz) {
                 self._opts().text(humanize.number(hz));
             })
             .on('change:fastest', function(model, isFastest) {
@@ -36,14 +33,11 @@ module.exports = backbone.View.extend({
     _test: function() {
         return this.__test || (this.__test = this.$el.find('.test'));
     },
-    _bar: function() {
-        return this.__bar || (this.__bar = this.$el.find('.test-bar'));
-    },
-    _runtime: function() {
-        return this.__runtime || (this.__runtime = this.$el.find('.runtime'));
-    },
     _opts: function() {
         return this.__opts || (this.__opts = this.$el.find('.opts'));
+    },
+    _bar: function() {
+        return this.__bar || (this.__bar = this.$el.find('.test-bar'));
     },
 
     render: function() {
