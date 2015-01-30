@@ -1,20 +1,19 @@
-var _     = require('underscore'),
-    REGEX = /[$\-/\?\{\}\~\!\^\[\]]/g;
+var _         = require('underscore'),
+    R_SPECIAL = /[$\-/\?\{\}\~\!\^\[\]\:\,]/g,
+    R_SPACE   = /[\s]/g;
 
 var safe = function(str) {
-    return (str || '').replace(REGEX, '-');
+    return (str || '').replace(R_SPECIAL, '_').replace(R_SPACE, '');
 };
 
 module.exports = {
     safe: safe,
 
     hash: function(data) {
-        return safe(
-            _.reduce(data, function(entries, value, key) {
-                entries.push(key + ':' + value);
+        return _.reduce(data, function(entries, value, key) {
+                entries.push(safe(key) + ':' + safe(value));
                 return entries;
-            }, []).join(',')
-        );
+        }, []).join(',');
     },
     
     unhash: function() {

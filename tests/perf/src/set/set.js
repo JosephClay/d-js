@@ -6,8 +6,12 @@ var _         = require('underscore'),
     View      = require('./view'),
     Tests     = require('../test/tests'),
 
+    status    = $('#status'),
     list      = $('#test-sets');
 
+var update = function(txt) {
+    status.text(txt);
+};
 
 module.exports = backbone.Model.extend({
     initialize: function() {
@@ -19,7 +23,7 @@ module.exports = backbone.Model.extend({
         var view = this.view = new View({ model: this, suite: suite });
 
         suite.on('complete', function() {
-                console.log('complete');
+                console.profileEnd();
 
                 var fastestName = this.filter('fastest').pluck('name')[0];
                 self.tests.each(function(test) {
@@ -37,8 +41,15 @@ module.exports = backbone.Model.extend({
 
                 self._complete();
             })
+            .on('cycle', function(e) {
+                e = e.target;
+                var len = e.stats.sample.length;
+                if (!e.aborted) {
+                    update(e.name + ' x ' + Benchmark.formatNumber(e.count) + ' (' + len + ' sample' + (len === 1 ? '' : 's') + ')');
+                }
+            })
             .on('start', function() {
-                console.log('start');
+                console.profile(self.title());
             })
             .on('error', function(e) {
                 console.error('error', e);
@@ -72,7 +83,7 @@ module.exports = backbone.Model.extend({
 
     run: function(callback) {
         this._callback = callback;
-        this.suite.run({ 'async': true });
+        this.suite.run({ async: true });
     },
 
     _complete: function() {

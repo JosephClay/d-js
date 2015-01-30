@@ -32,9 +32,10 @@ var _ = require('underscore'),
 var _prevD = window.D;
 
 var D = function(arg, attrs) {
-    // Wasn't created with "new"
-    if (!(this instanceof D)) { return new D(arg, attrs); }
+    return new Construct(arg, attrs);
+};
 
+var Construct = function(arg, attrs) {
     // Nothin
     if (arg === null || arg === undefined) { return; }
 
@@ -70,6 +71,7 @@ var D = function(arg, attrs) {
         onready(arg);
     }
 };
+Construct.prototype = D.prototype;
 
 var _hasMoreConflict = false,
     _prevjQuery,
@@ -124,7 +126,7 @@ var arrayProto = (function(proto, obj) {
 
 _.extend(
     D.prototype,
-    { constructor: D },
+    { constructor: D, },
     arrayProto,
     array.fn,
     selectors.fn,

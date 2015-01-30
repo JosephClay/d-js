@@ -44,4 +44,4 @@ gulp.task('watch-scripts', function() {
     });
 });
 
-gulp.task('watch', ['styles', 'scripts', 'watch-styles', 'watch-scripts']);
+gulp.task('dev', ['styles', 'scripts', 'watch-styles', 'watch-scripts']);

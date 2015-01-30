@@ -220,9 +220,15 @@ header {
   transform: translateY(-50%);
 }
 main {
-  width: 700px;
+  width: 500px;
   margin: 0 0 0 50px;
   padding: 0 0 100px 0;
+}
+.status {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 .test {
   width: 400px;

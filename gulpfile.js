@@ -4,7 +4,7 @@ var gulp       = require('gulp'),
     source     = require('vinyl-source-stream'),
     browserify = require('browserify');
 
-gulp.task('default', function() {
+gulp.task('d', function() {
     browserify('./src/index.js', {
             standalone: 'D',
             debug: true
@@ -30,6 +30,8 @@ gulp.task('internal', function() {
 
 gulp.task('dev', function() {
     gulp.watch('./src/**/*.js', function() {
-        gulp.start(['default', 'internal']);
+        gulp.start(['d', 'internal']);
     });
 });
+
+gulp.task('default', ['d', 'internal']);

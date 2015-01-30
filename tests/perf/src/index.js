@@ -1,6 +1,7 @@
 var _        = require('underscore'),
 	backbone = require('backbone');
 require('./mixins');
+require('./console-profile');
 backbone.$ = require('jquery');
 
 var profile  = require('./profile'),
