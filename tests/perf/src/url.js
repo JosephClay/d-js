@@ -16,8 +16,8 @@ module.exports = {
         }, []).join(',');
     },
     
-    unhash: function() {
-        var hash = window.location.hash;
+    unhash: function(href) {
+        var hash = href || window.location.hash;
         hash = hash.substr(1, hash.length);
         
         var pairs = hash.split(',');
