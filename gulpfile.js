@@ -1,40 +1,32 @@
-var gulp       = require('gulp'),
-	log        = require('./build/utils/log'),
-	buffer     = require('vinyl-buffer'),
-    source     = require('vinyl-source-stream'),
-    babelify   = require('babelify'),
-    browserify = require('browserify');
+var gulp    = require('gulp'),
+    scripts = require('./build/scripts');
+
+var normal = {
+    src: './src/index.js',
+    dest: './dist',
+    file: 'D.js',
+    standalone: 'D',
+    paths: [ './src' ]
+};
+var internal = {
+    src: './src/internal-index.js',
+    dest: './dist',
+    file: 'd.internal.js',
+    standalone: 'D',
+    paths: [ './src' ]
+};
 
 gulp.task('d', function() {
-    browserify('./src/index.js', {
-            standalone: 'D',
-            debug: true,
-            paths: [ './src' ]
-        })
-        .transform(babelify)
-        .bundle()
-        .pipe(source('d.js'))
-        .pipe(buffer())
-        .pipe(gulp.dest('./dist'))
-        .pipe(log('Success'));
+    return scripts.build(normal);
 });
 
 gulp.task('internal', function() {
-    browserify('./src/internal-index.js', {
-            standalone: 'D',
-            debug: true,
-            paths: [ './src' ]
-        })
-        .transform(babelify)
-        .bundle()
-        .pipe(source('d.internal.js'))
-        .pipe(buffer())
-        .pipe(gulp.dest('./dist'))
-        .pipe(log('Success'));
+    return scripts.build(internal);
 });
 
 gulp.task('dev', function() {
-    gulp.watch('./src/**/*.js', ['d', 'internal']);
+    scripts.watch(normal);
+    scripts.watch(internal);
 });
 
 gulp.task('default', ['d', 'internal']);
