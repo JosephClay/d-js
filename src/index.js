@@ -33,29 +33,28 @@ var _ = require('underscore'),
 var _prevD = window.D;
 
 var D = function(selector, attrs) {
-    return new D.fn.init(selector, attrs);
+    return new Init(selector, attrs);
 };
 
-var init = D.prototype.init = function(selector, attrs) {
-    // Nothin
-    if (selector === null || selector === undefined) { return this; }
+var Init = D.prototype.init = function(selector, attrs) {
+    // nothin
+    if (!selector) { return this; }
 
-    // Element
+    // element or window (documents have a nodeType)
     if (selector.nodeType || selector === window) {
-        this.push(selector);
+        this[0] = selector;
         return this;
     }
 
+    // HTML string
+    if (isHtml(selector)) {
+        utils.merge(this, parser.parseHtml(selector));
+        if (attrs) { this.attr(attrs); }
+        return this;
+    }
+    
     // String
     if (isString(selector)) {
-
-        // HTML string
-        if (isHtml(selector)) {
-            utils.merge(this, parser.parseHtml(selector));
-            if (attrs) { this.attr(attrs); }
-            return this;
-        }
-
         // Selector: perform a find without creating a new D
         utils.merge(this, selectors.find(selector, true));
         return this;
@@ -67,13 +66,13 @@ var init = D.prototype.init = function(selector, attrs) {
         return this;
     }
 
-    // Document a ready
+    // document ready
     if (isFunction(selector)) {
         onready(selector);
     }
     return this;
 };
-init.prototype = D.prototype;
+Init.prototype = D.prototype;
 
 var _hasMoreConflict = false,
     _prevjQuery,
