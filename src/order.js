@@ -1,7 +1,14 @@
 var ELEMENT    = require('NODE_TYPE/ELEMENT'),
     DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
-    DOC_POS    = require('DOC_POS'),
-    isAttached = require('is/attached');
+
+    isAttached = require('is/attached'),
+
+    CONTAINED_BY = require('DOC_POS/CONTAINED_BY'),
+    CONTAINS     = require('DOC_POS/CONTAINS'),
+    FOLLOWING    = require('DOC_POS/FOLLOWING'),
+    PRECEDING    = require('DOC_POS/PRECEDING'),
+    DISCONNECTED = require('DOC_POS/DISCONNECTED'),
+    CONTAINED_BY = require('DOC_POS/CONTAINED_BY');
 
 // Compare Position - MIT Licensed, John Resig
 // TODO: Optimize this function
@@ -20,21 +27,21 @@ var _comparePosition = function(node1, node2) {
     // IE8
     if (node1.contains) {
         if (node1.contains(node2)) {
-            rel += DOC_POS.CONTAINED_BY;
+            rel += CONTAINED_BY;
         }
         if (node2.contains(node1)) {
-            rel += DOC_POS.CONTAINS;
+            rel += CONTAINS;
         }
 
         if (node1.sourceIndex >= 0 && node2.sourceIndex >= 0) {
-            rel += (node1.sourceIndex < node2.sourceIndex ? DOC_POS.FOLLOWING : 0);
-            rel += (node1.sourceIndex > node2.sourceIndex ? DOC_POS.PRECEDING : 0);
+            rel += (node1.sourceIndex < node2.sourceIndex ? FOLLOWING : 0);
+            rel += (node1.sourceIndex > node2.sourceIndex ? PRECEDING : 0);
 
             if (!isAttached(node1) || !isAttached(node2)) {
-                rel += DOC_POS.DISCONNECTED;
+                rel += DISCONNECTED;
             }
         } else {
-            rel += DOC_POS.DISCONNECTED;
+            rel += DISCONNECTED;
         }
     }
 
@@ -83,7 +90,7 @@ module.exports = {
             }
             // Otherwise we know they are disconnected
             else {
-                rel = DOC_POS.DISCONNECTED;
+                rel = DISCONNECTED;
             }
 
             // Not directly comparable
@@ -92,7 +99,7 @@ module.exports = {
             }
 
             // Disconnected nodes
-            if (_is(rel, DOC_POS.DISCONNECTED)) {
+            if (_is(rel, DISCONNECTED)) {
                 var isNode1Disconnected = !isAttached(node1);
                 var isNode2Disconnected = !isAttached(node2);
 
@@ -103,7 +110,7 @@ module.exports = {
                 return isNode2Disconnected ? -1 : 1;
             }
 
-            return _is(rel, DOC_POS.FOLLOWING) ? -1 : 1;
+            return _is(rel, FOLLOWING) ? -1 : 1;
         };
 
         return function(array, reverse) {
@@ -133,7 +140,7 @@ module.exports = {
         if (bUp && bUp.nodeType === ELEMENT) {
             // Modern browsers (IE9+)
             if (a.compareDocumentPosition) {
-                return _isNode(bUp, DOC_POS.CONTAINED_BY, a);
+                return _isNode(bUp, CONTAINED_BY, a);
             }
             // IE8
             if (aDown.contains) {
