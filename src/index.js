@@ -1,6 +1,3 @@
-// polyfills
-require('./polyfills/indexOf');
-
 // Configure O with string custom types
 require('./o.custom');
 
