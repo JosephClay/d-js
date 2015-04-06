@@ -8,19 +8,20 @@
     "test": "tests"
   },
   "dependencies": {
-    "node-type": "./local_modules/node-type",
-    "overload-js": "^0.3.0",
-    "underscore": "./local_modules/underscore",
     "cache": "./local_modules/cache",
+    "lodash": "^3.6.0",
+    "node-type": "./local_modules/node-type",
+    "overload-js": "^1.0.0",
+    "underscore": "./local_modules/underscore",
     "xaja-js": "0.0.9"
   },
   "devDependencies": {
-    "browserify": "^6.3.3",
-    "gulp": "^3.8.10",
-    "gulp-util": "^3.0.2",
+    "browserify": "^9.0.7",
+    "gulp": "^3.8.11",
+    "gulp-util": "^3.0.4",
     "through2": "^0.6.3",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.0.0"
+    "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
