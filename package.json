@@ -8,11 +8,8 @@
     "test": "tests"
   },
   "dependencies": {
-    "cache": "./local_modules/cache",
     "lodash": "^3.6.0",
-    "node-type": "./local_modules/node-type",
     "overload-js": "^1.0.0",
-    "underscore": "./local_modules/underscore",
     "xaja-js": "0.0.9"
   },
   "devDependencies": {
