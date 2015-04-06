@@ -3,6 +3,9 @@ var getterSetter = function(deletable) {
     var store = {};
 
     return {
+        has: function(key) {
+            return key in store;
+        },
         get: function(key) {
             return store[key];
         },

@@ -1,11 +1,3 @@
- ☐ Proxy Overload error to D.error
- ☐ Remove _.isObject, nothing should be using that
  ☐ _.parseInt to +''
  ☐ _.contains would be useful
- ☐ replace all instanceof D checks
- ☐ replace all _.exists
-  ☐ make es5+
-   ☐ Array.isArray
-   ☐ Date.now
-   ☐ assume indexOf
-   ☐ remove IE8 code
+ ☐ remove IE8 code

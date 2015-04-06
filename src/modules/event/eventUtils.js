@@ -1,5 +1,4 @@
-var _    = require('underscore'),
-    _div = require('../../div');
+var _div = require('../../div');
 
 module.exports = {
     id: 'd' + (new Date().getTime()),
@@ -18,7 +17,7 @@ module.exports = {
         function(elem, type, callback) {
             elem.attachEvent('on' + type, callback);
         } :
-        _.noop,
+        function() {},
 
     removeEvent: document.removeEventListener ?
         function(elem, type, handle) {

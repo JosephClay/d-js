@@ -4,9 +4,7 @@ var exists      = require('is/exists'),
     isArray     = require('is/array'),
     isArrayLike = require('is/arrayLike'),
     isNodeList  = require('is/nodeList'),
-    
-    id        = 0,
-    
+        
     arrProto   = Array.prototype,
 
     indexOf    = arrProto.indexOf,
@@ -15,12 +13,6 @@ var exists      = require('is/exists'),
     isTruthy   = function(arg) { return !!arg; };
 
 var _ = module.exports = {
-    noop: function() {},
-
-    uniqueId: function() {
-        return id++;
-    },
-
     parseInt: function(num) {
         return parseInt(num, 10);
     },
@@ -260,10 +252,6 @@ var _ = module.exports = {
         var name;
         for (name in obj) { return false; }
         return true;
-    },
-
-    isObject: function(obj) {
-        return obj === Object(obj);
     },
 
     // Breaks even on arrays with 3 items. 3 or more

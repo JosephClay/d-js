@@ -6,7 +6,7 @@ var _          = require('underscore'),
     isNumber   = require('is/number'),
     isFunction = require('is/function'),
 
-    _SUPPORTS  = require('../supports'),
+    SUPPORTS  = require('../supports'),
     ELEMENT = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),
@@ -50,7 +50,7 @@ var _valHooks = {
                 // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
-                        (_SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
+                        (SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
                         (!option.parentNode.disabled || !_utils.isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
@@ -95,7 +95,7 @@ var _valHooks = {
 };
 
 // Radio and checkbox getter for Webkit
-if (!_SUPPORTS.checkOn) {
+if (!SUPPORTS.checkOn) {
     _.each(['radio', 'checkbox'], function(type) {
         _valHooks[type] = {
             get: function(elem) {

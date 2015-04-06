@@ -1,6 +1,7 @@
 var _         = require('underscore'),
     
     exists       = require('is/exists'),
+    isD          = require('is/d'),
     isElement    = require('is/element'),
     isHtml       = require('is/html'),
     isString     = require('is/string'),
@@ -92,7 +93,7 @@ var _empty = function(arr) {
 
                 pender(elem, result);
 
-            } else if (isNodeList(result) || result instanceof D) {
+            } else if (isNodeList(result) || isD(result)) {
 
                 _appendPrependArrayToElem(elem, result, pender);
 

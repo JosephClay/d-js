@@ -2,17 +2,14 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-var _ = require('underscore'),
-
-    _cache         = require('cache'),
+var _cache         = require('cache'),
     _tokenCache    = _cache(),
     _subqueryCache = _cache(),
     _boolAttrCache = _cache(),
 
-    _error = (!console || !console.error) ? _.noop :
-        function(selector) {
-            console.error('Invalid query selector (caught): ' + selector);
-        };
+    _error = function(selector) {
+        console.error('d-js: Invalid query selector (caught) "'+ selector +'"');
+    };
 
 var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
 

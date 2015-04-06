@@ -1,10 +1,6 @@
-var _ = require('underscore'),
-    
-    exists     = require('is/exists'),
+var exists     = require('is/exists'),
     isNodeList = require('is/nodeList'),
     isElement  = require('is/element'),
-
-    _ID_PREFIX = 'D-uniqueId-',
 
     _GET_ELEMENT_BY_ID          = 'getElementById',
     _GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
@@ -38,9 +34,7 @@ var _determineMethod = function(selector) {
         return method;
     },
 
-    _uniqueId = function() {
-        return _ID_PREFIX + _.uniqueId();
-    },
+    uniqueId = require('util/uniqueId').seed(0, 'D-uniqueId-'),
 
     _fromDomArrayToArray = function(arrayLike) {
         var idx = arrayLike.length,
@@ -79,7 +73,7 @@ var _determineMethod = function(selector) {
 
         id = context.id;
         if (id === '' || !exists(id)) {
-            newId = _uniqueId();
+            newId = uniqueId();
             context.id = newId;
             idApplied = true;
         }
