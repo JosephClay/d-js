@@ -1,4 +1,4 @@
-D.js
+d-js
 ====
 
-jQuery-esque DOM maniplation library
+A drop-in replacement for jQuery.
