@@ -79,17 +79,14 @@ var _ = module.exports = {
         return true;
     },
 
-    // Faster extend; strip each()
-    // TODO: update this function
     extend: function() {
         var args = arguments,
             obj  = args[0],
-            idx  = 1,
             len  = args.length;
 
-        if (!obj) { return obj; }
+        if (!obj || len < 2) { return obj; }
 
-        for (; idx < len; idx++) {
+        for (var idx = 1; idx < len; idx++) {
             var source = args[idx];
             if (source) {
                 for (var prop in source) {
@@ -154,6 +151,7 @@ var _ = module.exports = {
         return !!result;
     },
 
+    // pulled from AMD
     typecast: function(val) {
         var r;
         if (val === null || val === 'null') {
@@ -178,6 +176,7 @@ var _ = module.exports = {
         if (!obj) {
             return [];
         }
+
         if (isArray(obj)) {
             return slice.call(obj);
         }
@@ -194,6 +193,7 @@ var _ = module.exports = {
             return arr;
         }
 
+        arr = [];
         for (var key in obj) {
             arr.push(obj[key]);
         }
