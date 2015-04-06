@@ -11,7 +11,7 @@ var _            = require('underscore'),
     isArray    = require('is/array'),
 
     _SUPPORTS    = require('../supports'),
-    NODE_TYPE   = require('NODE_TYPE'),
+    DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
 
     _cache       = require('cache'),
     _regex       = require('../regex'),
@@ -82,7 +82,7 @@ var _hide = function(elem) {
                 return elem.document.documentElement.clientWidth;
             }
 
-            if (elem.nodeType === NODE_TYPE.DOCUMENT) {
+            if (elem.nodeType === DOCUMENT) {
                 return _getDocumentDimension(elem, 'Width');
             }
 
@@ -110,7 +110,7 @@ var _hide = function(elem) {
                 return elem.document.documentElement.clientHeight;
             }
 
-            if (elem.nodeType === NODE_TYPE.DOCUMENT) {
+            if (elem.nodeType === DOCUMENT) {
                 return _getDocumentDimension(elem, 'Height');
             }
 

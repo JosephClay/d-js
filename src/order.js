@@ -1,5 +1,6 @@
-var NODE_TYPE = require('NODE_TYPE'),
-    DOC_POS   = require('DOC_POS'),
+var ELEMENT    = require('NODE_TYPE/ELEMENT'),
+    DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
+    DOC_POS    = require('DOC_POS'),
     isAttached = require('is/attached');
 
 // Compare Position - MIT Licensed, John Resig
@@ -122,14 +123,14 @@ module.exports = {
      * @returns {Boolean} true if node `a` contains node `b`; otherwise false.
      */
     contains: function(a, b) {
-        var aDown = a.nodeType === NODE_TYPE.DOCUMENT ? a.documentElement : a,
+        var aDown = a.nodeType === DOCUMENT ? a.documentElement : a,
             bUp   = isAttached(b) ? b.parentNode : null;
 
         if (a === bUp) {
             return true;
         }
 
-        if (bUp && bUp.nodeType === NODE_TYPE.ELEMENT) {
+        if (bUp && bUp.nodeType === ELEMENT) {
             // Modern browsers (IE9+)
             if (a.compareDocumentPosition) {
                 return _isNode(bUp, DOC_POS.CONTAINED_BY, a);

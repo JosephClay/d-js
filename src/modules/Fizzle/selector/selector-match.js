@@ -1,5 +1,5 @@
 var _SUPPORTS  = require('../../../supports'),
-    NODE_TYPE = require('NODE_TYPE'),
+    ELEMENT = require('NODE_TYPE/ELEMENT'),
 
     _matchesSelector = _SUPPORTS.matchesSelector;
 
@@ -8,7 +8,7 @@ var matches;
 // IE9+, modern browsers
 if (_matchesSelector) {
     matches = function(elem, selector) {
-        if (elem.nodeType !== NODE_TYPE.ELEMENT) { return false; }
+        if (elem.nodeType !== ELEMENT) { return false; }
 
         return _matchesSelector.call(elem, selector);
     };
@@ -16,7 +16,7 @@ if (_matchesSelector) {
 // IE8
 else {
     matches = function(elem, selector) {
-        if (elem.nodeType !== NODE_TYPE.ELEMENT) { return false; }
+        if (elem.nodeType !== ELEMENT) { return false; }
 
         var frag;
 

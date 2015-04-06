@@ -5,7 +5,7 @@ var _          = require('underscore'),
     isString   = require('is/string'),
     
     _SUPPORTS  = require('../supports'),
-    NODE_TYPE = require('NODE_TYPE'),
+    ELEMENT = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),
     _cache     = require('cache'),
@@ -94,7 +94,7 @@ var _hooks = {
         tabindex: {
             get: function(elem) {
                 var tabindex = elem.getAttribute('tabindex');
-                if (!_.exists(tabindex) || tabindex === '') { return; }
+                if (!exists(tabindex) || tabindex === '') { return; }
                 return tabindex;
             }
         },
@@ -137,7 +137,7 @@ var _hooks = {
     },
 
     _isElementNode = function(elem) {
-        return elem && elem.nodeType === NODE_TYPE.ELEMENT;
+        return elem && elem.nodeType === ELEMENT;
     },
 
     _getAttribute = function(elem, attr) {
@@ -152,7 +152,7 @@ var _hooks = {
         }
 
         var ret = elem.getAttribute(attr);
-        return _.exists(ret) ? ret : undefined;
+        return exists(ret) ? ret : undefined;
     },
 
     _setter = {
@@ -243,7 +243,7 @@ module.exports = {
                     return _.each(this, function(elem, idx) {
                         var oldAttr = _getAttribute(elem, attr),
                             result  = fn.call(elem, idx, oldAttr);
-                        if (!_.exists(result)) { return; }
+                        if (!exists(result)) { return; }
                         _setAttribute(elem, attr, result);
                     });
                 }

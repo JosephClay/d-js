@@ -1,6 +1,6 @@
-var isWindow  = require('is/window'),
-    NODE_TYPE = require('NODE_TYPE');
+var isWindow = require('is/window'),
+    ELEMENT  = require('NODE_TYPE/ELEMENT');
 
 module.exports = function(val) {
-    return val && (val === document || isWindow(val) || val.nodeType === NODE_TYPE.ELEMENT);
+    return val && (val === document || isWindow(val) || val.nodeType === ELEMENT);
 };

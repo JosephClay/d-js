@@ -4,7 +4,9 @@ var _           = require('underscore'),
     isWindow = require('is/window'),
 
     Event       = require('./E'),
-    _nodeType   = require('NODE_TYPE'),
+    ELEMENT     = require('NODE_TYPE/ELEMENT'),
+    TEXT        = require('NODE_TYPE/TEXT'),
+    COMMENT     = require('NODE_TYPE/COMMENT'),
     _regex      = require('../../regex'),
     _utils      = require('../../utils'),
     _array      = require('../array'),
@@ -25,8 +27,8 @@ var _           = require('underscore'),
 var _add = function(elem, eventStr, handler, data, selector) {
     // Don't attach events to text/comment nodes
     var nodeType = elem.nodeType;
-    if (nodeType === _nodeType.TEXT ||
-        nodeType === _nodeType.COMMENT) { return; }
+    if (nodeType === TEXT ||
+        nodeType === COMMENT) { return; }
 
     var eventData = _data.get(elem, _EVENT_KEY);
     if (!eventData) {
@@ -195,7 +197,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     cur = tmp = elem = elem || document;
 
     // Don't do events on text and comment nodes
-    if (elem.nodeType === _nodeType.TEXT || elem.nodeType === _nodeType.COMMENT) {
+    if (elem.nodeType === TEXT || elem.nodeType === COMMENT) {
         return;
     }
 
@@ -396,7 +398,7 @@ var _handlers = function(event, handlers) {
 
             // Don't check non-elements (#13208)
             // Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-            if (cur.nodeType === _nodeType.ELEMENT && (cur.disabled !== true || event.type !== 'click') ) {
+            if (cur.nodeType === ELEMENT && (cur.disabled !== true || event.type !== 'click') ) {
                 var matches = [];
 
                 var idx = 0;
@@ -474,7 +476,7 @@ var _fix = function(event) {
 
     // Support: Chrome 23+, Safari?
     // Target should not be a text node (#504, #13143)
-    if (event.target.nodeType === _nodeType.TEXT) {
+    if (event.target.nodeType === TEXT) {
         event.target = event.target.parentNode;
     }
 

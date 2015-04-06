@@ -1,8 +1,5 @@
 var _             = require('underscore'),
-    isString      = require('is/string'),
-    string        = require('./string'),
     SUPPORTS      = require('./supports'),
-    NODE_TYPE     = require('NODE_TYPE'),
     cache         = require('cache')(),
 
     _flagParsedNode,

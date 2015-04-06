@@ -1,6 +1,4 @@
-var NODE_TYPE = require('NODE_TYPE'),
-
-    isNumber    = require('is/number'),
+var isNumber    = require('is/number'),
     isString    = require('is/string'),
     isArray     = require('is/array'),
     isArrayLike = require('is/arrayLike'),
