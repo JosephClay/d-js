@@ -43,10 +43,6 @@ var _ = module.exports = {
         return num + 'px';
     },
 
-    isElement: function(obj) {
-        return !!(obj && obj.nodeType === NODE_TYPE.ELEMENT);
-    },
-
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
         var result = [];

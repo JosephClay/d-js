@@ -4,7 +4,7 @@ var cache      = require('cache')(2, true),
     isArray   = require('is/array'),
     isElement = require('is/element'),
 
-    _ACCESSOR  = '__D_id__ ',
+    ACCESSOR  = '__D_id__ ',
 
     _id = Date.now(),
     _uniqueId = function() {
@@ -12,13 +12,13 @@ var cache      = require('cache')(2, true),
     },
 
     _getId = function(elem) {
-        return elem ? elem[_ACCESSOR] : null;
+        return elem ? elem[ACCESSOR] : null;
     },
 
     _getOrSetId = function(elem) {
         var id;
-        if (!elem || (id = elem[_ACCESSOR])) { return id; }
-        elem[_ACCESSOR] = (id = _uniqueId());
+        if (!elem || (id = elem[ACCESSOR])) { return id; }
+        elem[ACCESSOR] = (id = _uniqueId());
         return id;
     },
 
