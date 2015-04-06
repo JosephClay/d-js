@@ -1,14 +1,18 @@
 var _         = require('underscore'),
-    overload  = require('overload-js'),
-    o         = overload.o,
 
-    isElement  = require('is/element'),
-    isString   = require('is/string'),
-    isNodeList = require('is/nodeList'),
+    isElement    = require('is/element'),
+    isHtml       = require('is/html'),
+    isString     = require('is/string'),
+    isNodeList   = require('is/nodeList'),
+    isNumber     = require('is/number'),
+    isFunction   = require('is/function'),
+    isCollection = require('is/collection'),
+    isD          = require('is/d'),
+    isWindow     = require('is/window'),
+    isDocument   = require('is/document'),
 
     _selector = require('./selectors'),
     _array    = require('./array'),
-    _utils    = require('../utils'),
     _order    = require('../order'),
 
     _data     = require('./data'),
@@ -56,8 +60,6 @@ var _empty = function(arr) {
         }
     },
 
-    // TODO: IE6-8 copies events bound via attachEvent when using cloneNode.
-    //       See jquery.js:5401
     _clone = function(elem) {
         return elem.cloneNode(true);
     },
@@ -78,8 +80,8 @@ var _empty = function(arr) {
 
             } else if (isString(result)) {
 
-                if (utils.isHTML(value)) {
-                    _appendPrependArrayToElem(elem, parser.parseHtml(value), pender);
+                if (utils.isHTML(elem)) {
+                    _appendPrependArrayToElem(elem, parser.parseHtml(elem), pender);
                     return this;
                 }
 
@@ -138,10 +140,9 @@ module.exports = {
             });
         },
 
-        append: overload()
-            .args(String)
-            .use(function(value) {
-                if (utils.isHtml(value)) {
+        append: function(value) {
+            if (isString(value)) {
+                if (isHtml(value)) {
                     _appendPrependMergeArray(this, parser.parseHtml(value), _append);
                     return this;
                 }
@@ -149,33 +150,31 @@ module.exports = {
                 _appendPrependElemToArray(this, _stringToFrag(value), _append);
 
                 return this;
-            })
+            }
 
-            .args(Number)
-            .use(function(value) {
+            if (isNumber(value)) {
                 _appendPrependElemToArray(this, _stringToFrag('' + value), _append);
                 return this;
-            })
+            }
 
-            .args(Function)
-            .use(function(fn) {
+            if (isFunction(value)) {
+                var fn = value;
                 _appendPrependFunc(this, fn, _append);
                 return this;
-            })
+            }
 
-            .args(Element)
-            .use(function(elem) {
+            if (isElement(value)) {
+                var elem = value;
                 _appendPrependElemToArray(this, elem, _append);
                 return this;
-            })
+            }
 
-            .args(o.collection)
-            .use(function(arr) {
+            if (isCollection(value)) {
+                var arr = value;
                 _appendPrependMergeArray(this, arr, _append);
                 return this;
-            })
-
-            .expose(),
+            }
+        },
 
         // TODO: These methods
         before: function() { return this; },
@@ -183,24 +182,21 @@ module.exports = {
         insertBefore: function() { return this; },
         insertAfter: function() { return this; },
 
-        appendTo: overload()
-            .args(o.D)
-            .use(function(d) {
+        appendTo: function(d) {
+            if (isD(d)) {
                 d.append(this);
                 return this;
-            })
+            }
 
-            .fallback(function(obj) {
-                D(obj).append(this);
-                return this;
-            })
+            // fallback
+            var obj = d;
+            D(obj).append(this);
+            return this;
+        },
 
-            .expose(),
-
-        prepend: overload()
-            .args(String)
-            .use(function(value) {
-                if (utils.isHtml(value)) {
+        prepend: function(value) {
+            if (isString(value)) {
+                if (isHtml(value)) {
                     _appendPrependMergeArray(this, parser.parseHtml(value), _prepend);
                     return this;
                 }
@@ -208,121 +204,110 @@ module.exports = {
                 _appendPrependElemToArray(this, _stringToFrag(value), _prepend);
 
                 return this;
-            })
-
-            .args(Number)
-            .use(function(value) {
+            }
+        
+            if (isNumber(value)) {
                 _appendPrependElemToArray(this, _stringToFrag('' + value), _prepend);
                 return this;
-            })
-
-            .args(Function)
-            .use(function(fn) {
+            }
+        
+            if (isFunction(value)) {
+                var fn = value;
                 _appendPrependFunc(this, fn, _prepend);
                 return this;
-            })
-
-            .args(Element)
-            .use(function(elem) {
+            }
+        
+            if (isElement(value)) {
+                var elem = value;
                 _appendPrependElemToArray(this, elem, _prepend);
                 return this;
-            })
-
-            .args(o.collection)
-            .use(function(arr) {
+            }
+        
+            if (isCollection(value)) {
+                var arr = value;
                 _appendPrependMergeArray(this, arr, _prepend);
                 return this;
-            })
+            }
 
-            .expose(),
+            // fallback
+            return this;
+        },
 
-        prependTo: overload()
-            .args(o.D)
-            .use(function(d) {
+        prependTo: function(d) {
+            if (isD(d)) {
                 d.prepend(this);
                 return this;
-            })
+            }
 
-            .fallback(function(obj) {
-                D(obj).prepend(this);
-                return this;
-            })
-
-            .expose(),
+            // fallback
+            var obj = d;
+            D(obj).prepend(this);
+            return this;
+        },
 
         empty: function() {
             _empty(this);
             return this;
         },
 
-        add: overload()
+        add: function(selector) {
             // String selector
-            .args(String)
-            .use(function(selector) {
+            if (isString(selector)) {
                 var elems = _array.unique(
                     [].concat(this.get(), D(selector).get())
                 );
                 _order.sort(elems);
                 return D(elems);
-            })
+            }
 
             // Array of elements
-            .args(o.collection)
-            .use(function(arr) {
+            if (isCollection(selector)) {
+                var arr = selector;
                 var elems = _array.unique(
                     [].concat(this.get(), _.toArray(arr))
                 );
                 _order.sort(elems);
                 return D(elems);
-            })
+            }
 
             // Single element
-            .args(o.any(o.window, o.document, Element))
-            .use(function(elem) {
+            if (isWindow(selector) || isDocument(selector) || isElement(selector)) {
+                var elem = selector;
                 var elems = _array.unique(
                     [].concat(this.get(), [ elem ])
                 );
                 _order.sort(elems);
                 return D(elems);
-            })
+            }
 
-            // Everything else
-            .fallback(function() {
-                return D(this);
-            })
+            // fallback
+            return D(this);
+        },
 
-            .expose(),
-
-        remove: overload()
-            .args(String)
-            .use(function(selector) {
+        remove: function(selector) {
+            if (isString(selector)) {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
                 _remove(arr);
                 return this;
-            })
+            }
 
-            .fallback(function() {
-                _remove(this);
-                return this;
-            })
+            // fallback
+            _remove(this);
+            return this;
+        },
 
-            .expose(),
-
-        detach: overload()
-            .args(String)
-            .use(function(selector) {
+        detach: function(selector) {
+            if (isString(selector)) {
                 if (selector === '') { return; }
                 var arr = _selector.filter(this, selector);
                 _detach(arr);
                 return this;
-            })
+            }
 
-            .fallback(function() {
-                _detach(this);
-                return this;
-            })
-
-            .expose()
+            // fallback
+            _detach(this);
+            return this;
+        }
     }
 };

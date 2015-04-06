@@ -2,6 +2,7 @@ var _           = require('underscore'),
 
     NODE_TYPE  = require('NODE_TYPE'),
     isString   = require('is/string'),
+    isAttached = require('is/attached'),
     isElement  = require('is/element'),
     isWindow   = require('is/window'),
     isDocument = require('is/document'),
@@ -295,12 +296,12 @@ module.exports = {
                 return -1;
             }
 
-            // _utils.isAttached check to pass test "Node without parent returns -1"
+            // isAttached check to pass test "Node without parent returns -1"
             // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
-            var isAttached       = _utils.isAttached(first),
+            var attached         = isAttached(first),
                 isParentFragment = parent.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT;
 
-            if (!isAttached && (!isParentFragment || _utils.isParsedNode(first))) {
+            if (!attached && (!isParentFragment || _utils.isParsedNode(first))) {
                 return -1;
             }
 

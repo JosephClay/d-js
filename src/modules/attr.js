@@ -1,8 +1,8 @@
 var _          = require('underscore'),
-    overload   = require('overload-js'),
-    o          = overload.o,
 
+    exists     = require('is/exists'),
     isFunction = require('is/function'),
+    isString   = require('is/string'),
     
     _SUPPORTS  = require('../supports'),
     NODE_TYPE = require('NODE_TYPE'),
@@ -215,81 +215,56 @@ var _hooks = {
 
 module.exports = {
     fn: {
-        attr: overload()
-            .args(String)
-            .use(function(attr) {
-                return _getAttribute(this[0], attr);
-            })
+        attr: function(attr, value) {
+            if (arguments.length === 1) {
+                if (isString(attr)) {
+                    return _getAttribute(this[0], attr);
+                }
 
-            .args(String, o.any(String, Number, Boolean))
-            .use(function(attr, value) {
-                _setAttributes(this, attr, value);
-                return this;
-            })
-
-            .args(String, null)
-            .use(function(attr) {
-                _removeAttributes(this, attr);
-                return this;
-            })
-
-            .args(Object)
-            .use(function(attrs) {
-                var attr;
+                // assume an object
+                var attrs = attr;
                 for (attr in attrs) {
                     _setAttributes(this, attr, attrs[attr]);
                 }
+            }
 
+            if (arguments.length === 2) {
+                // remove
+                if (!exists(value)) {
+                    _removeAttributes(this, attr);
+                    return this;
+                }
+
+                // iterator
+                if (isFunction(value)) {
+                    var fn = value;
+                    return _.each(this, function(elem, idx) {
+                        var oldAttr = _getAttribute(elem, attr),
+                            result  = fn.call(elem, idx, oldAttr);
+                        if (!_.exists(result)) { return; }
+                        _setAttribute(elem, attr, result);
+                    });
+                }
+
+                // set
+                _setAttributes(this, attr, value);
                 return this;
-            })
+            }
 
-            .args(String, Function)
-            .use(function(attr, fn) {
-                return _.each(this, function(elem, idx) {
-                    var oldAttr = _getAttribute(elem, attr),
-                        result  = fn.call(elem, idx, oldAttr);
-                    if (!_.exists(result)) { return; }
-                    _setAttribute(elem, attr, result);
-                });
-            })
+            // fallback
+            return this;
+        },
 
-            .fallback(_utils.returnThis)
-
-            .expose(),
-
-        removeAttr: overload()
-            .args(String)
-            .use(function(attr) {
+        removeAttr: function(attr) {
+            if (isString(attr)) {
                 _removeAttributes(this, attr);
-                return this;
-            })
+            }
+            return this;
+        },
 
-            .expose(),
+        attrData: function(key, value) {
+            if (!arguments.length) {
 
-        attrData: overload()
-            .args(Object)
-            .use(function(obj) {
-                var idx = this.length,
-                    key;
-                while (idx--) {
-                    for (key in obj) {
-                        this[idx].setAttribute(_sanitizeDataKey(key), '' + obj[key]);
-                    }
-                }
-                return this;
-            })
-
-            .args(String, o.wild)
-            .use(function(key, value) {
-                var idx = this.length;
-                while (idx--) {
-                    this[idx].setAttribute(_sanitizeDataKey(key), '' + value);
-                }
-                return this;
-            })
-
-            .args()
-            .use(function() {
                 var first = this[0];
                 if (!first) { return; }
 
@@ -302,8 +277,26 @@ module.exports = {
                 }
 
                 return map;
-            })
+            }
 
-            .expose()
+            if (arguments.length === 2) {
+                var idx = this.length;
+                while (idx--) {
+                    this[idx].setAttribute(_sanitizeDataKey(key), '' + value);
+                }
+                return this;
+            }
+
+            // fallback to an object definition
+            var obj = key,
+                idx = this.length,
+                key;
+            while (idx--) {
+                for (key in obj) {
+                    this[idx].setAttribute(_sanitizeDataKey(key), '' + obj[key]);
+                }
+            }
+            return this;
+        }
     }
 };

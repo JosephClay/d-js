@@ -1,5 +1,4 @@
 var _         = require('underscore'),
-    overload  = require('overload-js'),
 
     isObject = require('is/object'),
     isString = require('is/string'),
@@ -81,46 +80,48 @@ module.exports = {
         },
 
 
-        once: overload()
-            .args(Object)
-            .use(function(events) {
-                var self = this;
+        once: function(evt, selector, fn) {
+            // object
+            if (arguments.length === 1) {
+                var events = evt,
+                    self = this;
                 _.each(events, function(fn, evt) {
                     self.once(evt, fn);
                 });
                 return this;
-            })
+            }
 
-            .args(Object, String)
-            .use(function(events, selector) {
-                var self = this;
-                _.each(events, function(fn, evt) {
-                    self.once(evt, selector, fn);
-                });
-                return this;
-            })
-
-            .args(String, Function)
-            .use(function(evt, fn) {
-
+            if (arguments.length === 2) {
+                // object string
+                if (isString(selector)) {
+                    var self = this;
+                    _.each(events, function(fn, evt) {
+                        self.once(evt, selector, fn);
+                    });
+                    return this;
+                }
+            
+                // string function
+                fn = selector;
                 return this.on(types, selector, data, fn, 1);
+            }
 
-            })
-
-            .args(String, String, Function)
-            .use(function(evt, selector, fn) {
-
+            // string string function
+            if (arguments.length === 3) {
                 return this.on(types, selector, data, fn, 1);
+            }
 
-            })
-
-            .expose(),
+            // fallback
+            return this;
+        },
 
         //  TODO: Don't use the stupid 1 on the end
         one: function(types, selector, data, fn) {
             return this.once.apply(this, arguments);
         },
 
+        off: function() { return this; },
+/*
         off: overload()
 
             // In leu of { string: function }, since we
@@ -162,7 +163,7 @@ module.exports = {
             .fallback(_utils.returnThis)
 
             .expose(),
-
+*/
         trigger: function(type, data) {
             return _.each(this, function(elem) {
                 _event.trigger(type, data, elem);

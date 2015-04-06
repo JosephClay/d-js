@@ -1,17 +1,18 @@
 var _            = require('underscore'),
-    overload     = require('overload-js'),
-    o            = overload.o,
 
-    isElement = require('is/element'),
-    isWindow  = require('is/window'),
-    isString  = require('is/string'),
-    isNumber  = require('is/number'),
-    isBoolean = require('is/boolean'),
+    isAttached = require('is/attached'),
+    isElement  = require('is/element'),
+    isDocument = require('is/document'),
+    isWindow   = require('is/window'),
+    isString   = require('is/string'),
+    isNumber   = require('is/number'),
+    isBoolean  = require('is/boolean'),
+    isObject   = require('is/object'),
+    isArray    = require('is/array'),
 
     _SUPPORTS    = require('../supports'),
     NODE_TYPE   = require('NODE_TYPE'),
 
-    _utils       = require('../utils'),
     _cache       = require('cache'),
     _regex       = require('../regex'),
 
@@ -71,7 +72,7 @@ var _hide = function(elem) {
         return _SUPPORTS.getComputedStyle ?
             // Avoids an 'Illegal Invocation' error (Chrome)
             // Avoids a 'TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element' error (Firefox)
-            function(elem) { return isElement(elem) ? window.getComputedStyle(elem) : null; } :
+            function(elem) { return isElement(elem) && !isWindow(elem) && !isDocument(elem) ? window.getComputedStyle(elem) : null; } :
             function(elem) { return elem.currentStyle; };
     }()),
 
@@ -241,7 +242,7 @@ var _curCss = function(elem, name, computed) {
     // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 
     if (styles) {
-        if (ret === '' && !_utils.isAttached(elem)) {
+        if (ret === '' && !isAttached(elem)) {
             ret = elem.style[name];
         }
 
@@ -360,18 +361,17 @@ module.exports = {
     height           : _height,
 
     fn: {
-        css: overload()
-            .args(String, o.any(String, Number))
-            .use(function(name, value) {
+        css: function(name, value) {
+            if (arguments.length === 2) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
                     _setStyle(this[idx], name, value);
                 }
                 return this;
-            })
-
-            .args(Object)
-            .use(function(obj) {
+            }
+        
+            if (isObject(name)) {
+                var obj = name;
                 var idx = 0, length = this.length,
                     key;
                 for (; idx < length; idx++) {
@@ -380,10 +380,10 @@ module.exports = {
                     }
                 }
                 return this;
-            })
+            }
 
-            .args(Array)
-            .use(function(arr) {
+            if (isArray(name)) {
+                var arr = name;
                 var first = this[0];
                 if (!first) { return; }
 
@@ -399,18 +399,17 @@ module.exports = {
                 }
 
                 return ret;
-            })
-            .expose(),
+            }
+
+            // fallback
+            return this;
+        },
 
         hide: function() {
-            return _.each(this, function(elem) {
-                _hide(elem);
-            });
+            return _.each(this, _hide);
         },
         show: function() {
-            return _.each(this, function(elem) {
-                _show(elem);
-            });
+            return _.each(this, _show);
         },
 
         toggle: function(state) {
@@ -418,6 +417,7 @@ module.exports = {
                 return state ? this.show() : this.hide();
             }
 
+            // TODO: address elem/this
             return _.each(this, function(elem) {
                 if (_isHidden(this)) {
                     return _show(this);

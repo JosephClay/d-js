@@ -1,7 +1,6 @@
 var _        = require('underscore'),
-    overload = require('overload-js'),
-    o        = overload.o,
 
+    isNumber = require('is/number'),
     _css     = require('./css');
 
 var _getInnerWidth = function(elem) {
@@ -46,106 +45,64 @@ var _getInnerWidth = function(elem) {
 
 module.exports = {
     fn: {
-        width: overload()
-            .args(Number)
-            .use(function(val) {
+        width: function(val) {
+            if (isNumber(val)) {
                 var first = this[0];
                 if (!first) { return this; }
 
                 _css.width.set(first, val);
                 return this;
-            })
+            }
 
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
+            // fallback
+            var first = this[0];
+            if (!first) { return null; }
 
-            .fallback(function() {
-                var first = this[0];
-                if (!first) { return null; }
+            return parseFloat(_css.width.get(first) || 0);
+        },
 
-                return parseFloat(_css.width.get(first) || 0);
-            })
-            .expose(),
-
-        height: overload()
-            .args(Number)
-            .use(function(val) {
+        height: function(val) {
+            if (isNumber(val)) {
                 var first = this[0];
                 if (!first) { return this; }
 
                 _css.height.set(first, val);
                 return this;
-            })
+            }
+        
+            // fallback
+            var first = this[0];
+            if (!first) { return null; }
 
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
+            return parseFloat(_css.height.get(first) || 0);
+        },
 
-            .fallback(function() {
-                var first = this[0];
-                if (!first) { return null; }
+        innerWidth: function() {
+            var first = this[0];
+            if (!first) { return this; }
 
-                return parseFloat(_css.height.get(first) || 0);
-            })
-            .expose(),
+            return _getInnerWidth(first);
+        },
 
-        innerWidth: overload()
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
+        innerHeight: function() {
+            var first = this[0];
+            if (!first) { return this; }
 
-            .fallback(function() {
-                var first = this[0];
-                if (!first) { return this; }
+            return _getInnerHeight(first);
+        },
 
-                return _getInnerWidth(first);
-            })
-            .expose(),
+        outerWidth: function(withMargin) {
+            var first = this[0];
+            if (!first) { return this; }
 
-        innerHeight: overload()
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
+            return _getOuterWidth(first, !!withMargin);
+        },
 
-            .fallback(function() {
-                var first = this[0];
-                if (!first) { return this; }
+        outerHeight: function(withMargin) {
+            var first = this[0];
+            if (!first) { return this; }
 
-                return _getInnerHeight(first);
-            })
-            .expose(),
-
-        outerWidth: overload()
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
-
-            .fallback(function(withMargin) {
-                var first = this[0];
-                if (!first) { return this; }
-
-                return _getOuterWidth(first, withMargin);
-            })
-            .expose(),
-
-        outerHeight: overload()
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
-
-            .fallback(function(withMargin) {
-                var first = this[0];
-                if (!first) { return this; }
-
-                return _getOuterHeight(first, withMargin);
-            })
-            .expose()
+            return _getOuterHeight(first, !!withMargin);
+        }
     }
 };

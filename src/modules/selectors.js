@@ -1,13 +1,13 @@
 var _        = require('underscore'),
-    overload = require('overload-js'),
-    o        = overload.o,
 
-    isFunction = require('is/function'),
-    isElement  = require('is/element'),
-    isNodeList = require('is/nodeList'),
-    isArray    = require('is/array'),
-    isString   = require('is/string'),
-    isD        = require('is/d'),
+    isSelector   = require('is/selector'),
+    isCollection = require('is/collection'),
+    isFunction   = require('is/function'),
+    isElement    = require('is/element'),
+    isNodeList   = require('is/nodeList'),
+    isArray      = require('is/array'),
+    isString     = require('is/string'),
+    isD          = require('is/d'),
 
     _utils   = require('../utils'),
     _array   = require('./array'),
@@ -83,138 +83,114 @@ module.exports = {
 
     fn: {
         // TODO: Optimize this method
-        has: overload()
-            .args(o.selector)
-            .use(function(target) {
-                var targets = this.find(target),
-                    idx,
-                    len = targets.length;
+        has: function(target) {
+            if (!isSelector(target)) { return this; }
 
-                return D(
-                    _.filter(this, function(elem) {
-                        for (idx = 0; idx < len; idx++) {
-                            if (_order.contains(elem, targets[idx])) {
-                                return true;
-                            }
+            var targets = this.find(target),
+                idx,
+                len = targets.length;
+
+            return D(
+                _.filter(this, function(elem) {
+                    for (idx = 0; idx < len; idx++) {
+                        if (_order.contains(elem, targets[idx])) {
+                            return true;
                         }
-                        return false;
-                    })
-                );
-            })
+                    }
+                    return false;
+                })
+            );
+        },
 
-            .expose(),
-
-        is: overload()
-            .args(String)
-            .use(function(selector) {
+        is: function(selector) {
+            if (isString(selector)) {
                 if (selector === '') { return false; }
 
                 var is = Fizzle.is(selector);
                 return is.any(this);
-            })
+            }
 
-            .args(o.collection)
-            .use(function(arr) {
-
+            if (isCollection(selector)) {
+                var arr = selector;
                 return _.any(this, function(elem) {
                     if (_.indexOf(arr, elem) !== -1) { return true; }
                 });
+            }
 
-            })
-
-            .args(Function)
-            .use(function(iterator) {
-
+            if (isFunction(selector)) {
+                var iterator = selector;
                 return _.any(this, function(elem, idx) {
                     if (iterator.call(elem, idx)) {
                         return true;
                     }
                 });
+            }
 
-            })
-
-            .args(Element)
-            .use(function(context) {
-
+            if (isElement(selector)) {
+                var context = selector;
                 return _.any(this, function(elem) {
                     return (elem === context);
                 });
+            }
 
-            })
+            // fallback
+            return false;
+        },
 
-            .args(o.any(null, undefined, Number, Object))
-            .use(function() {
-                return false;
-            })
-            .expose(),
-
-        not: overload()
-            .args(String)
-            .use(function(selector) {
+        not: function(selector) {
+            if (isString(selector)) {
                 if (selector === '') { return this; }
 
                 var is = Fizzle.is(selector);
                 return D(
                     is.not(this)
                 );
-            })
+            }
 
-            .args(o.collection)
-            .use(function(arr) {
-                arr = _.toArray(arr);
-
+            if (isCollection(selector)) {
+                var arr = _.toArray(selector);
                 return D(
                     _.filter(this, function(elem) {
                         if (_.indexOf(arr, elem) === -1) { return true; }
                     })
                 );
+            }
 
-            })
-
-            .args(Function)
-            .use(function(iterator) {
-
+            if (isFunction(selector)) {
+                var iterator = selector;
                 return D(
                     _.filter(this, function(elem, idx) {
                         return !iterator.call(elem, idx);
                     })
                 );
+            }
 
-            })
-
-            .args(Element)
-            .use(function(context) {
-
+            if (isElement(selector)) {
+                var context = selector;
                 return D(
                     _.filter(this, function(elem) {
                         return (elem !== context);
                     })
                 );
+            }
 
-            })
+            // fallback
+            return this;
+        },
 
-            .args(o.any(null, undefined, Number, Object))
-            .use(function() {
-                return this;
-            })
-            .expose(),
+        find: function(selector) {
+            if (!isSelector(selector)) { return this; }
 
-        find: overload()
-            .args(o.selector)
-            .use(function(selector) {
+            var result = _findWithin(selector, this);
+            if (this.length > 1) {
+                _array.elementSort(result);
+            }
+            return _utils.merge(D(), result);
 
-                var result = _findWithin(selector, this);
-                if (this.length > 1) {
-                    _array.elementSort(result);
-                }
-                return _utils.merge(D(), result);
+        },
 
-            })
-            .expose(),
-
-        filter: overload()
-            .args(String)
-            .use(function(selector) {
+        filter: function(selector) {
+            if (isString(selector)) {
                 if (selector === '') { return D(); }
 
                 var is = Fizzle.is(selector);
@@ -223,47 +199,38 @@ module.exports = {
                         return is.match(elem);
                     })
                 );
+            }
 
-            })
-
-            .args(o.collection)
-            .use(function(arr) {
-
+            if (isCollection(selector)) {
+                var arr = selector;
                 return D(
                     _.filter(this, function(elem) {
                         if (_.indexOf(arr, elem) !== -1) { return true; }
                     })
                 );
+            }
 
-            })
-
-            .args(Element)
-            .use(function(context) {
-
+            if (isElement(selector)) {
+                var context = selector;
                 return D(
                     _.filter(this, function(elem) {
                         return (elem === context);
                     })
                 );
-
-            })
-
+            }
+        
             // TODO: Filter with object? see _.find/_.findWhere
-            .args(Function)
-            .use(function(checker) {
-
+            if (isFunction(selector)) {
+                var checker = selector;
                 return D(
                     _.filter(this, function(elem, idx) {
                         return checker.call(elem, elem, idx);
                     })
                 );
+            }
 
-            })
-
-            .args(o.any(null, undefined, Number))
-            .use(function() {
-                return D();
-            })
-            .expose()
+            // fallback
+            return D();
+        }
     }
 };

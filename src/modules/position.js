@@ -1,8 +1,8 @@
 var _        = require('underscore'),
-    overload = require('overload-js'),
-    o        = overload.o,
 
+    isAttached = require('is/attached'),
     isFunction = require('is/function'),
+    isObject   = require('is/object'),
 
     _utils   = require('../utils'),
 
@@ -16,7 +16,7 @@ var _getPosition = function(elem) {
 };
 
 var _getOffset = function(elem) {
-    var rect = _utils.isAttached(elem) ? elem.getBoundingClientRect() : {};
+    var rect = isAttached(elem) ? elem.getBoundingClientRect() : {};
 
     return {
         top:  (rect.top  + document.body.scrollTop)  || 0,
@@ -67,26 +67,23 @@ module.exports = {
             return _getPosition(first);
         },
 
-        offset: overload()
-            .args(o.any(Object, Function))
-            .use(function(posOrIterator) {
-                return _.each(this, function(elem, idx) {
-                    _setOffset(elem, idx, posOrIterator);
-                });
-            })
-
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
-
-            .args()
-            .use(function() {
+        offset: function(posOrIterator) {
+        
+            if (!arguments.length) {
                 var first = this[0];
                 if (!first) { return; }
                 return _getOffset(first);
-            })
-            .expose(),
+            }
+
+            if (isFunction(posOrIterator) || isObject(posOrIterator)) {
+                return _.each(this, function(elem, idx) {
+                    _setOffset(elem, idx, posOrIterator);
+                });
+            }
+
+            // fallback
+            return this;
+        },
 
         offsetParent: function() {
             return D(

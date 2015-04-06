@@ -1,8 +1,8 @@
-var NODE_TYPE = require('NODE_TYPE'),
+var _         = require('underscore'),
+    NODE_TYPE = require('NODE_TYPE'),
     _SUPPORTS  = require('../supports'),
     isArray = require('is/array'),
-    overload   = require('overload-js'),
-    o          = overload.o,
+    isString = require('is/string'),
 
     string     = require('../string'),
     _split     = string.split,
@@ -22,7 +22,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
     _addClasses = function(elems, names) {
         // Support array-like objects
-        if (!isArray(names)) { names = toArray(names); }
+        if (!isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== NODE_TYPE.ELEMENT) { continue; }
@@ -32,7 +32,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
     _removeClasses = function(elems, names) {
         // Support array-like objects
-        if (!isArray(names)) { names = toArray(names); }
+        if (!isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== NODE_TYPE.ELEMENT) { continue; }
@@ -50,7 +50,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
     _toggleClasses = function(elems, names) {
         // Support array-like objects
-        if (!isArray(names)) { names = toArray(names); }
+        if (!isArray(names)) { names = _.toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== NODE_TYPE.ELEMENT) { continue; }
@@ -60,17 +60,22 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
 module.exports = {
     fn: {
-        hasClass: overload()
-            .args(String)
-            .use(function(name) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
-                return _doAnyElemsHaveClass(this, name);
-            })
-            .expose(),
+        hasClass: function(name) {
+            if (name === undefined || !this.length || _isEmpty(name) || !name.length) { return this; }
+            return _doAnyElemsHaveClass(this, name);
+        },
 
-        addClass: overload()
-            .args(String)
-            .use(function(name) {
+        addClass: function(names) {
+            if (isArray(names)) {
+                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                _addClasses(this, names);
+
+                return this;
+            }
+
+            if (isString(names)) {
+                var name = names;
                 if (!this.length || _isEmpty(name) || !name.length) { return this; }
 
                 var names = _split(name);
@@ -79,96 +84,63 @@ module.exports = {
                 _addClasses(this, names);
 
                 return this;
-            })
+            }
 
-            .args(Array)
-            .use(function(names) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+            // fallback
+            return this;
+        },
 
-                _addClasses(this, names);
-
-                return this;
-            })
-
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
-
-            .expose(),
-
-        removeClass: overload()
-            .args()
-            .use(function() {
-                if (!this.length) { return this; }
-
-                _removeAllClasses(this);
-
-                return this;
-            })
-
-            .args(String)
-            .use(function(name) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
-
-                var names = _split(name);
-                if (!names.length) { return this; }
-
-                _removeClasses(this, names);
-
-                return this;
-            })
-
-            .args(Array)
-            .use(function(names) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                _removeClasses(this, names);
-
-                return this;
-            })
-
-            .args(o.any(null, undefined))
-            .use(function() {
-                return this;
-            })
-
-            .expose(),
-
-        toggleClass: overload()
-            .args(o.any(String, Array))
-            .use(function(names) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                names = _split(names);
-                if (!names.length) { return this; }
-
-                _toggleClasses(this, names);
-
-                return this;
-            })
-
-            .args(o.any(String, Array), o.wild)
-            .use(function(names, shouldAdd) {
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
-
-                names = _split(names);
-                if (!names.length) { return this; }
-
-                if (shouldAdd) {
-                    _addClasses(this, names);
-                } else {
-                    _removeClasses(this, names);
+        removeClass: function(names) {
+            if (!arguments.length) {
+                if (this.length) {
+                    _removeAllClasses(this);
                 }
 
                 return this;
-            })
+            }
 
-            .args(o.any(null, undefined))
-            .use(function() {
+            if (isArray(names)) {
+
+                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+                _removeClasses(this, names);
+
                 return this;
-            })
+            }
 
-            .expose()
+            if (isString(names)) {
+                var name = names;
+                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+
+                var names = _split(name);
+                if (!names.length) { return this; }
+
+                _removeClasses(this, names);
+
+                return this;
+            }
+        
+            // fallback
+            return this;
+        },
+
+        toggleClass: function(names, shouldAdd) {
+            if (!arguments.length) { return this; }
+
+            if (!this.length || _isEmpty(names) || !names.length) { return this; }
+
+            names = _split(names);
+            if (!names.length) { return this; }
+
+            if (shouldAdd === undefined) {
+                _toggleClasses(this, names);
+            } else if (shouldAdd) {
+                _addClasses(this, names);
+            } else {
+                _removeClasses(this, names);
+            }
+
+            return this;
+        }
     }
 };

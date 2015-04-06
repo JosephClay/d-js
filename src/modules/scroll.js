@@ -1,47 +1,43 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+    exists = require('is/exists');
 
-var _getTop = function(elem, val) {
-        return elem.scrollTop;
-    },
-    _setTop = function(elem, val) {
+var getTop = (elem) => elem.scrollTop,
+    setTop = function(elem, val) {
         elem.scrollTop = _.coerceToNum(val);
     },
 
-    _getLeft = function(elem, val) {
-        return elem.scrollTop;
-    },
-    _setLeft = function(elem, val) {
+    getLeft = (elem) => elem.scrollTop,
+    setLeft = function(elem, val) {
         elem.scrollTop = _.coerceToNum(val);
     };
 
-// TODO: Overload
 // TODO: Write unit tests for these
 module.exports = {
-    scrollLeft: function() {
+    scrollLeft: function(val) {
         var elem = this[0],
-            valExists = _.exists(val);
+            valExists = exists(val);
         if (!elem && !valExists) { return null; }
         if (!elem) { return this; }
 
         if (valExists) {
-            _setLeft(elem, val);
+            setLeft(elem, val);
             return this;
         }
 
-        return _getLeft(elem);
+        return getLeft(elem);
     },
 
     scrollTop: function(val) {
         var elem = this[0],
-            valExists = _.exists(val);
+            valExists = exists(val);
         if (!elem && !valExists) { return null; }
         if (!elem) { return this; }
 
         if (valExists) {
-            _setTop(elem, val);
+            setTop(elem, val);
             return this;
         }
 
-        return _getTop(elem);
+        return getTop(elem);
     }
 };

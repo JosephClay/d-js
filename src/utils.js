@@ -32,24 +32,6 @@ else {
 }
 
 module.exports = {
-    isAttached: function(elem) {
-        return !!(
-            elem                                                      &&
-            elem.ownerDocument                                        &&
-            elem !== document                                         &&
-            elem.parentNode                                           &&
-            elem.parentNode.nodeType !== NODE_TYPE.DOCUMENT_FRAGMENT  &&
-            elem.parentNode.isParseHtmlFragment !== true
-        );
-    },
-
-    isHtml: function(text) {
-        if (!isString(text)) { return false; }
-
-        text = string.trim(text);
-
-        return (text.charAt(0) === '<' && text.charAt(text.length - 1) === '>' && text.length >= 3);
-    },
 
     normalNodeName: function(elem) {
         var nodeName = elem.nodeName;

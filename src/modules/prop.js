@@ -1,6 +1,7 @@
 var _          = require('underscore'),
-    overload   = require('overload-js'),
-    o          = overload.o,
+
+    isString   = require('is/string'),
+    isFunction = require('is/function'),
 
     _SUPPORTS  = require('../supports'),
     NODE_TYPE = require('NODE_TYPE'),
@@ -97,40 +98,39 @@ var _getOrSetProp = function(elem, name, value) {
 
 module.exports = {
     fn: {
-        prop: overload()
-            .args(String)
-            .use(function(prop) {
+        prop: function(prop, value) {
+            if (arguments.length === 1 && isString(prop)) {
                 var first = this[0];
                 if (!first) { return; }
 
                 return _getOrSetProp(first, prop);
-            })
+            }
 
-            .args(String, o.any(String, Number, Boolean))
-            .use(function(prop, value) {
+            if (isString(prop)) {
+                if (isFunction(value)) {
+                    var fn = value;
+                    return _.each(this, function(elem, idx) {
+                        var result = fn.call(elem, idx, _getOrSetProp(elem, prop));
+                        _getOrSetProp(elem, prop, result);
+                    });
+                }
+
                 return _.each(this, function(elem) {
                     _getOrSetProp(elem, prop, value);
                 });
-            })
+            }
 
-            .args(String, Function)
-            .use(function(prop, fn) {
-                return _.each(this, function(elem) {
-                    var result = fn.call(elem, idx, _getOrSetProp(elem, prop));
-                    _getOrSetProp(elem, prop, result);
-                });
-            })
+            // fallback
+            return this;
+        },
 
-            .expose(),
+        removeProp: function(prop) {
+            if (!isString(prop)) { return this; }
 
-        removeProp: overload()
-            .args(String)
-            .use(function(prop) {
-                var name = _propFix[prop] || prop;
-                return _.each(this, function(elem) {
-                    delete elem[name];
-                });
-            })
-            .expose()
+            var name = _propFix[prop] || prop;
+            return _.each(this, function(elem) {
+                delete elem[name];
+            });
+        }
     }
 };

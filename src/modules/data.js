@@ -1,8 +1,7 @@
-var _          = require('underscore'),
-    overload   = require('overload-js'),
-    o          = overload.o,
-    cache      = require('cache')(2),
+var cache      = require('cache')(2),
 
+    isString  = require('is/string'),
+    isArray   = require('is/array'),
     isElement = require('is/element'),
 
     _ACCESSOR  = '__D_id__ ',
@@ -75,16 +74,19 @@ module.exports = {
     },
 
     D: {
-        data: overload()
-            // NOTE: NodeList || HtmlCollection support?
-            .args(o.element, String, o.wild)
-            .use(_setData)
+        // NOTE: NodeList || HtmlCollection support?
+        data: function(elem, key, value) {
+            if (arguments.length === 3) {
+                return _setData(elem, key, value);
+            }
+            
+            if (arguments.length === 2) {
+                if (isString(key)) {
+                    return _getData(elem, key);
+                }
 
-            .args(o.element, String)
-            .use(_getData)
-
-            .args(o.element, Object)
-            .use(function(elem, map) {
+                // object passed
+                var map = key;
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 var key;
@@ -92,64 +94,72 @@ module.exports = {
                     cache.set(id, key, map[key]);
                 }
                 return map;
-            })
+            }
 
-            .args(o.element)
-            .use(_getAllData)
+            if (isElement(elem)) {
+                return _getData(elem);
+            }
 
-            .expose(),
+            // fallback
+            return this;
+        },
 
-        hasData: overload()
-            .args(o.element)
-            .use(_hasData)
-            .expose(),
+        hasData: function(elem) {
+            if (isElement(elem)) {
+                return _hasData(elem);
+            }
+            return this;
+        },
 
-        removeData: overload()
-            // NOTE: NodeList || HtmlCollection support?
-            // Remove single key
-            .args(o.element, String)
-            .use(_removeData)
+        // NOTE: NodeList || HtmlCollection support?
+        removeData: function(elem, key) {
+            if (arguments.length === 2) {
+                // Remove single key
+                if (isString(key)) {
+                    return _removeData(elem, key);
+                }
 
-            // Remove multiple keys
-            .args(o.element, Array)
-            .use(function(elem, array) {
+                // Remove multiple keys
+                var array = key;
                 var id;
                 if (!(id = _getId(elem))) { return; }
                 var idx = array.length;
                 while (idx--) {
                     cache.remove(id, array[idx]);
                 }
-            })
+            }
 
-            // Remove all data
-            .args(o.element)
-            .use(_removeAllData)
+            if (isElement(elem)) {
+                return _removeAllData(elem);
+            }
 
-            .expose()
+            // fallback
+            return this;
+        }
     },
 
     fn: {
-        data: overload()
-            // Set key's value
-            .args(String, o.wild)
-            .use(function(key, value) {
-                var idx = this.length,
-                    id,
-                    elem;
-                while (idx--) {
-                    elem = this[idx];
-                    if (!isElement(elem)) { continue; }
+        data: function(key, value) {
+            // Get all data
+            if (!arguments.length) {
+                var first = this[0],
+                    id;
+                if (!first || !(id = _getId(first))) { return; }
+                return cache.get(id);
+            }
 
-                    id = _getOrSetId(this[idx]);
-                    cache.set(id, key, value);
+            if (arguments.length === 1) {
+                // Get key
+                if (isString(key)) {
+                    var first = this[0],
+                        id;
+                    if (!first || !(id = _getId(first))) { return; }
+                    return cache.get(id, key);
                 }
-                return this;
-            })
 
-            // Set values from hash map
-            .args(Object)
-            .use(function(map) {
-                var idx = this.length,
+                // Set values from hash map
+                var map = key,
+                    idx = this.length,
                     id,
                     key,
                     elem;
@@ -163,34 +173,46 @@ module.exports = {
                     }
                 }
                 return map;
-            })
+            }
 
-            // Get key
-            .args(String)
-            .use(function(key) {
-                var first = this[0],
-                    id;
-                if (!first || !(id = _getId(first))) { return; }
-                return cache.get(id, key);
-            })
-
-            // Get all data
-            .args()
-            .use(function() {
-                var first = this[0],
-                    id;
-                if (!first || !(id = _getId(first))) { return; }
-                return cache.get(id);
-            })
-
-            .expose(),
-
-        removeData: overload()
-            // NOTE: NodeList || HtmlCollection support?
-            // Remove single key
-            .args(String)
-            .use(function(key) {
+            // Set key's value
+            if (arguments.length === 2) {
                 var idx = this.length,
+                    id,
+                    elem;
+                while (idx--) {
+                    elem = this[idx];
+                    if (!isElement(elem)) { continue; }
+
+                    id = _getOrSetId(this[idx]);
+                    cache.set(id, key, value);
+                }
+                return this;
+            }
+
+            // fallback
+            return this;
+        },
+
+        // NOTE: NodeList || HtmlCollection support?
+        removeData: function(value) {
+            // Remove all data
+            if (!arguments.length) {
+                var idx = this.length,
+                    elem,
+                    id;
+                while (idx--) {
+                    elem = this[idx];
+                    if (!(id = _getId(elem))) { continue; }
+                    cache.remove(id);
+                }
+                return this;
+            }
+
+            // Remove single key
+            if (isString(value)) {
+                var key = value,
+                    idx = this.length,
                     elem,
                     id;
                 while (idx--) {
@@ -199,12 +221,12 @@ module.exports = {
                     cache.remove(id, key);
                 }
                 return this;
-            })
+            }
 
             // Remove multiple keys
-            .args(Array)
-            .use(function(array) {
-                var elemIdx = this.length,
+            if (isArray(value)) {
+                var array = value,
+                    elemIdx = this.length,
                     elem,
                     id;
                 while (elemIdx--) {
@@ -216,22 +238,10 @@ module.exports = {
                     }
                 }
                 return this;
-            })
+            }
 
-            // Remove all data
-            .args()
-            .use(function() {
-                var idx = this.length,
-                    elem,
-                    id;
-                while (idx--) {
-                    elem = this[idx];
-                    if (!(id = _getId(elem))) { continue; }
-                    cache.remove(id);
-                }
-                return this;
-            })
-
-            .expose()
+            // fallback
+            return this;
+        }
     }
 };
