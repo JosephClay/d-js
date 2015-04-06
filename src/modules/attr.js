@@ -229,8 +229,10 @@ module.exports = {
             }
 
             if (arguments.length === 2) {
+                if (value === undefined) { return this; }
+
                 // remove
-                if (!exists(value)) {
+                if (value === null) {
                     _removeAttributes(this, attr);
                     return this;
                 }

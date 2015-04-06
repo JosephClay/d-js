@@ -1,4 +1,4 @@
-var cache      = require('cache')(2),
+var cache      = require('cache')(2, true),
 
     isString  = require('is/string'),
     isArray   = require('is/array'),
@@ -79,7 +79,7 @@ module.exports = {
             if (arguments.length === 3) {
                 return _setData(elem, key, value);
             }
-            
+
             if (arguments.length === 2) {
                 if (isString(key)) {
                     return _getData(elem, key);
@@ -97,7 +97,7 @@ module.exports = {
             }
 
             if (isElement(elem)) {
-                return _getData(elem);
+                return _getAllData(elem);
             }
 
             // fallback

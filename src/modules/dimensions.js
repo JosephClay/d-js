@@ -54,6 +54,8 @@ module.exports = {
                 return this;
             }
 
+            if (arguments.length) { return this; }
+
             // fallback
             var first = this[0];
             if (!first) { return null; }
@@ -69,6 +71,8 @@ module.exports = {
                 _css.height.set(first, val);
                 return this;
             }
+
+            if (arguments.length) { return this; }
         
             // fallback
             var first = this[0];
@@ -78,6 +82,8 @@ module.exports = {
         },
 
         innerWidth: function() {
+            if (arguments.length) { return this; }
+
             var first = this[0];
             if (!first) { return this; }
 
@@ -85,6 +91,8 @@ module.exports = {
         },
 
         innerHeight: function() {
+            if (arguments.length) { return this; }
+
             var first = this[0];
             if (!first) { return this; }
 
@@ -92,6 +100,8 @@ module.exports = {
         },
 
         outerWidth: function(withMargin) {
+            if (arguments.length && withMargin === undefined) { return this; }
+
             var first = this[0];
             if (!first) { return this; }
 
@@ -99,6 +109,8 @@ module.exports = {
         },
 
         outerHeight: function(withMargin) {
+            if (arguments.length && withMargin === undefined) { return this; }
+
             var first = this[0];
             if (!first) { return this; }
 

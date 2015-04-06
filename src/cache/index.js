@@ -1,5 +1,5 @@
 // TODO: Deprecate getOrSet
-var getterSetter = function() {
+var getterSetter = function(deletable) {
     var store = {};
 
     return {
@@ -16,12 +16,16 @@ var getterSetter = function() {
             return (store[key] = fn());
         },
         remove: function(key) {
-            store[key] = undefined;
+            if (deletable) {
+                delete store[key];
+            } else {
+                store[key] = undefined;
+            }
         }
     };
 };
 
-var biLevelGetterSetter = function() {
+var biLevelGetterSetter = function(deletable) {
     var store = {};
 
     return {
@@ -46,17 +50,25 @@ var biLevelGetterSetter = function() {
         remove: function(key1, key2) {
             // Easy removal
             if (arguments.length === 1) {
-                store[key1] = undefined;
+                if (deletable) {
+                    delete store[key1];
+                } else {
+                    store[key1] = undefined;
+                }
                 return;
             }
 
             // Deep removal
             var ref1 = store[key1] || (store[key1] = {});
-            ref1[key2] = undefined;
+            if (deletable) {
+                delete ref1[key2];
+            } else {
+                ref1[key2] = undefined;
+            }
         }
     };
 };
 
-module.exports = function(lvl) {
-    return lvl === 2 ? biLevelGetterSetter() : getterSetter();
+module.exports = function(lvl, deletable) {
+    return lvl === 2 ? biLevelGetterSetter(deletable) : getterSetter(deletable);
 };
