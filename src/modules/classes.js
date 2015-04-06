@@ -1,7 +1,6 @@
-var NODE_TYPE = require('node-type'),
+var NODE_TYPE = require('NODE_TYPE'),
     _SUPPORTS  = require('../supports'),
-
-    _          = require('underscore'),
+    isArray = require('is/array'),
     overload   = require('overload-js'),
     o          = overload.o,
 
@@ -23,7 +22,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
     _addClasses = function(elems, names) {
         // Support array-like objects
-        if (!_.isArray(names)) { names = _.toArray(names); }
+        if (!isArray(names)) { names = toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== NODE_TYPE.ELEMENT) { continue; }
@@ -33,7 +32,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
     _removeClasses = function(elems, names) {
         // Support array-like objects
-        if (!_.isArray(names)) { names = _.toArray(names); }
+        if (!isArray(names)) { names = toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== NODE_TYPE.ELEMENT) { continue; }
@@ -51,7 +50,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
 
     _toggleClasses = function(elems, names) {
         // Support array-like objects
-        if (!_.isArray(names)) { names = _.toArray(names); }
+        if (!isArray(names)) { names = toArray(names); }
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== NODE_TYPE.ELEMENT) { continue; }

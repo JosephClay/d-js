@@ -2,6 +2,13 @@ var _        = require('underscore'),
     overload = require('overload-js'),
     o        = overload.o,
 
+    isFunction = require('is/function'),
+    isElement  = require('is/element'),
+    isNodeList = require('is/nodeList'),
+    isArray    = require('is/array'),
+    isString   = require('is/string'),
+    isD        = require('is/d'),
+
     _utils   = require('../utils'),
     _array   = require('./array'),
     _order   = require('../order'),
@@ -25,9 +32,9 @@ var _findWithin = function(selector, context) {
 
     var query, descendants, results;
 
-    if (_.isElement(selector) || _.isNodeList(selector) || _.isArray(selector) || selector instanceof D) {
+    if (isElement(selector) || isNodeList(selector) || isArray(selector) || isD(selector)) {
         // Convert selector to an array of elements
-        selector = _.isElement(selector) ? [ selector ] : selector;
+        selector = isElement(selector) ? [ selector ] : selector;
 
         descendants = _.flatten(_.map(context, function(elem) { return elem.querySelectorAll('*'); }));
         results = _.filter(descendants, function(descendant) { return selector.indexOf(descendant) > -1; });
@@ -44,8 +51,7 @@ var _filter = function(arr, qualifier) {
     if (!qualifier) { return arr; }
 
     // Function
-    // When IE8 support is removed, this can be reverted back to _.isFunction()
-    if (_.isReallyFunction(qualifier)) {
+    if (isFunction(qualifier)) {
         return _.filter(arr, qualifier);
     }
 
@@ -57,7 +63,7 @@ var _filter = function(arr, qualifier) {
     }
 
     // Selector
-    if (_.isString(qualifier)) {
+    if (isString(qualifier)) {
 
         var is = Fizzle.is(qualifier);
         return _.filter(arr, function(elem) {

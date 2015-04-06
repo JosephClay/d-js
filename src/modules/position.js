@@ -2,6 +2,8 @@ var _        = require('underscore'),
     overload = require('overload-js'),
     o        = overload.o,
 
+    isFunction = require('is/function'),
+
     _utils   = require('../utils'),
 
     _docElem = document.documentElement;
@@ -34,7 +36,7 @@ var _setOffset = function(elem, idx, pos) {
         curCSSLeft        = elem.style.left,
         calculatePosition = (position === 'absolute' || position === 'fixed') && (curCSSTop === 'auto' || curCSSLeft === 'auto');
 
-    if (_.isFunction(pos)) {
+    if (isFunction(pos)) {
         pos = pos.call(elem, idx, curOffset);
     }
 

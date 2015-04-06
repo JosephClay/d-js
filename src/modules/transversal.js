@@ -1,8 +1,11 @@
 var _           = require('underscore'),
-    overload    = require('overload-js'),
-    o           = overload.o,
 
-    NODE_TYPE  = require('node-type'),
+    NODE_TYPE  = require('NODE_TYPE'),
+    isString   = require('is/string'),
+    isElement  = require('is/element'),
+    isWindow   = require('is/window'),
+    isDocument = require('is/document'),
+    isD        = require('is/d'),
 
     _utils      = require('../utils'),
     _array      = require('./array'),
@@ -266,53 +269,47 @@ module.exports = {
             );
         },
 
-        index: overload()
-
-            .args(String)
-            .use(function(selector) {
+        index: function(selector) {
+            if (isString(selector)) {
                 var first = this[0];
-                return D(selector).indexOf(first);
-            })
+                return D(selector).indexOf(first);  
+            }
 
-            .args(o.any(Element, o.window, o.document))
-            .use(function(elem) {
-                return this.indexOf(elem);
-            })
+            if (isElement(selector) || isWindow(selector) || isDocument(selector)) {
+                return this.indexOf(selector);
+            }
 
-            .args(o.D)
-            .use(function(d) {
-                return this.indexOf(d[0]);
-            })
+            if (isD(selector)) {
+                return this.indexOf(selector[0]);
+            }
 
-            .fallback(function() {
-                if (!this.length) {
-                    return -1;
-                }
+            // fallback
+            if (!this.length) {
+                return -1;
+            }
 
-                var first  = this[0],
-                    parent = first.parentNode;
+            var first  = this[0],
+                parent = first.parentNode;
 
-                if (!parent) {
-                    return -1;
-                }
+            if (!parent) {
+                return -1;
+            }
 
-                // _utils.isAttached check to pass test "Node without parent returns -1"
-                // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
-                var isAttached       = _utils.isAttached(first),
-                    isParentFragment = parent.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT;
+            // _utils.isAttached check to pass test "Node without parent returns -1"
+            // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
+            var isAttached       = _utils.isAttached(first),
+                isParentFragment = parent.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT;
 
-                if (!isAttached && (!isParentFragment || _utils.isParsedNode(first))) {
-                    return -1;
-                }
+            if (!isAttached && (!isParentFragment || _utils.isParsedNode(first))) {
+                return -1;
+            }
 
-                var childElems = parent.children || _.filter(parent.childNodes, function(node) {
-                    return node.nodeType === NODE_TYPE.ELEMENT;
-                });
+            var childElems = parent.children || _.filter(parent.childNodes, function(node) {
+                return node.nodeType === NODE_TYPE.ELEMENT;
+            });
 
-                return [].indexOf.apply(childElems, [ first ]);
-            })
-
-            .expose(),
+            return [].indexOf.apply(childElems, [ first ]);
+        },
 
         closest: function(selector, context) {
             return _uniqueSort(_getClosest(this, selector, context));

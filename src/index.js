@@ -1,7 +1,11 @@
-// Configure O with string custom types
-require('./o.custom');
-
 var _ = require('underscore'),
+
+    isArray    = require('is/array'),
+    isHtml     = require('is/html'),
+    isString   = require('is/string'),
+    isNodeList = require('is/nodeList'),
+    isFunction = require('is/function'),
+    isD        = require('is/d'),
 
     parser      = require('./modules/parser/parser'),
     utils       = require('./utils'),
@@ -28,47 +32,48 @@ var _ = require('underscore'),
 // Store previous reference
 var _prevD = window.D;
 
-var D = function(arg, attrs) {
-    return new Construct(arg, attrs);
+var D = function(selector, attrs) {
+    return new D.fn.init(selector, attrs);
 };
 
-var Construct = function(arg, attrs) {
+var init = D.prototype.init = function(selector, attrs) {
     // Nothin
-    if (arg === null || arg === undefined) { return; }
+    if (selector === null || selector === undefined) { return this; }
 
     // Element
-    if (arg.nodeType || arg === window || arg === document) {
-        this.push(arg);
-        return;
+    if (selector.nodeType || selector === window) {
+        this.push(selector);
+        return this;
     }
 
     // String
-    if (_.isString(arg)) {
+    if (isString(selector)) {
 
         // HTML string
-        if (utils.isHtml(arg)) {
-            utils.merge(this, parser.parseHtml(arg));
+        if (isHtml(selector)) {
+            utils.merge(this, parser.parseHtml(selector));
             if (attrs) { this.attr(attrs); }
-            return;
+            return this;
         }
 
         // Selector: perform a find without creating a new D
-        utils.merge(this, selectors.find(arg, true));
-        return;
+        utils.merge(this, selectors.find(selector, true));
+        return this;
     }
 
     // Array of Elements, NodeList, or D object
-    if (_.isArray(arg) || _.isNodeList(arg) || arg instanceof D) {
-        utils.merge(this, arg);
-        return;
+    if (isArray(selector) || isNodeList(selector) || isD(selector)) {
+        utils.merge(this, selector);
+        return this;
     }
 
     // Document a ready
-    if (_.isFunction(arg)) {
-        onready(arg);
+    if (isFunction(selector)) {
+        onready(selector);
     }
+    return this;
 };
-Construct.prototype = D.prototype;
+init.prototype = D.prototype;
 
 var _hasMoreConflict = false,
     _prevjQuery,
@@ -111,7 +116,7 @@ _.extend(D,
 var arrayProto = (function(proto, obj) {
 
     _.each(
-        _.splt('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight'),
+        _.splt('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter'),
         function(key) {
             obj[key] = proto[key];
         }
@@ -144,4 +149,4 @@ _.extend(
 // it can be hooked into for plugins
 D.fn = D.prototype;
 
-module.exports =  D;
+module.exports = D;

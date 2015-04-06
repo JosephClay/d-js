@@ -1,3 +1,4 @@
+// TODO: Deprecate getOrSet
 var getterSetter = function() {
     var store = {};
 

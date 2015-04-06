@@ -1,20 +1,22 @@
-var NODE_TYPE = require('node-type'),
+var NODE_TYPE = require('NODE_TYPE'),
+
+    isNumber    = require('is/number'),
+    isString    = require('is/string'),
+    isArray     = require('is/array'),
+    isArrayLike = require('is/arrayLike'),
+    isNodeList  = require('is/nodeList'),
     
     id        = 0,
     
-    objProto   = Object.prototype,
     arrProto   = Array.prototype,
 
-    toString   = objProto.toString,
     indexOf    = arrProto.indexOf,
     slice      = arrProto.slice,
+
     isTruthy   = function(arg) { return !!arg; };
 
 var _ = module.exports = {
-
     noop: function() {},
-
-    now: Date.now || function() { return new Date().getTime(); },
 
     uniqueId: function() {
         return id++;
@@ -29,9 +31,12 @@ var _ = module.exports = {
     },
 
     coerceToNum: function(val) {
-        return _.isNumber(val) ? (val || 0) : // Its a number! || 0 to avoid NaN (as NaN's a number)
-               _.isString(val) ? (_.parseInt(val) || 0) : // Avoid NaN again
-               0; // Default to zero
+                // Its a number! || 0 to avoid NaN (as NaN's a number)
+        return isNumber(val) ? (val || 0) :
+               // Avoid NaN again
+               isString(val) ? (+val || 0) :
+               // Default to zero
+               0;
     },
 
     toPx: function(num) {
@@ -40,50 +45,6 @@ var _ = module.exports = {
 
     isElement: function(obj) {
         return !!(obj && obj.nodeType === NODE_TYPE.ELEMENT);
-    },
-
-    // NOTE: In older browsers, this will be overwritten below
-    isArray: Array.isArray,
-
-    isArrayLike: function(obj) {
-        if (!_.exists(obj)) {
-            return false;
-        }
-        if (_.isArray(obj)) {
-            return true;
-        }
-        if (_.isString(obj)) {
-            return false;
-        }
-        if (_.isNodeList(obj)) {
-            return true;
-        }
-        if (_.isArguments(obj)) {
-            return true;
-        }
-        if (_.isNumber(obj.length) && ('0' in obj)) {
-            return true;
-        }
-        return false;
-    },
-
-    // NodeList check. For our purposes, a NodeList and an HTMLCollection are the same.
-    isNodeList: function(obj) {
-        return !!(obj && (
-            obj instanceof NodeList ||
-            obj instanceof HTMLCollection ||
-            obj.item === '[object StaticNodeList]' // IE8 DispStaticNodeList object returned by querySelectorAll()
-        ));
-    },
-
-    // Window check
-    isWindow: function(obj) {
-        return !!(obj && obj === obj.window);
-    },
-
-    // Supports IE8 via obj.callee (see http://stackoverflow.com/a/10645766/467582)
-    isArguments: function(obj) {
-        return !!(obj && (toString.call(obj) === '[object Arguments]' || obj.callee));
     },
 
     // Flatten that also checks if value is a NodeList
@@ -96,7 +57,7 @@ var _ = module.exports = {
         for (; idx < len; idx++) {
             value = arr[idx];
 
-            if (_.isArray(value) || _.isNodeList(value)) {
+            if (isArray(value) || isNodeList(value)) {
                 result = result.concat(_.flatten(value));
             } else {
                 result.push(value);
@@ -128,6 +89,7 @@ var _ = module.exports = {
     },
 
     // Faster extend; strip each()
+    // TODO: update this function
     extend: function() {
         var args = arguments,
             obj  = args[0],
@@ -225,7 +187,7 @@ var _ = module.exports = {
         if (!obj) {
             return [];
         }
-        if (_.isArray(obj)) {
+        if (isArray(obj)) {
             return slice.call(obj);
         }
 
@@ -254,7 +216,7 @@ var _ = module.exports = {
         if (arg.slice === slice) {
             return arg.slice();
         }
-        if (_.isArrayLike(arg)) {
+        if (isArrayLike(arg)) {
             return slice.call(arg);
         }
         return [ arg ];
@@ -319,52 +281,4 @@ var _ = module.exports = {
         return str.split(delimiter || '|');
     }
 
-};
-
-// Add some isType methods (only if they do NOT already exist):
-// isArray, isFunction, isString, isNumber, isDate, isRegExp.
-var types = _.splt('Array|Function|String|Number|Date|RegExp'),
-    idx = types.length,
-    generateCheck = function(name) {
-        return function(obj) {
-            return !!obj && toString.call(obj) === '[object ' + name + ']';
-        };
-    },
-    name;
-while (idx--) {
-    name = types[idx];
-    _['is' + name] = _['is' + name] || generateCheck(name);
-}
-
-// Optimize `isFunction` if appropriate.
-if (typeof (/./) !== 'function') {
-    _.isFunction = function(obj) {
-        return typeof obj === 'function';
-    };
-}
-
-// Optimize `isString` if appropriate.
-if (typeof ('') === 'string') {
-    _.isString = function(obj) {
-        return typeof obj === 'string';
-    };
-}
-
-/**
- * Determines if the given value really, really, REALLY is a function.
- *
- * Workaround for Chakra JIT compiler bug in IE11 running in IE8 compat mode
- * in which a JIT'ed _.isFunction() returns true for host objects (e.g., DOM nodes),
- * which is obviously wrong.
- *
- * This function should be removed when IE8 support is dropped.
- *
- * @param {*} val Any value
- * @return {Boolean} true if the given value REALLY is a function, otherwise false.
- *
- * @see https://github.com/jashkenas/underscore/issues/1621
- * @see http://jsbin.com/lalovahu/1
- */
-_.isReallyFunction = function(val) {
-    return typeof val === 'function' || false;
 };

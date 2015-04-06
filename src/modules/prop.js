@@ -3,7 +3,7 @@ var _          = require('underscore'),
     o          = overload.o,
 
     _SUPPORTS  = require('../supports'),
-    NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('NODE_TYPE'),
 
     _regex     = require('../regex');
 

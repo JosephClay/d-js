@@ -1,7 +1,10 @@
 var _           = require('underscore'),
 
+    isObject = require('is/object'),
+    isWindow = require('is/window'),
+
     Event       = require('./E'),
-    _nodeType   = require('node-type'),
+    _nodeType   = require('NODE_TYPE'),
     _regex      = require('../../regex'),
     _utils      = require('../../utils'),
     _array      = require('../array'),
@@ -212,7 +215,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     // Caller can pass in a Event object, Object, or just an event type string
     event = event[_eventUtils.id] ?
         event :
-        new Event(type, event && _.isObject(event));
+        new Event(type, event && isObject(event));
 
     // Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
     event.isTrigger = onlyHandlers ? 2 : 3;
@@ -237,7 +240,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     // Determine event propagation path in advance, per W3C events spec (#9951)
     // Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
     var bubbleType;
-    if (!onlyHandlers && !special.noBubble && !_.isWindow(elem)) {
+    if (!onlyHandlers && !special.noBubble && !isWindow(elem)) {
 
         bubbleType = special.delegateType || type;
         if (!_regex.focusMorph(bubbleType + type)) {
@@ -291,7 +294,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
             // Call a native DOM method on the target with the same name name as the event.
             // Can't use an .isFunction() check here because IE6/7 fails that test.
             // Don't do default actions on window, that's where global variables be (#6170)
-            if (ontype && elem[type] && !_.isWindow(elem)) {
+            if (ontype && elem[type] && !isWindow(elem)) {
 
                 // Don't re-trigger an onFOO event when we call its FOO() method
                 tmp = elem[ontype];

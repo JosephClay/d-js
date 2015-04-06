@@ -1,7 +1,6 @@
-var _     = require('underscore'),
-    cache = require('cache')(2),
-    
-    R_TRIM       = /^\s+|\s+$/g,
+var cache = require('cache')(2),
+    isArray = require('is/array'),
+
     R_SPACE      = /\s+/g,
 
     isEmpty = function(str) {
@@ -29,21 +28,14 @@ var _     = require('underscore'),
         }
 
         return names;
-    },
-
-    _split = function(name, delim) {
-        if (isEmpty(name)) { return []; }
-        if (_.isArray(name)) { return name; }
-        delim = delim === undefined ? R_SPACE : delim;
-        return cache.getOrSet(delim, name, function() { return _splitImpl(name, delim); });
     };
 
-var string = module.exports = {
+module.exports = {
     isEmpty: isEmpty,
-
-    split: _split,
-
-    trim: String.prototype.trim ?
-        function(str) { return string.isEmpty(str) ? str : (str + '').trim(); } :
-        function(str) { return string.isEmpty(str) ? str : (str + '').replace(R_TRIM, ''); }
+    split: function(name, delim) {
+        if (isEmpty(name)) { return []; }
+        if (isArray(name)) { return name; }
+        delim = delim === undefined ? R_SPACE : delim;
+        return cache.getOrSet(delim, name, function() { return _splitImpl(name, delim); });
+    }
 };

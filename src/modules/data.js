@@ -3,9 +3,11 @@ var _          = require('underscore'),
     o          = overload.o,
     cache      = require('cache')(2),
 
+    isElement = require('is/element'),
+
     _ACCESSOR  = '__D_id__ ',
 
-    _id = _.now(),
+    _id = Date.now(),
     _uniqueId = function() {
         return _id++;
     },
@@ -136,7 +138,7 @@ module.exports = {
                     elem;
                 while (idx--) {
                     elem = this[idx];
-                    if (!_.isElement(elem)) { continue; }
+                    if (!isElement(elem)) { continue; }
 
                     id = _getOrSetId(this[idx]);
                     cache.set(id, key, value);
@@ -153,7 +155,7 @@ module.exports = {
                     elem;
                 while (idx--) {
                     elem = this[idx];
-                    if (!_.isElement(elem)) { continue; }
+                    if (!isElement(elem)) { continue; }
 
                     id = _getOrSetId(this[idx]);
                     for (key in map) {

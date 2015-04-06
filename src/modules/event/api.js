@@ -1,20 +1,21 @@
 var _         = require('underscore'),
     overload  = require('overload-js'),
-    o         = overload.o,
+
+    isObject = require('is/object'),
+    isString = require('is/string'),
 
     _utils    = require('../../utils'),
-    _event    = require('./event'),
-    _specials = require('./eventSpecials');
+    _event    = require('./event');
 
 module.exports = {
     fn: {
 
         on: function(types, selector, data, fn, /*INTERNAL*/ one) {
             // Types can be a map of types/handlers
-            if (_.isObject(types)) {
+            if (isObject(types)) {
 
                 // ( types-Object, selector, data )
-                if (!_.isString(selector)) {
+                if (!isString(selector)) {
                     // ( types-Object, data )
                     data = data || selector;
                     selector = undefined;
@@ -36,7 +37,7 @@ module.exports = {
 
             } else if (!_.exists(fn)) {
 
-                if (_.isString(selector)) {
+                if (isString(selector)) {
 
                     // ( types, selector, fn )
                     fn = data;

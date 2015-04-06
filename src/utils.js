@@ -1,7 +1,8 @@
 var _             = require('underscore'),
+    isString      = require('is/string'),
     string        = require('./string'),
     SUPPORTS      = require('./supports'),
-    NODE_TYPE     = require('node-type'),
+    NODE_TYPE     = require('NODE_TYPE'),
     cache         = require('cache')(),
 
     _flagParsedNode,
@@ -43,7 +44,7 @@ module.exports = {
     },
 
     isHtml: function(text) {
-        if (!_.isString(text)) { return false; }
+        if (!isString(text)) { return false; }
 
         text = string.trim(text);
 

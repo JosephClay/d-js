@@ -28,7 +28,7 @@ var Event = module.exports = function(src, props) {
     _.extend(this, props);
 
     // Create a timestamp if incoming event doesn't have one
-    this.timeStamp = src && src.timeStamp || _.now();
+    this.timeStamp = src && src.timeStamp || Date.now();
 
     // Mark it as fixed
     this[_eventUtils.id] = true;

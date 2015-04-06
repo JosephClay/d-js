@@ -1,5 +1,7 @@
 var _         = require('underscore'),
 
+    isArray = require('is/array'),
+
     _deferObj = require('./Deferred'),
     _Deferred  = _deferObj.Deferred,
     _CALL     = _deferObj.CALL,
@@ -33,7 +35,7 @@ When.prototype = {
      * @return {Deferred}
      */
     init: function() {
-        this._events = _.isArray(arguments[0]) ? arguments[0] : _.toArray(arguments);
+        this._events = isArray(arguments[0]) ? arguments[0] : _.toArray(arguments);
         this._subscribe();
 
         var deferred = new _Deferred();

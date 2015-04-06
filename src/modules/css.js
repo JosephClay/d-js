@@ -1,10 +1,15 @@
 var _            = require('underscore'),
     overload     = require('overload-js'),
     o            = overload.o,
-    string       = require('../string'),
+
+    isElement = require('is/element'),
+    isWindow  = require('is/window'),
+    isString  = require('is/string'),
+    isNumber  = require('is/number'),
+    isBoolean = require('is/boolean'),
 
     _SUPPORTS    = require('../supports'),
-    NODE_TYPE   = require('node-type'),
+    NODE_TYPE   = require('NODE_TYPE'),
 
     _utils       = require('../utils'),
     _cache       = require('cache'),
@@ -66,13 +71,13 @@ var _hide = function(elem) {
         return _SUPPORTS.getComputedStyle ?
             // Avoids an 'Illegal Invocation' error (Chrome)
             // Avoids a 'TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element' error (Firefox)
-            function(elem) { return _.isElement(elem) ? window.getComputedStyle(elem) : null; } :
+            function(elem) { return isElement(elem) ? window.getComputedStyle(elem) : null; } :
             function(elem) { return elem.currentStyle; };
     }()),
 
     _width = {
          get: function(elem) {
-            if (_.isWindow(elem)) {
+            if (isWindow(elem)) {
                 return elem.document.documentElement.clientWidth;
             }
 
@@ -94,13 +99,13 @@ var _hide = function(elem) {
             return _getWidthOrHeight(elem, 'width');
         },
         set: function(elem, val) {
-            elem.style.width = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
+            elem.style.width = isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
         }
     },
 
     _height = {
         get: function(elem) {
-            if (_.isWindow(elem)) {
+            if (isWindow(elem)) {
                 return elem.document.documentElement.clientHeight;
             }
 
@@ -123,7 +128,7 @@ var _hide = function(elem) {
         },
 
         set: function(elem, val) {
-            elem.style.height = _.isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
+            elem.style.height = isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
         }
     };
 
@@ -282,7 +287,7 @@ var _hooks = {
                 filter = currentStyle && currentStyle.filter || style.filter || '';
 
             // if setting opacity to 1, and no other filters exist - remove the filter attribute
-            if (value >= 1 || value === '' && string.trim(filter.replace(_regex.alpha, '')) === '') {
+            if (value >= 1 || value === '' && filter.replace(_regex.alpha, '').trim() === '') {
 
                 // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
                 // if 'filter:' is present at all, clearType is disabled, we want to avoid this
@@ -299,7 +304,7 @@ var _hooks = {
             style.zoom = 1;
 
             // Only calculate the opacity if we're setting a value (below)
-            var opacity = (_.isNumber(value) ? 'alpha(opacity=' + (value * 100) + ')' : '');
+            var opacity = (isNumber(value) ? 'alpha(opacity=' + (value * 100) + ')' : '');
 
             style.filter = _regex.alpha.test(filter) ?
                 // replace 'alpha(opacity)' in the filter definition
@@ -389,7 +394,7 @@ module.exports = {
 
                 while (idx--) {
                     value = arr[idx];
-                    if (!_.isString(value)) { return; }
+                    if (!isString(value)) { return; }
                     ret[value] = _getStyle(first);
                 }
 
@@ -409,7 +414,7 @@ module.exports = {
         },
 
         toggle: function(state) {
-            if (_.isBoolean(state)) {
+            if (isBoolean(state)) {
                 return state ? this.show() : this.hide();
             }
 

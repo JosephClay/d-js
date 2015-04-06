@@ -2,8 +2,10 @@ var _          = require('underscore'),
     overload   = require('overload-js'),
     o          = overload.o,
 
+    isFunction = require('is/function'),
+    
     _SUPPORTS  = require('../supports'),
-    NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('NODE_TYPE'),
 
     _utils     = require('../utils'),
     _cache     = require('cache'),
@@ -173,7 +175,7 @@ var _hooks = {
         },
     },
     _setAttributes = function(arr, attr, value) {
-        var isFn   = _.isFunction(value),
+        var isFn   = isFunction(value),
             idx    = 0,
             len    = arr.length,
             elem,

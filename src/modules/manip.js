@@ -2,6 +2,10 @@ var _         = require('underscore'),
     overload  = require('overload-js'),
     o         = overload.o,
 
+    isElement  = require('is/element'),
+    isString   = require('is/string'),
+    isNodeList = require('is/nodeList'),
+
     _selector = require('./selectors'),
     _array    = require('./array'),
     _utils    = require('../utils'),
@@ -72,7 +76,7 @@ var _empty = function(arr) {
 
                 // do nothing
 
-            } else if (_.isString(result)) {
+            } else if (isString(result)) {
 
                 if (utils.isHTML(value)) {
                     _appendPrependArrayToElem(elem, parser.parseHtml(value), pender);
@@ -81,11 +85,11 @@ var _empty = function(arr) {
 
                 pender(elem, _stringToFrag(result));
 
-            } else if (_.isElement(result)) {
+            } else if (isElement(result)) {
 
                 pender(elem, result);
 
-            } else if (_.isNodeList(result) || result instanceof D) {
+            } else if (isNodeList(result) || result instanceof D) {
 
                 _appendPrependArrayToElem(elem, result, pender);
 
@@ -115,11 +119,11 @@ var _empty = function(arr) {
     },
 
     _append = function(base, elem) {
-        if (!base || !elem || !_.isElement(elem)) { return; }
+        if (!base || !elem || !isElement(elem)) { return; }
         base.appendChild(elem);
     },
     _prepend = function(base, elem) {
-        if (!base || !elem || !_.isElement(elem)) { return; }
+        if (!base || !elem || !isElement(elem)) { return; }
         base.insertBefore(elem, base.firstChild);
     };
 

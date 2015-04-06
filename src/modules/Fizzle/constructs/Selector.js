@@ -1,7 +1,7 @@
 var _ = require('underscore'),
-    string = require('../../../string'),
-    overload = require('overload-js'),
-    o = overload.o,
+
+    isNodeList = require('is/nodeList'),
+    isElement = require('is/element'),
 
     _ID_PREFIX = 'D-uniqueId-',
 
@@ -11,7 +11,6 @@ var _ = require('underscore'),
     _QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
     _SUPPORTS  = require('../../../supports'),
-    NODE_TYPE = require('node-type'),
 
     _cache = require('cache'),
     _regex = require('../../../regex'),
@@ -57,7 +56,7 @@ var _determineMethod = function(selector) {
             return [];
         }
         // Nodelist without a length
-        if (_.isNodeList(selection) && !selection.length) {
+        if (isNodeList(selection) && !selection.length) {
             return [];
         }
         // IE8 DispStaticNodeList
@@ -66,7 +65,7 @@ var _determineMethod = function(selector) {
         }
 
         // If it's an id, return it as an array
-        return _.isElement(selection) || !selection.length ? [selection] : _fromDomArrayToArray(selection);
+        return isElement(selection) || !selection.length ? [selection] : _fromDomArrayToArray(selection);
     },
 
     _childOrSiblingQuery = function(context, self) {
@@ -141,7 +140,7 @@ var _determineMethod = function(selector) {
     };
 
 var Selector = function(str) {
-    var selector                = string.trim(str),
+    var selector                = str.trim(),
         isChildOrSiblingSelect  = (selector[0] === '>' || selector[0] === '+'),
         method                  = isChildOrSiblingSelect ? _QUERY_SELECTOR_ALL : _determineMethod(selector);
 
@@ -175,7 +174,7 @@ Selector.prototype = {
         }
 
         // these are the types we're expecting to fall through
-        // _.isElement(context) || _.isNodeList(context) || _.isCollection(context)
+        // isElement(context) || isNodeList(context) || isCollection(context)
         return query(context, this);
     }
 };

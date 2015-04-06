@@ -1,10 +1,13 @@
 var _          = require('underscore'),
-    overload   = require('overload-js'),
-    o          = overload.o,
-    string     = require('../string'),
+
+    exists = require('is/exists'),
+    isString = require('is/string'),
+    isArray = require('is/array'),
+    isNumber = require('is/number'),
+    isFunction = require('is/function'),
 
     _SUPPORTS  = require('../supports'),
-    NODE_TYPE = require('node-type'),
+    NODE_TYPE = require('NODE_TYPE'),
 
     _utils     = require('../utils'),
     _div       = require('../div');
@@ -14,10 +17,10 @@ var _outerHtml = function() {
 };
 
 var _text = {
-    get: (_div.textContent !== undefined) ?
+    get: _div.textContent !== undefined ?
         function(elem) { return elem.textContent; } :
             function(elem) { return elem.innerText; } ,
-    set: (_div.textContent !== undefined) ?
+    set: _div.textContent !== undefined ?
         function(elem, str) { elem.textContent = str; } :
             function(elem, str) { elem.innerText = str; }
 };
@@ -26,7 +29,7 @@ var _valHooks = {
     option: {
         get: function(elem) {
             var val = elem.getAttribute('value');
-            return string.trim(_.exists(val) ? val : _text.get(elem));
+            return (_.exists(val) ? val : _text.get(elem)).trim();
         }
     },
 
@@ -99,7 +102,7 @@ if (!_SUPPORTS.checkOn) {
                 // Support: Webkit - '' is returned instead of 'on' if a value isn't specified
                 return elem.getAttribute('value') === null ? 'on' : elem.value;
             }
-        }
+        };
     });
 }
 
@@ -116,7 +119,7 @@ var _getVal = function(elem) {
         val = elem.getAttribute('value');
     }
 
-    return _.isString(val) ? _utils.normalizeNewlines(val) : val;
+    return isString(val) ? _utils.normalizeNewlines(val) : val;
 };
 
 var _stringify = function(value) {
@@ -130,7 +133,7 @@ var _setVal = function(elem, value) {
     if (elem.nodeType !== NODE_TYPE.ELEMENT) { return; }
 
     // Stringify values
-    if (_.isArray(value)) {
+    if (isArray(value)) {
         value = _.map(value, _stringify);
     } else {
         value = _stringify(value);
@@ -146,58 +149,43 @@ var _setVal = function(elem, value) {
 
 module.exports = {
     fn: {
-        // TODO: Overload and determine api
-        // TODO: unit tests
         outerHtml: _outerHtml,
         outerHTML: _outerHtml,
 
-        html: overload()
-            .args(String)
-            .use(function(html) {
+        html: function(html) {
+            if (isString(html)) {
                 return _.each(this, function(elem) {
                     elem.innerHTML = html;
                 });
-            })
+            }
 
-            .args(Function)
-            .use(function(iterator) {
+            if (isFunction(html)) {
+                var iterator = html;
                 return _.each(this, function(elem, idx) {
                     elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
                 });
-            })
+            }
 
-            .fallback(function() {
-                var first = this[0];
-                return (!first) ? undefined : first.innerHTML;
-            })
-            .expose(),
+            var first = this[0];
+            return (!first) ? undefined : first.innerHTML;
+        },
 
         // TODO: Add handling of (and unit tests for) \r\n in IE
-        val: overload()
-            // Getter
-            .args()
-            .use(function() {
+        val: function(value) {
+            // getter
+            if (!arguments.length) {
                 // TODO: Select first element node instead of index 0?
                 return _getVal(this[0]);
-            })
+            }
 
-            // Setters
-            .args(o.any(String, Number, Array))
-            .use(function(value) {
-                return _.each(this, function(elem) {
-                    _setVal(elem, value);
-                });
-            })
-
-            .args(o.any(null, undefined))
-            .use(function() {
+            if (!exists(value)) {
                 return _.each(this, function(elem) {
                     _setVal(elem, '');
                 });
-            })
+            }
 
-            .args(Function)
-            .use(function(iterator) {
+            if (isFunction(value)) {
+                var iterator = value;
                 return _.each(this, function(elem, idx) {
                     if (elem.nodeType !== NODE_TYPE.ELEMENT) { return; }
 
@@ -205,39 +193,39 @@ module.exports = {
 
                     _setVal(elem, value);
                 });
-            })
+            }
 
-            .fallback(function(value) {
+            // setters
+            if (isString(value) || isNumber(value) || isArray(value)) {
                 return _.each(this, function(elem) {
                     _setVal(elem, value);
                 });
-            })
+            }
 
-            .expose(),
+            return _.each(this, function(elem) {
+                _setVal(elem, value);
+            });
+        },
 
-        text: overload()
-            .args(String)
-            .use(function(str) {
+        text: function(str) {
+            if (isString(str)) {
                 return _.each(this, function(elem) {
                     _text.set(elem, str);
                 });
-            })
+            }
 
-            .args(Function)
-            .use(function(iterator) {
+            if (isFunction(str)) {
+                var iterator = str;
                 return _.each(this, function(elem, idx) {
                     _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
                 });
-            })
+            }
 
-            .fallback(function() {
-                var str = '';
-                _.each(this, function(elem) {
-                    str += _text.get(elem);
-                });
-
-                return str;
-            })
-            .expose()
+            str = '';
+            _.each(this, function(elem) {
+                str += _text.get(elem);
+            });
+            return str;
+        }
     }
 };
