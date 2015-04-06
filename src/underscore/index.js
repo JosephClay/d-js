@@ -1,4 +1,5 @@
-var isNumber    = require('is/number'),
+var exists      = require('is/exists'),
+    isNumber    = require('is/number'),
     isString    = require('is/string'),
     isArray     = require('is/array'),
     isArrayLike = require('is/arrayLike'),
@@ -18,10 +19,6 @@ var _ = module.exports = {
 
     uniqueId: function() {
         return id++;
-    },
-
-    exists: function(obj) {
-        return obj !== null && obj !== undefined;
     },
 
     parseInt: function(num) {
@@ -72,7 +69,7 @@ var _ = module.exports = {
 
     // No-context every; strip each()
     every: function(arr, iterator) {
-        if (!_.exists(arr)) { return true; }
+        if (!exists(arr)) { return true; }
 
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {

@@ -1,5 +1,6 @@
 var _         = require('underscore'),
-
+    
+    exists   = require('is/exists'),
     isObject = require('is/object'),
     isString = require('is/string'),
 
@@ -28,13 +29,13 @@ module.exports = {
                 return this;
             }
 
-            if (!_.exists(data) && !_.exists(fn)) {
+            if (!exists(data) && !exists(fn)) {
 
                 // ( types, fn )
                 fn = selector;
                 data = selector = undefined;
 
-            } else if (!_.exists(fn)) {
+            } else if (!exists(fn)) {
 
                 if (isString(selector)) {
 

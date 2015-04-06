@@ -1,5 +1,6 @@
 var _        = require('underscore'),
 
+    exists     = require('is/exists'),
     isAttached = require('is/attached'),
     isFunction = require('is/function'),
     isObject   = require('is/object'),
@@ -51,8 +52,8 @@ var _setOffset = function(elem, idx, pos) {
         curLeft = parseFloat(curCSSLeft) || 0;
     }
 
-    if (_.exists(pos.top))  { props.top  = (pos.top  - curOffset.top)  + curTop;  }
-    if (_.exists(pos.left)) { props.left = (pos.left - curOffset.left) + curLeft; }
+    if (exists(pos.top))  { props.top  = (pos.top  - curOffset.top)  + curTop;  }
+    if (exists(pos.left)) { props.left = (pos.left - curOffset.left) + curLeft; }
 
     elem.style.top  = _.toPx(props.top);
     elem.style.left = _.toPx(props.left);

@@ -1,4 +1,5 @@
 var _      = require('underscore'),
+    exists = require('is/exists'),
     _order = require('../order');
 
 var _slice = (function(slice) {
@@ -92,7 +93,7 @@ module.exports = {
 
         get: function(index) {
             // No index, return all
-            if (!_.exists(index)) { return this.toArray(); }
+            if (!exists(index)) { return this.toArray(); }
 
             index = +index;
 

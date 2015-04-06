@@ -1,7 +1,8 @@
 var _ = require('underscore'),
-
+    
+    exists     = require('is/exists'),
     isNodeList = require('is/nodeList'),
-    isElement = require('is/element'),
+    isElement  = require('is/element'),
 
     _ID_PREFIX = 'D-uniqueId-',
 
@@ -77,7 +78,7 @@ var _determineMethod = function(selector) {
             id;
 
         id = context.id;
-        if (id === '' || !_.exists(id)) {
+        if (id === '' || !exists(id)) {
             newId = _uniqueId();
             context.id = newId;
             idApplied = true;

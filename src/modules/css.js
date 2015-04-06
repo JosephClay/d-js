@@ -1,5 +1,6 @@
 var _            = require('underscore'),
 
+    exists     = require('is/exists'),
     isAttached = require('is/attached'),
     isElement  = require('is/element'),
     isDocument = require('is/document'),
@@ -144,7 +145,7 @@ var _getWidthOrHeight = function(elem, name) {
     // some non-html elements return undefined for offsetWidth, so check for null/undefined
     // svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
-    if (val <= 0 || !_.exists(val)) {
+    if (val <= 0 || !exists(val)) {
         // Fall back to computed then uncomputed css if necessary
         val = _curCss(elem, name, styles);
         if (val < 0 || !val) { val = elem.style[name]; }
@@ -236,7 +237,7 @@ var _curCss = function(elem, name, computed) {
 
     // Avoid setting ret to empty string here
     // so we don't default to auto
-    if (!_.exists(ret) && style && style[name]) { ret = style[name]; }
+    if (!exists(ret) && style && style[name]) { ret = style[name]; }
 
     // From the hack by Dean Edwards
     // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291

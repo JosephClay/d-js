@@ -1,9 +1,9 @@
 var _          = require('underscore'),
 
-    exists = require('is/exists'),
-    isString = require('is/string'),
-    isArray = require('is/array'),
-    isNumber = require('is/number'),
+    exists     = require('is/exists'),
+    isString   = require('is/string'),
+    isArray    = require('is/array'),
+    isNumber   = require('is/number'),
     isFunction = require('is/function'),
 
     _SUPPORTS  = require('../supports'),
@@ -29,7 +29,7 @@ var _valHooks = {
     option: {
         get: function(elem) {
             var val = elem.getAttribute('value');
-            return (_.exists(val) ? val : _text.get(elem)).trim();
+            return (exists(val) ? val : _text.get(elem)).trim();
         }
     },
 
@@ -123,7 +123,7 @@ var _getVal = function(elem) {
 };
 
 var _stringify = function(value) {
-    if (!_.exists(value)) {
+    if (!exists(value)) {
         return '';
     }
     return '' + value;

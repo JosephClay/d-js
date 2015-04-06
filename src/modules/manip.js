@@ -1,5 +1,6 @@
 var _         = require('underscore'),
-
+    
+    exists       = require('is/exists'),
     isElement    = require('is/element'),
     isHtml       = require('is/html'),
     isString     = require('is/string'),
@@ -74,7 +75,7 @@ var _empty = function(arr) {
         _.each(d, function(elem, idx) {
             var result = fn.call(elem, idx, elem.innerHTML);
 
-            if (!_.exists(result)) {
+            if (!exists(result)) {
 
                 // do nothing
 

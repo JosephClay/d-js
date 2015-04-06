@@ -1,5 +1,6 @@
 var _           = require('underscore'),
 
+    exists   = require('is/exists'),
     isObject = require('is/object'),
     isWindow = require('is/window'),
 
@@ -231,7 +232,7 @@ var _trigger = function(event, data, elem, onlyHandlers) {
     event.target = event.target || elem;
 
     // Clone any incoming data and prepend the event, creating the handler arg list
-    data = !_.exists(data) ? [event] : [event, data];
+    data = !exists(data) ? [event] : [event, data];
 
     // Allow special events to draw outside the lines
     var special = _special[type] || {};
@@ -497,8 +498,8 @@ var _keyHooks = {
     filter: function(event, original) {
 
         // Add which for key events
-        if (!_.exists(event.which)) {
-            event.which = _.exists(original.charCode) ? original.charCode : original.keyCode;
+        if (!exists(event.which)) {
+            event.which = exists(original.charCode) ? original.charCode : original.keyCode;
         }
 
         return event;
@@ -513,7 +514,7 @@ var _mouseHooks = {
             fromElement = original.fromElement;
 
         // Calculate pageX/Y if missing and clientX/Y available
-        if (!_.exists(event.pageX) && !_.exists(original.clientX)) {
+        if (!exists(event.pageX) && !exists(original.clientX)) {
             eventDoc = event.target.ownerDocument || document;
             doc = eventDoc.documentElement;
             body = eventDoc.body;
