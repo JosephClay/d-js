@@ -7,7 +7,8 @@ var gulp       = require('gulp'),
 gulp.task('d', function() {
     browserify('./src/index.js', {
             standalone: 'D',
-            debug: true
+            debug: true,
+            paths: [ './src' ]
         })
         .bundle()
         .pipe(source('d.js'))
@@ -19,7 +20,8 @@ gulp.task('d', function() {
 gulp.task('internal', function() {
     browserify('./src/internal-index.js', {
             standalone: 'D',
-            debug: true
+            debug: true,
+            paths: [ './src' ]
         })
         .bundle()
         .pipe(source('d.internal.js'))
@@ -29,9 +31,7 @@ gulp.task('internal', function() {
 });
 
 gulp.task('dev', function() {
-    gulp.watch('./src/**/*.js', function() {
-        gulp.start(['d', 'internal']);
-    });
+    gulp.watch('./src/**/*.js', ['d', 'internal']);
 });
 
 gulp.task('default', ['d', 'internal']);
