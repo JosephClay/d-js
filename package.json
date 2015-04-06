@@ -13,6 +13,7 @@
     "xaja-js": "0.0.9"
   },
   "devDependencies": {
+    "babelify": "^6.0.1",
     "browserify": "^9.0.7",
     "gulp": "^3.8.11",
     "gulp-util": "^3.0.4",

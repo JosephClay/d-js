@@ -2,6 +2,7 @@ var gulp       = require('gulp'),
 	log        = require('./build/utils/log'),
 	buffer     = require('vinyl-buffer'),
     source     = require('vinyl-source-stream'),
+    babelify   = require('babelify'),
     browserify = require('browserify');
 
 gulp.task('d', function() {
@@ -10,6 +11,7 @@ gulp.task('d', function() {
             debug: true,
             paths: [ './src' ]
         })
+        .transform(babelify)
         .bundle()
         .pipe(source('d.js'))
         .pipe(buffer())
@@ -23,6 +25,7 @@ gulp.task('internal', function() {
             debug: true,
             paths: [ './src' ]
         })
+        .transform(babelify)
         .bundle()
         .pipe(source('d.internal.js'))
         .pipe(buffer())
