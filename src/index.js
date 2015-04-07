@@ -25,7 +25,7 @@ var _ = require('underscore'),
     data        = require('./modules/data'),
     events      = require('./modules/event/api'),
     eventObj    = require('./modules/event/event'),
-    Fizzle      = require('./modules/Fizzle/Fizzle'),
+    Fizzle      = require('./modules/Fizzle'),
 
     xaja        = require('xaja-js');
 

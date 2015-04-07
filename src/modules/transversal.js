@@ -16,7 +16,7 @@ var _           = require('underscore'),
     _array      = require('./array'),
     _selectors  = require('./selectors'),
 
-    Fizzle      = require('./Fizzle/Fizzle');
+    Fizzle      = require('./Fizzle');
 
 var _getSiblings = function(context) {
         var idx    = 0,

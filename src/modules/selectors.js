@@ -13,7 +13,7 @@ var _        = require('underscore'),
     _array   = require('./array'),
     _order   = require('../order'),
 
-    Fizzle   = require('./Fizzle/Fizzle');
+    Fizzle   = require('./Fizzle');
 
 /**
  * @param {String|Function|Element|NodeList|Array|D} selector
