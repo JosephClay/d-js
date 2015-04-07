@@ -73,7 +73,7 @@ var _filter = function(arr, qualifier) {
 
     // Array qualifier
     return _.filter(arr, function(elem) {
-        return qualifier.indexOf(elem) > -1;
+        return _.contains(qualifier, elem);
     });
 };
 
@@ -113,7 +113,7 @@ module.exports = {
             if (isCollection(selector)) {
                 var arr = selector;
                 return _.any(this, function(elem) {
-                    if (_.indexOf(arr, elem) !== -1) { return true; }
+                    if (_.contains(arr, elem)) { return true; }
                 });
             }
 
@@ -151,7 +151,7 @@ module.exports = {
                 var arr = _.toArray(selector);
                 return D(
                     _.filter(this, function(elem) {
-                        if (_.indexOf(arr, elem) === -1) { return true; }
+                        if (!_.contains(arr, elem)) { return true; }
                     })
                 );
             }
@@ -205,7 +205,7 @@ module.exports = {
                 var arr = selector;
                 return D(
                     _.filter(this, function(elem) {
-                        if (_.indexOf(arr, elem) !== -1) { return true; }
+                        if (_.contains(arr, elem)) { return true; }
                     })
                 );
             }

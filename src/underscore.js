@@ -4,11 +4,10 @@ var exists      = require('is/exists'),
     isArray     = require('is/array'),
     isArrayLike = require('is/arrayLike'),
     isNodeList  = require('is/nodeList'),
-        
-    arrProto   = Array.prototype,
+    slice       = require('util/slice'),
+    arrProto    = Array.prototype,
 
     indexOf    = arrProto.indexOf,
-    slice      = arrProto.slice,
 
     isTruthy   = function(arg) { return !!arg; };
 
@@ -166,7 +165,7 @@ var _ = module.exports = {
         }
 
         if (isArray(obj)) {
-            return slice.call(obj);
+            return slice(obj);
         }
 
         var arr,
@@ -196,7 +195,7 @@ var _ = module.exports = {
             return arg.slice();
         }
         if (isArrayLike(arg)) {
-            return slice.call(arg);
+            return slice(arg);
         }
         return [ arg ];
     },
@@ -213,11 +212,8 @@ var _ = module.exports = {
         return obj;
     },
 
-    indexOf: function(arr, item) {
-        if (arr.indexOf === indexOf) {
-            return arr.indexOf(item);
-        }
-        return indexOf.call(arr, item);
+    contains: function(arr, item) {
+        return arr.indexOf(item) !== -1;
     },
 
     each: function(obj, iterator) {

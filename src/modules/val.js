@@ -77,7 +77,7 @@ var _valHooks = {
             while (idx--) {
                 option = options[idx];
 
-                if (_.indexOf(values, _valHooks.option.get(option)) >= 0) {
+                if (_.contains(values, _valHooks.option.get(option))) {
                     option.selected = optionSet = true;
                 } else {
                     option.selected = false;

@@ -1,21 +1,9 @@
 var _      = require('underscore'),
     exists = require('is/exists'),
+    slice = require('util/slice'),
     _order = require('../order');
 
-var _slice = (function(slice) {
-        return function(arr, start, end) {
-            // Exit early for empty array
-            if (!arr || !arr.length) { return []; }
-
-            // End, naturally, has to be higher than 0 to matter,
-            // so a simple existence check will do
-            if (end) { return slice.call(arr, start, end); }
-
-            return slice.call(arr, start || 0);
-        };
-    }([].slice)),
-
-    _unique = function(results) {
+var _unique = function(results) {
         var hasDuplicates = _order.sort(results);
         if (!hasDuplicates) { return results; }
 
@@ -81,7 +69,6 @@ var _slice = (function(slice) {
     };
 
 module.exports = {
-    slice: _slice,
     elementSort: _order.sort,
     unique: _unique,
     each: _each,
@@ -108,7 +95,7 @@ module.exports = {
         },
 
         slice: function(start, end) {
-            return D(_slice(this.toArray(), start, end));
+            return D(slice(this.toArray(), start, end));
         },
 
         first: function() {
@@ -120,7 +107,7 @@ module.exports = {
         },
 
         toArray: function() {
-            return _slice(this);
+            return slice(this);
         },
 
         map: function(iterator) {

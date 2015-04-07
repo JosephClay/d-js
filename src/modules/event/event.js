@@ -11,7 +11,7 @@ var _           = require('underscore'),
     COMMENT     = require('NODE_TYPE/COMMENT'),
     _regex      = require('../../regex'),
     _utils      = require('../../utils'),
-    _array      = require('../array'),
+    slice       = require('util/slice'),
     _data       = require('../data'),
     _eventUtils = require('./eventUtils'),
 
@@ -208,13 +208,13 @@ var _trigger = function(event, data, elem, onlyHandlers) {
         return;
     }
 
-    if (type.indexOf('.') >= 0) {
+    if (_.contains(type, '.')) {
         // Namespaced trigger; create a regexp to match event type in handle()
         namespaces = type.split('.');
         type = namespaces.shift();
         namespaces.sort();
     }
-    var ontype = type.indexOf(':') < 0 && 'on' + type;
+    var ontype = !_.contains(type, ':') && 'on' + type;
 
     // Caller can pass in a Event object, Object, or just an event type string
     event = event[_eventUtils.id] ?
@@ -334,7 +334,7 @@ var _dispatch = function(event) {
     // Make a writable Event from the native event object
     event = _fix(event);
 
-    var args = _array.slice(arguments),
+    var args = slice(arguments),
         handlers = (_data.get(this, _EVENT_KEY) || {})[event.type] || [],
         special = _special[event.type] || {};
 
