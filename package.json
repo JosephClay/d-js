@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "private": true,
   "directories": {
-    "test": "tests"
+    "test": "npm install && http-server ./"
   },
   "dependencies": {
     "lodash": "^3.6.0",
@@ -17,6 +17,7 @@
     "browserify": "^9.0.7",
     "gulp": "^3.8.11",
     "gulp-util": "^3.0.4",
+    "http-server": "^0.8.0",
     "through2": "^0.6.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
