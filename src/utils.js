@@ -11,7 +11,7 @@ var _             = require('underscore'),
 
 // IE9+, modern browsers
 if (SUPPORTS.detachedCreateElement) {
-    _flagParsedNode = _.noop;
+    _flagParsedNode = function() {};
     _isParsedNode   = _returnFalse;
 }
 // IE8

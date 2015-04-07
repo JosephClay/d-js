@@ -2,17 +2,16 @@ var exists     = require('is/exists'),
     isNodeList = require('is/nodeList'),
     isElement  = require('is/element'),
 
-    _GET_ELEMENT_BY_ID          = 'getElementById',
-    _GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
-    _GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
-    _QUERY_SELECTOR_ALL         = 'querySelectorAll',
+    GET_ELEMENT_BY_ID          = 'getElementById',
+    GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
+    GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
+    QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
-    _SUPPORTS  = require('../../../supports'),
+    SUPPORTS  = require('../../../supports'),
 
-    _cache = require('cache'),
     _regex = require('../../../regex'),
 
-    _querySelectorCache = _cache(),
+    _querySelectorCache = require('cache')(),
 
     _isMatch = require('../selector/selector-match');
 
@@ -21,13 +20,13 @@ var _determineMethod = function(selector) {
         if (method) { return method; }
 
         if (_regex.selector.isStrictId(selector)) {
-            method = _GET_ELEMENT_BY_ID;
+            method = GET_ELEMENT_BY_ID;
         } else if (_regex.selector.isClass(selector)) {
-            method = _GET_ELEMENTS_BY_CLASS_NAME;
+            method = GET_ELEMENTS_BY_CLASS_NAME;
         } else if (_regex.selector.isTag(selector)) {
-            method = _GET_ELEMENTS_BY_TAG_NAME;
+            method = GET_ELEMENTS_BY_TAG_NAME;
         } else {
-            method = _QUERY_SELECTOR_ALL;
+            method = QUERY_SELECTOR_ALL;
         }
 
         _querySelectorCache.set(selector, method);
@@ -93,11 +92,11 @@ var _determineMethod = function(selector) {
         var method   = self.method,
             selector = self.selector;
 
-        if (_SUPPORTS.getElementsByClassName) {
+        if (SUPPORTS.getElementsByClassName) {
             // Class search, don't start with '.'
             selector = selector.substr(1);
         } else {
-            method = _QUERY_SELECTOR_ALL;
+            method = QUERY_SELECTOR_ALL;
         }
 
         var selection = context[method](selector);
@@ -137,13 +136,13 @@ var _determineMethod = function(selector) {
 var Selector = function(str) {
     var selector                = str.trim(),
         isChildOrSiblingSelect  = (selector[0] === '>' || selector[0] === '+'),
-        method                  = isChildOrSiblingSelect ? _QUERY_SELECTOR_ALL : _determineMethod(selector);
+        method                  = isChildOrSiblingSelect ? QUERY_SELECTOR_ALL : _determineMethod(selector);
 
     this.str                    = str;
     this.selector               = selector;
     this.isChildOrSiblingSelect = isChildOrSiblingSelect;
-    this.isIdSearch             = method === _GET_ELEMENT_BY_ID;
-    this.isClassSearch          = !this.isIdSearch && method === _GET_ELEMENTS_BY_CLASS_NAME;
+    this.isIdSearch             = method === GET_ELEMENT_BY_ID;
+    this.isClassSearch          = !this.isIdSearch && method === GET_ELEMENTS_BY_CLASS_NAME;
     this.method                 = method;
 };
 

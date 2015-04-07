@@ -43,6 +43,7 @@ var Init = D.prototype.init = function(selector, attrs) {
     // element or window (documents have a nodeType)
     if (selector.nodeType || selector === window) {
         this[0] = selector;
+        this.length = 1;
         return this;
     }
 
