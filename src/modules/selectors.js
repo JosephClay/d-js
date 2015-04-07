@@ -16,8 +16,7 @@ var _        = require('underscore'),
     Fizzle   = require('./Fizzle/Fizzle');
 
 var _find = function(selector, isNew) {
-    var query = Fizzle.query(selector);
-    return query.exec(this, isNew);
+    return Fizzle.query(selector).exec(this, isNew);
 };
 
 /**
@@ -36,8 +35,8 @@ var _findWithin = function(selector, context) {
         // Convert selector to an array of elements
         selector = isElement(selector) ? [ selector ] : selector;
 
-        descendants = _.flatten(_.map(context, function(elem) { return elem.querySelectorAll('*'); }));
-        results = _.filter(descendants, function(descendant) { return selector.indexOf(descendant) > -1; });
+        descendants = _.flatten(_.map(context, (elem) => elem.querySelectorAll('*')));
+        results = _.filter(descendants, (descendant) => _.contains(selector, descendant));
     } else {
         query = Fizzle.query(selector);
         results = query.exec(context);
@@ -57,24 +56,18 @@ var _filter = function(arr, qualifier) {
 
     // Element
     if (qualifier.nodeType) {
-        return _.filter(arr, function(elem) {
-            return (elem === qualifier);
-        });
+        return _.filter(arr, (elem) => elem === qualifier);
     }
 
     // Selector
     if (isString(qualifier)) {
 
         var is = Fizzle.is(qualifier);
-        return _.filter(arr, function(elem) {
-            return is.match(elem);
-        });
+        return _.filter(arr, (elem) => is.match(elem));
     }
 
     // Array qualifier
-    return _.filter(arr, function(elem) {
-        return _.contains(qualifier, elem);
-    });
+    return _.filter(arr, (elem) => _.contains(qualifier, elem));
 };
 
 module.exports = {
@@ -106,31 +99,22 @@ module.exports = {
             if (isString(selector)) {
                 if (selector === '') { return false; }
 
-                var is = Fizzle.is(selector);
-                return is.any(this);
+                return Fizzle.is(selector).any(this);
             }
 
             if (isCollection(selector)) {
                 var arr = selector;
-                return _.any(this, function(elem) {
-                    if (_.contains(arr, elem)) { return true; }
-                });
+                return _.any(this, (elem) => _.contains(arr, elem));
             }
 
             if (isFunction(selector)) {
                 var iterator = selector;
-                return _.any(this, function(elem, idx) {
-                    if (iterator.call(elem, idx)) {
-                        return true;
-                    }
-                });
+                return _.any(this, (elem, idx) => !!iterator.call(elem, idx));
             }
 
             if (isElement(selector)) {
                 var context = selector;
-                return _.any(this, function(elem) {
-                    return (elem === context);
-                });
+                return _.any(this, (elem) => elem === context);
             }
 
             // fallback
@@ -150,27 +134,21 @@ module.exports = {
             if (isCollection(selector)) {
                 var arr = _.toArray(selector);
                 return D(
-                    _.filter(this, function(elem) {
-                        if (!_.contains(arr, elem)) { return true; }
-                    })
+                    _.filter(this, (elem) => !_.contains(arr, elem))
                 );
             }
 
             if (isFunction(selector)) {
                 var iterator = selector;
                 return D(
-                    _.filter(this, function(elem, idx) {
-                        return !iterator.call(elem, idx);
-                    })
+                    _.filter(this, (elem, idx) => !iterator.call(elem, idx))
                 );
             }
 
             if (isElement(selector)) {
                 var context = selector;
                 return D(
-                    _.filter(this, function(elem) {
-                        return (elem !== context);
-                    })
+                    _.filter(this, (elem) => elem !== context)
                 );
             }
 
@@ -195,27 +173,21 @@ module.exports = {
 
                 var is = Fizzle.is(selector);
                 return D(
-                    _.filter(this, function(elem) {
-                        return is.match(elem);
-                    })
+                    _.filter(this, (elem) => is.match(elem))
                 );
             }
 
             if (isCollection(selector)) {
                 var arr = selector;
                 return D(
-                    _.filter(this, function(elem) {
-                        if (_.contains(arr, elem)) { return true; }
-                    })
+                    _.filter(this, (elem) => _.contains(arr, elem))
                 );
             }
 
             if (isElement(selector)) {
                 var context = selector;
                 return D(
-                    _.filter(this, function(elem) {
-                        return (elem === context);
-                    })
+                    _.filter(this, (elem) => elem === context)
                 );
             }
         
@@ -223,9 +195,7 @@ module.exports = {
             if (isFunction(selector)) {
                 var checker = selector;
                 return D(
-                    _.filter(this, function(elem, idx) {
-                        return checker.call(elem, elem, idx);
-                    })
+                    _.filter(this, (elem, idx) => checker.call(elem, elem, idx))
                 );
             }
 
