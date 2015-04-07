@@ -1,5 +1,6 @@
 var _           = require('underscore'),
 
+    split    = require('util/split'),
     exists   = require('is/exists'),
     isObject = require('is/object'),
     isWindow = require('is/window'),
@@ -489,12 +490,12 @@ var _fix = function(event) {
 };
 
 // Includes some event props shared by KeyEvent and MouseEvent
-var _props = _.splt('altKey|bubbles|cancelable|ctrlKey|currentTarget|eventPhase|metaKey|relatedTarget|shiftKey|target|timeStamp|view|which');
+var _props = split('altKey|bubbles|cancelable|ctrlKey|currentTarget|eventPhase|metaKey|relatedTarget|shiftKey|target|timeStamp|view|which');
 
 var _fixHooks = {};
 
 var _keyHooks = {
-    props: _.splt('char|charCode|key|keyCode'),
+    props: split('char|charCode|key|keyCode'),
     filter: function(event, original) {
 
         // Add which for key events
@@ -507,7 +508,7 @@ var _keyHooks = {
 };
 
 var _mouseHooks = {
-    props: _.splt('button|buttons|clientX|clientY|fromElement|offsetX|offsetY|pageX|pageY|screenX|screenY|toElement'),
+    props: split('button|buttons|clientX|clientY|fromElement|offsetX|offsetY|pageX|pageY|screenX|screenY|toElement'),
     filter: function(event, original) {
         var body, eventDoc, doc,
             button = original.button,

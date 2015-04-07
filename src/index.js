@@ -1,5 +1,6 @@
 var _ = require('underscore'),
 
+    split      = require('util/split'),
     isArray    = require('is/array'),
     isHtml     = require('is/html'),
     isString   = require('is/string'),
@@ -112,7 +113,7 @@ _.extend(D,
 var arrayProto = (function(proto, obj) {
 
     _.each(
-        _.splt('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter'),
+        split('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter'),
         function(key) {
             obj[key] = proto[key];
         }

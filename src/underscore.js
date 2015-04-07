@@ -248,12 +248,6 @@ var _ = module.exports = {
         var name;
         for (name in obj) { return false; }
         return true;
-    },
-
-    // Breaks even on arrays with 3 items. 3 or more
-    // items starts saving space
-    splt: function(str, delimiter) {
-        return str.split(delimiter || '|');
     }
 
 };

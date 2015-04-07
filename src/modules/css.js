@@ -1,5 +1,6 @@
 var _          = require('underscore'),
     toPx       = require('util/toPx'),
+    split      = require('util/split'),
     exists     = require('is/exists'),
     isAttached = require('is/attached'),
     isElement  = require('is/element'),
@@ -173,7 +174,7 @@ var _getWidthOrHeight = function(elem, name) {
     );
 };
 
-var _CSS_EXPAND = _.splt('Top|Right|Bottom|Left');
+var _CSS_EXPAND = split('Top|Right|Bottom|Left');
 var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     var val = 0,
         // If we already have the right measurement, avoid augmentation
