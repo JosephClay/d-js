@@ -2,8 +2,8 @@ var _          = require('underscore'),
 
     isString   = require('is/string'),
     isFunction = require('is/function'),
-
-    SUPPORTS  = require('SUPPORTS'),
+    parseNum   = require('util/parseInt'),
+    SUPPORTS   = require('SUPPORTS'),
     TEXT       = require('NODE_TYPE/TEXT'),
     COMMENT    = require('NODE_TYPE/COMMENT'),
     ATTRIBUTE  = require('NODE_TYPE/ATTRIBUTE'),
@@ -65,7 +65,7 @@ var _propHooks = {
             // Use proper attribute retrieval(#12072)
             var tabindex = elem.getAttribute('tabindex');
 
-            if (tabindex) { return _.parseInt(tabindex); }
+            if (tabindex) { return parseNum(tabindex); }
 
             var nodeName = elem.nodeName;
             return (_regex.type.isFocusable(nodeName) || (_regex.type.isClickable(nodeName) && elem.href)) ? 0 : -1;

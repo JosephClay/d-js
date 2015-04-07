@@ -11,6 +11,7 @@ var _          = require('underscore'),
     isBoolean  = require('is/boolean'),
     isObject   = require('is/object'),
     isArray    = require('is/array'),
+    parseNum   = require('util/parseInt'),
 
     SUPPORTS    = require('SUPPORTS'),
     DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
@@ -195,29 +196,29 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
 
         // both box models exclude margin, so add it if we want it
         if (extraIsMargin) {
-            val += _.parseInt(styles[extra + type]) || 0;
+            val += parseNum(styles[extra + type]) || 0;
         }
 
         if (isBorderBox) {
 
             // border-box includes padding, so remove it if we want content
             if (extraIsContent) {
-                val -= _.parseInt(styles['padding' + type]) || 0;
+                val -= parseNum(styles['padding' + type]) || 0;
             }
 
             // at this point, extra isn't border nor margin, so remove border
             if (!extraIsMargin) {
-                val -= _.parseInt(styles['border' + type + 'Width']) || 0;
+                val -= parseNum(styles['border' + type + 'Width']) || 0;
             }
 
         } else {
 
             // at this point, extra isn't content, so add padding
-            val += _.parseInt(styles['padding' + type]) || 0;
+            val += parseNum(styles['padding' + type]) || 0;
 
             // at this point, extra isn't content nor padding, so add border
             if (extraIsPadding) {
-                val += _.parseInt(styles['border' + type]) || 0;
+                val += parseNum(styles['border' + type]) || 0;
             }
         }
     }

@@ -8,10 +8,6 @@ var exists      = require('is/exists'),
     isTruthy   = function(arg) { return !!arg; };
 
 var _ = module.exports = {
-    parseInt: function(num) {
-        return parseInt(num, 10);
-    },
-
     coerceToNum: function(val) {
                 // Its a number! || 0 to avoid NaN (as NaN's a number)
         return isNumber(val) ? (val || 0) :
