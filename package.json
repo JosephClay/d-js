@@ -4,8 +4,9 @@
   "description": "jQuery-esque DOM maniplation library",
   "main": "src/index.js",
   "private": true,
-  "directories": {
-    "test": "npm install && http-server ./"
+  "scripts": {
+    "start": "npm install && gulp && gulp dev",
+    "test": "npm install && http-server ./ -o"
   },
   "dependencies": {
     "lodash": "^3.6.0",
@@ -22,10 +23,6 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.1.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cls && gulp && gulp dev"
   },
   "repository": {
     "type": "git",
