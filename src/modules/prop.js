@@ -3,7 +3,7 @@ var _          = require('underscore'),
     isString   = require('is/string'),
     isFunction = require('is/function'),
 
-    _SUPPORTS  = require('../supports'),
+    SUPPORTS  = require('SUPPORTS'),
     TEXT       = require('NODE_TYPE/TEXT'),
     COMMENT    = require('NODE_TYPE/COMMENT'),
     ATTRIBUTE  = require('NODE_TYPE/ATTRIBUTE'),
@@ -26,13 +26,13 @@ var _propFix = {
 };
 
 var _propHooks = {
-    src: (_SUPPORTS.hrefNormalized) ? {} : {
+    src: (SUPPORTS.hrefNormalized) ? {} : {
         get: function(elem) {
             return elem.getAttribute('src', 4);
         }
     },
 
-    href: (_SUPPORTS.hrefNormalized) ? {} : {
+    href: (SUPPORTS.hrefNormalized) ? {} : {
         get: function(elem) {
             return elem.getAttribute('href', 4);
         }
@@ -41,7 +41,7 @@ var _propHooks = {
     // Support: Safari, IE9+
     // mis-reports the default selected property of an option
     // Accessing the parent's selectedIndex property fixes it
-    selected: (_SUPPORTS.optSelected) ? {} : {
+    selected: (SUPPORTS.optSelected) ? {} : {
         get: function( elem ) {
             var parent = elem.parentNode,
                 fix;

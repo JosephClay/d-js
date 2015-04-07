@@ -2,13 +2,11 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-var _cache         = require('cache'),
-    _tokenCache    = _cache(),
-    _subqueryCache = _cache(),
-    _boolAttrCache = _cache(),
+var _tokenCache    = require('cache')(),
+    _subqueryCache = require('cache')(),
 
     _error = function(selector) {
-        console.error('d-js: Invalid query selector (caught) "'+ selector +'"');
+        if (console && console.error) { console.error('d-js: Invalid query selector (caught) "'+ selector +'"'); }
     };
 
 var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
@@ -162,10 +160,8 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
  * @private
  */
 var _tokenize = function(selector, parseOnly) {
-    var cached = _tokenCache.get(selector);
-
-    if (cached) {
-        return parseOnly ? 0 : cached.slice(0);
+    if (_tokenCache.has(selector)) {
+        return parseOnly ? 0 : _tokenCache.get(selector).slice(0);
     }
 
     var /** @type {String} */
@@ -252,8 +248,6 @@ module.exports = {
     },
 
     isBooleanAttribute: function(name) {
-        return _boolAttrCache.has(name) ? 
-            _boolAttrCache.get(name) : 
-            _boolAttrCache.put(name, () => _matchExpr.bool.test(name));
+        return _matchExpr.bool.test(name);
     }
 };

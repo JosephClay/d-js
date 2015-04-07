@@ -6,7 +6,7 @@ var _          = require('underscore'),
     isNumber   = require('is/number'),
     isFunction = require('is/function'),
 
-    SUPPORTS  = require('../supports'),
+    SUPPORTS  = require('SUPPORTS'),
     ELEMENT = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),

@@ -1,4 +1,4 @@
-var _SUPPORTS = require('../../../supports');
+var SUPPORTS = require('SUPPORTS');
 
 var proxy = {
     // DOC: Document these selectors
@@ -21,7 +21,7 @@ var proxy = {
 };
 
 // IE8
-if (!_SUPPORTS.disabledSelector) {
+if (!SUPPORTS.disabledSelector) {
     proxy[':disabled'] = '[disabled]';
 
     // DOC: No good way to polyfill this.
@@ -29,7 +29,7 @@ if (!_SUPPORTS.disabledSelector) {
 }
 
 // IE8
-if (!_SUPPORTS.checkedSelector) {
+if (!SUPPORTS.checkedSelector) {
     proxy[':checked']  = '[checked]';
 }
 

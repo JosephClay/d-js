@@ -1,4 +1,4 @@
-var _SUPPORTS           = require('../../../supports'),
+var SUPPORTS            = require('SUPPORTS'),
 
     _ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?(?:=\s*(['"]?)(.*?[^\\]|[^\\]*))?\1\s*\]/g,
     _PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
@@ -48,7 +48,7 @@ var _captureReplace = function(str, positions) {
     });
 };
 
-var _booleanSelectorReplace = _SUPPORTS.selectedSelector
+var _booleanSelectorReplace = SUPPORTS.selectedSelector
     // IE10+, modern browsers
     ? function(str) { return str; }
     // IE8-9

@@ -4,7 +4,7 @@ var _          = require('underscore'),
     isFunction = require('is/function'),
     isString   = require('is/string'),
     
-    _SUPPORTS  = require('../supports'),
+    SUPPORTS  = require('SUPPORTS'),
     ELEMENT = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),
@@ -50,7 +50,7 @@ var _isDataKey = function(key) {
         return keys;
     };
 
-var _hasAttr = _SUPPORTS.inputValueAttr
+var _hasAttr = SUPPORTS.inputValueAttr
     // IE9+, modern browsers
     ? function(elem, attr) { return elem.hasAttribute(attr); }
     // IE8
@@ -103,7 +103,7 @@ var _hooks = {
 
         type: {
             set: function(elem, value) {
-                if (!_SUPPORTS.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
+                if (!SUPPORTS.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
                     // Setting the type on a radio button after the value resets the value in IE6-9
                     // Reset value to default in case type is set after value during creation
                     var oldValue = elem.value;
@@ -127,7 +127,7 @@ var _hooks = {
                     val = elem.defaultValue;
                 }
                 // IE8
-                if (!_SUPPORTS.buttonValue && val === '' && _utils.isNodeName(elem, 'button')) {
+                if (!SUPPORTS.buttonValue && val === '' && _utils.isNodeName(elem, 'button')) {
                     val = elem.getAttribute('value');
                 }
                 return _utils.normalizeNewlines(val);

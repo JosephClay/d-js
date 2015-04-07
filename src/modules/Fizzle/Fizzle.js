@@ -1,8 +1,6 @@
-var _ = require('underscore'),
-
-    cache      = require('cache'),
-    queryCache = cache(),
-    isCache    = cache(),
+var _          = require('underscore'),
+    queryCache = require('cache')(),
+    isCache    = require('cache')(),
 
     Selector = require('./constructs/Selector'),
     Query    = require('./constructs/Query'),

@@ -1,4 +1,4 @@
-var SUPPORTS      = require('./supports'),
+var SUPPORTS      = require('SUPPORTS'),
 
     _flagParsedNode,
     _isParsedNode,

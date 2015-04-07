@@ -7,7 +7,7 @@ var exists     = require('is/exists'),
     GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
     QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
-    SUPPORTS  = require('../../../supports'),
+    SUPPORTS = require('SUPPORTS'),
 
     _regex = require('../../../regex'),
 
