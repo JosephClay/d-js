@@ -1,5 +1,5 @@
-var _            = require('underscore'),
-
+var _          = require('underscore'),
+    toPx       = require('util/toPx'),
     exists     = require('is/exists'),
     isAttached = require('is/attached'),
     isElement  = require('is/element'),
@@ -101,7 +101,7 @@ var _hide = function(elem) {
             return _getWidthOrHeight(elem, 'width');
         },
         set: function(elem, val) {
-            elem.style.width = isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
+            elem.style.width = isNumber(val) ? toPx(val < 0 ? 0 : val) : val;
         }
     },
 
@@ -130,7 +130,7 @@ var _hide = function(elem) {
         },
 
         set: function(elem, val) {
-            elem.style.height = isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
+            elem.style.height = isNumber(val) ? toPx(val < 0 ? 0 : val) : val;
         }
     };
 
@@ -162,7 +162,7 @@ var _getWidthOrHeight = function(elem, name) {
     }
 
     // use the active box-sizing model to add/subtract irrelevant styles
-    return _.toPx(
+    return toPx(
         val + _augmentBorderBoxWidthOrHeight(
             elem,
             name,
@@ -262,7 +262,7 @@ var _curCss = function(elem, name, computed) {
             if (rsLeft) { rs.left = elem.currentStyle.left; }
 
             style.left = (name === 'fontSize') ? '1em' : ret;
-            ret = _.toPx(style.pixelLeft);
+            ret = toPx(style.pixelLeft);
 
             // Revert the changed values
             style.left = left;
@@ -328,7 +328,7 @@ var _setStyle = function(elem, name, value) {
         return _hooks[name].set(elem, value);
     }
 
-    elem.style[name] = (value === +value) ? _.toPx(value) : value;
+    elem.style[name] = (value === +value) ? toPx(value) : value;
 };
 
 var _getStyle = function(elem, name) {

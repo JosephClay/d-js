@@ -26,10 +26,6 @@ var _ = module.exports = {
                0;
     },
 
-    toPx: function(num) {
-        return num + 'px';
-    },
-
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
         var result = [];

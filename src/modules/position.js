@@ -1,5 +1,6 @@
 var _        = require('underscore'),
 
+    toPx       = require('util/toPx'),
     exists     = require('is/exists'),
     isAttached = require('is/attached'),
     isFunction = require('is/function'),
@@ -55,8 +56,8 @@ var _setOffset = function(elem, idx, pos) {
     if (exists(pos.top))  { props.top  = (pos.top  - curOffset.top)  + curTop;  }
     if (exists(pos.left)) { props.left = (pos.left - curOffset.left) + curLeft; }
 
-    elem.style.top  = _.toPx(props.top);
-    elem.style.left = _.toPx(props.left);
+    elem.style.top  = toPx(props.top);
+    elem.style.left = toPx(props.left);
 };
 
 module.exports = {
