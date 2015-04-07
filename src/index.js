@@ -24,8 +24,6 @@ var _ = require('underscore'),
     data        = require('./modules/data'),
     events      = require('./modules/event/api'),
     eventObj    = require('./modules/event/event'),
-    deferred    = require('./modules/Deferred/Deferred'),
-    when        = require('./modules/Deferred/when'),
 
     xaja        = require('xaja-js');
 
@@ -82,8 +80,6 @@ var _hasMoreConflict = false,
 _.extend(D,
     parser.D,
     data.D,
-    deferred.D,
-    when.D,
     eventObj.D,
     xaja, // proxy ajax to xaja
 {
