@@ -25,6 +25,7 @@ var _ = require('underscore'),
     data        = require('./modules/data'),
     events      = require('./modules/event/api'),
     eventObj    = require('./modules/event/event'),
+    Fizzle      = require('./modules/Fizzle/Fizzle'),
 
     xaja        = require('xaja-js');
 
@@ -56,7 +57,7 @@ var Init = D.prototype.init = function(selector, attrs) {
     // String
     if (isString(selector)) {
         // Selector: perform a find without creating a new D
-        utils.merge(this, selectors.find(selector, true));
+        utils.merge(this, Fizzle.query(selector).exec(this, true));
         return this;
     }
 

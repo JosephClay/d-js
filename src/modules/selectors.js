@@ -15,10 +15,6 @@ var _        = require('underscore'),
 
     Fizzle   = require('./Fizzle/Fizzle');
 
-var _find = function(selector, isNew) {
-    return Fizzle.query(selector).exec(this, isNew);
-};
-
 /**
  * @param {String|Function|Element|NodeList|Array|D} selector
  * @param {D} context
@@ -71,7 +67,6 @@ var _filter = function(arr, qualifier) {
 };
 
 module.exports = {
-    find: _find,
     filter: _filter,
 
     fn: {
