@@ -7,16 +7,13 @@ var exists     = require('is/exists'),
     GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
     QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
-    SUPPORTS = require('SUPPORTS'),
-
-    _regex = require('../../../regex'),
-
-    querySelectorCache = require('cache')(),
-
-    _isMatch = require('../selector/selector-match');
+    SUPPORTS      = require('SUPPORTS'),
+    _regex        = require('../../../regex'),
+    selectorCache = require('cache')(),
+    matches       = require('matchesSelector');
 
 var _determineMethod = function(selector) {
-        var method = querySelectorCache.get(selector);
+        var method = selectorCache.get(selector);
         if (method) { return method; }
 
         if (_regex.selector.isStrictId(selector)) {
@@ -29,7 +26,7 @@ var _determineMethod = function(selector) {
             method = QUERY_SELECTOR_ALL;
         }
 
-        querySelectorCache.set(selector, method);
+        selectorCache.set(selector, method);
         return method;
     },
 
@@ -153,7 +150,7 @@ Selector.prototype = {
         // child or sibling
         if (this.isChildOrSiblingSelect) { return false; }
 
-        return _isMatch(context, this.selector);
+        return matches(context, this.selector);
     },
 
     exec: function(context) {

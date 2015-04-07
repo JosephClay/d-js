@@ -22,8 +22,7 @@ var _ = require('underscore'),
     position    = require('./modules/position'),
     classes     = require('./modules/classes'),
     data        = require('./modules/data'),
-    events      = require('./modules/event/api'),
-    eventObj    = require('./modules/event/event'),
+    events      = require('./modules/events'),
     Fizzle      = require('./modules/Fizzle'),
 
     xaja        = require('xaja-js');
@@ -81,7 +80,6 @@ var _hasMoreConflict = false,
 _.extend(D,
     parser.D,
     data.D,
-    eventObj.D,
     xaja, // proxy ajax to xaja
 {
     each:    array.each,

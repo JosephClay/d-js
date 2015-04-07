@@ -9,6 +9,7 @@
     "test": "npm install && http-server ./ -o"
   },
   "dependencies": {
+    "crossvent": "^1.3.1",
     "lodash": "^3.6.0",
     "xaja-js": "0.0.9"
   },
