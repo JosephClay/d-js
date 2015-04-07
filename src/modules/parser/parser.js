@@ -1,19 +1,20 @@
 var _regex = require('../../regex'),
-    _utils = require('../../utils'),
-    _hooks = require('./hooks'),
 
-    _MAX_SINGLE_TAG_LENGTH = 30;
+    MAX_SINGLE_TAG_LENGTH = 30;
+
+var parseString = function(parentTagName, htmlStr) {
+    var parent = document.createElement(parentTagName);
+    parent.innerHTML = htmlStr;
+    return parent;
+};
 
 var _parseSingleTag = function(htmlStr) {
-    if (htmlStr.length > _MAX_SINGLE_TAG_LENGTH) { return null; }
+    if (htmlStr.length > MAX_SINGLE_TAG_LENGTH) { return null; }
 
     var singleTagMatch = _regex.singleTagMatch(htmlStr);
     if (!singleTagMatch) { return null; }
 
     var elem = document.createElement(singleTagMatch[1]);
-
-    // IE8
-    _utils.flagParsedNode(elem);
 
     return [ elem ];
 };
@@ -23,8 +24,7 @@ var _parse = function(htmlStr) {
     if (singleTag) { return singleTag; }
 
     var parentTagName = _regex.getParentTagName(htmlStr),
-        hook          = _hooks[parentTagName] || _hooks.dflt,
-        parent        = hook(parentTagName, htmlStr);
+        parent        = parseString(parentTagName, htmlStr);
 
     var child,
         idx = parent.children.length,
@@ -33,9 +33,6 @@ var _parse = function(htmlStr) {
     while (idx--) {
         child = parent.children[idx];
         parent.removeChild(child);
-
-        // IE8
-        _utils.flagParsedNode(child);
 
         // http://jsperf.com/js-push-vs-index11/2
         arr[idx] = child;
