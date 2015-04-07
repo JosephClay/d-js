@@ -130,8 +130,7 @@ module.exports = {
      * @returns {Boolean} true if node `a` contains node `b`; otherwise false.
      */
     contains: function(a, b) {
-        var aDown = a.nodeType === DOCUMENT ? a.documentElement : a,
-            bUp   = isAttached(b) ? b.parentNode : null;
+        var bUp   = isAttached(b) ? b.parentNode : null;
 
         if (a === bUp) {
             return true;
@@ -141,10 +140,6 @@ module.exports = {
             // Modern browsers (IE9+)
             if (a.compareDocumentPosition) {
                 return _isNode(bUp, CONTAINED_BY, a);
-            }
-            // IE8
-            if (aDown.contains) {
-                return aDown.contains(bUp);
             }
         }
 

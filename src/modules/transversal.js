@@ -305,7 +305,7 @@ module.exports = {
             var attached         = isAttached(first),
                 isParentFragment = parent.nodeType === DOCUMENT_FRAGMENT;
 
-            if (!attached && (!isParentFragment || _utils.isParsedNode(first))) {
+            if (!attached && !isParentFragment) {
                 return -1;
             }
 
