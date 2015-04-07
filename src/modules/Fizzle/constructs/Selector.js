@@ -11,12 +11,12 @@ var exists     = require('is/exists'),
 
     _regex = require('../../../regex'),
 
-    _querySelectorCache = require('cache')(),
+    querySelectorCache = require('cache')(),
 
     _isMatch = require('../selector/selector-match');
 
 var _determineMethod = function(selector) {
-        var method = _querySelectorCache.get(selector);
+        var method = querySelectorCache.get(selector);
         if (method) { return method; }
 
         if (_regex.selector.isStrictId(selector)) {
@@ -29,7 +29,7 @@ var _determineMethod = function(selector) {
             method = QUERY_SELECTOR_ALL;
         }
 
-        _querySelectorCache.set(selector, method);
+        querySelectorCache.set(selector, method);
         return method;
     },
 
@@ -62,6 +62,10 @@ var _determineMethod = function(selector) {
         return isElement(selection) || !selection.length ? [selection] : _fromDomArrayToArray(selection);
     },
 
+    _tailorChildSelector = function(id, selector) {
+        return '#' + id + ' ' + selector;
+    },
+
     _childOrSiblingQuery = function(context, self) {
         // Child select - needs special help so that "> div" doesn't break
         var method    = self.method,
@@ -77,7 +81,7 @@ var _determineMethod = function(selector) {
             idApplied = true;
         }
 
-        selector = self._tailorChildSelector(idApplied ? newId : id, selector);
+        selector = _tailorChildSelector(idApplied ? newId : id, selector);
 
         var selection = document[method](selector);
 
@@ -133,9 +137,9 @@ var _determineMethod = function(selector) {
         return _defaultQuery;
     };
 
-var Selector = function(str) {
+var Selector = module.exports = function(str) {
     var selector                = str.trim(),
-        isChildOrSiblingSelect  = (selector[0] === '>' || selector[0] === '+'),
+        isChildOrSiblingSelect  = selector[0] === '>' || selector[0] === '+',
         method                  = isChildOrSiblingSelect ? QUERY_SELECTOR_ALL : _determineMethod(selector);
 
     this.str                    = str;
@@ -148,10 +152,6 @@ var Selector = function(str) {
 
 Selector.prototype = {
 
-    _tailorChildSelector: function(id, selector) {
-        return '#' + id + ' ' + selector;
-    },
-
     match: function(context) {
         // No neeed to check, a match will fail if it's
         // child or sibling
@@ -163,14 +163,9 @@ Selector.prototype = {
     exec: function(context) {
         var query = _determineQuery(this);
 
-        if (!context || context === document) {
-            return query(document, this);
-        }
-
         // these are the types we're expecting to fall through
         // isElement(context) || isNodeList(context) || isCollection(context)
-        return query(context, this);
+        // if no context is given, use document
+        return query(context || document, this);
     }
 };
-
-module.exports = Selector;

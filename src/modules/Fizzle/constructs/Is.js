@@ -16,17 +16,15 @@ Is.prototype = {
     },
 
     any: function(arr) {
-        var self = this;
-        return _.any(arr, function(elem) {
-            if (self.match(elem)) { return true; }
-        });
+        return _.any(arr, (elem) =>
+            this.match(elem) ? true : false
+        );
     },
 
     not: function(arr) {
-        var self = this;
-        return _.filter(arr, function(elem) {
-            if (!self.match(elem)) { return true; }
-        });
+        return _.filter(arr, (elem) =>
+            !this.match(elem) ? true : false
+        );
     }
 };
 
