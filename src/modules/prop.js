@@ -10,6 +10,7 @@ var _          = require('underscore'),
 
     _regex     = require('../regex');
 
+// TODO: Dynamically generate for smaller footprint
 var _propFix = {
     'tabindex'        : 'tabIndex',
     'readonly'        : 'readOnly',
@@ -26,13 +27,13 @@ var _propFix = {
 };
 
 var _propHooks = {
-    src: (SUPPORTS.hrefNormalized) ? {} : {
+    src: SUPPORTS.hrefNormalized ? {} : {
         get: function(elem) {
             return elem.getAttribute('src', 4);
         }
     },
 
-    href: (SUPPORTS.hrefNormalized) ? {} : {
+    href: SUPPORTS.hrefNormalized ? {} : {
         get: function(elem) {
             return elem.getAttribute('href', 4);
         }
@@ -41,8 +42,8 @@ var _propHooks = {
     // Support: Safari, IE9+
     // mis-reports the default selected property of an option
     // Accessing the parent's selectedIndex property fixes it
-    selected: (SUPPORTS.optSelected) ? {} : {
-        get: function( elem ) {
+    selected: SUPPORTS.optSelected ? {} : {
+        get: function(elem) {
             var parent = elem.parentNode,
                 fix;
 
@@ -59,7 +60,7 @@ var _propHooks = {
     },
 
     tabIndex: {
-        get: function( elem ) {
+        get: function(elem) {
             // elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
             // http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
             // Use proper attribute retrieval(#12072)
@@ -90,7 +91,6 @@ var _getOrSetProp = function(elem, name, value) {
         return hooks && ('set' in hooks) && (result = hooks.set(elem, value, name)) !== undefined ?
             result :
             (elem[name] = value);
-
     }
 
     return hooks && ('get' in hooks) && (result = hooks.get(elem, name)) !== null ?
@@ -117,9 +117,7 @@ module.exports = {
                     });
                 }
 
-                return _.each(this, function(elem) {
-                    _getOrSetProp(elem, prop, value);
-                });
+                return _.each(this, (elem) => _getOrSetProp(elem, prop, value));
             }
 
             // fallback
