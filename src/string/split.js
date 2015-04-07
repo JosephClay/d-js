@@ -1,15 +1,10 @@
-var cache = require('cache')(2),
-    
-    exists = require('is/exists'),
+var cache   = require('cache')(2),
+    isEmpty = require('./isEmpty'),
     isArray = require('is/array'),
 
     R_SPACE = /\s+/g,
 
-    isEmpty = function(str) {
-        return !exists(str) || str === '';
-    },
-
-    splitImpl = function(name, delim) {
+    split = function(name, delim) {
         var split   = name.split(delim),
             len     = split.length,
             idx     = split.length,
@@ -32,15 +27,12 @@ var cache = require('cache')(2),
         return names;
     };
 
-module.exports = {
-    isEmpty: isEmpty,
-    split: function(name, delimiter) {
-        if (isEmpty(name)) { return []; }
-        if (isArray(name)) { return name; }
+module.exports = function(name, delimiter) {
+    if (isEmpty(name)) { return []; }
+    if (isArray(name)) { return name; }
 
-        var delim = delimiter === undefined ? R_SPACE : delimiter;
-        return cache.has(delim, name) ? 
-            cache.get(delim, name) : 
-            cache.put(delim, name, () => splitImpl(name, delim));
-    }
+    var delim = delimiter === undefined ? R_SPACE : delimiter;
+    return cache.has(delim, name) ? 
+        cache.get(delim, name) : 
+        cache.put(delim, name, () => split(name, delim));
 };

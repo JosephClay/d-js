@@ -2,8 +2,8 @@ var _         = require('underscore'),
     ELEMENT   = require('NODE_TYPE/ELEMENT'),
     isArray   = require('is/array'),
     isString  = require('is/string'),
-    split     = require('string').split,
-    isEmpty   = require('string').isEmpty;
+    split     = require('string/split'),
+    isEmpty   = require('string/isEmpty');
 
 var hasClass = function(elem, name) {
         return !!elem.classList && elem.classList.contains(name);
