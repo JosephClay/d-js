@@ -1,15 +1,12 @@
 var _         = require('underscore'),
-    ELEMENT = require('NODE_TYPE/ELEMENT'),
-    _SUPPORTS  = require('../supports'),
-    isArray = require('is/array'),
-    isString = require('is/string'),
+    ELEMENT   = require('NODE_TYPE/ELEMENT'),
+    SUPPORTS  = require('../supports'),
+    isArray   = require('is/array'),
+    isString  = require('is/string'),
+    split     = require('string').split,
+    isEmpty   = require('string').isEmpty;
 
-    string     = require('../string'),
-    _split     = string.split,
-    _isEmpty   = string.isEmpty;
-
-var _impl = _SUPPORTS.classList ? require('./classes/classes-modern')
-                                : require('./classes/classes-legacy');
+var _impl = SUPPORTS.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
 
 var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
@@ -61,13 +58,13 @@ var _doAnyElemsHaveClass = function(elems, name) {
 module.exports = {
     fn: {
         hasClass: function(name) {
-            if (name === undefined || !this.length || _isEmpty(name) || !name.length) { return this; }
+            if (name === undefined || !this.length || isEmpty(name) || !name.length) { return this; }
             return _doAnyElemsHaveClass(this, name);
         },
 
         addClass: function(names) {
             if (isArray(names)) {
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+                if (!this.length || isEmpty(name) || !name.length) { return this; }
 
                 _addClasses(this, names);
 
@@ -76,9 +73,9 @@ module.exports = {
 
             if (isString(names)) {
                 var name = names;
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+                if (!this.length || isEmpty(name) || !name.length) { return this; }
 
-                var names = _split(name);
+                var names = split(name);
                 if (!names.length) { return this; }
 
                 _addClasses(this, names);
@@ -101,7 +98,7 @@ module.exports = {
 
             if (isArray(names)) {
 
-                if (!this.length || _isEmpty(names) || !names.length) { return this; }
+                if (!this.length || isEmpty(names) || !names.length) { return this; }
 
                 _removeClasses(this, names);
 
@@ -110,9 +107,9 @@ module.exports = {
 
             if (isString(names)) {
                 var name = names;
-                if (!this.length || _isEmpty(name) || !name.length) { return this; }
+                if (!this.length || isEmpty(name) || !name.length) { return this; }
 
-                var names = _split(name);
+                var names = split(name);
                 if (!names.length) { return this; }
 
                 _removeClasses(this, names);
@@ -127,9 +124,9 @@ module.exports = {
         toggleClass: function(names, shouldAdd) {
             if (!arguments.length) { return this; }
 
-            if (!this.length || _isEmpty(names) || !names.length) { return this; }
+            if (!this.length || isEmpty(names) || !names.length) { return this; }
 
-            names = _split(names);
+            names = split(names);
             if (!names.length) { return this; }
 
             if (shouldAdd === undefined) {

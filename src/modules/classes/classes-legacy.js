@@ -1,15 +1,14 @@
 var _      = require('underscore'),
     _cache = require('cache'),
-    _split = require('../../string').split,
+    split = require('string').split,
 
-    _getCache    = _cache(),
     _hasCache    = _cache(2),
     _addCache    = _cache(2),
     _removeCache = _cache(2),
     _toggleCache = _cache(2);
 
 var _hasClass = function(elem, name) {
-        var elemClassNames = _split(elem.className),
+        var elemClassNames = split(elem.className),
             idx = elemClassNames.length;
         while (idx--) {
             if (elemClassNames[idx] === name) { return true; }
@@ -18,7 +17,7 @@ var _hasClass = function(elem, name) {
     },
 
     _addClasses = function(elem, namesToAdd) {
-        var curNames   = _split(elem.className),
+        var curNames   = split(elem.className),
             newNames   = [],
             newNameSet = _.object(curNames),
             len = namesToAdd.length,
@@ -42,7 +41,7 @@ var _hasClass = function(elem, name) {
     },
 
     _removeClasses = function(elem, namesToRemove) {
-        var curNames         = _split(elem.className),
+        var curNames         = split(elem.className),
             resultNames      = [],
             resultNameSet    = {},
             namesToRemoveSet = _.object(namesToRemove),
@@ -73,7 +72,7 @@ var _hasClass = function(elem, name) {
     },
 
     _toggleClasses = function(elem, namesToToggle) {
-        var curNames   = _split(elem.className),
+        var curNames   = split(elem.className),
             newNames   = curNames.slice(),
             newNameSet = _.object(curNames),
             len = namesToToggle.length,
