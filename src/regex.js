@@ -1,23 +1,3 @@
-var _cache            = require('cache'),
-
-    _camelCache         = _cache(),
-    _displayCache       = _cache(),
-    _focusableCache     = _cache(),
-    _clickableCache     = _cache(),
-    _idCache            = _cache(),
-    _tagCache           = _cache(),
-    _numNotPxCache      = _cache(),
-    _positionCache      = _cache(),
-    _classCache         = _cache(),
-    _needContextCache   = _cache(),
-    _focusMorphCache    = _cache(),
-    _mouseEventCache    = _cache(),
-    _keyEventCache      = _cache(),
-    _singleTagCache     = _cache(),
-    _parentCache        = _cache(),
-    _typeNamespaceCache = _cache(),
-    _notWhiteCache      = _cache();
-
     // Matches "-ms-" so that it can be changed to "ms-"
 var _TRUNCATE_MS_PREFIX  = /^-ms-/,
 
@@ -66,124 +46,59 @@ var _TRUNCATE_MS_PREFIX  = /^-ms-/,
 
     _NOT_WHITE = /\S+/g;
 
-var _camelCase = function(match, letter) {
-    return letter.toUpperCase();
-};
-
+// having caches isn't actually faster
+// for a majority of use cases for string
+// manipulations
+// http://jsperf.com/simple-cache-for-string-manip
 module.exports = {
     alpha: _ALPHA,
     opacity: _OPACITY,
 
     camelCase: function(str) {
-        return _camelCache.getOrSet(str, function() {
-            return str.replace(_TRUNCATE_MS_PREFIX, 'ms-').replace(_DASH_CATCH, _camelCase);
-        });
+        return str.replace(_TRUNCATE_MS_PREFIX, 'ms-')
+            .replace(_DASH_CATCH, (match, letter) => letter.toUpperCase());
     },
 
-    numNotPx: function(val) {
-        return _numNotPxCache.getOrSet(val, function() {
-            return _NUM_NON_PX.test(val);
-        });
-    },
+    numNotPx: (val) => _NUM_NON_PX.test(val),
 
-    position: function(val) {
-        return _positionCache.getOrSet(val, function() {
-            return _POSITION.test(val);
-        });
-    },
+    position: (val) => _POSITION.test(val),
 
-    needsContext: function(val) {
-        return _needContextCache.getOrSet(val, function() {
-            return _NEEDS_CONTEXT.test(val);
-        });
-    },
+    needsContext: (val) => _NEEDS_CONTEXT.test(val),
 
-    focusMorph: function(val) {
-        return _focusMorphCache.getOrSet(val, function() {
-            return _FOCUS_MORPH.test(val);
-        });
-    },
+    focusMorph: (val) => _FOCUS_MORPH.test(val),
 
-    mouseEvent: function(val) {
-        return _mouseEventCache.getOrSet(val, function() {
-            return _MOUSE_EVENT.test(val);
-        });
-    },
+    mouseEvent: (val) => _MOUSE_EVENT.test(val),
 
-    keyEvent: function(val) {
-        return _keyEventCache.getOrSet(val, function() {
-            return _KEY_EVENT.test(val);
-        });
-    },
+    keyEvent: (val) => _KEY_EVENT.test(val),
 
-    singleTagMatch: function(val) {
-        return _singleTagCache.getOrSet(val, function() {
-            return _SINGLE_TAG.exec(val);
-        });
-    },
+    singleTagMatch: (val) => _SINGLE_TAG.exec(val),
 
-    getParentTagName: function(val) {
-        val = val.substr(0, 30);
-        return _parentCache.getOrSet(val, function() {
-            var parentTagName;
-            for (parentTagName in _PARENT_MAP) {
-                if (_PARENT_MAP[parentTagName].test(val)) {
-                    return parentTagName;
-                }
+    getParentTagName: function(str) {
+        var val = str.substr(0, 30);
+        for (var parentTagName in _PARENT_MAP) {
+            if (_PARENT_MAP[parentTagName].test(val)) {
+                return parentTagName;
             }
-            return 'div';
-        });
+        }
+        return 'div';
     },
 
-    typeNamespace: function(val) {
-        return _typeNamespaceCache.getOrSet(val, function() {
-            return _TYPE_NAMESPACE.exec(val);
-        });
-    },
+    typeNamespace: (val) => _TYPE_NAMESPACE.exec(val),
 
-    matchNotWhite: function(val) {
-        val = val || '';
-        return _notWhiteCache.getOrSet(val, function() {
-            return val.match(_NOT_WHITE);
-        });
-    },
+    matchNotWhite: (val) => (val || '').match(_NOT_WHITE),
 
     display: {
-        isNoneOrTable: function(str) {
-            return _displayCache.getOrSet(str, function() {
-                return _NONE_OR_TABLE.test(str);
-            });
-        }
+        isNoneOrTable: (str) => _NONE_OR_TABLE.test(str)
     },
 
     type: {
-        isFocusable: function(str) {
-            return _focusableCache.getOrSet(str, function() {
-                return _TYPE_TEST_FOCUSABLE.test(str);
-            });
-        },
-        isClickable: function(str) {
-            return _clickableCache.getOrSet(str, function() {
-                return _TYPE_TEST_CLICKABLE.test(str);
-            });
-        }
+        isFocusable: (str) => _TYPE_TEST_FOCUSABLE.test(str),
+        isClickable: (str) => _TYPE_TEST_CLICKABLE.test(str)
     },
 
     selector: {
-        isStrictId: function(str) {
-            return _idCache.getOrSet(str, function() {
-                return _SELECTOR_ID.test(str);
-            });
-        },
-        isTag: function(str) {
-            return _tagCache.getOrSet(str, function() {
-                return _SELECTOR_TAG.test(str);
-            });
-        },
-        isClass: function(str) {
-            return _classCache.getOrSet(str, function() {
-                return _SELECTOR_CLASS.test(str);
-            });
-        }
+        isStrictId: (str) => _SELECTOR_ID.test(str),
+        isTag: (str) => _SELECTOR_TAG.test(str),
+        isClass: (str) => _SELECTOR_CLASS.test(str)
     }
 };

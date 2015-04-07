@@ -12,17 +12,16 @@ var _          = require('underscore'),
     _utils     = require('../utils'),
     _div       = require('../div');
 
-var _outerHtml = function() {
-    return this.length ? this[0].outerHTML : null;
-};
+var _outerHtml = () =>
+    this.length ? this[0].outerHTML : null;
 
 var _text = {
     get: _div.textContent !== undefined ?
-        function(elem) { return elem.textContent; } :
-            function(elem) { return elem.innerText; } ,
+        (elem) => elem.textContent :
+            (elem) => elem.innerText,
     set: _div.textContent !== undefined ?
-        function(elem, str) { elem.textContent = str; } :
-            function(elem, str) { elem.innerText = str; }
+        (elem, str) => elem.textContent = str :
+            (elem, str) => elem.innerText = str
 };
 
 var _valHooks = {
@@ -221,6 +220,7 @@ module.exports = {
                 });
             }
 
+            // TODO: Could be a map
             str = '';
             _.each(this, function(elem) {
                 str += _text.get(elem);

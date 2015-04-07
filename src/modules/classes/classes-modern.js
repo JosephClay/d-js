@@ -1,5 +1,3 @@
-var _ = require('underscore');
-
 module.exports = {
     hasClass: function(elem, name) {
         return !!elem.classList && elem.classList.contains(name);

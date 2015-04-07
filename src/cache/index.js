@@ -4,7 +4,6 @@ var deleter = function(deletable) {
         function(store, key) { store[key] = undefined; };
 };
 
-// TODO: Deprecate getOrSet
 var getterSetter = function(deletable) {
     var store = {},
         del = deleter(deletable);
@@ -14,16 +13,16 @@ var getterSetter = function(deletable) {
             return key in store && store[key] !== undefined;
         },
         get: function(key) {
-            return this.has(key) ? store[key] : undefined;
+            return store[key];
         },
         set: function(key, value) {
             store[key] = value;
             return value;
         },
-        getOrSet: function(key, fn) {
-            var value = this.get(key);
-            if (value !== undefined) { return value; }
-            return (store[key] = fn());
+        put: function(key, fn, arg) {
+            var value = fn(arg);
+            store[key] = value;
+            return value;
         },
         remove: function(key) {
             del(store, key);
@@ -36,11 +35,16 @@ var biLevelGetterSetter = function(deletable) {
         del = deleter(deletable);
 
     return {
-        has: function(key1) {
-            return key1 in store && store[key1] !== undefined;
+        has: function(key1, key2) {
+            var has1 = key1 in store && store[key1] !== undefined;
+            if (!has1 || arguments.length === 1) {
+                return has1;
+            }
+
+            return key2 in store[key1] && store[key1][key2] !== undefined;
         },
         get: function(key1, key2) {
-            var ref1 = this.has(key1) ? store[key1] : undefined;
+            var ref1 = store[key1];
             return arguments.length === 1 ? ref1 : (ref1 !== undefined ? ref1[key2] : ref1);
         },
         set: function(key1, key2, value) {
@@ -48,11 +52,11 @@ var biLevelGetterSetter = function(deletable) {
             ref1[key2] = value;
             return value;
         },
-        getOrSet: function(key1, key2, fn) {
-            var ref1 = store[key1] || (store[key1] = {}),
-                cachedVal = ref1[key2];
-            if (cachedVal !== undefined) { return cachedVal; }
-            return (ref1[key2] = fn());
+        put: function(key1, key2, fn, arg) {
+            var ref1 = this.has(key1) ? store[key1] : (store[key1] = {});
+            var value = fn(arg);
+            ref1[key2] = value;
+            return value;
         },
         remove: function(key1, key2) {
             // Easy removal

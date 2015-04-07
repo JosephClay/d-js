@@ -70,7 +70,7 @@ var _booleanSelectorReplace = _SUPPORTS.selectedSelector
     };
 
 module.exports = function(str) {
-    return _pseudoCache.getOrSet(str, function() {
+    return _pseudoCache.has(str) ? _pseudoCache.get(str) : _pseudoCache.put(str, function() {
         var attrPositions = _getAttributePositions(str);
         str = _pseudoReplace(str, attrPositions);
         str = _booleanSelectorReplace(str);

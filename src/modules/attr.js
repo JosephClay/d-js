@@ -18,26 +18,28 @@ var _          = require('underscore'),
     _attrNameLowerCache   = _cache();
 
 var _isDataKey = function(key) {
-        return _isDataKeyCache.getOrSet(key, function() {
-            return (key || '').substr(0, 5) === 'data-';
-        });
+        return _isDataKeyCache.has(key) ? 
+            _isDataKeyCache.get(key) : 
+            _isDataKeyCache.put(key, () => (key || '').substr(0, 5) === 'data-');
     },
 
     _sanitizeDataKey = function(key) {
-        return _sanitizeDataKeyCache.getOrSet(key, function() {
-            return _isDataKey(key) ? key : 'data-' + key.toLowerCase();
-        });
+        return _sanitizeDataKeyCache.has(key) ?
+            _sanitizeDataKeyCache.get(key) :
+            _sanitizeDataKeyCache.put(key, () => _isDataKey(key) ? key : 'data-' + key.toLowerCase());
     },
 
     _trimDataKey = function(key) {
-        return _trimDataKeyCache.getOrSet(key, function() {
-            return key.substr(0, 5);
-        });
+        return _trimDataKeyCache.has(key) ? 
+            _trimDataKeyCache.get(key) :
+            _trimDataKeyCache.put(key, () => key.substr(0, 5));
     },
 
     _getDataAttrKeys = function(elem) {
         var attrs = elem.attributes,
-            idx   = attr.length, keys = [];
+            idx   = attrs.length,
+            keys = [],
+            key;
         while (idx--) {
             key = attrs[idx];
             if (_isDataKey(key)) {
@@ -74,9 +76,9 @@ var _boolHook = {
     },
     get: function(elem, attrName) {
         if (_hasAttr(elem, attrName)) {
-            return _attrNameLowerCache.getOrSet(attrName, function() {
-                return attrName.toLowerCase();
-            });
+            return _attrNameLowerCache.has(attrName) ?
+                _attrNameLowerCache.get(attrName) :
+                _attrNameLowerCache.put(attrName, () => attrName.toLowerCase());
         }
         return undefined;
     },

@@ -246,14 +246,14 @@ module.exports = {
      * @return {String[]|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing the selector.
      */
     subqueries: function(selector) {
-        return _subqueryCache.getOrSet(selector, function() {
-            return _tokenize(selector);
-        });
+        return _subqueryCache.has(selector) ? 
+            _subqueryCache.get(selector) : 
+            _subqueryCache.put(selector, () => _tokenize(selector));
     },
 
     isBooleanAttribute: function(name) {
-        return _boolAttrCache.getOrSet(name, function() {
-            return _matchExpr.bool.test(name);
-        });
+        return _boolAttrCache.has(name) ? 
+            _boolAttrCache.get(name) : 
+            _boolAttrCache.put(name, () => _matchExpr.bool.test(name));
     }
 };

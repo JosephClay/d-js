@@ -115,37 +115,46 @@ var _hasClass = function(elem, name) {
         return newNamesClean;
     };
 
+var _setClassName = function(elem, names) {
+    // Add all the class names in a single step
+    if (names.length) {
+        elem.className = names.join(' ');
+    } else {
+        elem.removeAttribute('class');
+    }
+};
+
 module.exports = {
     hasClass: function(elem, name) {
-        return _hasCache.getOrSet(elem.className, name, function() {
-            return _hasClass(elem, name);
-        });
+        return _hasCache.has(elem.className, name) ? 
+            _hasCache.get(elem.className, name) : 
+            _hasCache.put(elem.className, name, () => _hasClass(elem, name));
     },
 
     addClasses: function(elem, names) {
-        this._setClassName(elem, _addCache.getOrSet(elem.className, names.join(' '), function() {
-            return _addClasses(elem, names);
-        }));
+        var nameKey = names.join(' ');
+        _setClassName(elem, 
+            _addCache.has(elem.className, nameKey) ?
+            _addCache.get(elem.className, nameKey) :
+            _addCache.put(elem.className, nameKey, () => _addClasses(elem, names))
+        );
     },
 
     removeClasses: function(elem, names) {
-        this._setClassName(elem, _removeCache.getOrSet(elem.className, names.join(' '), function() {
-            return _removeClasses(elem, names);
-        }));
+        var nameKey = names.join(' ');
+        _setClassName(elem, 
+            _removeCache.has(elem.className, nameKey) ? 
+            _removeCache.get(elem.className, nameKey) :
+            _removeCache.put(elem.className, nameKey, () => _removeClasses(elem, names))
+        );
     },
 
     toggleClasses: function(elem, names) {
-        this._setClassName(elem, _toggleCache.getOrSet(elem.className, names.join(' '), function() {
-            return _toggleClasses(elem, names);
-        }));
-    },
-
-    _setClassName: function(elem, names) {
-        // Add all the class names in a single step
-        if (names.length) {
-            elem.className = names.join(' ');
-        } else {
-            elem.removeAttribute('class');
-        }
-    }
+        var nameKey = names.join(' ');
+        _setClassName(elem, 
+            _toggleCache.has(elem.className, nameKey) ?
+            _toggleCache.get(elem.className, nameKey) :
+            _toggleCache.put(elem.className, nameKey, () => _toggleClasses(elem, names))
+        );
+    }    
 };

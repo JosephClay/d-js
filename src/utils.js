@@ -1,6 +1,4 @@
-var _             = require('underscore'),
-    SUPPORTS      = require('./supports'),
-    cache         = require('cache')(),
+var SUPPORTS      = require('./supports'),
 
     _flagParsedNode,
     _isParsedNode,
@@ -31,21 +29,13 @@ else {
 module.exports = {
 
     normalNodeName: function(elem) {
-        var nodeName = elem.nodeName;
-        return cache.getOrSet(nodeName, function() {
-            return nodeName.toLowerCase();
-        });
+        // cache is just not worth it here
+        // http://jsperf.com/simple-cache-for-string-manip
+        return elem.nodeName.toLowerCase();
     },
 
     isNodeName: function(elem, name) {
-        var nodeName = cache.getOrSet(elem.nodeName, function() {
-                return elem.nodeName.toLowerCase();
-            }),
-            compareName = cache.getOrSet(name, function() {
-                return name.toLowerCase();
-            });
-
-        return nodeName === compareName;
+        return elem.nodeName.toLowerCase() === name.toLowerCase();
     },
 
     merge: function(first, second) {
