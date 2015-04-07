@@ -1,11 +1,10 @@
 var _          = require('underscore'),
-
     exists     = require('is/exists'),
     isFunction = require('is/function'),
     isString   = require('is/string'),
-    
-    SUPPORTS = require('SUPPORTS'),
-    ELEMENT  = require('NODE_TYPE/ELEMENT'),
+    newlines   = require('string/newlines'),
+    SUPPORTS   = require('SUPPORTS'),
+    ELEMENT    = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),
     _selector  = require('./Fizzle/selector/selector-parse'),
@@ -83,7 +82,7 @@ var _hooks = {
                 if (val === null || val === undefined) {
                     val = elem.getAttribute('value');
                 }
-                return _utils.normalizeNewlines(val);
+                return newlines(val);
             },
             set: function(elem, value) {
                 elem.setAttribute('value', value);

@@ -1,6 +1,4 @@
-var SUPPORTS      = require('SUPPORTS'),
-
-    _returnTrue    = function() { return true;  },
+var _returnTrue    = function() { return true;  },
     _returnFalse   = function() { return false; },
     _returnThis    = function() { return this;  };
 
@@ -31,10 +29,6 @@ module.exports = {
         first.length = i;
 
         return first;
-    },
-
-    normalizeNewlines: function(str) {
-        return str && SUPPORTS.valueNormalized ? str.replace(/\r\n/g, '\n') : str;
     },
 
     returnTrue:  _returnTrue,

@@ -1,5 +1,5 @@
 var _          = require('underscore'),
-
+    newlines   = require('string/newlines'),
     exists     = require('is/exists'),
     isString   = require('is/string'),
     isArray    = require('is/array'),
@@ -117,7 +117,7 @@ var getVal = function(elem) {
         val = elem.getAttribute('value');
     }
 
-    return isString(val) ? _utils.normalizeNewlines(val) : val;
+    return isString(val) ? newlines(val) : val;
 };
 
 var stringify = (value) =>
