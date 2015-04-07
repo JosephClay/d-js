@@ -5,8 +5,7 @@ var _        = require('underscore'),
     isAttached = require('is/attached'),
     isFunction = require('is/function'),
     isObject   = require('is/object'),
-
-    _utils   = require('../utils'),
+    isNodeName = require('node/isName'),
 
     _docElem = document.documentElement;
 
@@ -92,7 +91,7 @@ module.exports = {
                 _.map(this, function(elem) {
                     var offsetParent = elem.offsetParent || _docElem;
 
-                    while (offsetParent && (!_utils.isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
+                    while (offsetParent && (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
                         offsetParent = offsetParent.offsetParent;
                     }
 

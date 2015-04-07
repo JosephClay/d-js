@@ -9,7 +9,6 @@ var _ = require('underscore'),
     isD        = require('is/d'),
 
     parser      = require('./modules/parser/parser'),
-    utils       = require('./utils'),
     array       = require('./modules/array'),
     onready     = require('./modules/onready'),
     selectors   = require('./modules/selectors'),
@@ -49,7 +48,7 @@ var Init = D.prototype.init = function(selector, attrs) {
 
     // HTML string
     if (isHtml(selector)) {
-        utils.merge(this, parser.parseHtml(selector));
+        _.merge(this, parser.parseHtml(selector));
         if (attrs) { this.attr(attrs); }
         return this;
     }
@@ -57,13 +56,13 @@ var Init = D.prototype.init = function(selector, attrs) {
     // String
     if (isString(selector)) {
         // Selector: perform a find without creating a new D
-        utils.merge(this, Fizzle.query(selector).exec(this, true));
+        _.merge(this, Fizzle.query(selector).exec(this, true));
         return this;
     }
 
     // Array of Elements, NodeList, or D object
     if (isArray(selector) || isNodeList(selector) || isD(selector)) {
-        utils.merge(this, selector);
+        _.merge(this, selector);
         return this;
     }
 

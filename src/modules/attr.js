@@ -5,8 +5,7 @@ var _          = require('underscore'),
     newlines   = require('string/newlines'),
     SUPPORTS   = require('SUPPORTS'),
     ELEMENT    = require('NODE_TYPE/ELEMENT'),
-
-    _utils     = require('../utils'),
+    isNodeName = require('node/isName'),
     _selector  = require('./Fizzle/selector/selector-parse'),
     _sanitizeDataKeyCache = require('cache')();
 
@@ -63,7 +62,7 @@ var _hooks = {
 
         type: {
             set: function(elem, value) {
-                if (!SUPPORTS.radioValue && value === 'radio' && _utils.isNodeName(elem, 'input')) {
+                if (!SUPPORTS.radioValue && value === 'radio' && isNodeName(elem, 'input')) {
                     // Setting the type on a radio button after the value resets the value in IE6-9
                     // Reset value to default in case type is set after value during creation
                     var oldValue = elem.value;

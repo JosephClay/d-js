@@ -5,12 +5,11 @@ var _          = require('underscore'),
     isArray    = require('is/array'),
     isNumber   = require('is/number'),
     isFunction = require('is/function'),
-
-    SUPPORTS  = require('SUPPORTS'),
-    ELEMENT   = require('NODE_TYPE/ELEMENT'),
-
-    _utils     = require('../utils'),
-    DIV       = require('DIV');
+    isNodeName = require('node/isName'),
+    normalName = require('node/normalizeName'),
+    SUPPORTS   = require('SUPPORTS'),
+    ELEMENT    = require('NODE_TYPE/ELEMENT'),
+    DIV        = require('DIV');
 
 var outerHtml = () => this.length ? this[0].outerHTML : null;
 
@@ -49,7 +48,7 @@ var valHooks = {
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
                         (SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
-                        (!option.parentNode.disabled || !_utils.isNodeName(option.parentNode, 'optgroup'))) {
+                        (!option.parentNode.disabled || !isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
                     value = valHooks.option.get(option);
@@ -107,7 +106,7 @@ if (!SUPPORTS.checkOn) {
 var getVal = function(elem) {
     if (!elem || (elem.nodeType !== ELEMENT)) { return; }
 
-    var hook = valHooks[elem.type] || valHooks[_utils.normalNodeName(elem)];
+    var hook = valHooks[elem.type] || valHooks[normalName(elem)];
     if (hook && hook.get) {
         return hook.get(elem);
     }
@@ -129,7 +128,7 @@ var setVal = function(elem, val) {
     // Stringify values
     var value = isArray(val) ? _.map(val, stringify) : stringify(val);
 
-    var hook = valHooks[elem.type] || valHooks[_utils.normalNodeName(elem)];
+    var hook = valHooks[elem.type] || valHooks[normalName(elem)];
     if (hook && hook.set) {
         hook.set(elem, value);
     } else {
@@ -201,12 +200,7 @@ module.exports = {
                 );
             }
 
-            // TODO: Could be a map
-            str = '';
-            _.each(this, function(elem) {
-                str += text.get(elem);
-            });
-            return str;
+            return _.map(this, (elem) => text.get(elem)).join('');
         }
     }
 };

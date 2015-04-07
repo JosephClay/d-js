@@ -1,17 +1,15 @@
 var _           = require('underscore'),
-
-    split    = require('util/split'),
-    exists   = require('is/exists'),
-    isObject = require('is/object'),
-    isWindow = require('is/window'),
-
+    split       = require('util/split'),
+    exists      = require('is/exists'),
+    isObject    = require('is/object'),
+    isWindow    = require('is/window'),
+    isNodeName  = require('node/isName'),
     Event       = require('./E'),
     ELEMENT     = require('NODE_TYPE/ELEMENT'),
     TEXT        = require('NODE_TYPE/TEXT'),
     COMMENT     = require('NODE_TYPE/COMMENT'),
-    _regex      = require('../../regex'),
-    _utils      = require('../../utils'),
     slice       = require('util/slice'),
+    _regex      = require('../../regex'),
     _data       = require('../data'),
     _eventUtils = require('./eventUtils'),
 
@@ -572,7 +570,7 @@ var _special = {
     click: {
         // For checkbox, fire native event so checked state will be right
         trigger: function() {
-            if (_utils.isNodeName(this, 'input') && this.type === 'checkbox' && this.click) {
+            if (isNodeName(this, 'input') && this.type === 'checkbox' && this.click) {
                 this.click();
                 return false;
             }
@@ -580,7 +578,7 @@ var _special = {
 
         // For cross-browser consistency, don't fire native .click() on links
         _default: function(event) {
-            return _utils.isNodeName(event.target, 'a');
+            return isNodeName(event.target, 'a');
         }
     },
 

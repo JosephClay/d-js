@@ -8,8 +8,6 @@ var _        = require('underscore'),
     isArray      = require('is/array'),
     isString     = require('is/string'),
     isD          = require('is/d'),
-
-    _utils   = require('../utils'),
     _array   = require('./array'),
     _order   = require('../order'),
 
@@ -158,7 +156,7 @@ module.exports = {
             if (this.length > 1) {
                 _array.elementSort(result);
             }
-            return _utils.merge(D(), result);
+            return _.merge(D(), result);
 
         },
 

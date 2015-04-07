@@ -235,6 +235,22 @@ var _ = module.exports = {
         var name;
         for (name in obj) { return false; }
         return true;
-    }
+    },
 
+    merge: function(first, second) {
+        var length = second.length,
+            idx = 0,
+            i = first.length;
+
+        // Go through each element in the
+        // second array and add it to the
+        // first
+        for (; idx < length; idx++) {
+            first[i++] = second[idx];
+        }
+
+        first.length = i;
+
+        return first;
+    }
 };
