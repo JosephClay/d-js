@@ -1,5 +1,4 @@
 var exists      = require('is/exists'),
-    isNumber    = require('is/number'),
     isString    = require('is/string'),
     isArray     = require('is/array'),
     isArrayLike = require('is/arrayLike'),
@@ -10,7 +9,7 @@ var exists      = require('is/exists'),
 var _ = module.exports = {
     coerceToNum: function(val) {
                 // Its a number! || 0 to avoid NaN (as NaN's a number)
-        return isNumber(val) ? (val || 0) :
+        return +val === val ? (val || 0) :
                // Avoid NaN again
                isString(val) ? (+val || 0) :
                // Default to zero

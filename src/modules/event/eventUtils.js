@@ -1,7 +1,7 @@
-var _div = require('../../div');
+var DIV = require('DIV');
 
 module.exports = {
-    id: 'd' + (new Date().getTime()),
+    id: 'd' + Date.now(),
 
     activeElement: function() {
         try {
@@ -9,11 +9,11 @@ module.exports = {
         } catch (err) {}
     },
 
-    addEvent: _div.addEventListener ?
+    addEvent: DIV.addEventListener ?
         function(elem, type, callback) {
             elem.addEventListener(type, callback, false);
         } :
-        _div.attachEvent ?
+        DIV.attachEvent ?
         function(elem, type, callback) {
             elem.attachEvent('on' + type, callback);
         } :

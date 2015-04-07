@@ -1,10 +1,10 @@
 var _      = require('underscore'),
     exists = require('is/exists'),
-    slice = require('util/slice'),
-    _order = require('../order');
+    slice  = require('util/slice'),
+    order  = require('../order');
 
-var _unique = function(results) {
-        var hasDuplicates = _order.sort(results);
+var unique = function(results) {
+        var hasDuplicates = order.sort(results);
         if (!hasDuplicates) { return results; }
 
         var elem,
@@ -31,7 +31,7 @@ var _unique = function(results) {
         return results;
     },
 
-    _map = function(arr, iterator) {
+    map = function(arr, iterator) {
         var results = [];
         if (!arr.length || !iterator) { return results; }
 
@@ -45,7 +45,7 @@ var _unique = function(results) {
         return _.concatFlat(results);
     },
 
-    _each = function(obj, iterator) {
+    each = function(obj, iterator) {
         if (!obj || !iterator) { return; }
 
         // Array support
@@ -69,9 +69,9 @@ var _unique = function(results) {
     };
 
 module.exports = {
-    elementSort: _order.sort,
-    unique: _unique,
-    each: _each,
+    elementSort: order.sort,
+    unique: unique,
+    each: each,
 
     fn: {
         at: function(index) {
@@ -111,16 +111,16 @@ module.exports = {
         },
 
         map: function(iterator) {
-            return D(_map(this, iterator));
+            return D(map(this, iterator));
         },
 
         each: function(iterator) {
-            _each(this, iterator);
+            each(this, iterator);
             return this;
         },
 
         forEach: function(iterator) {
-            _each(this, iterator);
+            each(this, iterator);
             return this;
         }
     }

@@ -1,7 +1,7 @@
 var _      = require('underscore'),
-    div    = require('./div'),
-    a      = div.getElementsByTagName('a')[0],
-    button = div.getElementsByTagName('button')[0],
+    DIV    = require('DIV'),
+    a      = DIV.getElementsByTagName('a')[0],
+    button = DIV.getElementsByTagName('button')[0],
     select = document.createElement('select'),
     option = select.appendChild(document.createElement('option'));
 
@@ -19,30 +19,30 @@ _.each([ 'submit', 'change', 'focusin' ], function(type) {
 
     if (!(support[supportName] = eventName in window)) {
         // Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
-        div.setAttribute(eventName, 't');
+        DIV.setAttribute(eventName, 't');
 
         // Checking '_' as it should be null or undefined if the
         // event is supported, false if it's not
-        support[supportName] = div.attributes[eventName]._ === false;
+        support[supportName] = DIV.attributes[eventName]._ === false;
     }
 });
 
 module.exports = _.extend(support, {
-    classList:     !!div.classList,
-    currentStyle:  !!div.currentStyle,
+    classList:     !!DIV.classList,
+    currentStyle:  !!DIV.currentStyle,
 
     // Support: IE9+, modern browsers
-    matchesSelector: div.matches               ||
-                     div.matchesSelector       ||
-                     div.msMatchesSelector     ||
-                     div.mozMatchesSelector    ||
-                     div.webkitMatchesSelector ||
-                     div.oMatchesSelector,
+    matchesSelector: DIV.matches               ||
+                     DIV.matchesSelector       ||
+                     DIV.msMatchesSelector     ||
+                     DIV.mozMatchesSelector    ||
+                     DIV.webkitMatchesSelector ||
+                     DIV.oMatchesSelector,
 
     // Make sure that element opacity exists
     // (IE uses filter instead)
     // Use a regex to work around a WebKit issue. See jQuery #5145
-    opacity: (/^0.55$/).test(div.style.opacity),
+    opacity: (/^0.55$/).test(DIV.style.opacity),
 
     // Make sure that URLs aren't manipulated
     // (IE normalizes it by default)
@@ -151,4 +151,4 @@ module.exports = _.extend(support, {
 });
 
 // Prevent memory leaks in IE
-div = a = button = select = option = null;
+DIV = a = button = select = option = null;

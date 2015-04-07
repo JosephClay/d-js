@@ -7,28 +7,27 @@ var _          = require('underscore'),
     isFunction = require('is/function'),
 
     SUPPORTS  = require('SUPPORTS'),
-    ELEMENT = require('NODE_TYPE/ELEMENT'),
+    ELEMENT   = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),
-    _div       = require('../div');
+    DIV       = require('DIV');
 
-var _outerHtml = () =>
-    this.length ? this[0].outerHTML : null;
+var outerHtml = () => this.length ? this[0].outerHTML : null;
 
-var _text = {
-    get: _div.textContent !== undefined ?
+var text = {
+    get: DIV.textContent !== undefined ?
         (elem) => elem.textContent :
             (elem) => elem.innerText,
-    set: _div.textContent !== undefined ?
+    set: DIV.textContent !== undefined ?
         (elem, str) => elem.textContent = str :
             (elem, str) => elem.innerText = str
 };
 
-var _valHooks = {
+var valHooks = {
     option: {
         get: function(elem) {
             var val = elem.getAttribute('value');
-            return (exists(val) ? val : _text.get(elem)).trim();
+            return (exists(val) ? val : text.get(elem)).trim();
         }
     },
 
@@ -53,7 +52,7 @@ var _valHooks = {
                         (!option.parentNode.disabled || !_utils.isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
-                    value = _valHooks.option.get(option);
+                    value = valHooks.option.get(option);
 
                     // We don't need an array for one selects
                     if (one) {
@@ -77,7 +76,7 @@ var _valHooks = {
             while (idx--) {
                 option = options[idx];
 
-                if (_.contains(values, _valHooks.option.get(option))) {
+                if (_.contains(values, valHooks.option.get(option))) {
                     option.selected = optionSet = true;
                 } else {
                     option.selected = false;
@@ -96,7 +95,7 @@ var _valHooks = {
 // Radio and checkbox getter for Webkit
 if (!SUPPORTS.checkOn) {
     _.each(['radio', 'checkbox'], function(type) {
-        _valHooks[type] = {
+        valHooks[type] = {
             get: function(elem) {
                 // Support: Webkit - '' is returned instead of 'on' if a value isn't specified
                 return elem.getAttribute('value') === null ? 'on' : elem.value;
@@ -105,10 +104,10 @@ if (!SUPPORTS.checkOn) {
     });
 }
 
-var _getVal = function(elem) {
+var getVal = function(elem) {
     if (!elem || (elem.nodeType !== ELEMENT)) { return; }
 
-    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
+    var hook = valHooks[elem.type] || valHooks[_utils.normalNodeName(elem)];
     if (hook && hook.get) {
         return hook.get(elem);
     }
@@ -121,24 +120,16 @@ var _getVal = function(elem) {
     return isString(val) ? _utils.normalizeNewlines(val) : val;
 };
 
-var _stringify = function(value) {
-    if (!exists(value)) {
-        return '';
-    }
-    return '' + value;
-};
+var stringify = (value) =>
+    !exists(value) ? '' : (value + '');
 
-var _setVal = function(elem, value) {
+var setVal = function(elem, val) {
     if (elem.nodeType !== ELEMENT) { return; }
 
     // Stringify values
-    if (isArray(value)) {
-        value = _.map(value, _stringify);
-    } else {
-        value = _stringify(value);
-    }
+    var value = isArray(val) ? _.map(val, stringify) : stringify(val);
 
-    var hook = _valHooks[elem.type] || _valHooks[_utils.normalNodeName(elem)];
+    var hook = valHooks[elem.type] || valHooks[_utils.normalNodeName(elem)];
     if (hook && hook.set) {
         hook.set(elem, value);
     } else {
@@ -148,21 +139,19 @@ var _setVal = function(elem, value) {
 
 module.exports = {
     fn: {
-        outerHtml: _outerHtml,
-        outerHTML: _outerHtml,
+        outerHtml: outerHtml,
+        outerHTML: outerHtml,
 
         html: function(html) {
             if (isString(html)) {
-                return _.each(this, function(elem) {
-                    elem.innerHTML = html;
-                });
+                return _.each(this, (elem) => elem.innerHTML = html);
             }
 
             if (isFunction(html)) {
                 var iterator = html;
-                return _.each(this, function(elem, idx) {
-                    elem.innerHTML = iterator.call(elem, idx, elem.innerHTML);
-                });
+                return _.each(this, (elem, idx) =>
+                    elem.innerHTML = iterator.call(elem, idx, elem.innerHTML)
+                );
             }
 
             var first = this[0];
@@ -174,13 +163,11 @@ module.exports = {
             // getter
             if (!arguments.length) {
                 // TODO: Select first element node instead of index 0?
-                return _getVal(this[0]);
+                return getVal(this[0]);
             }
 
             if (!exists(value)) {
-                return _.each(this, function(elem) {
-                    _setVal(elem, '');
-                });
+                return _.each(this, (elem) => setVal(elem, ''));
             }
 
             if (isFunction(value)) {
@@ -188,42 +175,36 @@ module.exports = {
                 return _.each(this, function(elem, idx) {
                     if (elem.nodeType !== ELEMENT) { return; }
 
-                    var value = iterator.call(elem, idx, _getVal(elem));
+                    var value = iterator.call(elem, idx, getVal(elem));
 
-                    _setVal(elem, value);
+                    setVal(elem, value);
                 });
             }
 
             // setters
             if (isString(value) || isNumber(value) || isArray(value)) {
-                return _.each(this, function(elem) {
-                    _setVal(elem, value);
-                });
+                return _.each(this, (elem) => setVal(elem, value));
             }
 
-            return _.each(this, function(elem) {
-                _setVal(elem, value);
-            });
+            return _.each(this, (elem) => setVal(elem, value));
         },
 
         text: function(str) {
             if (isString(str)) {
-                return _.each(this, function(elem) {
-                    _text.set(elem, str);
-                });
+                return _.each(this, (elem) => text.set(elem, str));
             }
 
             if (isFunction(str)) {
                 var iterator = str;
-                return _.each(this, function(elem, idx) {
-                    _text.set(elem, iterator.call(elem, idx, _text.get(elem)));
-                });
+                return _.each(this, (elem, idx) =>
+                    text.set(elem, iterator.call(elem, idx, text.get(elem)))
+                );
             }
 
             // TODO: Could be a map
             str = '';
             _.each(this, function(elem) {
-                str += _text.get(elem);
+                str += text.get(elem);
             });
             return str;
         }

@@ -1,64 +1,21 @@
-var ELEMENT    = require('NODE_TYPE/ELEMENT'),
-    DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
-
-    isAttached = require('is/attached'),
-
+var isAttached   = require('is/attached'),
+    ELEMENT      = require('NODE_TYPE/ELEMENT'),
     CONTAINED_BY = require('DOC_POS/CONTAINED_BY'),
-    CONTAINS     = require('DOC_POS/CONTAINS'),
     FOLLOWING    = require('DOC_POS/FOLLOWING'),
-    PRECEDING    = require('DOC_POS/PRECEDING'),
     DISCONNECTED = require('DOC_POS/DISCONNECTED'),
     CONTAINED_BY = require('DOC_POS/CONTAINED_BY');
 
+var is = (rel, flag) => (rel & flag) === flag;
+
+var isNode = (b, flag, a) => is(_comparePosition(a, b), flag);
+
 // Compare Position - MIT Licensed, John Resig
-// TODO: Optimize this function
-var _comparePosition = function(node1, node2) {
-    // Modern browsers (IE9+)
-    if (node1.compareDocumentPosition) {
-        return node1.compareDocumentPosition(node2);
-    }
-
-    var rel = 0;
-
-    if (node1 === node2) {
-        return rel;
-    }
-
-    // IE8
-    if (node1.contains) {
-        if (node1.contains(node2)) {
-            rel += CONTAINED_BY;
-        }
-        if (node2.contains(node1)) {
-            rel += CONTAINS;
-        }
-
-        if (node1.sourceIndex >= 0 && node2.sourceIndex >= 0) {
-            rel += (node1.sourceIndex < node2.sourceIndex ? FOLLOWING : 0);
-            rel += (node1.sourceIndex > node2.sourceIndex ? PRECEDING : 0);
-
-            if (!isAttached(node1) || !isAttached(node2)) {
-                rel += DISCONNECTED;
-            }
-        } else {
-            rel += DISCONNECTED;
-        }
-    }
-
-    return rel;
-};
-
-var _is = function(rel, flag) {
-    return (rel & flag) === flag;
-};
-
-var _isNode = function(b, flag, a) {
-    var rel = _comparePosition(a, b);
-    return _is(rel, flag);
-};
+var _comparePosition = (node1, node2) =>
+    node1.compareDocumentPosition ?
+    node1.compareDocumentPosition(node2) :
+    0;
 
 module.exports = {
-
     /**
      * Sorts an array of D elements in-place (i.e., mutates the original array)
      * in document order and returns whether any duplicates were found.
@@ -99,7 +56,7 @@ module.exports = {
             }
 
             // Disconnected nodes
-            if (_is(rel, DISCONNECTED)) {
+            if (is(rel, DISCONNECTED)) {
                 var isNode1Disconnected = !isAttached(node1);
                 var isNode2Disconnected = !isAttached(node2);
 
@@ -110,7 +67,7 @@ module.exports = {
                 return isNode2Disconnected ? -1 : 1;
             }
 
-            return _is(rel, FOLLOWING) ? -1 : 1;
+            return is(rel, FOLLOWING) ? -1 : 1;
         };
 
         return function(array, reverse) {
@@ -130,7 +87,7 @@ module.exports = {
      * @returns {Boolean} true if node `a` contains node `b`; otherwise false.
      */
     contains: function(a, b) {
-        var bUp   = isAttached(b) ? b.parentNode : null;
+        var bUp = isAttached(b) ? b.parentNode : null;
 
         if (a === bUp) {
             return true;
@@ -139,11 +96,10 @@ module.exports = {
         if (bUp && bUp.nodeType === ELEMENT) {
             // Modern browsers (IE9+)
             if (a.compareDocumentPosition) {
-                return _isNode(bUp, CONTAINED_BY, a);
+                return isNode(bUp, CONTAINED_BY, a);
             }
         }
 
         return false;
     }
-
 };

@@ -53,10 +53,6 @@ var _determineMethod = function(selector) {
         if (isNodeList(selection) && !selection.length) {
             return [];
         }
-        // IE8 DispStaticNodeList
-        if (selection.item && selection.length === 0) {
-            return [];
-        }
 
         // If it's an id, return it as an array
         return isElement(selection) || !selection.length ? [selection] : _fromDomArrayToArray(selection);

@@ -12,7 +12,6 @@ var _           = require('underscore'),
     isDocument = require('is/document'),
     isD        = require('is/d'),
 
-    _utils      = require('../utils'),
     _array      = require('./array'),
     _selectors  = require('./selectors'),
 
@@ -40,9 +39,8 @@ var _getSiblings = function(context) {
             idx  = sibs.length;
 
         while (idx--) {
-            // Exclude the node itself from the list of its parent's children,
-            // and exclude comment nodes for IE8
-            if (sibs[idx] === node || sibs[idx].nodeType === COMMENT) {
+            // Exclude the node itself from the list of its parent's children
+            if (sibs[idx] === node) {
                 sibs.splice(idx, 1);
             }
         }
@@ -55,17 +53,11 @@ var _getSiblings = function(context) {
         return _.flatten(_.map(arr, _chldrn));
     },
     _chldrn = function(elem) {
-        var arr  = [],
-            kids = elem.children,
-            idx  = 0,
-            len  = kids.length,
-            child;
+        var kids = elem.children,
+            idx  = 0, len  = kids.length,
+            arr  = new Array(len);
         for (; idx < len; idx++) {
-            child = kids[idx];
-            // Skip comment nodes on IE8
-            if (child.nodeType !== COMMENT) {
-                arr.push(child);
-            }
+            arr[idx] = kids[idx];
         }
         return arr;
     },

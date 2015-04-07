@@ -4,24 +4,16 @@ var _          = require('underscore'),
     isFunction = require('is/function'),
     isString   = require('is/string'),
     
-    SUPPORTS  = require('SUPPORTS'),
-    ELEMENT = require('NODE_TYPE/ELEMENT'),
+    SUPPORTS = require('SUPPORTS'),
+    ELEMENT  = require('NODE_TYPE/ELEMENT'),
 
     _utils     = require('../utils'),
-    _cache     = require('cache'),
-
     _selector  = require('./Fizzle/selector/selector-parse'),
+    _sanitizeDataKeyCache = require('cache')();
 
-    _isDataKeyCache       = _cache(),
-    _sanitizeDataKeyCache = _cache(),
-    _trimDataKeyCache     = _cache(),
-    _attrNameLowerCache   = _cache();
+var _isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
 
-var _isDataKey = function(key) {
-        return _isDataKeyCache.has(key) ? 
-            _isDataKeyCache.get(key) : 
-            _isDataKeyCache.put(key, () => (key || '').substr(0, 5) === 'data-');
-    },
+    _trimDataKey = (key) => key.substr(0, 5),
 
     _sanitizeDataKey = function(key) {
         return _sanitizeDataKeyCache.has(key) ?
@@ -29,16 +21,11 @@ var _isDataKey = function(key) {
             _sanitizeDataKeyCache.put(key, () => _isDataKey(key) ? key : 'data-' + key.toLowerCase());
     },
 
-    _trimDataKey = function(key) {
-        return _trimDataKeyCache.has(key) ? 
-            _trimDataKeyCache.get(key) :
-            _trimDataKeyCache.put(key, () => key.substr(0, 5));
-    },
 
     _getDataAttrKeys = function(elem) {
         var attrs = elem.attributes,
             idx   = attrs.length,
-            keys = [],
+            keys  = [],
             key;
         while (idx--) {
             key = attrs[idx];
@@ -50,38 +37,12 @@ var _isDataKey = function(key) {
         return keys;
     };
 
-var _hasAttr = SUPPORTS.inputValueAttr
-    // IE9+, modern browsers
-    ? function(elem, attr) { return elem.hasAttribute(attr); }
-    // IE8
-    : function(elem, attr) {
-        var nodeName = _utils.normalNodeName(elem);
-        // In IE8, input.hasAttribute('value') returns false
-        // and input.getAttributeNode('value') returns null
-        // if the value is empty ("").
-        if (nodeName === 'input' && attr === 'value') {
-            return true;
-        }
-        // In IE8, option.hasAttribute('selected') always returns false.
-        // Seriously.
-        if (nodeName === 'option' && attr === 'selected') {
-            return elem.getAttributeNode(attr) !== null;
-        }
-        return elem.hasAttribute(attr);
-    };
+// IE9+, modern browsers
+var _hasAttr = (elem, attr) => elem.hasAttribute(attr);
 
 var _boolHook = {
-    is: function(attrName) {
-        return _selector.isBooleanAttribute(attrName);
-    },
-    get: function(elem, attrName) {
-        if (_hasAttr(elem, attrName)) {
-            return _attrNameLowerCache.has(attrName) ?
-                _attrNameLowerCache.get(attrName) :
-                _attrNameLowerCache.put(attrName, () => attrName.toLowerCase());
-        }
-        return undefined;
-    },
+    is: (attrName) => _selector.isBooleanAttribute(attrName),
+    get: (elem, attrName) => _hasAttr(elem, attrName) ? attrName.toLowerCase() : undefined,
     set: function(elem, value, attrName) {
         if (value === false) {
             // Remove boolean attributes when set to false
@@ -120,14 +81,6 @@ var _hooks = {
             get: function(elem) {
                 var val = elem.value;
                 if (val === null || val === undefined) {
-                    val = elem.getAttribute('value');
-                }
-                // IE8
-                if (val === null || val === undefined) {
-                    val = elem.defaultValue;
-                }
-                // IE8
-                if (!SUPPORTS.buttonValue && val === '' && _utils.isNodeName(elem, 'button')) {
                     val = elem.getAttribute('value');
                 }
                 return _utils.normalizeNewlines(val);
