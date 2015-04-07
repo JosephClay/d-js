@@ -9,7 +9,7 @@ var normal = {
     paths: [ './src' ]
 };
 var internal = {
-    src: './src/internal-index.js',
+    src: './src/internal.js',
     dest: './dist',
     file: 'd.internal.js',
     standalone: 'D',

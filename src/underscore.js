@@ -5,10 +5,6 @@ var exists      = require('is/exists'),
     isArrayLike = require('is/arrayLike'),
     isNodeList  = require('is/nodeList'),
     slice       = require('util/slice'),
-    arrProto    = Array.prototype,
-
-    indexOf    = arrProto.indexOf,
-
     isTruthy   = function(arg) { return !!arg; };
 
 var _ = module.exports = {
