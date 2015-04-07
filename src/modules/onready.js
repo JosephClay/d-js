@@ -1,7 +1,7 @@
-var _isReady = false,
-    _registration = [];
+var isReady = false,
+    registration = [];
 
-var _bind = function(fn) {
+var bind = function(fn) {
     // Already loaded
     if (document.readyState === 'complete') {
         return fn();
@@ -23,28 +23,26 @@ var _bind = function(fn) {
     window.attachEvent('onload', fn);
 };
 
-var _makeCalls = function() {
+var makeCalls = function() {
     var idx = 0,
-        length = _registration.length;
+        length = registration.length;
     for (; idx < length; idx++) {
-        _registration[idx]();
+        registration[idx]();
     }
-    _registration.length = 0;
+    registration.length = 0;
 };
 
-_bind(function() {
-    if (_isReady) { return; }
-
-    _isReady = true;
-    _makeCalls();
+bind(function() {
+    isReady = true;
+    makeCalls();
 });
 
 module.exports = function(callback) {
-    if (_isReady) {
+    if (isReady) {
         callback();
-        return this;
-    }
-
-    _registration.push(callback);
+     } else {
+        registration.push(callback);
+     }
+    
     return this;
 };

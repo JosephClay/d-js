@@ -76,11 +76,10 @@ var _empty = function(arr) {
         _.each(d, function(elem, idx) {
             var result = fn.call(elem, idx, elem.innerHTML);
 
-            if (!exists(result)) {
+            // do nothing
+            if (!exists(result)) { return; }
 
-                // do nothing
-
-            } else if (isString(result)) {
+            if (isString(result)) {
 
                 if (utils.isHTML(elem)) {
                     _appendPrependArrayToElem(elem, parser.parseHtml(elem), pender);
@@ -97,9 +96,9 @@ var _empty = function(arr) {
 
                 _appendPrependArrayToElem(elem, result, pender);
 
-            } else {
-                // do nothing
             }
+            
+            // do nothing
         });
     },
     _appendPrependMergeArray = function(arrOne, arrTwo, pender) {

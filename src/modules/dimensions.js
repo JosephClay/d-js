@@ -1,45 +1,45 @@
 var parseNum = require('util/parseInt'),
     isNumber = require('is/number'),
-    _css     = require('./css');
+    css     = require('./css');
 
-var _getInnerWidth = function(elem) {
-        var width = parseFloat(_css.width.get(elem)) || 0;
+var getInnerWidth = function(elem) {
+        var width = parseFloat(css.width.get(elem)) || 0;
 
         return width +
-            (parseNum(_css.curCss(elem, 'paddingLeft')) || 0) +
-                (parseNum(_css.curCss(elem, 'paddingRight')) || 0);
+            (parseNum(css.curCss(elem, 'paddingLeft')) || 0) +
+                (parseNum(css.curCss(elem, 'paddingRight')) || 0);
     },
-    _getInnerHeight = function(elem) {
-        var height = parseFloat(_css.height.get(elem)) || 0;
+    getInnerHeight = function(elem) {
+        var height = parseFloat(css.height.get(elem)) || 0;
 
         return height +
-            (parseNum(_css.curCss(elem, 'paddingTop')) || 0) +
-                (parseNum(_css.curCss(elem, 'paddingBottom')) || 0);
+            (parseNum(css.curCss(elem, 'paddingTop')) || 0) +
+                (parseNum(css.curCss(elem, 'paddingBottom')) || 0);
     },
 
-    _getOuterWidth = function(elem, withMargin) {
-        var width = _getInnerWidth(elem);
+    getOuterWidth = function(elem, withMargin) {
+        var width = getInnerWidth(elem);
 
         if (withMargin) {
-            width += (parseNum(_css.curCss(elem, 'marginLeft')) || 0) +
-                (parseNum(_css.curCss(elem, 'marginRight')) || 0);
+            width += (parseNum(css.curCss(elem, 'marginLeft')) || 0) +
+                (parseNum(css.curCss(elem, 'marginRight')) || 0);
         }
 
         return width +
-            (parseNum(_css.curCss(elem, 'borderLeftWidth')) || 0) +
-                (parseNum(_css.curCss(elem, 'borderRightWidth')) || 0);
+            (parseNum(css.curCss(elem, 'borderLeftWidth')) || 0) +
+                (parseNum(css.curCss(elem, 'borderRightWidth')) || 0);
     },
-    _getOuterHeight = function(elem, withMargin) {
-        var height = _getInnerHeight(elem);
+    getOuterHeight = function(elem, withMargin) {
+        var height = getInnerHeight(elem);
 
         if (withMargin) {
-            height += (parseNum(_css.curCss(elem, 'marginTop')) || 0) +
-                (parseNum(_css.curCss(elem, 'marginBottom')) || 0);
+            height += (parseNum(css.curCss(elem, 'marginTop')) || 0) +
+                (parseNum(css.curCss(elem, 'marginBottom')) || 0);
         }
 
         return height +
-            (parseNum(_css.curCss(elem, 'borderTopWidth')) || 0) +
-                (parseNum(_css.curCss(elem, 'borderBottomWidth')) || 0);
+            (parseNum(css.curCss(elem, 'borderTopWidth')) || 0) +
+                (parseNum(css.curCss(elem, 'borderBottomWidth')) || 0);
     };
 
 module.exports = {
@@ -49,7 +49,7 @@ module.exports = {
                 var first = this[0];
                 if (!first) { return this; }
 
-                _css.width.set(first, val);
+                css.width.set(first, val);
                 return this;
             }
 
@@ -59,7 +59,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return null; }
 
-            return parseFloat(_css.width.get(first) || 0);
+            return parseFloat(css.width.get(first) || 0);
         },
 
         height: function(val) {
@@ -67,7 +67,7 @@ module.exports = {
                 var first = this[0];
                 if (!first) { return this; }
 
-                _css.height.set(first, val);
+                css.height.set(first, val);
                 return this;
             }
 
@@ -77,7 +77,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return null; }
 
-            return parseFloat(_css.height.get(first) || 0);
+            return parseFloat(css.height.get(first) || 0);
         },
 
         innerWidth: function() {
@@ -86,7 +86,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return this; }
 
-            return _getInnerWidth(first);
+            return getInnerWidth(first);
         },
 
         innerHeight: function() {
@@ -95,7 +95,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return this; }
 
-            return _getInnerHeight(first);
+            return getInnerHeight(first);
         },
 
         outerWidth: function(withMargin) {
@@ -104,7 +104,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return this; }
 
-            return _getOuterWidth(first, !!withMargin);
+            return getOuterWidth(first, !!withMargin);
         },
 
         outerHeight: function(withMargin) {
@@ -113,7 +113,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return this; }
 
-            return _getOuterHeight(first, !!withMargin);
+            return getOuterHeight(first, !!withMargin);
         }
     }
 };
