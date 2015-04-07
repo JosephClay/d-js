@@ -1,18 +1,49 @@
 var _         = require('underscore'),
     ELEMENT   = require('NODE_TYPE/ELEMENT'),
-    SUPPORTS  = require('../supports'),
     isArray   = require('is/array'),
     isString  = require('is/string'),
     split     = require('string').split,
     isEmpty   = require('string').isEmpty;
 
-var _impl = SUPPORTS.classList ? require('./classes/classes-modern') : require('./classes/classes-legacy');
+var hasClass = function(elem, name) {
+        return !!elem.classList && elem.classList.contains(name);
+    },
+
+    addClasses = function(elem, names) {
+        if (!elem.classList) { return; }
+
+        var len = names.length,
+            idx = 0;
+        for (; idx < len; idx++) {
+            elem.classList.add(names[idx]);
+        }
+    },
+
+    removeClasses = function(elem, names) {
+        if (!elem.classList) { return; }
+
+        var len = names.length,
+            idx = 0;
+        for (; idx < len; idx++) {
+            elem.classList.remove(names[idx]);
+        }
+    },
+
+    toggleClasses = function(elem, names) {
+        if (!elem.classList) { return; }
+
+        var len = names.length,
+            idx = 0;
+        for (; idx < len; idx++) {
+            elem.classList.toggle(names[idx]);
+        }
+    };
 
 var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            if (_impl.hasClass(elems[elemIdx], name)) { return true; }
+            if (hasClass(elems[elemIdx], name)) { return true; }
         }
         return false;
     },
@@ -23,7 +54,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            _impl.addClasses(elems[elemIdx], names);
+            addClasses(elems[elemIdx], names);
         }
     },
 
@@ -33,7 +64,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            _impl.removeClasses(elems[elemIdx], names);
+            removeClasses(elems[elemIdx], names);
         }
     },
 
@@ -51,7 +82,7 @@ var _doAnyElemsHaveClass = function(elems, name) {
         var elemIdx = elems.length;
         while (elemIdx--) {
             if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            _impl.toggleClasses(elems[elemIdx], names);
+            toggleClasses(elems[elemIdx], names);
         }
     };
 
