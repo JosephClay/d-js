@@ -1,3 +1,4 @@
+// TODO: Move
 var REGEX = require('REGEX'),
     MAX_SINGLE_TAG_LENGTH = 30;
 

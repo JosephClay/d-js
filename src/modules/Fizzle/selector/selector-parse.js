@@ -2,68 +2,60 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-var _tokenCache    = require('cache')(),
-    _subqueryCache = require('cache')(),
+var tokenCache    = require('cache')(),
+    subqueryCache = require('cache')(),
 
-    _error = function(selector) {
-        if (console && console.error) { console.error('d-js: Invalid query selector (caught) "'+ selector +'"'); }
+    error = function(selector) {
+        if (console && console.error) {
+            console.error('d-js: Invalid query selector (caught) "'+ selector +'"');
+        }
     };
 
-var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped',
-
-    _fromCharCode = String.fromCharCode,
+var fromCharCode = String.fromCharCode,
 
     // http://www.w3.org/TR/css3-selectors/#whitespace
-    _whitespace = '[\\x20\\t\\r\\n\\f]',
+    WHITESPACE = '[\\x20\\t\\r\\n\\f]',
 
     // http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
-    _identifier = '(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+',
+    IDENTIFIER = '(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+',
 
     // NOTE: Leaving double quotes to reduce escaping
     // Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
-    _attributes = "\\[" + _whitespace + "*(" + _identifier + ")(?:" + _whitespace +
+    ATTRIBUTES = "\\[" + WHITESPACE + "*(" + IDENTIFIER + ")(?:" + WHITESPACE +
         // Operator (capture 2)
-        "*([*^$|!~]?=)" + _whitespace +
-        // "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
-        "*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + _identifier + "))|)" + _whitespace +
+        "*([*^$|!~]?=)" + WHITESPACE +
+        // "Attribute values must be CSS IDENTIFIERs [capture 5] or strings [capture 3 or capture 4]"
+        "*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + IDENTIFIER + "))|)" + WHITESPACE +
         "*\\]",
 
-    _pseudos = ":(" + _identifier + ")(?:\\((" +
-        // To reduce the number of selectors needing _tokenize in the preFilter, prefer arguments:
+    PSEUDOS = ":(" + IDENTIFIER + ")(?:\\((" +
+        // To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
         // 1. quoted (capture 3; capture 4 or capture 5)
         "('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
         // 2. simple (capture 6)
-        "((?:\\\\.|[^\\\\()[\\]]|" + _attributes + ")*)|" +
+        "((?:\\\\.|[^\\\\()[\\]]|" + ATTRIBUTES + ")*)|" +
         // 3. anything else (capture 2)
         ".*" +
         ")\\)|)",
 
-    _rcomma = new RegExp('^' + _whitespace + '*,' + _whitespace + '*'),
-    _rcombinators = new RegExp('^' + _whitespace + '*([>+~]|' + _whitespace + ')' + _whitespace + '*'),
-
-    _rpseudo = new RegExp(_pseudos),
-
-    _matchExpr = {
-        ID:     new RegExp('^#('   + _identifier + ')'),
-        CLASS:  new RegExp('^\\.(' + _identifier + ')'),
-        TAG:    new RegExp('^('    + _identifier + '|[*])'),
-        ATTR:   new RegExp('^'     + _attributes),
-        PSEUDO: new RegExp('^'     + _pseudos),
-        CHILD:  new RegExp('^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(' + _whitespace +
-            '*(even|odd|(([+-]|)(\\d*)n|)' + _whitespace + '*(?:([+-]|)' + _whitespace +
-            '*(\\d+)|))' + _whitespace + '*\\)|)', 'i'),
-
-        bool:   new RegExp("^(?:" + _booleans + ")$", "i"),
-
-        // For use in libraries implementing .is()
-        // We use this for POS matching in `select`
-        needsContext: new RegExp('^' + _whitespace + '*[>+~]|:(even|odd|nth|eq|gt|lt|first|last)(?:\\(' +
-            _whitespace + '*((?:-\\d)?\\d*)' + _whitespace + '*\\)|)(?=[^-]|$)', 'i')
+    R_COMMA       = new RegExp('^' + WHITESPACE + '*,' + WHITESPACE + '*'),
+    R_COMBINATORS = new RegExp('^' + WHITESPACE + '*([>+~]|' + WHITESPACE + ')' + WHITESPACE + '*'),
+    R_PSEUDO      = new RegExp(PSEUDOS),
+    R_MATCH_EXPR = {
+        ID:     new RegExp('^#('   + IDENTIFIER + ')'),
+        CLASS:  new RegExp('^\\.(' + IDENTIFIER + ')'),
+        TAG:    new RegExp('^('    + IDENTIFIER + '|[*])'),
+        ATTR:   new RegExp('^'     + ATTRIBUTES),
+        PSEUDO: new RegExp('^'     + PSEUDOS),
+        CHILD:  new RegExp('^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(' + WHITESPACE +
+            '*(even|odd|(([+-]|)(\\d*)n|)' + WHITESPACE + '*(?:([+-]|)' + WHITESPACE +
+            '*(\\d+)|))' + WHITESPACE + '*\\)|)', 'i'),
+        bool:   new RegExp("^(?:checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$", "i")
     },
 
     // CSS escapes http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-    _runescape = new RegExp('\\\\([\\da-f]{1,6}' + _whitespace + '?|(' + _whitespace + ')|.)', 'ig'),
-    _funescape = function(_, escaped, escapedWhitespace) {
+    R_UNESCAPE = new RegExp('\\\\([\\da-f]{1,6}' + WHITESPACE + '?|(' + WHITESPACE + ')|.)', 'ig'),
+    funescape = function(_, escaped, escapedWhitespace) {
         var high = '0x' + (escaped - 0x10000);
         // NaN means non-codepoint
         // Support: Firefox<24
@@ -72,17 +64,17 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
             escaped :
             high < 0 ?
                 // BMP codepoint
-                _fromCharCode(high + 0x10000) :
+                fromCharCode(high + 0x10000) :
                 // Supplemental Plane codepoint (surrogate pair)
-                _fromCharCode((high >> 10) | 0xD800, (high & 0x3FF) | 0xDC00);
+                fromCharCode((high >> 10) | 0xD800, (high & 0x3FF) | 0xDC00);
     },
 
-    _preFilter = {
+    preFilter = {
         ATTR: function(match) {
-            match[1] = match[1].replace(_runescape, _funescape);
+            match[1] = match[1].replace(R_UNESCAPE, funescape);
 
             // Move the given value to match[3] whether quoted or unquoted
-            match[3] = ( match[3] || match[4] || match[5] || '' ).replace(_runescape, _funescape);
+            match[3] = ( match[3] || match[4] || match[5] || '' ).replace(R_UNESCAPE, funescape);
 
             if (match[2] === '~=') {
                 match[3] = ' ' + match[3] + ' ';
@@ -92,7 +84,7 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
         },
 
         CHILD: function(match) {
-            /* matches from _matchExpr['CHILD']
+            /* matches from R_MATCH_EXPR['CHILD']
                 1 type (only|nth|...)
                 2 what (child|of-type)
                 3 argument (even|odd|\d*|\d*n([+-]\d+)?|...)
@@ -127,7 +119,7 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
             var excess,
                 unquoted = !match[6] && match[2];
 
-            if (_matchExpr.CHILD.test(match[0])) {
+            if (R_MATCH_EXPR.CHILD.test(match[0])) {
                 return null;
             }
 
@@ -136,9 +128,9 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
                 match[2] = match[4] || match[5] || '';
 
             // Strip excess characters from unquoted arguments
-            } else if (unquoted && _rpseudo.test(unquoted) &&
-                // Get excess from _tokenize (recursively)
-                (excess = _tokenize(unquoted, true)) &&
+            } else if (unquoted && R_PSEUDO.test(unquoted) &&
+                // Get excess from tokenize (recursively)
+                (excess = tokenize(unquoted, true)) &&
                 // advance to the next closing parenthesis
                 (excess = unquoted.indexOf(')', unquoted.length - excess) - unquoted.length)) {
 
@@ -159,9 +151,9 @@ var _booleans = 'checked|selected|async|autofocus|autoplay|controls|defer|disabl
  * @return {String[]|Number|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing.
  * @private
  */
-var _tokenize = function(selector, parseOnly) {
-    if (_tokenCache.has(selector)) {
-        return parseOnly ? 0 : _tokenCache.get(selector).slice(0);
+var tokenize = function(selector, parseOnly) {
+    if (tokenCache.has(selector)) {
+        return parseOnly ? 0 : tokenCache.get(selector).slice(0);
     }
 
     var /** @type {String} */
@@ -187,7 +179,7 @@ var _tokenize = function(selector, parseOnly) {
 
     while (soFar) {
         // Comma and first run
-        if (!matched || (match = _rcomma.exec(soFar))) {
+        if (!matched || (match = R_COMMA.exec(soFar))) {
             if (match) {
                 // Don't consume trailing commas as valid
                 soFar = soFar.slice(match[0].length) || soFar;
@@ -199,18 +191,18 @@ var _tokenize = function(selector, parseOnly) {
         matched = null;
 
         // Combinators
-        if ((match = _rcombinators.exec(soFar))) {
+        if ((match = R_COMBINATORS.exec(soFar))) {
             matched = match.shift();
             subquery += matched;
             soFar = soFar.slice(matched.length);
         }
 
         // Filters
-        for (type in _matchExpr) {
-            regex = _matchExpr[type];
+        for (type in R_MATCH_EXPR) {
+            regex = R_MATCH_EXPR[type];
             match = regex.exec(soFar);
 
-            if (match && (!_preFilter[type] || (match = _preFilter[type](match)))) {
+            if (match && (!preFilter[type] || (match = preFilter[type](match)))) {
                 matched = match.shift();
                 subquery += matched;
                 soFar = soFar.slice(matched.length);
@@ -230,9 +222,9 @@ var _tokenize = function(selector, parseOnly) {
     // if we're just parsing.
     if (parseOnly) { return soFar.length; }
 
-    if (soFar) { _error(selector); return null; }
+    if (soFar) { error(selector); return null; }
 
-    return _tokenCache.set(selector, subqueries).slice();
+    return tokenCache.set(selector, subqueries).slice();
 };
 
 module.exports = {
@@ -242,12 +234,12 @@ module.exports = {
      * @return {String[]|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing the selector.
      */
     subqueries: function(selector) {
-        return _subqueryCache.has(selector) ? 
-            _subqueryCache.get(selector) : 
-            _subqueryCache.put(selector, () => _tokenize(selector));
+        return subqueryCache.has(selector) ? 
+            subqueryCache.get(selector) : 
+            subqueryCache.put(selector, () => tokenize(selector));
     },
 
-    isBooleanAttribute: function(name) {
-        return _matchExpr.bool.test(name);
+    isBool: function(name) {
+        return R_MATCH_EXPR.bool.test(name);
     }
 };

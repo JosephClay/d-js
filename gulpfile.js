@@ -2,12 +2,14 @@ var gulp      = require('gulp'),
     uglify    = require('gulp-uglify'),
     streamify = require('gulp-streamify'),
     size      = require('gulp-size'),
-
+    
     clean     = require('./build/clean'),
     scripts   = require('./build/scripts'),
     footprint = require('./build/footprint'),
     bump      = require('./build/bump'),
-    header    = require('./build/header');
+    header    = require('./build/header'),
+
+    UGLIFY_OPTS = require('./build/uglify-opts.json');
 
 var extended = [
     '/**',
@@ -42,7 +44,7 @@ gulp.task('minify', function() {
             standalone: 'D',
             file:       'd.min.js'
         }).stream
-        .pipe(streamify(uglify()))
+        .pipe(streamify(uglify(UGLIFY_OPTS)))
         .pipe(header(succint))
         .pipe(streamify(size()))
         .pipe(gulp.dest('./dist'));

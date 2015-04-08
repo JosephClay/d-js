@@ -117,7 +117,8 @@
     // Extra globals.
     "predef"        : [
         "window",
-        "document"
+        "document",
+        "D"
     ],
     // Specify indentation spacing
     "indent"        : 4,

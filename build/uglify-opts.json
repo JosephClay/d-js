@@ -1,0 +1,26 @@
+{
+    "mangle": {
+        "sort": true,
+        "toplevel": true,
+        "eval": true
+    },
+    "compress": {
+        "screw_ie8": true,
+        "properties": true,
+        "unsafe": true,
+        "sequences": true,
+        "dead_code": true,
+        "conditionals": true,
+        "booleans": true,
+        "unused": true,
+        "if_return": true,
+        "join_vars": true,
+        "drop_console": true,
+        "comparisons": true,
+        "loops": true,
+        "cascade": true,
+        "warnings": true,
+        "negate_iife": true,
+        "pure_getters": true
+    }
+}

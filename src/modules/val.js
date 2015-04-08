@@ -11,22 +11,21 @@ var _          = require('_'),
     ELEMENT    = require('NODE_TYPE/ELEMENT'),
     DIV        = require('DIV');
 
-var outerHtml = () => this.length ? this[0].outerHTML : null;
+var outerHtml = () => this.length ? this[0].outerHTML : null,
 
-var text = {
-    get: DIV.textContent !== undefined ?
+    textGet = DIV.textContent !== undefined ?
         (elem) => elem.textContent :
             (elem) => elem.innerText,
-    set: DIV.textContent !== undefined ?
+
+    textSet = DIV.textContent !== undefined ?
         (elem, str) => elem.textContent = str :
-            (elem, str) => elem.innerText = str
-};
+            (elem, str) => elem.innerText = str;
 
 var valHooks = {
     option: {
         get: function(elem) {
             var val = elem.getAttribute('value');
-            return (exists(val) ? val : text.get(elem)).trim();
+            return (exists(val) ? val : textGet(elem)).trim();
         }
     },
 
@@ -157,7 +156,6 @@ module.exports = {
             return (!first) ? undefined : first.innerHTML;
         },
 
-        // TODO: Add handling of (and unit tests for) \r\n in IE
         val: function(value) {
             // getter
             if (!arguments.length) {
@@ -190,17 +188,17 @@ module.exports = {
 
         text: function(str) {
             if (isString(str)) {
-                return _.each(this, (elem) => text.set(elem, str));
+                return _.each(this, (elem) => textSet(elem, str));
             }
 
             if (isFunction(str)) {
                 var iterator = str;
                 return _.each(this, (elem, idx) =>
-                    text.set(elem, iterator.call(elem, idx, text.get(elem)))
+                    textSet(elem, iterator.call(elem, idx, textGet(elem)))
                 );
             }
 
-            return _.map(this, (elem) => text.get(elem)).join('');
+            return _.map(this, (elem) => textGet(elem)).join('');
         }
     }
 };

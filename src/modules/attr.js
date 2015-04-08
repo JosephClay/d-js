@@ -1,33 +1,32 @@
-var _          = require('_'),
-    exists     = require('is/exists'),
-    isFunction = require('is/function'),
-    isString   = require('is/string'),
-    newlines   = require('string/newlines'),
-    SUPPORTS   = require('SUPPORTS'),
-    ELEMENT    = require('NODE_TYPE/ELEMENT'),
-    isNodeName = require('node/isName'),
-    _selector  = require('./Fizzle/selector/selector-parse'),
-    _sanitizeDataKeyCache = require('cache')();
+var _                    = require('_'),
+    exists               = require('is/exists'),
+    isFunction           = require('is/function'),
+    isString             = require('is/string'),
+    isElement            = require('node/isElement'),
+    newlines             = require('string/newlines'),
+    SUPPORTS             = require('SUPPORTS'),
+    isNodeName           = require('node/isName'),
+    Fizzle               = require('./Fizzle/'),
+    sanitizeDataKeyCache = require('cache')();
 
-var _isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
+var isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
 
-    _trimDataKey = (key) => key.substr(0, 5),
+    trimDataKey = (key) => key.substr(0, 5),
 
-    _sanitizeDataKey = function(key) {
-        return _sanitizeDataKeyCache.has(key) ?
-            _sanitizeDataKeyCache.get(key) :
-            _sanitizeDataKeyCache.put(key, () => _isDataKey(key) ? key : 'data-' + key.toLowerCase());
+    sanitizeDataKey = function(key) {
+        return sanitizeDataKeyCache.has(key) ?
+            sanitizeDataKeyCache.get(key) :
+            sanitizeDataKeyCache.put(key, () => isDataKey(key) ? key : 'data-' + key.toLowerCase());
     },
 
-
-    _getDataAttrKeys = function(elem) {
+    getDataAttrKeys = function(elem) {
         var attrs = elem.attributes,
             idx   = attrs.length,
             keys  = [],
             key;
         while (idx--) {
             key = attrs[idx];
-            if (_isDataKey(key)) {
+            if (isDataKey(key)) {
                 keys.push(key);
             }
         }
@@ -36,11 +35,11 @@ var _isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
     };
 
 // IE9+, modern browsers
-var _hasAttr = (elem, attr) => elem.hasAttribute(attr);
+var hasAttr = (elem, attr) => elem.hasAttribute(attr);
 
-var _boolHook = {
-    is: (attrName) => _selector.isBooleanAttribute(attrName),
-    get: (elem, attrName) => _hasAttr(elem, attrName) ? attrName.toLowerCase() : undefined,
+var boolHook = {
+    is: (attrName) => Fizzle.parse.isBool(attrName),
+    get: (elem, attrName) => hasAttr(elem, attrName) ? attrName.toLowerCase() : undefined,
     set: function(elem, value, attrName) {
         if (value === false) {
             // Remove boolean attributes when set to false
@@ -51,7 +50,7 @@ var _boolHook = {
     }
 };
 
-var _hooks = {
+var hooks = {
         tabindex: {
             get: function(elem) {
                 var tabindex = elem.getAttribute('tabindex');
@@ -89,78 +88,74 @@ var _hooks = {
         }
     },
 
-    _isElementNode = function(elem) {
-        return elem && elem.nodeType === ELEMENT;
-    },
+    getAttribute = function(elem, attr) {
+        if (!isElement(elem) || !hasAttr(elem, attr)) { return; }
 
-    _getAttribute = function(elem, attr) {
-        if (!_isElementNode(elem) || !_hasAttr(elem, attr)) { return; }
-
-        if (_boolHook.is(attr)) {
-            return _boolHook.get(elem, attr);
+        if (boolHook.is(attr)) {
+            return boolHook.get(elem, attr);
         }
 
-        if (_hooks[attr] && _hooks[attr].get) {
-            return _hooks[attr].get(elem);
+        if (hooks[attr] && hooks[attr].get) {
+            return hooks[attr].get(elem);
         }
 
         var ret = elem.getAttribute(attr);
         return exists(ret) ? ret : undefined;
     },
 
-    _setter = {
+    setters = {
         forAttr: function(attr, value) {
-            if (_boolHook.is(attr) && (value === true || value === false)) {
-                return _setter.bool;
-            } else if (_hooks[attr] && _hooks[attr].set) {
-                return _setter.hook;
+            if (boolHook.is(attr) && (value === true || value === false)) {
+                return setters.bool;
+            } else if (hooks[attr] && hooks[attr].set) {
+                return setters.hook;
             }
-            return _setter.elem;
+            return setters.elem;
         },
         bool: function(elem, attr, value) {
-            _boolHook.set(elem, value, attr);
+            boolHook.set(elem, value, attr);
         },
         hook: function(elem, attr, value) {
-            _hooks[attr].set(elem, value);
+            hooks[attr].set(elem, value);
         },
         elem: function(elem, attr, value) {
             elem.setAttribute(attr, value);
         },
     },
-    _setAttributes = function(arr, attr, value) {
+    setAttributes = function(arr, attr, value) {
         var isFn   = isFunction(value),
             idx    = 0,
             len    = arr.length,
             elem,
             val,
-            setter = _setter.forAttr(attr, value);
+            setter = setters.forAttr(attr, value);
 
         for (; idx < len; idx++) {
             elem = arr[idx];
 
-            if (!_isElementNode(elem)) { continue; }
+            if (!isElement(elem)) { continue; }
 
-            val = isFn ? value.call(elem, idx, _getAttribute(elem, attr)) : value;
+            val = isFn ? value.call(elem, idx, getAttribute(elem, attr)) : value;
             setter(elem, attr, val);
         }
     },
     _setAttribute = function(elem, attr, value) {
-        if (!_isElementNode(elem)) { return; }
-        var setter = _setter.forAttr(attr, value);
+        if (!isElement(elem)) { return; }
+        var setter = setters.forAttr(attr, value);
         setter(elem, attr, value);
     },
 
-    _removeAttributes = function(arr, attr) {
+    removeAttributes = function(arr, attr) {
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
-            _removeAttribute(arr[idx], attr);
+            removeAttribute(arr[idx], attr);
         }
     },
-    _removeAttribute = function(elem, attr) {
-        if (!_isElementNode(elem)) { return; }
+    removeAttribute = function(elem, attr) {
+        if (!isElement(elem)) { return; }
 
-        if (_hooks[attr] && _hooks[attr].remove) {
-            return _hooks[attr].remove(elem);
+        if (hooks[attr] && hooks[attr].remove) {
+            return hooks[attr].remove(elem);
         }
 
         elem.removeAttribute(attr);
@@ -171,13 +166,13 @@ module.exports = {
         attr: function(attr, value) {
             if (arguments.length === 1) {
                 if (isString(attr)) {
-                    return _getAttribute(this[0], attr);
+                    return getAttribute(this[0], attr);
                 }
 
                 // assume an object
                 var attrs = attr;
                 for (attr in attrs) {
-                    _setAttributes(this, attr, attrs[attr]);
+                    setAttributes(this, attr, attrs[attr]);
                 }
             }
 
@@ -186,7 +181,7 @@ module.exports = {
 
                 // remove
                 if (value === null) {
-                    _removeAttributes(this, attr);
+                    removeAttributes(this, attr);
                     return this;
                 }
 
@@ -194,7 +189,7 @@ module.exports = {
                 if (isFunction(value)) {
                     var fn = value;
                     return _.each(this, function(elem, idx) {
-                        var oldAttr = _getAttribute(elem, attr),
+                        var oldAttr = getAttribute(elem, attr),
                             result  = fn.call(elem, idx, oldAttr);
                         if (!exists(result)) { return; }
                         _setAttribute(elem, attr, result);
@@ -202,7 +197,7 @@ module.exports = {
                 }
 
                 // set
-                _setAttributes(this, attr, value);
+                setAttributes(this, attr, value);
                 return this;
             }
 
@@ -212,7 +207,7 @@ module.exports = {
 
         removeAttr: function(attr) {
             if (isString(attr)) {
-                _removeAttributes(this, attr);
+                removeAttributes(this, attr);
             }
             return this;
         },
@@ -224,11 +219,11 @@ module.exports = {
                 if (!first) { return; }
 
                 var map  = {},
-                    keys = _getDataAttrKeys(first),
+                    keys = getDataAttrKeys(first),
                     idx  = keys.length, key;
                 while (idx--) {
                     key = keys[idx];
-                    map[_trimDataKey(key)] = _.typecast(first.getAttribute(key));
+                    map[trimDataKey(key)] = _.typecast(first.getAttribute(key));
                 }
 
                 return map;
@@ -237,7 +232,7 @@ module.exports = {
             if (arguments.length === 2) {
                 var idx = this.length;
                 while (idx--) {
-                    this[idx].setAttribute(_sanitizeDataKey(key), '' + value);
+                    this[idx].setAttribute(sanitizeDataKey(key), '' + value);
                 }
                 return this;
             }
@@ -248,7 +243,7 @@ module.exports = {
                 key;
             while (idx--) {
                 for (key in obj) {
-                    this[idx].setAttribute(_sanitizeDataKey(key), '' + obj[key]);
+                    this[idx].setAttribute(sanitizeDataKey(key), '' + obj[key]);
                 }
             }
             return this;

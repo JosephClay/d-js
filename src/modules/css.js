@@ -156,7 +156,7 @@ var getWidthOrHeight = function(elem, name) {
 
     // use the active box-sizing model to add/subtract irrelevant styles
     return toPx(
-        val + _augmentBorderBoxWidthOrHeight(
+        val + augmentBorderBoxWidthOrHeight(
             elem,
             name,
             isBorderBox ? 'border' : 'content',
@@ -167,7 +167,7 @@ var getWidthOrHeight = function(elem, name) {
 };
 
 var CSS_EXPAND = split('Top|Right|Bottom|Left');
-var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
+var augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     var val = 0,
         // If we already have the right measurement, avoid augmentation
         idx = (extra === (isBorderBox ? 'border' : 'content')) ?
@@ -290,12 +290,11 @@ var isHidden = function(elem) {
 };
 
 module.exports = {
-    swap             : cssSwap,
-    swapSetting      : swapSettings,
-    curCss           : curCss,
-
-    width            : _width,
-    height           : _height,
+    swap:        cssSwap,
+    swapSetting: swapSettings,
+    curCss:      curCss,
+    width:       _width,
+    height:      _height,
 
     fn: {
         css: function(name, value) {

@@ -1,5 +1,4 @@
-var _        = require('_'),
-
+var _            = require('_'),
     isSelector   = require('is/selector'),
     isCollection = require('is/collection'),
     isFunction   = require('is/function'),
@@ -8,10 +7,9 @@ var _        = require('_'),
     isArray      = require('is/array'),
     isString     = require('is/string'),
     isD          = require('is/d'),
-    _array   = require('./array'),
-    _order   = require('../order'),
-
-    Fizzle   = require('./Fizzle');
+    array        = require('./array'),
+    order        = require('../order'),
+    Fizzle       = require('./Fizzle');
 
 /**
  * @param {String|Function|Element|NodeList|Array|D} selector
@@ -19,7 +17,7 @@ var _        = require('_'),
  * @returns {Element[]}
  * @private
  */
-var _findWithin = function(selector, context) {
+var findWithin = function(selector, context) {
     // Fail fast
     if (!context.length) { return []; }
 
@@ -39,7 +37,7 @@ var _findWithin = function(selector, context) {
     return results;
 };
 
-var _filter = function(arr, qualifier) {
+var filter = function(arr, qualifier) {
     // Early return, no qualifier. Everything matches
     if (!qualifier) { return arr; }
 
@@ -55,7 +53,6 @@ var _filter = function(arr, qualifier) {
 
     // Selector
     if (isString(qualifier)) {
-
         var is = Fizzle.is(qualifier);
         return _.filter(arr, (elem) => is.match(elem));
     }
@@ -65,7 +62,7 @@ var _filter = function(arr, qualifier) {
 };
 
 module.exports = {
-    filter: _filter,
+    filter: filter,
 
     fn: {
         // TODO: Optimize this method
@@ -79,7 +76,7 @@ module.exports = {
             return D(
                 _.filter(this, function(elem) {
                     for (idx = 0; idx < len; idx++) {
-                        if (_order.contains(elem, targets[idx])) {
+                        if (order.contains(elem, targets[idx])) {
                             return true;
                         }
                     }
@@ -152,9 +149,9 @@ module.exports = {
         find: function(selector) {
             if (!isSelector(selector)) { return this; }
 
-            var result = _findWithin(selector, this);
+            var result = findWithin(selector, this);
             if (this.length > 1) {
-                _array.elementSort(result);
+                array.elementSort(result);
             }
             return _.merge(D(), result);
 

@@ -1,91 +1,88 @@
-var cache      = require('cache')(2, true),
-
+var cache     = require('cache')(2, true),
     isString  = require('is/string'),
     isArray   = require('is/array'),
     isElement = require('is/element'),
-
     ACCESSOR  = '__D_id__ ',
+    uniqueId  = require('util/uniqueId').seed(Date.now()),
 
-    uniqueId = require('util/uniqueId').seed(Date.now()),
-
-    _getId = function(elem) {
+    getId = function(elem) {
         return elem ? elem[ACCESSOR] : null;
     },
 
-    _getOrSetId = function(elem) {
+    getOrSetId = function(elem) {
         var id;
         if (!elem || (id = elem[ACCESSOR])) { return id; }
         elem[ACCESSOR] = (id = uniqueId());
         return id;
     },
 
-    _getAllData = function(elem) {
+    getAllData = function(elem) {
         var id;
-        if (!(id = _getId(elem))) { return; }
+        if (!(id = getId(elem))) { return; }
         return cache.get(id);
     },
 
-    _getData = function(elem, key) {
+    getData = function(elem, key) {
         var id;
-        if (!(id = _getId(elem))) { return; }
+        if (!(id = getId(elem))) { return; }
         return cache.get(id, key);
     },
 
-    _hasData = function(elem) {
+    hasData = function(elem) {
         var id;
-        if (!(id = _getId(elem))) { return false; }
+        if (!(id = getId(elem))) { return false; }
         return cache.has(id);
     },
 
-    _setData = function(elem, key, value) {
-        var id = _getOrSetId(elem);
+    setData = function(elem, key, value) {
+        var id = getOrSetId(elem);
         return cache.set(id, key, value);
     },
 
-    _removeAllData = function(elem) {
+    removeAllData = function(elem) {
         var id;
-        if (!(id = _getId(elem))) { return; }
+        if (!(id = getId(elem))) { return; }
         cache.remove(id);
     },
 
-    _removeData = function(elem, key) {
+    removeData = function(elem, key) {
         var id;
-        if (!(id = _getId(elem))) { return; }
+        if (!(id = getId(elem))) { return; }
         cache.remove(id, key);
     };
 
 module.exports = {
-    has: _hasData,
-    set: _setData,
+    has: hasData,
+    set: setData,
     get: function(elem, str) {
         if (str === undefined) {
-            return _getAllData(elem);
+            return getAllData(elem);
         }
-        return _getData(elem, str);
+        return getData(elem, str);
     },
     remove: function(elem, str) {
         if (str === undefined) {
-            return _removeAllData(elem);
+            return removeAllData(elem);
         }
-        return _removeData(elem, str);
+        return removeData(elem, str);
     },
 
     D: {
         // NOTE: NodeList || HtmlCollection support?
         data: function(elem, key, value) {
             if (arguments.length === 3) {
-                return _setData(elem, key, value);
+                return setData(elem, key, value);
             }
 
             if (arguments.length === 2) {
                 if (isString(key)) {
-                    return _getData(elem, key);
+                    return getData(elem, key);
                 }
 
                 // object passed
                 var map = key;
                 var id;
-                if (!(id = _getId(elem))) { return; }
+                if (!(id = getId(elem))) { return; }
                 var key;
                 for (key in map) {
                     cache.set(id, key, map[key]);
@@ -94,7 +91,7 @@ module.exports = {
             }
 
             if (isElement(elem)) {
-                return _getAllData(elem);
+                return getAllData(elem);
             }
 
             // fallback
@@ -103,23 +100,22 @@ module.exports = {
 
         hasData: function(elem) {
             if (isElement(elem)) {
-                return _hasData(elem);
+                return hasData(elem);
             }
             return this;
         },
 
-        // NOTE: NodeList || HtmlCollection support?
         removeData: function(elem, key) {
             if (arguments.length === 2) {
                 // Remove single key
                 if (isString(key)) {
-                    return _removeData(elem, key);
+                    return removeData(elem, key);
                 }
 
                 // Remove multiple keys
                 var array = key;
                 var id;
-                if (!(id = _getId(elem))) { return; }
+                if (!(id = getId(elem))) { return; }
                 var idx = array.length;
                 while (idx--) {
                     cache.remove(id, array[idx]);
@@ -127,7 +123,7 @@ module.exports = {
             }
 
             if (isElement(elem)) {
-                return _removeAllData(elem);
+                return removeAllData(elem);
             }
 
             // fallback
@@ -141,7 +137,7 @@ module.exports = {
             if (!arguments.length) {
                 var first = this[0],
                     id;
-                if (!first || !(id = _getId(first))) { return; }
+                if (!first || !(id = getId(first))) { return; }
                 return cache.get(id);
             }
 
@@ -150,7 +146,7 @@ module.exports = {
                 if (isString(key)) {
                     var first = this[0],
                         id;
-                    if (!first || !(id = _getId(first))) { return; }
+                    if (!first || !(id = getId(first))) { return; }
                     return cache.get(id, key);
                 }
 
@@ -164,7 +160,7 @@ module.exports = {
                     elem = this[idx];
                     if (!isElement(elem)) { continue; }
 
-                    id = _getOrSetId(this[idx]);
+                    id = getOrSetId(this[idx]);
                     for (key in map) {
                         cache.set(id, key, map[key]);
                     }
@@ -181,7 +177,7 @@ module.exports = {
                     elem = this[idx];
                     if (!isElement(elem)) { continue; }
 
-                    id = _getOrSetId(this[idx]);
+                    id = getOrSetId(this[idx]);
                     cache.set(id, key, value);
                 }
                 return this;
@@ -200,7 +196,7 @@ module.exports = {
                     id;
                 while (idx--) {
                     elem = this[idx];
-                    if (!(id = _getId(elem))) { continue; }
+                    if (!(id = getId(elem))) { continue; }
                     cache.remove(id);
                 }
                 return this;
@@ -214,7 +210,7 @@ module.exports = {
                     id;
                 while (idx--) {
                     elem = this[idx];
-                    if (!(id = _getId(elem))) { continue; }
+                    if (!(id = getId(elem))) { continue; }
                     cache.remove(id, key);
                 }
                 return this;
@@ -228,7 +224,7 @@ module.exports = {
                     id;
                 while (elemIdx--) {
                     elem = this[elemIdx];
-                    if (!(id = _getId(elem))) { continue; }
+                    if (!(id = getId(elem))) { continue; }
                     var arrIdx = array.length;
                     while (arrIdx--) {
                         cache.remove(id, array[arrIdx]);

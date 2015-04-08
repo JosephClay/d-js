@@ -1,6 +1,6 @@
 var parseNum = require('util/parseInt'),
     isNumber = require('is/number'),
-    css     = require('./css');
+    css      = require('./css');
 
 var getInnerWidth = function(elem) {
         var width = parseFloat(css.width.get(elem)) || 0;

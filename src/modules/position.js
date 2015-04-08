@@ -7,16 +7,16 @@ var _        = require('_'),
     isObject   = require('is/object'),
     isNodeName = require('node/isName'),
 
-    _docElem = document.documentElement;
+    docElem = document.documentElement;
 
-var _getPosition = function(elem) {
+var getPosition = function(elem) {
     return {
         top: elem.offsetTop || 0,
         left: elem.offsetLeft || 0
     };
 };
 
-var _getOffset = function(elem) {
+var getOffset = function(elem) {
     var rect = isAttached(elem) ? elem.getBoundingClientRect() : {};
 
     return {
@@ -25,14 +25,14 @@ var _getOffset = function(elem) {
     };
 };
 
-var _setOffset = function(elem, idx, pos) {
+var setOffset = function(elem, idx, pos) {
     var position = elem.style.position || 'static',
         props    = {};
 
     // set position first, in-case top/left are set even on static elem
     if (position === 'static') { elem.style.position = 'relative'; }
 
-    var curOffset         = _getOffset(elem),
+    var curOffset         = getOffset(elem),
         curCSSTop         = elem.style.top,
         curCSSLeft        = elem.style.left,
         calculatePosition = (position === 'absolute' || position === 'fixed') && (curCSSTop === 'auto' || curCSSLeft === 'auto');
@@ -44,7 +44,7 @@ var _setOffset = function(elem, idx, pos) {
     var curTop, curLeft;
     // need to be able to calculate position if either top or left is auto and position is either absolute or fixed
     if (calculatePosition) {
-        var curPosition = _getPosition(elem);
+        var curPosition = getPosition(elem);
         curTop  = curPosition.top;
         curLeft = curPosition.left;
     } else {
@@ -65,7 +65,7 @@ module.exports = {
             var first = this[0];
             if (!first) { return; }
 
-            return _getPosition(first);
+            return getPosition(first);
         },
 
         offset: function(posOrIterator) {
@@ -73,13 +73,11 @@ module.exports = {
             if (!arguments.length) {
                 var first = this[0];
                 if (!first) { return; }
-                return _getOffset(first);
+                return getOffset(first);
             }
 
             if (isFunction(posOrIterator) || isObject(posOrIterator)) {
-                return _.each(this, function(elem, idx) {
-                    _setOffset(elem, idx, posOrIterator);
-                });
+                return _.each(this, (elem, idx) => setOffset(elem, idx, posOrIterator));
             }
 
             // fallback
@@ -89,13 +87,13 @@ module.exports = {
         offsetParent: function() {
             return D(
                 _.map(this, function(elem) {
-                    var offsetParent = elem.offsetParent || _docElem;
+                    var offsetParent = elem.offsetParent || docElem;
 
                     while (offsetParent && (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
                         offsetParent = offsetParent.offsetParent;
                     }
 
-                    return offsetParent || _docElem;
+                    return offsetParent || docElem;
                 })
             );
         }

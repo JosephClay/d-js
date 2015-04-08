@@ -1,26 +1,23 @@
 var SUPPORTS            = require('SUPPORTS'),
 
-    _ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?(?:=\s*(['"]?)(.*?[^\\]|[^\\]*))?\1\s*\]/g,
-    _PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
-    _CAPTURE_SELECT     = /(:[^\s^(]+)\(([^\)]+)\)/g,
+    ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?(?:=\s*(['"]?)(.*?[^\\]|[^\\]*))?\1\s*\]/g,
+    PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
+    CAPTURE_SELECT     = /(:[^\s^(]+)\(([^\)]+)\)/g,
+    pseudoCache        = require('cache')(),
+    proxySelectors     = require('./proxy'),
+    captureSelectors   = require('./capture');
 
-    _cache              = require('cache'),
-    _pseudoCache        = _cache(),
-
-    _proxySelectors     = require('../list/selectors-proxy'),
-    _captureSelectors   = require('../list/selectors-capture');
-
-var _getAttributePositions = function(str) {
+var getAttributePositions = function(str) {
     var pairs = [];
     // Not using return value. Simply using it to iterate
     // through all of the matches to populate match positions
-    str.replace(_ATTRIBUTE_SELECTOR, function(match, cap1, cap2, position) {
+    str.replace(ATTRIBUTE_SELECTOR, function(match, cap1, cap2, position) {
         pairs.push([ position, position + match.length ]);
     });
     return pairs;
 };
 
-var _isOutsideOfAttribute = function(position, positions) {
+var isOutsideOfAttribute = function(position, positions) {
     var idx = 0, length = positions.length;
     for (; idx < length; idx++) {
         var pos = positions[idx];
@@ -31,29 +28,29 @@ var _isOutsideOfAttribute = function(position, positions) {
     return true;
 };
 
-var _pseudoReplace = function(str, positions) {
-    return str.replace(_PSEUDO_SELECT, function(match, cap, position) {
-        if (!_isOutsideOfAttribute(position, positions)) { return match; }
+var pseudoReplace = function(str, positions) {
+    return str.replace(PSEUDO_SELECT, function(match, cap, position) {
+        if (!isOutsideOfAttribute(position, positions)) { return match; }
 
-        return _proxySelectors[match] ? _proxySelectors[match] : match;
+        return proxySelectors[match] ? proxySelectors[match] : match;
     });
 };
 
-var _captureReplace = function(str, positions) {
+var captureReplace = function(str, positions) {
     var captureSelector;
-    return str.replace(_CAPTURE_SELECT, function(match, cap, value, position) {
-        if (!_isOutsideOfAttribute(position, positions)) { return match; }
+    return str.replace(CAPTURE_SELECT, function(match, cap, value, position) {
+        if (!isOutsideOfAttribute(position, positions)) { return match; }
 
-        return (captureSelector = _captureSelectors[cap]) ? captureSelector.replace('x', value) : match;
+        return (captureSelector = captureSelectors[cap]) ? captureSelector.replace('x', value) : match;
     });
 };
 
-var _booleanSelectorReplace = SUPPORTS.selectedSelector ?
+var booleanSelectorReplace = SUPPORTS.selectedSelector ?
     // IE10+, modern browsers
     function(str) { return str; } :
     // IE8-9
     function(str) {
-        var positions = _getAttributePositions(str),
+        var positions = getAttributePositions(str),
             idx = positions.length,
             pos,
             selector;
@@ -70,10 +67,10 @@ var _booleanSelectorReplace = SUPPORTS.selectedSelector ?
     };
 
 module.exports = function(str) {
-    return _pseudoCache.has(str) ? _pseudoCache.get(str) : _pseudoCache.put(str, function() {
-        var attrPositions = _getAttributePositions(str);
-        str = _pseudoReplace(str, attrPositions);
-        str = _booleanSelectorReplace(str);
-        return _captureReplace(str, attrPositions);
+    return pseudoCache.has(str) ? pseudoCache.get(str) : pseudoCache.put(str, function() {
+        var attrPositions = getAttributePositions(str);
+        str = pseudoReplace(str, attrPositions);
+        str = booleanSelectorReplace(str);
+        return captureReplace(str, attrPositions);
     });
 };

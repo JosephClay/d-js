@@ -1,14 +1,13 @@
 d-js
 ====
 
-A jQuery replacement with a footprint of 16.93kB minified and gzipped vs the 29.59kB in jQuery;
+A jQuery replacement with a footprint of 17.4kB minified and gzipped vs the 29.59kB in jQuery.
 
-- Uses (xaja-js)[https://github.com/JosephClay/xaja-js] for ajax
-- `$.Deferred`s removed. Use (Promises)[https://github.com/then/promise]
-- Uses the Fizzle selector engine
+### Things of note
+# Promises
+No `$.Deferred`s. Use (Promises)[https://github.com/then/promise].
 
-
-## Custom Selectors
+# Custom Selectors
 Not supported
 - `:eq(index)`
 - `:gt(no)`
@@ -40,7 +39,10 @@ Supported
 - `:selected`
 - `:checked`
 
-## Events
+# Ajax
+Uses (xaja-js)[https://github.com/JosephClay/xaja-js] for ajax.
+
+# Events
 Events are handled by (crossvent)[https://github.com/bevacqua/crossvent] by (bevacqua)[https://github.com/bevacqua] and support the normal
 `.on`, `.off` and `.trigger` methods.
 
