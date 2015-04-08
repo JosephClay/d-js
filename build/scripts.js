@@ -2,6 +2,7 @@ var gulp       = require('gulp'),
     watchify   = require('watchify'),
     browserify = require('browserify'),
     babelify   = require('babelify'),
+    unpathify  = require('bundle-collapser/plugin'),
     source     = require('vinyl-source-stream'),
     log        = require('./log');
 
@@ -16,6 +17,10 @@ var build = function(opts) {
         .add(opts.src)
         .transform(babelify);
 
+    if (!opts.debug) {
+        stream = stream.plugin(unpathify);
+    }
+
     return {
         stream: stream,
 
@@ -28,7 +33,7 @@ var build = function(opts) {
 
             return {
                 stream: bundle,
-                
+
                 save: function() {
                     return bundle.pipe(gulp.dest(opts.dest));
                 }
