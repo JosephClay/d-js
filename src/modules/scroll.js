@@ -11,7 +11,6 @@ var getTop = (elem) => elem.scrollTop,
         elem.scrollTop = coerceNum(val);
     };
 
-// TODO: unit tests
 module.exports = {
     scrollLeft: function(val) {
         var elem = this[0],

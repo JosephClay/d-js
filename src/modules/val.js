@@ -159,7 +159,6 @@ module.exports = {
         val: function(value) {
             // getter
             if (!arguments.length) {
-                // TODO: Select first element node instead of index 0?
                 return getVal(this[0]);
             }
 

@@ -23,12 +23,7 @@ var _ = require('_'),
     classes     = require('./modules/classes'),
     data        = require('./modules/data'),
     events      = require('./modules/events'),
-    Fizzle      = require('./modules/Fizzle'),
-
-    xaja        = require('xaja-js');
-
-// Store previous reference
-var _prevD = window.D;
+    Fizzle      = require('./modules/Fizzle');
 
 var D = module.exports = function(selector, attrs) {
     return new Init(selector, attrs);
@@ -73,14 +68,9 @@ var Init = D.prototype.init = function(selector, attrs) {
 };
 Init.prototype = D.prototype;
 
-var _hasMoreConflict = false,
-    _prevjQuery,
-    _prev$;
-
 _.extend(D,
     parser.D,
     data.D,
-    xaja, // proxy ajax to xaja
 {
     Fizzle:  Fizzle,
     each:    array.each,
@@ -89,38 +79,16 @@ _.extend(D,
     map:     _.map,
     extend:  _.extend,
 
-    noConflict: function() {
-        if (_hasMoreConflict) {
-            window.jQuery = _prevjQuery;
-            window.$ = _prev$;
-
-            _hasMoreConflict = false;
-        }
-
-        window.D = _prevD;
-        return D;
-    },
-
     moreConflict: function() {
-        _hasMoreConflict = true;
-        _prevjQuery = window.jQuery;
-        _prev$ = window.$;
         window.jQuery = window.Zepto = window.$ = D;
     }
 });
 
-var arrayProto = (function(proto, obj) {
-
-    _.each(
-        split('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter'),
-        function(key) {
-            obj[key] = proto[key];
-        }
-    );
-
-    return obj;
-
-}(Array.prototype, {}));
+var arrayProto = split('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter')
+    .reduce(function(obj, key) {
+        obj[key] = Array.prototype[key];
+        return obj;
+    }, {});
 
 _.extend(
     D.prototype,

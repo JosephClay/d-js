@@ -65,7 +65,6 @@ module.exports = {
     filter: filter,
 
     fn: {
-        // TODO: Optimize this method
         has: function(target) {
             if (!isSelector(target)) { return this; }
 
@@ -181,7 +180,6 @@ module.exports = {
                 );
             }
         
-            // TODO: Filter with object? see _.find/_.findWhere
             if (isFunction(selector)) {
                 var checker = selector;
                 return D(

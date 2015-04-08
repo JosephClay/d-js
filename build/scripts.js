@@ -8,11 +8,11 @@ var gulp       = require('gulp'),
 
 var build = function(opts) {
     var stream = browserify({
-            debug:        !!opts.debug,
-            cache:        {},
-            packageCache: {},
-            paths:        opts.paths || [],
-            standalone:   opts.standalone || ''
+            debug:         !!opts.debug,
+            cache:         {},
+            packageCache:  {},
+            paths:         opts.paths || [],
+            standalone:    opts.standalone || ''
         })
         .add(opts.src)
         .transform(babelify);

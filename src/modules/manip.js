@@ -170,11 +170,48 @@ module.exports = {
             }
         },
 
-        // TODO: These methods
-        before: function() { return this; },
-        after: function() { return this; },
-        insertBefore: function() { return this; },
-        insertAfter: function() { return this; },
+        before: function(element) {
+            var target = this[0];
+            if (!target) { return this; }
+
+            var parent = target.parentNode;
+            if (!parent) { return this; }
+
+
+            if (isElement(element) || isString(element)) {
+                element = D(element);
+            }
+
+            if (isD(element)) {
+                element.each(function() {
+                    parent.insertBefore(this, target);
+                });
+            }
+
+            // fallback
+            return this;
+        },
+
+        after: function(element) {
+            var target = this[0];
+            if (!target) { return this; }
+
+            var parent = target.parentNode;
+            if (!parent) { return this; }
+
+            if (isElement(element) || isString(element)) {
+                element = D(element);
+            }
+
+            if (isD(element)) {
+                element.each(function() {
+                    parent.insertBefore(this, target.nextSibling);
+                });
+            }
+
+            // fallback
+            return this;
+        },
 
         appendTo: function(d) {
             if (isD(d)) {
