@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JosephClay/D.js.git"
+    "url": "https://github.com/JosephClay/d-js.git"
   },
   "author": {
     "name": "Joseph Clay",
@@ -52,7 +52,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JosephClay/D.js/issues"
+    "url": "https://github.com/JosephClay/d-js/issues"
   },
-  "homepage": "https://github.com/JosephClay/D.js"
+  "homepage": "https://github.com/JosephClay/d-js"
 }
