@@ -1,5 +1,5 @@
 var cache   = require('cache')(2),
-    isEmpty = require('./isEmpty'),
+    isEmpty = require('string/isEmpty'),
     isArray = require('is/array'),
 
     R_SPACE = /\s+/g,
