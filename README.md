@@ -3,20 +3,20 @@ d-js
 
 A jQuery replacement with a footprint of 14.89kB minified and gzipped vs the 29.59kB in jQuery. 
 Provides a smaller DOM library than jQuery that still works with common plugins...a nice 
-middleground between (dominus)[https://github.com/bevacqua/dominus] and jQuery.
+middleground between [dominus](https://github.com/bevacqua/dominus) and jQuery.
 
 `npm install d-js`
 
 ## Things of note
 
 ### Promises
-No `$.Deferred`s. Use (Promises)[https://github.com/then/promise].
+No `$.Deferred`s. Use [Promises](https://github.com/then/promise).
 
 ### Ajax
-Include your own ajax via (xaja-js)[https://github.com/JosephClay/xaja-js] if needed.
+Include your own ajax via [xaja-js](https://github.com/JosephClay/xaja-js) if needed.
 
 ### Events
-Events are handled by (crossvent)[https://github.com/bevacqua/crossvent] by (bevacqua)[https://github.com/bevacqua] and support the normal
+Events are handled by [crossvent](https://github.com/bevacqua/crossvent) by [bevacqua](https://github.com/bevacqua) and support the normal
 `.on`, `.off` and `.trigger` methods.
 
 No shorthand events
