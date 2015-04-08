@@ -20,12 +20,18 @@ var build = function(opts) {
         stream: stream,
 
         bundle: function() {
-            return stream.bundle()
+            var bundle = stream.bundle()
                 .on('error', log.event('error')(opts.file))
                 .on('end', log.event('end')(opts.file))
                 .on('time', log.time(1000))
-                .pipe(source(opts.file))
-                .pipe(gulp.dest(opts.dest));
+                .pipe(source(opts.file));
+
+            return {
+                stream: bundle,
+                save: function() {
+                    return bundle.pipe(gulp.dest(opts.dest));
+                }
+            };
         }
     };
 };
@@ -37,7 +43,9 @@ module.exports = {
 
     watch: function(opts) {
         var b = build(opts);
-        watchify(b.stream).on('update', b.bundle);
-        b.bundle();
+        watchify(b.stream).on('update', function() {
+            b.bundle().save();
+        });
+        b.bundle().save();
     }
 };
