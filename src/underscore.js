@@ -1,21 +1,10 @@
 var exists      = require('is/exists'),
-    isString    = require('is/string'),
     isArray     = require('is/array'),
     isArrayLike = require('is/arrayLike'),
     isNodeList  = require('is/nodeList'),
-    slice       = require('util/slice'),
-    isTruthy   = function(arg) { return !!arg; };
+    slice       = require('util/slice');
 
 var _ = module.exports = {
-    coerceToNum: function(val) {
-                // Its a number! || 0 to avoid NaN (as NaN's a number)
-        return +val === val ? (val || 0) :
-               // Avoid NaN again
-               isString(val) ? (+val || 0) :
-               // Default to zero
-               0;
-    },
-
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
         var result = [];
@@ -45,7 +34,6 @@ var _ = module.exports = {
 
     }([].concat)),
 
-    // No-context every; strip each()
     every: function(arr, iterator) {
         if (!exists(arr)) { return true; }
 
@@ -105,7 +93,7 @@ var _ = module.exports = {
     filter: function(arr, iterator) {
         var results = [];
         if (!arr || !arr.length) { return results; }
-        iterator = iterator || isTruthy;
+        iterator = iterator || (arg) => !!arg;
 
         var idx = 0, length = arr.length;
         for (; idx < length; idx++) {
@@ -179,7 +167,7 @@ var _ = module.exports = {
     },
 
     makeArray: function(arg) {
-        if (arg === null || arg === undefined) {
+        if (!exists(arg)) {
             return [];
         }
         if (arg.slice === slice) {
@@ -189,18 +177,6 @@ var _ = module.exports = {
             return slice(arg);
         }
         return [ arg ];
-    },
-
-    // Doesn't a very simple case of array to object.
-    // Takes the value and sets it as the key and the value.
-    object: function(arr) {
-        var obj = {},
-            len = arr.length,
-            idx = 0;
-        for (; idx < len; idx++) {
-            obj[arr[idx]] = arr[idx];
-        }
-        return obj;
     },
 
     contains: function(arr, item) {

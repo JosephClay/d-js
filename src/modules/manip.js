@@ -19,8 +19,7 @@ var _         = require('underscore'),
 
     _data     = require('./data'),
 
-    parser    = require('./parser/parser'),
-    utils     = require('../utils');
+    parser    = require('./parser/parser');
 
 var _empty = function(arr) {
         var idx = 0, length = arr.length;
@@ -81,7 +80,7 @@ var _empty = function(arr) {
 
             if (isString(result)) {
 
-                if (utils.isHTML(elem)) {
+                if (isHtml(elem)) {
                     _appendPrependArrayToElem(elem, parser.parseHtml(elem), pender);
                     return this;
                 }

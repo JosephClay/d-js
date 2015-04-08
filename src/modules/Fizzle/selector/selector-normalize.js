@@ -48,11 +48,11 @@ var _captureReplace = function(str, positions) {
     });
 };
 
-var _booleanSelectorReplace = SUPPORTS.selectedSelector
+var _booleanSelectorReplace = SUPPORTS.selectedSelector ?
     // IE10+, modern browsers
-    ? function(str) { return str; }
+    function(str) { return str; } :
     // IE8-9
-    : function(str) {
+    function(str) {
         var positions = _getAttributePositions(str),
             idx = positions.length,
             pos,

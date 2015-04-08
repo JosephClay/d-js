@@ -12,16 +12,10 @@ var _          = require('underscore'),
     isObject   = require('is/object'),
     isArray    = require('is/array'),
     parseNum   = require('util/parseInt'),
-
-    SUPPORTS    = require('SUPPORTS'),
     DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
+    REGEX      = require('REGEX');
 
-    _cache       = require('cache'),
-    _regex       = require('../regex'),
-
-    _cssKeyCache = _cache();
-
-var _swapSettings = {
+var swapSettings = {
     measureDisplay: {
         display: 'block',
         position: 'absolute',
@@ -29,7 +23,7 @@ var _swapSettings = {
     }
 };
 
-var _getDocumentDimension = function(elem, name) {
+var getDocumentDimension = function(elem, name) {
     // Either scroll[Width/Height] or offset[Width/Height] or
     // client[Width/Height], whichever is greatest
     var doc = elem.documentElement;
@@ -44,14 +38,14 @@ var _getDocumentDimension = function(elem, name) {
     );
 };
 
-var _hide = function(elem) {
+var hide = function(elem) {
         elem.style.display = 'none';
     },
-    _show = function(elem) {
+    show = function(elem) {
         elem.style.display = '';
     },
 
-    _cssSwap = function(elem, options, callback) {
+    cssSwap = function(elem, options, callback) {
         var old = {};
 
         // Remember the old values, and insert the new ones
@@ -71,13 +65,10 @@ var _hide = function(elem) {
         return ret;
     },
 
-    _getComputedStyle = (function() {
-        return SUPPORTS.getComputedStyle ?
-            // Avoids an 'Illegal Invocation' error (Chrome)
-            // Avoids a 'TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element' error (Firefox)
-            function(elem) { return isElement(elem) && !isWindow(elem) && !isDocument(elem) ? window.getComputedStyle(elem) : null; } :
-            function(elem) { return elem.currentStyle; };
-    }()),
+    // Avoids an 'Illegal Invocation' error (Chrome)
+    // Avoids a 'TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element' error (Firefox)
+    getComputedStyle = (elem) =>
+        isElement(elem) && !isWindow(elem) && !isDocument(elem) ? window.getComputedStyle(elem) : null,
 
     _width = {
          get: function(elem) {
@@ -86,21 +77,21 @@ var _hide = function(elem) {
             }
 
             if (elem.nodeType === DOCUMENT) {
-                return _getDocumentDimension(elem, 'Width');
+                return getDocumentDimension(elem, 'Width');
             }
 
             var width = elem.offsetWidth;
             if (width === 0) {
-                var computedStyle = _getComputedStyle(elem);
+                var computedStyle = getComputedStyle(elem);
                 if (!computedStyle) {
                     return 0;
                 }
-                if (_regex.display.isNoneOrTable(computedStyle.display)) {
-                    return _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'width'); });
+                if (REGEX.isNoneOrTable(computedStyle.display)) {
+                    return cssSwap(elem, swapSettings.measureDisplay, function() { return getWidthOrHeight(elem, 'width'); });
                 }
             }
 
-            return _getWidthOrHeight(elem, 'width');
+            return getWidthOrHeight(elem, 'width');
         },
         set: function(elem, val) {
             elem.style.width = isNumber(val) ? toPx(val < 0 ? 0 : val) : val;
@@ -114,21 +105,21 @@ var _hide = function(elem) {
             }
 
             if (elem.nodeType === DOCUMENT) {
-                return _getDocumentDimension(elem, 'Height');
+                return getDocumentDimension(elem, 'Height');
             }
 
             var height = elem.offsetHeight;
             if (height === 0) {
-                var computedStyle = _getComputedStyle(elem);
+                var computedStyle = getComputedStyle(elem);
                 if (!computedStyle) {
                     return 0;
                 }
-                if (_regex.display.isNoneOrTable(computedStyle.display)) {
-                    return _cssSwap(elem, _swapSettings.measureDisplay, function() { return _getWidthOrHeight(elem, 'height'); });
+                if (REGEX.isNoneOrTable(computedStyle.display)) {
+                    return cssSwap(elem, swapSettings.measureDisplay, function() { return getWidthOrHeight(elem, 'height'); });
                 }
             }
 
-            return _getWidthOrHeight(elem, 'height');
+            return getWidthOrHeight(elem, 'height');
         },
 
         set: function(elem, val) {
@@ -136,12 +127,12 @@ var _hide = function(elem) {
         }
     };
 
-var _getWidthOrHeight = function(elem, name) {
+var getWidthOrHeight = function(elem, name) {
 
     // Start with offset property, which is equivalent to the border-box value
     var valueIsBorderBox = true,
         val = (name === 'width') ? elem.offsetWidth : elem.offsetHeight,
-        styles = _getComputedStyle(elem),
+        styles = getComputedStyle(elem),
         isBorderBox = styles.boxSizing === 'border-box';
 
     // some non-html elements return undefined for offsetWidth, so check for null/undefined
@@ -149,11 +140,11 @@ var _getWidthOrHeight = function(elem, name) {
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
     if (val <= 0 || !exists(val)) {
         // Fall back to computed then uncomputed css if necessary
-        val = _curCss(elem, name, styles);
+        val = curCss(elem, name, styles);
         if (val < 0 || !val) { val = elem.style[name]; }
 
         // Computed unit is not pixels. Stop here and return.
-        if (_regex.numNotPx(val)) { return val; }
+        if (REGEX.numNotPx(val)) { return val; }
 
         // we need the check for style in case a browser which returns unreliable values
         // for getComputedStyle silently falls back to the reliable elem.style
@@ -175,7 +166,7 @@ var _getWidthOrHeight = function(elem, name) {
     );
 };
 
-var _CSS_EXPAND = split('Top|Right|Bottom|Left');
+var CSS_EXPAND = split('Top|Right|Bottom|Left');
 var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, styles) {
     var val = 0,
         // If we already have the right measurement, avoid augmentation
@@ -192,7 +183,7 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
         extraIsPadding = (!extraIsMargin && !extraIsContent && extra === 'padding');
 
     for (; idx < 4; idx += 2) {
-        type = _CSS_EXPAND[idx];
+        type = CSS_EXPAND[idx];
 
         // both box models exclude margin, so add it if we want it
         if (extraIsMargin) {
@@ -226,16 +217,14 @@ var _augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, st
     return val;
 };
 
-var _getPropertyValue = (function() {
-    return SUPPORTS.getPropertyValue ? function(styles, name) { return styles.getPropertyValue(name); } :
-           SUPPORTS.getAttribute     ? function(styles, name) { return styles.getAttribute(name); } :
-                                        function(styles, name) { return styles[name]; };
-}());
+var getPropertyValue = function(styles, name) {
+    return styles.getPropertyValue(name);
+};
 
-var _curCss = function(elem, name, computed) {
+var curCss = function(elem, name, computed) {
     var style = elem.style,
-        styles = computed || _getComputedStyle(elem),
-        ret = styles ? _getPropertyValue(styles, name) || styles[name] : undefined;
+        styles = computed || getComputedStyle(elem),
+        ret = styles ? getPropertyValue(styles, name) || styles[name] : undefined;
 
     // Avoid setting ret to empty string here
     // so we don't default to auto
@@ -253,7 +242,7 @@ var _curCss = function(elem, name, computed) {
         // but a number that has a weird ending, we need to convert it to pixels
         // but not position css attributes, as those are proportional to the parent element instead
         // and we can't measure the parent instead because it might trigger a 'stacking dolls' problem
-        if (_regex.numNotPx(ret) && !_regex.position(name)) {
+        if (REGEX.numNotPx(ret) && !REGEX.position(name)) {
 
             // Remember the original values
             var left = style.left,
@@ -275,75 +264,21 @@ var _curCss = function(elem, name, computed) {
     return ret === undefined ? ret : ret + '' || 'auto';
 };
 
-var _hooks = {
-    opacity: SUPPORTS.opacity ? {} : {
-        get: function(elem) {
-            // IE uses filters for opacity
-            var style = SUPPORTS.currentStyle ? elem.currentStyle.filter : elem.style.filter;
-            return _regex.opacity.test(style || '') ?
-                        (0.01 * parseFloat(RegExp.$1)) + '' :
-                            '1';
-        },
-
-        set: function(elem, value) {
-            var style = elem.style,
-                currentStyle = elem.currentStyle,
-                filter = currentStyle && currentStyle.filter || style.filter || '';
-
-            // if setting opacity to 1, and no other filters exist - remove the filter attribute
-            if (value >= 1 || value === '' && filter.replace(_regex.alpha, '').trim() === '') {
-
-                // Setting style.filter to null, '' & ' ' still leave 'filter:' in the cssText
-                // if 'filter:' is present at all, clearType is disabled, we want to avoid this
-                // style.removeAttribute is IE Only, but so apparently is this code path...
-                style.removeAttribute('filter');
-
-                // if there is no filter style applied in a css rule or unset inline opacity, we are done
-                if (value === '' || SUPPORTS.currentStyle && !currentStyle.filter) { return; }
-            }
-
-            // IE has trouble with opacity if it does not have layout
-            // Force it by setting the zoom level.. but only if we're
-            // applying a value (below)
-            style.zoom = 1;
-
-            // Only calculate the opacity if we're setting a value (below)
-            var opacity = (isNumber(value) ? 'alpha(opacity=' + (value * 100) + ')' : '');
-
-            style.filter = _regex.alpha.test(filter) ?
-                // replace 'alpha(opacity)' in the filter definition
-                filter.replace(_regex.alpha, opacity) :
-                // append 'alpha(opacity)' to the current filter definition
-                filter + ' ' + opacity;
-        }
-    }
+var normalizeCssKey = function(name) {
+    return REGEX.camelCase(name);
 };
 
-var _normalizeCssKey = function(name) {
-    return _cssKeyCache.get(name) || _cssKeyCache.set(name, _regex.camelCase(name));
-};
-
-var _setStyle = function(elem, name, value) {
-    name = _normalizeCssKey(name);
-
-    if (_hooks[name] && _hooks[name].set) {
-        return _hooks[name].set(elem, value);
-    }
-
+var setStyle = function(elem, name, value) {
+    name = normalizeCssKey(name);
     elem.style[name] = (value === +value) ? toPx(value) : value;
 };
 
-var _getStyle = function(elem, name) {
-    name = _normalizeCssKey(name);
-
-    if (_hooks[name] && _hooks[name].get) {
-        return _hooks[name].get(elem);
-    }
-
-    return _getComputedStyle(elem)[name];
+var getStyle = function(elem, name) {
+    name = normalizeCssKey(name);
+    return getComputedStyle(elem)[name];
 };
 
-var _isHidden = function(elem) {
+var isHidden = function(elem) {
             // Standard:
             // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement.offsetParent
     return elem.offsetParent === null ||
@@ -355,10 +290,9 @@ var _isHidden = function(elem) {
 };
 
 module.exports = {
-    swap             : _cssSwap,
-    swapSetting      : _swapSettings,
-    getComputedStyle : _getComputedStyle,
-    curCss           : _curCss,
+    swap             : cssSwap,
+    swapSetting      : swapSettings,
+    curCss           : curCss,
 
     width            : _width,
     height           : _height,
@@ -368,7 +302,7 @@ module.exports = {
             if (arguments.length === 2) {
                 var idx = 0, length = this.length;
                 for (; idx < length; idx++) {
-                    _setStyle(this[idx], name, value);
+                    setStyle(this[idx], name, value);
                 }
                 return this;
             }
@@ -379,7 +313,7 @@ module.exports = {
                     key;
                 for (; idx < length; idx++) {
                     for (key in obj) {
-                        _setStyle(this[idx], key, obj[key]);
+                        setStyle(this[idx], key, obj[key]);
                     }
                 }
                 return this;
@@ -398,7 +332,7 @@ module.exports = {
                 while (idx--) {
                     value = arr[idx];
                     if (!isString(value)) { return; }
-                    ret[value] = _getStyle(first);
+                    ret[value] = getStyle(first);
                 }
 
                 return ret;
@@ -409,10 +343,10 @@ module.exports = {
         },
 
         hide: function() {
-            return _.each(this, _hide);
+            return _.each(this, hide);
         },
         show: function() {
-            return _.each(this, _show);
+            return _.each(this, show);
         },
 
         toggle: function(state) {
@@ -420,14 +354,7 @@ module.exports = {
                 return state ? this.show() : this.hide();
             }
 
-            // TODO: address elem/this
-            return _.each(this, function(elem) {
-                if (_isHidden(this)) {
-                    return _show(this);
-                }
-
-                _hide(this);
-            });
+            return _.each(this, (elem) => isHidden(elem) ? show(elem) : hide(elem));
         }
     }
 };

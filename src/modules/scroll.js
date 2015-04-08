@@ -1,14 +1,14 @@
-var _ = require('underscore'),
-    exists = require('is/exists');
+var coerceNum = require('util/coerceNum'),
+    exists    = require('is/exists');
 
 var getTop = (elem) => elem.scrollTop,
     setTop = function(elem, val) {
-        elem.scrollTop = _.coerceToNum(val);
+        elem.scrollTop = coerceNum(val);
     },
 
     getLeft = (elem) => elem.scrollTop,
     setLeft = function(elem, val) {
-        elem.scrollTop = _.coerceToNum(val);
+        elem.scrollTop = coerceNum(val);
     };
 
 // TODO: Write unit tests for these

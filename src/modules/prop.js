@@ -1,32 +1,24 @@
 var _          = require('underscore'),
-
     isString   = require('is/string'),
     isFunction = require('is/function'),
     parseNum   = require('util/parseInt'),
+    split      = require('util/split'),
     SUPPORTS   = require('SUPPORTS'),
     TEXT       = require('NODE_TYPE/TEXT'),
     COMMENT    = require('NODE_TYPE/COMMENT'),
     ATTRIBUTE  = require('NODE_TYPE/ATTRIBUTE'),
+    REGEX      = require('REGEX');
 
-    _regex     = require('../regex');
+var propFix = split('tabIndex|readOnly|className|maxLength|cellSpacing|cellPadding|rowSpan|colSpan|useMap|frameBorder|contentEditable')
+    .reduce(function(obj, str) {
+        obj[str.toLowerCase()] = str;
+        return obj;
+    }, {
+        'for': 'htmlFor',
+        'class': 'className'
+    });
 
-// TODO: Dynamically generate for smaller footprint
-var _propFix = {
-    'tabindex'        : 'tabIndex',
-    'readonly'        : 'readOnly',
-    'for'             : 'htmlFor',
-    'class'           : 'className',
-    'maxlength'       : 'maxLength',
-    'cellspacing'     : 'cellSpacing',
-    'cellpadding'     : 'cellPadding',
-    'rowspan'         : 'rowSpan',
-    'colspan'         : 'colSpan',
-    'usemap'          : 'useMap',
-    'frameborder'     : 'frameBorder',
-    'contenteditable' : 'contentEditable'
-};
-
-var _propHooks = {
+var propHooks = {
     src: SUPPORTS.hrefNormalized ? {} : {
         get: function(elem) {
             return elem.getAttribute('src', 4);
@@ -69,12 +61,12 @@ var _propHooks = {
             if (tabindex) { return parseNum(tabindex); }
 
             var nodeName = elem.nodeName;
-            return (_regex.type.isFocusable(nodeName) || (_regex.type.isClickable(nodeName) && elem.href)) ? 0 : -1;
+            return (REGEX.isFocusable(nodeName) || (REGEX.isClickable(nodeName) && elem.href)) ? 0 : -1;
         }
     }
 };
 
-var _getOrSetProp = function(elem, name, value) {
+var getOrSetProp = function(elem, name, value) {
     var nodeType = elem.nodeType;
 
     // don't get/set properties on text, comment and attribute nodes
@@ -83,8 +75,8 @@ var _getOrSetProp = function(elem, name, value) {
     }
 
     // Fix name and attach hooks
-    name = _propFix[name] || name;
-    var hooks = _propHooks[name];
+    name = propFix[name] || name;
+    var hooks = propHooks[name];
 
     var result;
     if (value !== undefined) {
@@ -105,19 +97,19 @@ module.exports = {
                 var first = this[0];
                 if (!first) { return; }
 
-                return _getOrSetProp(first, prop);
+                return getOrSetProp(first, prop);
             }
 
             if (isString(prop)) {
                 if (isFunction(value)) {
                     var fn = value;
                     return _.each(this, function(elem, idx) {
-                        var result = fn.call(elem, idx, _getOrSetProp(elem, prop));
-                        _getOrSetProp(elem, prop, result);
+                        var result = fn.call(elem, idx, getOrSetProp(elem, prop));
+                        getOrSetProp(elem, prop, result);
                     });
                 }
 
-                return _.each(this, (elem) => _getOrSetProp(elem, prop, value));
+                return _.each(this, (elem) => getOrSetProp(elem, prop, value));
             }
 
             // fallback
@@ -127,7 +119,7 @@ module.exports = {
         removeProp: function(prop) {
             if (!isString(prop)) { return this; }
 
-            var name = _propFix[prop] || prop;
+            var name = propFix[prop] || prop;
             return _.each(this, function(elem) {
                 delete elem[name];
             });

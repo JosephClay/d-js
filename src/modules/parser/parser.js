@@ -1,5 +1,4 @@
-var _regex = require('../../regex'),
-
+var REGEX = require('REGEX'),
     MAX_SINGLE_TAG_LENGTH = 30;
 
 var parseString = function(parentTagName, htmlStr) {
@@ -11,7 +10,7 @@ var parseString = function(parentTagName, htmlStr) {
 var _parseSingleTag = function(htmlStr) {
     if (htmlStr.length > MAX_SINGLE_TAG_LENGTH) { return null; }
 
-    var singleTagMatch = _regex.singleTagMatch(htmlStr);
+    var singleTagMatch = REGEX.singleTagMatch(htmlStr);
     if (!singleTagMatch) { return null; }
 
     var elem = document.createElement(singleTagMatch[1]);
@@ -23,7 +22,7 @@ var _parse = function(htmlStr) {
     var singleTag = _parseSingleTag(htmlStr);
     if (singleTag) { return singleTag; }
 
-    var parentTagName = _regex.getParentTagName(htmlStr),
+    var parentTagName = REGEX.getParentTagName(htmlStr),
         parent        = parseString(parentTagName, htmlStr);
 
     var child,
