@@ -2,20 +2,20 @@ d-js
 ====
 
 A jQuery replacement with a footprint of 14.89kB minified and gzipped vs the 29.59kB in jQuery. 
-Provides a smaller DOM library than jQuery that still works with common plugins...a nice 
-middleground between [dominus](https://github.com/bevacqua/dominus) and jQuery.
+Made to be a dropin that still works with common jQuery plugins...a nice middleground between 
+[dominus](https://github.com/bevacqua/dominus) and [jQuery](http://jquery.com/).
 
 `npm install d-js`
 
 ## Things of note
 
-### Promises
+#### Promises
 No `$.Deferred`s. Use [Promises](https://github.com/then/promise).
 
-### Ajax
+#### Ajax
 Include your own ajax via [xaja-js](https://github.com/JosephClay/xaja-js) if needed.
 
-### Events
+#### Events
 Events are handled by [crossvent](https://github.com/bevacqua/crossvent) by [bevacqua](https://github.com/bevacqua) and support the normal
 `.on`, `.off` and `.trigger` methods.
 
@@ -26,16 +26,16 @@ No shorthand events
 d().on('click', doSomething);
 ```
 
-### Data
+#### Data
 Does not get data atttributes from the element
 
-### Animations
+#### Animations
 None, there are plenty of good non-jquery alternatives.
 
-### More conflict
+#### More conflict
 `.moreConflict()` to easily overwrite jQuery, $ and Zepto.
 
-### Custom Selectors
+#### Custom Selectors
 Supported!
 - `:not(selector)`
 - `:empty`
@@ -67,11 +67,15 @@ Not supported:
 - `:header`
 - `:input`
 
+## Tests
+Clone the repo, run `npm test` and navigate to test/unit.html
+
 ## TODO
+- more tests
 - try to get a smaller build with the same feature set
 - identify any missing or non-working methods
 - `.insertBefore` and `.insertAfter`
-- more features if necessary
+- namespaces for events
 
 #License
 
