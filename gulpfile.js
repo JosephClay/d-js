@@ -1,6 +1,4 @@
 var gulp      = require('gulp'),
-    rename    = require('gulp-rename'),
-    header    = require('gulp-header'),
     uglify    = require('gulp-uglify'),
     streamify = require('gulp-streamify'),
     size      = require('gulp-size'),
@@ -23,37 +21,46 @@ var extended = [
 
 var succint = '// <%= pkg.name %>@v<%= pkg.version %>, <%= pkg.license %> licensed. <%= pkg.homepage %>\n';
 
-var config = {
-    src:        './src/index.js',
-    paths:      ['./src'],
-    standalone: 'D',
-    file:       'D.js',
-    dest:       './dist'
-};
-
 gulp.task('build', function() {
-    return scripts.build(config).save();
+    return scripts.build({
+            debug:      true,
+            src:        './src/index.js',
+            paths:      ['./src'],
+            standalone: 'D',
+            file:       'd.js',
+            dest:       './dist'
+        }).stream
+        .pipe(header(extended))
+        .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('release', function(done) {
-    return scripts.build(config)
-        .stream
-        .pipe(header(extended))
-        .pipe(gulp.dest('./dist'))
-        .pipe(streamify(rename('d.min.js')))
+gulp.task('minify', function() {
+    return scripts.build({
+            debug:      false,
+            src:        './src/index.js',
+            paths:      ['./src'],
+            standalone: 'D',
+            file:       'd.min.js'
+        }).stream
         .pipe(streamify(uglify()))
         .pipe(header(succint))
         .pipe(streamify(size()))
-        .pipe(gulp.dest('./dist'))
-        .on('end', footprint.bind(null, done));
+        .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('dev', function() {
-    scripts.watch(config);
+    scripts.watch({
+        debug:      true,
+        src:        './src/index.js',
+        paths:      ['./src'],
+        standalone: 'D',
+        file:       'd.js',
+        dest:       './dist'
+    });
 });
 
 gulp.task('clean', clean('./dist'));
 gulp.task('footprint', footprint);
-gulp.task('build', ['clean', 'build']);
 gulp.task('bump', bump);
-gulp.task('default', ['build']);
+gulp.task('default', ['clean', 'build']);
+gulp.task('release', ['clean', 'build', 'minify']);

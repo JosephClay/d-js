@@ -7,7 +7,7 @@ var gulp       = require('gulp'),
 
 var build = function(opts) {
     var stream = browserify({
-            debug:        true,
+            debug:        !!opts.debug,
             cache:        {},
             packageCache: {},
             paths:        opts.paths || [],
@@ -28,6 +28,7 @@ var build = function(opts) {
 
             return {
                 stream: bundle,
+                
                 save: function() {
                     return bundle.pipe(gulp.dest(opts.dest));
                 }
