@@ -14,7 +14,7 @@ var propFix = split('tabIndex|readOnly|className|maxLength|cellSpacing|cellPaddi
         obj[str.toLowerCase()] = str;
         return obj;
     }, {
-        'for': 'htmlFor',
+        'for':   'htmlFor',
         'class': 'className'
     });
 
