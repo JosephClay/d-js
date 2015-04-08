@@ -1,3 +1,2 @@
-module.exports = function(elem, name) {
-    return elem.nodeName.toLowerCase() === name.toLowerCase();
-};
+module.exports = (elem, name) =>
+    elem.nodeName.toLowerCase() === name.toLowerCase();

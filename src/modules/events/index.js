@@ -1,4 +1,4 @@
-var _          = require('underscore'),
+var _          = require('_'),
     isFunction = require('is/function'),
     delegate   = require('./delegate'),
     custom     = require('./custom');

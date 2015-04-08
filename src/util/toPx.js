@@ -1,3 +1,1 @@
-module.exports = function(num) {
-    return num + 'px';
-};
+module.exports = (value) => value + 'px';

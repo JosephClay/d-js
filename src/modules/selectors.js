@@ -1,4 +1,4 @@
-var _        = require('underscore'),
+var _        = require('_'),
 
     isSelector   = require('is/selector'),
     isCollection = require('is/collection'),

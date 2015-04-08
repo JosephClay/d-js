@@ -1,4 +1,4 @@
-var _          = require('underscore'),
+var _          = require('_'),
     toPx       = require('util/toPx'),
     split      = require('util/split'),
     exists     = require('is/exists'),

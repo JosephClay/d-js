@@ -1,4 +1,5 @@
-var slice = [].slice;
+var slice = Array.prototype.slice;
+
 module.exports = function(arr, start, end) {
     // Exit early for empty array
     if (!arr || !arr.length) { return []; }

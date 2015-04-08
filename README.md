@@ -1,7 +1,7 @@
 d-js
 ====
 
-A jQuery replacement with a footprint of 17.45kB minified and gzipped vs the 29.59kB in jQuery;
+A jQuery replacement with a footprint of 16.93kB minified and gzipped vs the 29.59kB in jQuery;
 
 - Uses (xaja-js)[https://github.com/JosephClay/xaja-js] for ajax
 - `$.Deferred`s removed. Use (Promises)[https://github.com/then/promise]

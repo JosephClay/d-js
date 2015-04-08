@@ -1,4 +1,4 @@
-var _           = require('underscore'),
+var _           = require('_'),
 
     ELEMENT            = require('NODE_TYPE/ELEMENT'),
     COMMENT            = require('NODE_TYPE/COMMENT'),

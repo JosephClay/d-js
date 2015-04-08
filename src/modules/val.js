@@ -1,4 +1,4 @@
-var _          = require('underscore'),
+var _          = require('_'),
     newlines   = require('string/newlines'),
     exists     = require('is/exists'),
     isString   = require('is/string'),

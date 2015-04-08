@@ -1,3 +1,1 @@
-module.exports = function(num) {
-    return parseInt(num, 10);
-};
+module.exports = (num) => parseInt(num, 10);

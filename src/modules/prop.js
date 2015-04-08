@@ -1,4 +1,4 @@
-var _          = require('underscore'),
+var _          = require('_'),
     isString   = require('is/string'),
     isFunction = require('is/function'),
     parseNum   = require('util/parseInt'),

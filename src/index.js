@@ -1,4 +1,4 @@
-var _ = require('underscore'),
+var _ = require('_'),
 
     split      = require('util/split'),
     isArray    = require('is/array'),
@@ -30,7 +30,7 @@ var _ = require('underscore'),
 // Store previous reference
 var _prevD = window.D;
 
-var D = function(selector, attrs) {
+var D = module.exports = function(selector, attrs) {
     return new Init(selector, attrs);
 };
 
@@ -144,5 +144,3 @@ _.extend(
 // Expose the prototype so that
 // it can be hooked into for plugins
 D.fn = D.prototype;
-
-module.exports = D;
