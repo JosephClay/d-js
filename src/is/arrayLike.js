@@ -6,21 +6,21 @@ var exists      = require('is/exists'),
     isNumber    = require('is/number');
 
 // TODO: Can this be simplified down to a straight +length === length?
-module.exports = function(obj) {
-    if (!exists(obj) || isString(obj)) {
+module.exports = function(value) {
+    if (!exists(value) || isString(value)) {
         return false;
     }
 
-    if (isArray(obj)) {
+    if (isArray(value)) {
         return true;
     }
-    if (isNodeList(obj)) {
+    if (isNodeList(value)) {
         return true;
     }
-    if (isArguments(obj)) {
+    if (isArguments(value)) {
         return true;
     }
-    if (isNumber(obj.length) && ('0' in obj)) {
+    if (isNumber(value.length) && ('0' in value)) {
         return true;
     }
     return false;

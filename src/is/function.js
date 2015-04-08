@@ -1,1 +1,1 @@
-module.exports = require('lodash/lang/isFunction');
+module.exports = (value) => value && typeof value === 'function';

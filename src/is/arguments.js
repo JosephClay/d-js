@@ -1,1 +1,3 @@
-module.exports = require('lodash/lang/isArguments');
+var toString = require('string/toString');
+
+module.exports = (value) => toString(value) === '[object Arguments]';

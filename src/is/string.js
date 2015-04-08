@@ -1,1 +1,1 @@
-module.exports = require('lodash/lang/isString');
+module.exports = (value) => typeof value === 'string';

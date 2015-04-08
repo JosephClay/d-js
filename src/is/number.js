@@ -1,1 +1,1 @@
-module.exports = require('lodash/lang/isNumber');
+module.exports = (value) => typeof value === 'number';

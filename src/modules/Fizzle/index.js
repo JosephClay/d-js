@@ -24,6 +24,8 @@ var _toSelectors = function(str) {
 };
 
 module.exports = {
+    parse: parse,
+    
     query: function(str) {
         return queryCache.has(str) ? 
             queryCache.get(str) : 

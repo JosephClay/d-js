@@ -82,6 +82,7 @@ _.extend(D,
     data.D,
     xaja, // proxy ajax to xaja
 {
+    Fizzle:  Fizzle,
     each:    array.each,
     forEach: array.each,
 

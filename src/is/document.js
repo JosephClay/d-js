@@ -1,3 +1,1 @@
-module.exports = function(obj) {
-    return obj && obj === document;
-};
+module.exports = (value) => value && value === document;

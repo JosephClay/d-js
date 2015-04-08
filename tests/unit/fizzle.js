@@ -120,7 +120,7 @@
         ]
     };
 
-    var parser = D.__INTERNAL.fizzle.selector.parser;
+    var parser = D.Fizzle.parse;
 
     var testQuery = function(expectedArray) {
         var expected = expectedArray.join(', '),

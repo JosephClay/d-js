@@ -1,3 +1,1 @@
-module.exports = function(val) {
-    return val && val instanceof D;
-};
+module.exports = (value) => value && value instanceof D;
