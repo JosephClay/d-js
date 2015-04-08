@@ -6,6 +6,7 @@ var DIV    = require('DIV'),
 
 var test = function(tagName, testFn) {
     // Avoid variable references to elements to prevent memory leaks in IE.
+    // Avoid variable references to elements to prevent memory leaks in IE.
     return testFn(document.createElement(tagName));
 };
 

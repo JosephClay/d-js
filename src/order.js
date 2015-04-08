@@ -1,9 +1,10 @@
 var isAttached   = require('is/attached'),
     ELEMENT      = require('NODE_TYPE/ELEMENT'),
-    CONTAINED_BY = require('DOC_POS/CONTAINED_BY'),
-    FOLLOWING    = require('DOC_POS/FOLLOWING'),
-    DISCONNECTED = require('DOC_POS/DISCONNECTED'),
-    CONTAINED_BY = require('DOC_POS/CONTAINED_BY');
+    // http://ejohn.org/blog/comparing-document-position/
+    // https://developer.mozilla.org/en-US/docs/Web/API/Node.compareDocumentPosition
+    CONTAINED_BY = 16,
+    FOLLOWING    = 4,
+    DISCONNECTED = 1;
 
 var is = (rel, flag) => (rel & flag) === flag;
 
