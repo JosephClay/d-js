@@ -22,7 +22,6 @@ Events are handled by [crossvent](https://github.com/bevacqua/crossvent) by [bev
 No shorthand events
 ```
 // don't use d().click(doSomething);
-// use:
 d().on('click', doSomething);
 ```
 
@@ -68,7 +67,7 @@ Not supported:
 - `:input`
 
 ## Tests
-Clone the repo, run `npm test` and navigate to test/unit.html
+Clone the repo, run `npm test` and navigate to `test/unit.html`
 
 ## TODO
 - more tests
