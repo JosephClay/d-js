@@ -28,7 +28,6 @@ var build = function(opts) {
             var bundle = stream.bundle()
                 .on('error', log.event('error')(opts.file))
                 .on('end', log.event('end')(opts.file))
-                .on('time', log.time(1000))
                 .pipe(source(opts.file));
 
             return {
@@ -51,7 +50,7 @@ module.exports = {
         var b = build(opts);
         watchify(b.stream).on('update', function() {
             b.bundle().save();
-        });
+        }).on('time', log.time(1000));
         b.bundle().save();
     }
 };
