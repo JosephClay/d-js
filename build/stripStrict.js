@@ -3,7 +3,8 @@ var gutil   = require('gulp-util'),
     NAME    = 'gulp-stripStrict';
 
 var replace = function(file) {
-    file.replace(/\"use strict\"/g, '');
+    return file.replace(/\"use strict\"\;/gi, '')
+        .replace(/\'use strict\'\;/gi, '');
 };
 
 module.exports = function() {

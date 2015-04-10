@@ -10,7 +10,9 @@ var _          = require('_'),
     SUPPORTS   = require('SUPPORTS'),
     ELEMENT    = require('NODE_TYPE/ELEMENT');
 
-var outerHtml = () => this.length ? this[0].outerHTML : null,
+var outerHtml = function() {
+        return this.length ? this[0].outerHTML : null;
+    },
 
     textGet = SUPPORTS.textContent ?
         (elem) => elem.textContent :

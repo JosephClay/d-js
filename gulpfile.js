@@ -3,6 +3,9 @@ var gulp      = require('gulp'),
     streamify = require('gulp-streamify'),
     size      = require('gulp-size'),
     
+    undefToVoid = require('./build/undefToVoid'),
+    stripStrict = require('./build/stripStrict'),
+
     clean     = require('./build/clean'),
     scripts   = require('./build/scripts'),
     footprint = require('./build/footprint'),
@@ -44,6 +47,8 @@ gulp.task('minify', function() {
             standalone: 'D',
             file:       'd.min.js'
         }).stream
+        .pipe(streamify(undefToVoid()))
+        .pipe(streamify(stripStrict()))
         .pipe(streamify(uglify(UGLIFY_OPTS)))
         .pipe(header(succint))
         .pipe(streamify(size()))

@@ -3,7 +3,7 @@ var gutil   = require('gulp-util'),
     NAME    = 'gulp-undefToVoid';
 
 var replace = function(file) {
-    file.replace(/ undefined/g, ' void 0');
+    return file.replace(/ undefined/g, ' void 0');
 };
 
 module.exports = function() {
