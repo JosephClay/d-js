@@ -1,14 +1,12 @@
-var _ = require('_'),
-
-    isArray    = require('is/array'),
-    isHtml     = require('is/html'),
-    isString   = require('is/string'),
-    isNodeList = require('is/nodeList'),
-    isFunction = require('is/function'),
-    isD        = require('is/D'),
-
+var _           = require('_'),
+    isArray     = require('is/array'),
+    isHtml      = require('is/html'),
+    isString    = require('is/string'),
+    isNodeList  = require('is/nodeList'),
+    isFunction  = require('is/function'),
+    isD         = require('is/D'),
     parser      = require('parser'),
-    onready     = require('modules/onready'),
+    onready     = require('onready'),
     Fizzle      = require('Fizzle');
 
 var D = module.exports = function(selector, attrs) {
@@ -43,6 +41,7 @@ var Init = function(selector, attrs) {
     }
 
     // Array of Elements, NodeList, or D object
+    // TODO: Could this be arrayLike?
     if (isArray(selector) || isNodeList(selector) || isD(selector)) {
         _.merge(this, selector);
         return this;

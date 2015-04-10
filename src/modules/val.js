@@ -8,16 +8,15 @@ var _          = require('_'),
     isNodeName = require('node/isName'),
     normalName = require('node/normalizeName'),
     SUPPORTS   = require('SUPPORTS'),
-    ELEMENT    = require('NODE_TYPE/ELEMENT'),
-    DIV        = require('DIV');
+    ELEMENT    = require('NODE_TYPE/ELEMENT');
 
 var outerHtml = () => this.length ? this[0].outerHTML : null,
 
-    textGet = DIV.textContent !== undefined ?
+    textGet = SUPPORTS.textContent ?
         (elem) => elem.textContent :
             (elem) => elem.innerText,
 
-    textSet = DIV.textContent !== undefined ?
+    textSet = SUPPORTS.textContent ?
         (elem, str) => elem.textContent = str :
             (elem, str) => elem.innerText = str;
 
@@ -135,69 +134,67 @@ var setVal = function(elem, val) {
     }
 };
 
-module.exports = {
-    fn: {
-        outerHtml: outerHtml,
-        outerHTML: outerHtml,
+exports.fn = {
+    outerHtml: outerHtml,
+    outerHTML: outerHtml,
 
-        html: function(html) {
-            if (isString(html)) {
-                return _.each(this, (elem) => elem.innerHTML = html);
-            }
-
-            if (isFunction(html)) {
-                var iterator = html;
-                return _.each(this, (elem, idx) =>
-                    elem.innerHTML = iterator.call(elem, idx, elem.innerHTML)
-                );
-            }
-
-            var first = this[0];
-            return (!first) ? undefined : first.innerHTML;
-        },
-
-        val: function(value) {
-            // getter
-            if (!arguments.length) {
-                return getVal(this[0]);
-            }
-
-            if (!exists(value)) {
-                return _.each(this, (elem) => setVal(elem, ''));
-            }
-
-            if (isFunction(value)) {
-                var iterator = value;
-                return _.each(this, function(elem, idx) {
-                    if (elem.nodeType !== ELEMENT) { return; }
-
-                    var value = iterator.call(elem, idx, getVal(elem));
-
-                    setVal(elem, value);
-                });
-            }
-
-            // setters
-            if (isString(value) || isNumber(value) || isArray(value)) {
-                return _.each(this, (elem) => setVal(elem, value));
-            }
-
-            return _.each(this, (elem) => setVal(elem, value));
-        },
-
-        text: function(str) {
-            if (isString(str)) {
-                return _.each(this, (elem) => textSet(elem, str));
-            }
-
-            if (isFunction(str)) {
-                var iterator = str;
-                return _.each(this, (elem, idx) =>
-                    textSet(elem, iterator.call(elem, idx, textGet(elem)))
-                );
-            }
-
-            return _.map(this, (elem) => textGet(elem)).join('');
+    html: function(html) {
+        if (isString(html)) {
+            return _.each(this, (elem) => elem.innerHTML = html);
         }
+
+        if (isFunction(html)) {
+            var iterator = html;
+            return _.each(this, (elem, idx) =>
+                elem.innerHTML = iterator.call(elem, idx, elem.innerHTML)
+            );
+        }
+
+        var first = this[0];
+        return (!first) ? undefined : first.innerHTML;
+    },
+
+    val: function(value) {
+        // getter
+        if (!arguments.length) {
+            return getVal(this[0]);
+        }
+
+        if (!exists(value)) {
+            return _.each(this, (elem) => setVal(elem, ''));
+        }
+
+        if (isFunction(value)) {
+            var iterator = value;
+            return _.each(this, function(elem, idx) {
+                if (elem.nodeType !== ELEMENT) { return; }
+
+                var value = iterator.call(elem, idx, getVal(elem));
+
+                setVal(elem, value);
+            });
+        }
+
+        // setters
+        if (isString(value) || isNumber(value) || isArray(value)) {
+            return _.each(this, (elem) => setVal(elem, value));
+        }
+
+        return _.each(this, (elem) => setVal(elem, value));
+    },
+
+    text: function(str) {
+        if (isString(str)) {
+            return _.each(this, (elem) => textSet(elem, str));
+        }
+
+        if (isFunction(str)) {
+            var iterator = str;
+            return _.each(this, (elem, idx) =>
+                textSet(elem, iterator.call(elem, idx, textGet(elem)))
+            );
+        }
+
+        return _.map(this, (elem) => textGet(elem)).join('');
     }
 };

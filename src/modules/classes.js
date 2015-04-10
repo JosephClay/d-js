@@ -86,89 +86,87 @@ var _doAnyElemsHaveClass = function(elems, name) {
         }
     };
 
-module.exports = {
-    fn: {
-        hasClass: function(name) {
-            if (name === undefined || !this.length || isEmpty(name) || !name.length) { return this; }
-            return _doAnyElemsHaveClass(this, name);
-        },
+exports.fn = {
+    hasClass: function(name) {
+        if (name === undefined || !this.length || isEmpty(name) || !name.length) { return this; }
+        return _doAnyElemsHaveClass(this, name);
+    },
 
-        addClass: function(names) {
-            if (isArray(names)) {
-                if (!this.length || isEmpty(name) || !name.length) { return this; }
+    addClass: function(names) {
+        if (isArray(names)) {
+            if (!this.length || isEmpty(name) || !name.length) { return this; }
 
-                _addClasses(this, names);
+            _addClasses(this, names);
 
-                return this;
-            }
-
-            if (isString(names)) {
-                var name = names;
-                if (!this.length || isEmpty(name) || !name.length) { return this; }
-
-                var names = split(name);
-                if (!names.length) { return this; }
-
-                _addClasses(this, names);
-
-                return this;
-            }
-
-            // fallback
             return this;
-        },
+        }
 
-        removeClass: function(names) {
-            if (!arguments.length) {
-                if (this.length) {
-                    _removeAllClasses(this);
-                }
+        if (isString(names)) {
+            var name = names;
+            if (!this.length || isEmpty(name) || !name.length) { return this; }
 
-                return this;
-            }
-
-            if (isArray(names)) {
-
-                if (!this.length || isEmpty(names) || !names.length) { return this; }
-
-                _removeClasses(this, names);
-
-                return this;
-            }
-
-            if (isString(names)) {
-                var name = names;
-                if (!this.length || isEmpty(name) || !name.length) { return this; }
-
-                var names = split(name);
-                if (!names.length) { return this; }
-
-                _removeClasses(this, names);
-
-                return this;
-            }
-        
-            // fallback
-            return this;
-        },
-
-        toggleClass: function(names, shouldAdd) {
-            if (!arguments.length) { return this; }
-
-            if (!this.length || isEmpty(names) || !names.length) { return this; }
-
-            names = split(names);
+            var names = split(name);
             if (!names.length) { return this; }
 
-            if (shouldAdd === undefined) {
-                _toggleClasses(this, names);
-            } else if (shouldAdd) {
-                _addClasses(this, names);
-            } else {
-                _removeClasses(this, names);
+            _addClasses(this, names);
+
+            return this;
+        }
+
+        // fallback
+        return this;
+    },
+
+    removeClass: function(names) {
+        if (!arguments.length) {
+            if (this.length) {
+                _removeAllClasses(this);
             }
 
             return this;
         }
+
+        if (isArray(names)) {
+
+            if (!this.length || isEmpty(names) || !names.length) { return this; }
+
+            _removeClasses(this, names);
+
+            return this;
+        }
+
+        if (isString(names)) {
+            var name = names;
+            if (!this.length || isEmpty(name) || !name.length) { return this; }
+
+            var names = split(name);
+            if (!names.length) { return this; }
+
+            _removeClasses(this, names);
+
+            return this;
+        }
+    
+        // fallback
+        return this;
+    },
+
+    toggleClass: function(names, shouldAdd) {
+        if (!arguments.length) { return this; }
+
+        if (!this.length || isEmpty(names) || !names.length) { return this; }
+
+        names = split(names);
+        if (!names.length) { return this; }
+
+        if (shouldAdd === undefined) {
+            _toggleClasses(this, names);
+        } else if (shouldAdd) {
+            _addClasses(this, names);
+        } else {
+            _removeClasses(this, names);
+        }
+
+        return this;
     }
 };

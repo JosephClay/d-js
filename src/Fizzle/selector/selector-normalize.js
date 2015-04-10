@@ -1,9 +1,9 @@
-var SUPPORTS            = require('SUPPORTS'),
+var SUPPORTS            = require('../../SUPPORTS'),
 
     ATTRIBUTE_SELECTOR = /\[\s*[\w-]+\s*[!$^*]?(?:=\s*(['"]?)(.*?[^\\]|[^\\]*))?\1\s*\]/g,
     PSEUDO_SELECT      = /(:[^\s\(\[)]+)/g,
     CAPTURE_SELECT     = /(:[^\s^(]+)\(([^\)]+)\)/g,
-    pseudoCache        = require('cache')(),
+    pseudoCache        = require('../../cache')(),
     proxySelectors     = require('./proxy'),
     captureSelectors   = require('./capture');
 

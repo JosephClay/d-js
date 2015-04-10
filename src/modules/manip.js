@@ -1,22 +1,22 @@
-var _            = require('_'),
-    D            = require('../D'),
-    exists       = require('is/exists'),
-    isD          = require('is/D'),
-    isElement    = require('is/element'),
-    isHtml       = require('is/html'),
-    isString     = require('is/string'),
-    isNodeList   = require('is/nodeList'),
-    isNumber     = require('is/number'),
-    isFunction   = require('is/function'),
-    isCollection = require('is/collection'),
-    isD          = require('is/D'),
-    isWindow     = require('is/window'),
-    isDocument   = require('is/document'),
-    selectors    = require('./selectors'),
-    array        = require('./array'),
-    order        = require('../order'),
-    data         = require('./data'),
-    parser       = require('parser');
+var _              = require('_'),
+    D              = require('../D'),
+    exists         = require('is/exists'),
+    isD            = require('is/D'),
+    isElement      = require('is/element'),
+    isHtml         = require('is/html'),
+    isString       = require('is/string'),
+    isNodeList     = require('is/nodeList'),
+    isNumber       = require('is/number'),
+    isFunction     = require('is/function'),
+    isCollection   = require('is/collection'),
+    isD            = require('is/D'),
+    isWindow       = require('is/window'),
+    isDocument     = require('is/document'),
+    selectorFilter = require('./selectors/filter'),
+    array          = require('./array'),
+    order          = require('../order'),
+    data           = require('./data'),
+    parser         = require('parser');
 
 var empty = function(arr) {
         var idx = 0, length = arr.length;
@@ -319,7 +319,7 @@ module.exports = {
         remove: function(selector) {
             if (isString(selector)) {
                 if (selector === '') { return; }
-                var arr = selectors.filter(this, selector);
+                var arr = selectorFilter(this, selector);
                 remove(arr);
                 return this;
             }
@@ -332,7 +332,7 @@ module.exports = {
         detach: function(selector) {
             if (isString(selector)) {
                 if (selector === '') { return; }
-                var arr = selectors.filter(this, selector);
+                var arr = selectorFilter(this, selector);
                 detach(arr);
                 return this;
             }

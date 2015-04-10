@@ -10,7 +10,7 @@ var _                 = require('_'),
     isDocument        = require('is/document'),
     isD               = require('is/D'),
     array             = require('./array'),
-    selectors         = require('./selectors'),
+    selectorFilter    = require('./selectors/filter'),
     Fizzle            = require('Fizzle');
 
 var getSiblings = function(context) {
@@ -45,9 +45,7 @@ var getSiblings = function(context) {
     },
 
     // Children ------
-    getChildren = function(arr) {
-        return _.flatten(_.map(arr, _children));
-    },
+    getChildren = (arr) => _.flatten(_.map(arr, _children)),
     _children = function(elem) {
         var kids = elem.children,
             idx  = 0, len  = kids.length,
@@ -68,7 +66,7 @@ var getSiblings = function(context) {
         for (; idx < len; idx++) {
             parents = _crawlUpNode(elems[idx], context);
             parents.unshift(elems[idx]);
-            closest = selectors.filter(parents, selector);
+            closest = selectorFilter(parents, selector);
             if (closest.length) {
                 result.push(closest[0]);
             }
@@ -247,105 +245,104 @@ var getSiblings = function(context) {
     },
 
     filterAndSort = function(elems, selector, reverse) {
-        return uniqueSort(selectors.filter(elems, selector), reverse);
+        return uniqueSort(selectorFilter(elems, selector), reverse);
     };
 
-module.exports = {
-    fn: {
-        contents: function() {
-            return D(
-                _.flatten(
-                    _.map(this, (elem) => elem.childNodes)
-                )
-            );
-        },
+exports.fn = {
+    contents: function() {
+        return D(
+            _.flatten(
+                // TODO: pluck
+                _.map(this, (elem) => elem.childNodes)
+            )
+        );
+    },
 
-        index: function(selector) {
-            if (isString(selector)) {
-                var first = this[0];
-                return D(selector).indexOf(first);  
-            }
-
-            if (isElement(selector) || isWindow(selector) || isDocument(selector)) {
-                return this.indexOf(selector);
-            }
-
-            if (isD(selector)) {
-                return this.indexOf(selector[0]);
-            }
-
-            // fallback
-            if (!this.length) {
-                return -1;
-            }
-
-            var first  = this[0],
-                parent = first.parentNode;
-
-            if (!parent) {
-                return -1;
-            }
-
-            // isAttached check to pass test "Node without parent returns -1"
-            // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
-            var attached         = isAttached(first),
-                isParentFragment = parent.nodeType === DOCUMENT_FRAGMENT;
-
-            if (!attached && !isParentFragment) {
-                return -1;
-            }
-
-            var childElems = parent.children || _.filter(parent.childNodes, (node) => node.nodeType === ELEMENT);
-
-            return [].indexOf.apply(childElems, [ first ]);
-        },
-
-        closest: function(selector, context) {
-            return uniqueSort(getClosest(this, selector, context));
-        },
-
-        parent: function(selector) {
-            return filterAndSort(getParent(this), selector);
-        },
-
-        parents: function(selector) {
-            return filterAndSort(getParents(this), selector, true);
-        },
-
-        parentsUntil: function(stopSelector) {
-            return uniqueSort(getParentsUntil(this, stopSelector), true);
-        },
-
-        siblings: function(selector) {
-            return filterAndSort(getSiblings(this), selector);
-        },
-
-        children: function(selector) {
-            return filterAndSort(getChildren(this), selector);
-        },
-
-        prev: function(selector) {
-            return uniqueSort(getPositional(getPrev, this, selector));
-        },
-
-        next: function(selector) {
-            return uniqueSort(getPositional(getNext, this, selector));
-        },
-
-        prevAll: function(selector) {
-            return uniqueSort(getPositionalAll(getPrevAll, this, selector), true);
-        },
-
-        nextAll: function(selector) {
-            return uniqueSort(getPositionalAll(getNextAll, this, selector));
-        },
-
-        prevUntil: function(selector) {
-            return uniqueSort(getPositionalUntil(getPrevAll, this, selector), true);
-        },
-
-        nextUntil: function(selector) {
-            return uniqueSort(getPositionalUntil(getNextAll, this, selector));
+    index: function(selector) {
+        if (isString(selector)) {
+            var first = this[0];
+            return D(selector).indexOf(first);  
         }
+
+        if (isElement(selector) || isWindow(selector) || isDocument(selector)) {
+            return this.indexOf(selector);
+        }
+
+        if (isD(selector)) {
+            return this.indexOf(selector[0]);
+        }
+
+        // fallback
+        if (!this.length) {
+            return -1;
+        }
+
+        var first  = this[0],
+            parent = first.parentNode;
+
+        if (!parent) {
+            return -1;
+        }
+
+        // isAttached check to pass test "Node without parent returns -1"
+        // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
+        var attached         = isAttached(first),
+            isParentFragment = parent.nodeType === DOCUMENT_FRAGMENT;
+
+        if (!attached && !isParentFragment) {
+            return -1;
+        }
+
+        var childElems = parent.children || _.filter(parent.childNodes, (node) => node.nodeType === ELEMENT);
+
+        return [].indexOf.apply(childElems, [ first ]);
+    },
+
+    closest: function(selector, context) {
+        return uniqueSort(getClosest(this, selector, context));
+    },
+
+    parent: function(selector) {
+        return filterAndSort(getParent(this), selector);
+    },
+
+    parents: function(selector) {
+        return filterAndSort(getParents(this), selector, true);
+    },
+
+    parentsUntil: function(stopSelector) {
+        return uniqueSort(getParentsUntil(this, stopSelector), true);
+    },
+
+    siblings: function(selector) {
+        return filterAndSort(getSiblings(this), selector);
+    },
+
+    children: function(selector) {
+        return filterAndSort(getChildren(this), selector);
+    },
+
+    prev: function(selector) {
+        return uniqueSort(getPositional(getPrev, this, selector));
+    },
+
+    next: function(selector) {
+        return uniqueSort(getPositional(getNext, this, selector));
+    },
+
+    prevAll: function(selector) {
+        return uniqueSort(getPositionalAll(getPrevAll, this, selector), true);
+    },
+
+    nextAll: function(selector) {
+        return uniqueSort(getPositionalAll(getNextAll, this, selector));
+    },
+
+    prevUntil: function(selector) {
+        return uniqueSort(getPositionalUntil(getPrevAll, this, selector), true);
+    },
+
+    nextUntil: function(selector) {
+        return uniqueSort(getPositionalUntil(getNextAll, this, selector));
     }
 };

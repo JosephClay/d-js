@@ -38,6 +38,8 @@ module.exports = {
         select.disabled = true;
         return !option.disabled;
     }()),
+    
+    textContent: DIV.textContent !== undefined,
 
     // Modern browsers normalize \r\n to \n in textarea values,
     // but IE <= 11 (and possibly newer) do not.

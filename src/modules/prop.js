@@ -90,39 +90,37 @@ var getOrSetProp = function(elem, name, value) {
         elem[name];
 };
 
-module.exports = {
-    fn: {
-        prop: function(prop, value) {
-            if (arguments.length === 1 && isString(prop)) {
-                var first = this[0];
-                if (!first) { return; }
+exports.fn = {
+    prop: function(prop, value) {
+        if (arguments.length === 1 && isString(prop)) {
+            var first = this[0];
+            if (!first) { return; }
 
-                return getOrSetProp(first, prop);
-            }
-
-            if (isString(prop)) {
-                if (isFunction(value)) {
-                    var fn = value;
-                    return _.each(this, function(elem, idx) {
-                        var result = fn.call(elem, idx, getOrSetProp(elem, prop));
-                        getOrSetProp(elem, prop, result);
-                    });
-                }
-
-                return _.each(this, (elem) => getOrSetProp(elem, prop, value));
-            }
-
-            // fallback
-            return this;
-        },
-
-        removeProp: function(prop) {
-            if (!isString(prop)) { return this; }
-
-            var name = propFix[prop] || prop;
-            return _.each(this, function(elem) {
-                delete elem[name];
-            });
+            return getOrSetProp(first, prop);
         }
+
+        if (isString(prop)) {
+            if (isFunction(value)) {
+                var fn = value;
+                return _.each(this, function(elem, idx) {
+                    var result = fn.call(elem, idx, getOrSetProp(elem, prop));
+                    getOrSetProp(elem, prop, result);
+                });
+            }
+
+            return _.each(this, (elem) => getOrSetProp(elem, prop, value));
+        }
+
+        // fallback
+        return this;
+    },
+
+    removeProp: function(prop) {
+        if (!isString(prop)) { return this; }
+
+        var name = propFix[prop] || prop;
+        return _.each(this, function(elem) {
+            delete elem[name];
+        });
     }
 };

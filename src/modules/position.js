@@ -59,43 +59,41 @@ var setOffset = function(elem, idx, pos) {
     elem.style.left = toPx(props.left);
 };
 
-module.exports = {
-    fn: {
-        position: function() {
+exports.fn = {
+    position: function() {
+        var first = this[0];
+        if (!first) { return; }
+
+        return getPosition(first);
+    },
+
+    offset: function(posOrIterator) {
+    
+        if (!arguments.length) {
             var first = this[0];
             if (!first) { return; }
-
-            return getPosition(first);
-        },
-
-        offset: function(posOrIterator) {
-        
-            if (!arguments.length) {
-                var first = this[0];
-                if (!first) { return; }
-                return getOffset(first);
-            }
-
-            if (isFunction(posOrIterator) || isObject(posOrIterator)) {
-                return _.each(this, (elem, idx) => setOffset(elem, idx, posOrIterator));
-            }
-
-            // fallback
-            return this;
-        },
-
-        offsetParent: function() {
-            return D(
-                _.map(this, function(elem) {
-                    var offsetParent = elem.offsetParent || docElem;
-
-                    while (offsetParent && (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
-                        offsetParent = offsetParent.offsetParent;
-                    }
-
-                    return offsetParent || docElem;
-                })
-            );
+            return getOffset(first);
         }
+
+        if (isFunction(posOrIterator) || isObject(posOrIterator)) {
+            return _.each(this, (elem, idx) => setOffset(elem, idx, posOrIterator));
+        }
+
+        // fallback
+        return this;
+    },
+
+    offsetParent: function() {
+        return D(
+            _.map(this, function(elem) {
+                var offsetParent = elem.offsetParent || docElem;
+
+                while (offsetParent && (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
+                    offsetParent = offsetParent.offsetParent;
+                }
+
+                return offsetParent || docElem;
+            })
+        );
     }
 };

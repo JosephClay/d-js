@@ -23,14 +23,12 @@ var handler = function(attribute) {
 var scrollTop = handler('scrollTop');
 var scrollLeft = handler('scrollLeft');
 
-module.exports = {
-    fn: {
-        scrollLeft: function(val) {
-            return protect(this, val, scrollLeft);
-        },
+exports.fn = {
+    scrollLeft: function(val) {
+        return protect(this, val, scrollLeft);
+    },
 
-        scrollTop: function(val) {
-            return protect(this, val, scrollTop);
-        }
+    scrollTop: function(val) {
+        return protect(this, val, scrollTop);
     }
 };

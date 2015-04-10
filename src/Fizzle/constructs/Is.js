@@ -1,4 +1,4 @@
-var _ = require('_');
+var _ = require('../../_');
 
 var Is = module.exports = function(selectors) {
     this._selectors = selectors;

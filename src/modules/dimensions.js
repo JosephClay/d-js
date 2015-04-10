@@ -42,78 +42,76 @@ var getInnerWidth = function(elem) {
                 (parseNum(css.curCss(elem, 'borderBottomWidth')) || 0);
     };
 
-module.exports = {
-    fn: {
-        width: function(val) {
-            if (isNumber(val)) {
-                var first = this[0];
-                if (!first) { return this; }
-
-                css.width.set(first, val);
-                return this;
-            }
-
-            if (arguments.length) { return this; }
-
-            // fallback
-            var first = this[0];
-            if (!first) { return null; }
-
-            return parseFloat(css.width.get(first) || 0);
-        },
-
-        height: function(val) {
-            if (isNumber(val)) {
-                var first = this[0];
-                if (!first) { return this; }
-
-                css.height.set(first, val);
-                return this;
-            }
-
-            if (arguments.length) { return this; }
-        
-            // fallback
-            var first = this[0];
-            if (!first) { return null; }
-
-            return parseFloat(css.height.get(first) || 0);
-        },
-
-        innerWidth: function() {
-            if (arguments.length) { return this; }
-
+exports.fn = {
+    width: function(val) {
+        if (isNumber(val)) {
             var first = this[0];
             if (!first) { return this; }
 
-            return getInnerWidth(first);
-        },
-
-        innerHeight: function() {
-            if (arguments.length) { return this; }
-
-            var first = this[0];
-            if (!first) { return this; }
-
-            return getInnerHeight(first);
-        },
-
-        outerWidth: function(withMargin) {
-            if (arguments.length && withMargin === undefined) { return this; }
-
-            var first = this[0];
-            if (!first) { return this; }
-
-            return getOuterWidth(first, !!withMargin);
-        },
-
-        outerHeight: function(withMargin) {
-            if (arguments.length && withMargin === undefined) { return this; }
-
-            var first = this[0];
-            if (!first) { return this; }
-
-            return getOuterHeight(first, !!withMargin);
+            css.width.set(first, val);
+            return this;
         }
+
+        if (arguments.length) { return this; }
+
+        // fallback
+        var first = this[0];
+        if (!first) { return null; }
+
+        return parseFloat(css.width.get(first) || 0);
+    },
+
+    height: function(val) {
+        if (isNumber(val)) {
+            var first = this[0];
+            if (!first) { return this; }
+
+            css.height.set(first, val);
+            return this;
+        }
+
+        if (arguments.length) { return this; }
+    
+        // fallback
+        var first = this[0];
+        if (!first) { return null; }
+
+        return parseFloat(css.height.get(first) || 0);
+    },
+
+    innerWidth: function() {
+        if (arguments.length) { return this; }
+
+        var first = this[0];
+        if (!first) { return this; }
+
+        return getInnerWidth(first);
+    },
+
+    innerHeight: function() {
+        if (arguments.length) { return this; }
+
+        var first = this[0];
+        if (!first) { return this; }
+
+        return getInnerHeight(first);
+    },
+
+    outerWidth: function(withMargin) {
+        if (arguments.length && withMargin === undefined) { return this; }
+
+        var first = this[0];
+        if (!first) { return this; }
+
+        return getOuterWidth(first, !!withMargin);
+    },
+
+    outerHeight: function(withMargin) {
+        if (arguments.length && withMargin === undefined) { return this; }
+
+        var first = this[0];
+        if (!first) { return this; }
+
+        return getOuterHeight(first, !!withMargin);
     }
 };

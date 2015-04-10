@@ -34,12 +34,9 @@ var isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
         return keys;
     };
 
-// IE9+, modern browsers
-var hasAttr = (elem, attr) => elem.hasAttribute(attr);
-
 var boolHook = {
     is: (attrName) => Fizzle.parse.isBool(attrName),
-    get: (elem, attrName) => hasAttr(elem, attrName) ? attrName.toLowerCase() : undefined,
+    get: (elem, attrName) => elem.hasAttribute(attrName) ? attrName.toLowerCase() : undefined,
     set: function(elem, value, attrName) {
         if (value === false) {
             // Remove boolean attributes when set to false
@@ -89,7 +86,7 @@ var hooks = {
     },
 
     getAttribute = function(elem, attr) {
-        if (!isElement(elem) || !hasAttr(elem, attr)) { return; }
+        if (!isElement(elem) || !elem.hasAttribute(attr)) { return; }
 
         if (boolHook.is(attr)) {
             return boolHook.get(elem, attr);
@@ -139,7 +136,7 @@ var hooks = {
             setter(elem, attr, val);
         }
     },
-    _setAttribute = function(elem, attr, value) {
+    setAttribute = function(elem, attr, value) {
         if (!isElement(elem)) { return; }
         var setter = setters.forAttr(attr, value);
         setter(elem, attr, value);
@@ -161,92 +158,85 @@ var hooks = {
         elem.removeAttribute(attr);
     };
 
-module.exports = {
-    fn: {
-        attr: function(attr, value) {
-            if (arguments.length === 1) {
-                if (isString(attr)) {
-                    return getAttribute(this[0], attr);
-                }
-
-                // assume an object
-                var attrs = attr;
-                for (attr in attrs) {
-                    setAttributes(this, attr, attrs[attr]);
-                }
-            }
-
-            if (arguments.length === 2) {
-                if (value === undefined) { return this; }
-
-                // remove
-                if (value === null) {
-                    removeAttributes(this, attr);
-                    return this;
-                }
-
-                // iterator
-                if (isFunction(value)) {
-                    var fn = value;
-                    return _.each(this, function(elem, idx) {
-                        var oldAttr = getAttribute(elem, attr),
-                            result  = fn.call(elem, idx, oldAttr);
-                        if (!exists(result)) { return; }
-                        _setAttribute(elem, attr, result);
-                    });
-                }
-
-                // set
-                setAttributes(this, attr, value);
-                return this;
-            }
-
-            // fallback
-            return this;
-        },
-
-        removeAttr: function(attr) {
+exports.fn = {
+    attr: function(attr, value) {
+        if (arguments.length === 1) {
             if (isString(attr)) {
+                return getAttribute(this[0], attr);
+            }
+
+            // assume an object
+            var attrs = attr;
+            for (attr in attrs) {
+                setAttributes(this, attr, attrs[attr]);
+            }
+        }
+
+        if (arguments.length === 2) {
+            if (value === undefined) { return this; }
+
+            // remove
+            if (value === null) {
                 removeAttributes(this, attr);
-            }
-            return this;
-        },
-
-        attrData: function(key, value) {
-            if (!arguments.length) {
-
-                var first = this[0];
-                if (!first) { return; }
-
-                var map  = {},
-                    keys = getDataAttrKeys(first),
-                    idx  = keys.length, key;
-                while (idx--) {
-                    key = keys[idx];
-                    map[trimDataKey(key)] = _.typecast(first.getAttribute(key));
-                }
-
-                return map;
-            }
-
-            if (arguments.length === 2) {
-                var idx = this.length;
-                while (idx--) {
-                    this[idx].setAttribute(sanitizeDataKey(key), '' + value);
-                }
                 return this;
             }
 
-            // fallback to an object definition
-            var obj = key,
-                idx = this.length,
-                key;
+            // iterator
+            if (isFunction(value)) {
+                var fn = value;
+                return _.each(this, function(elem, idx) {
+                    var oldAttr = getAttribute(elem, attr),
+                        result  = fn.call(elem, idx, oldAttr);
+                    if (!exists(result)) { return; }
+                    setAttribute(elem, attr, result);
+                });
+            }
+
+            // set
+            setAttributes(this, attr, value);
+            return this;
+        }
+
+        // fallback
+        return this;
+    },
+
+    removeAttr: (attr) => isString(attr) ? removeAttributes(this, attr) : this,
+
+    attrData: function(key, value) {
+        if (!arguments.length) {
+
+            var first = this[0];
+            if (!first) { return; }
+
+            var map  = {},
+                keys = getDataAttrKeys(first),
+                idx  = keys.length, key;
             while (idx--) {
-                for (key in obj) {
-                    this[idx].setAttribute(sanitizeDataKey(key), '' + obj[key]);
-                }
+                key = keys[idx];
+                map[trimDataKey(key)] = _.typecast(first.getAttribute(key));
+            }
+
+            return map;
+        }
+
+        if (arguments.length === 2) {
+            var idx = this.length;
+            while (idx--) {
+                this[idx].setAttribute(sanitizeDataKey(key), '' + value);
             }
             return this;
         }
+
+        // fallback to an object definition
+        var obj = key,
+            idx = this.length,
+            key;
+        while (idx--) {
+            for (key in obj) {
+                this[idx].setAttribute(sanitizeDataKey(key), '' + obj[key]);
+            }
+        }
+        return this;
     }
 };

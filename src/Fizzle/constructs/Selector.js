@@ -1,15 +1,15 @@
-var exists     = require('is/exists'),
-    isNodeList = require('is/nodeList'),
-    isElement  = require('is/element'),
+var exists     = require('../../is/exists'),
+    isNodeList = require('../../is/nodeList'),
+    isElement  = require('../../is/element'),
 
     GET_ELEMENT_BY_ID          = 'getElementById',
     GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
     GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
     QUERY_SELECTOR_ALL         = 'querySelectorAll',
 
-    selectorCache = require('cache')(),
-    REGEX         = require('REGEX'),
-    matches       = require('matchesSelector');
+    selectorCache = require('../../cache')(),
+    REGEX         = require('../../REGEX'),
+    matches       = require('../../matchesSelector');
 
 var determineMethod = function(selector) {
         var method = selectorCache.get(selector);

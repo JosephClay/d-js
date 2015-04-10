@@ -54,21 +54,12 @@ var cache     = require('cache')(2, true),
 module.exports = {
     has: hasData,
     set: setData,
-    get: function(elem, str) {
-        if (str === undefined) {
-            return getAllData(elem);
-        }
-        return getData(elem, str);
-    },
-    remove: function(elem, str) {
-        if (str === undefined) {
-            return removeAllData(elem);
-        }
-        return removeData(elem, str);
-    },
+    get: (elem, str) =>
+        str === undefined ? getAllData(elem) : getData(elem, str),
+    remove: (elem, str) =>
+        str === undefined ? removeAllData(elem) : removeData(elem, str),
 
     D: {
-        // NOTE: NodeList || HtmlCollection support?
         data: function(elem, key, value) {
             if (arguments.length === 3) {
                 return setData(elem, key, value);
@@ -98,12 +89,8 @@ module.exports = {
             return this;
         },
 
-        hasData: function(elem) {
-            if (isElement(elem)) {
-                return hasData(elem);
-            }
-            return this;
-        },
+        hasData: (elem) =>
+            isElement(elem) ? hasData(elem) : this,
 
         removeData: function(elem, key) {
             if (arguments.length === 2) {
