@@ -1,4 +1,5 @@
 var _      = require('_'),
+    D      = require('../D'),
     exists = require('is/exists'),
     slice  = require('util/slice'),
     order  = require('../order');

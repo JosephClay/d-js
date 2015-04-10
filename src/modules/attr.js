@@ -6,7 +6,7 @@ var _                    = require('_'),
     newlines             = require('string/newlines'),
     SUPPORTS             = require('SUPPORTS'),
     isNodeName           = require('node/isName'),
-    Fizzle               = require('./Fizzle/'),
+    Fizzle               = require('Fizzle'),
     sanitizeDataKeyCache = require('cache')();
 
 var isDataKey = (key) => (key || '').substr(0, 5) === 'data-',

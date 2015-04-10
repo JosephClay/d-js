@@ -1,5 +1,5 @@
-var _        = require('_'),
-
+var _          = require('_'),
+    D          = require('../D'),
     toPx       = require('util/toPx'),
     exists     = require('is/exists'),
     isAttached = require('is/attached'),

@@ -1,4 +1,5 @@
 var _                 = require('_'),
+    D                 = require('../D'),
     ELEMENT           = require('NODE_TYPE/ELEMENT'),
     DOCUMENT          = require('NODE_TYPE/DOCUMENT'),
     DOCUMENT_FRAGMENT = require('NODE_TYPE/DOCUMENT_FRAGMENT'),
@@ -10,7 +11,7 @@ var _                 = require('_'),
     isD               = require('is/d'),
     array             = require('./array'),
     selectors         = require('./selectors'),
-    Fizzle            = require('./Fizzle');
+    Fizzle            = require('Fizzle');
 
 var getSiblings = function(context) {
         var idx    = 0,

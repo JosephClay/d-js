@@ -1,4 +1,5 @@
 var _            = require('_'),
+    D            = require('../D'),
     isSelector   = require('is/selector'),
     isCollection = require('is/collection'),
     isFunction   = require('is/function'),
@@ -9,7 +10,7 @@ var _            = require('_'),
     isD          = require('is/d'),
     array        = require('./array'),
     order        = require('../order'),
-    Fizzle       = require('./Fizzle');
+    Fizzle       = require('Fizzle');
 
 /**
  * @param {String|Function|Element|NodeList|Array|D} selector

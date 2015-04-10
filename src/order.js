@@ -26,6 +26,7 @@ module.exports = {
      * @returns {Boolean} true if any duplicates were found, otherwise false.
      * @see jQuery src/selector-native.js:37
      */
+    // TODO: Address encapsulation
     sort: (function() {
         var _hasDuplicate = false;
 

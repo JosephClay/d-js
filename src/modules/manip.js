@@ -1,4 +1,5 @@
-var _            = require('_'),   
+var _            = require('_'),
+    D            = require('../D'),
     exists       = require('is/exists'),
     isD          = require('is/d'),
     isElement    = require('is/element'),
@@ -15,7 +16,7 @@ var _            = require('_'),
     array        = require('./array'),
     order        = require('../order'),
     data         = require('./data'),
-    parser       = require('./parser/parser');
+    parser       = require('parser');
 
 var empty = function(arr) {
         var idx = 0, length = arr.length;
@@ -77,7 +78,7 @@ var empty = function(arr) {
             if (isString(result)) {
 
                 if (isHtml(elem)) {
-                    appendPrependArrayToElem(elem, parser.parseHtml(elem), pender);
+                    appendPrependArrayToElem(elem, parser(elem), pender);
                     return this;
                 }
 
@@ -137,7 +138,7 @@ module.exports = {
         append: function(value) {
             if (isString(value)) {
                 if (isHtml(value)) {
-                    appendPrependMergeArray(this, parser.parseHtml(value), append);
+                    appendPrependMergeArray(this, parser(value), append);
                     return this;
                 }
 
@@ -228,7 +229,7 @@ module.exports = {
         prepend: function(value) {
             if (isString(value)) {
                 if (isHtml(value)) {
-                    appendPrependMergeArray(this, parser.parseHtml(value), prepend);
+                    appendPrependMergeArray(this, parser(value), prepend);
                     return this;
                 }
 
