@@ -52,10 +52,6 @@ var cache     = require('cache')(2, true),
     };
 
 module.exports = {
-    has: hasData,
-    set: setData,
-    get: (elem, str) =>
-        str === undefined ? getAllData(elem) : getData(elem, str),
     remove: (elem, str) =>
         str === undefined ? removeAllData(elem) : removeData(elem, str),
 
@@ -71,10 +67,10 @@ module.exports = {
                 }
 
                 // object passed
-                var map = key;
-                var id;
+                var map = key,
+                    id,
+                    key;
                 if (!(id = getId(elem))) { return; }
-                var key;
                 for (key in map) {
                     cache.set(id, key, map[key]);
                 }
@@ -174,7 +170,6 @@ module.exports = {
             return this;
         },
 
-        // NOTE: NodeList || HtmlCollection support?
         removeData: function(value) {
             // Remove all data
             if (!arguments.length) {

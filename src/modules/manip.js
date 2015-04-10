@@ -13,7 +13,7 @@ var _              = require('_'),
     isWindow       = require('is/window'),
     isDocument     = require('is/document'),
     selectorFilter = require('./selectors/filter'),
-    array          = require('./array'),
+    unique         = require('./array/unique'),
     order          = require('../order'),
     data           = require('./data'),
     parser         = require('parser');
@@ -285,7 +285,7 @@ module.exports = {
         add: function(selector) {
             // String selector
             if (isString(selector)) {
-                var elems = array.unique(
+                var elems = unique(
                     [].concat(this.get(), D(selector).get())
                 );
                 order.sort(elems);
@@ -295,7 +295,7 @@ module.exports = {
             // Array of elements
             if (isCollection(selector)) {
                 var arr = selector;
-                var elems = array.unique(
+                var elems = unique(
                     [].concat(this.get(), _.toArray(arr))
                 );
                 order.sort(elems);
@@ -305,7 +305,7 @@ module.exports = {
             // Single element
             if (isWindow(selector) || isDocument(selector) || isElement(selector)) {
                 var elem = selector;
-                var elems = array.unique(
+                var elems = unique(
                     [].concat(this.get(), [ elem ])
                 );
                 order.sort(elems);

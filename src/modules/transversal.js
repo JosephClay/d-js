@@ -1,5 +1,5 @@
 var _                 = require('_'),
-    D                 = require('../D'),
+    D                 = require('D'),
     ELEMENT           = require('NODE_TYPE/ELEMENT'),
     DOCUMENT          = require('NODE_TYPE/DOCUMENT'),
     DOCUMENT_FRAGMENT = require('NODE_TYPE/DOCUMENT_FRAGMENT'),
@@ -9,7 +9,8 @@ var _                 = require('_'),
     isWindow          = require('is/window'),
     isDocument        = require('is/document'),
     isD               = require('is/D'),
-    array             = require('./array'),
+    order             = require('order'),
+    unique            = require('./array/unique'),
     selectorFilter    = require('./selectors/filter'),
     Fizzle            = require('Fizzle');
 
@@ -236,8 +237,8 @@ var getSiblings = function(context) {
     },
 
     uniqueSort = function(elems, reverse) {
-        var result = array.unique(elems);
-        array.elementSort(result);
+        var result = unique(elems);
+        order.sort(result);
         if (reverse) {
             result.reverse();
         }

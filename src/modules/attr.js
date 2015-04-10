@@ -201,7 +201,11 @@ exports.fn = {
         return this;
     },
 
-    removeAttr: (attr) => isString(attr) ? removeAttributes(this, attr) : this,
+    removeAttr: function(attr) {
+        if (isString(attr)) { removeAttributes(this, attr); }
+        
+        return this;
+    },
 
     attrData: function(key, value) {
         if (!arguments.length) {

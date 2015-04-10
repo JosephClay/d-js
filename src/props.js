@@ -2,7 +2,7 @@ var _          = require('_'),
     D          = require('./D'),
     parser     = require('parser'),
     Fizzle     = require('Fizzle'),
-    array      = require('modules/array'),
+    each       = require('modules/array/each'),
     data       = require('modules/data');
 
 var parseHtml = function(str) {
@@ -20,8 +20,8 @@ _.extend(D,
     parseHTML: parseHtml,
 
     Fizzle:  Fizzle,
-    each:    array.each,
-    forEach: array.each,
+    each:    each,
+    forEach: each,
 
     map:     _.map,
     extend:  _.extend,

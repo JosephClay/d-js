@@ -15,12 +15,10 @@ var _          = require('_'),
     DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
     REGEX      = require('REGEX');
 
-var swapSettings = {
-    measureDisplay: {
-        display: 'block',
-        position: 'absolute',
-        visibility: 'hidden'
-    }
+var swapMeasureDisplaySettings = {
+    display:    'block',
+    position:   'absolute',
+    visibility: 'hidden'
 };
 
 var getDocumentDimension = function(elem, name) {
@@ -87,7 +85,7 @@ var hide = function(elem) {
                     return 0;
                 }
                 if (REGEX.isNoneOrTable(computedStyle.display)) {
-                    return cssSwap(elem, swapSettings.measureDisplay, function() { return getWidthOrHeight(elem, 'width'); });
+                    return cssSwap(elem, swapMeasureDisplaySettings, function() { return getWidthOrHeight(elem, 'width'); });
                 }
             }
 
@@ -115,7 +113,7 @@ var hide = function(elem) {
                     return 0;
                 }
                 if (REGEX.isNoneOrTable(computedStyle.display)) {
-                    return cssSwap(elem, swapSettings.measureDisplay, function() { return getWidthOrHeight(elem, 'height'); });
+                    return cssSwap(elem, swapMeasureDisplaySettings, function() { return getWidthOrHeight(elem, 'height'); });
                 }
             }
 
@@ -217,14 +215,10 @@ var augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, sty
     return val;
 };
 
-var getPropertyValue = function(styles, name) {
-    return styles.getPropertyValue(name);
-};
-
 var curCss = function(elem, name, computed) {
     var style = elem.style,
         styles = computed || getComputedStyle(elem),
-        ret = styles ? getPropertyValue(styles, name) || styles[name] : undefined;
+        ret = styles ? styles.getPropertyValue(name) || styles[name] : undefined;
 
     // Avoid setting ret to empty string here
     // so we don't default to auto
@@ -290,11 +284,9 @@ var isHidden = function(elem) {
 };
 
 module.exports = {
-    swap:        cssSwap,
-    swapSetting: swapSettings,
-    curCss:      curCss,
-    width:       _width,
-    height:      _height,
+    curCss: curCss,
+    width:  _width,
+    height: _height,
 
     fn: {
         css: function(name, value) {

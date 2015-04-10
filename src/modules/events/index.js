@@ -24,10 +24,8 @@ var eventer = function(method) {
     };
 };
 
-module.exports = {
-    fn: {
-        on:      eventer(delegate.on),
-        off:     eventer(delegate.off),
-        trigger: eventer(delegate.trigger)
-    }
+exports.fn = {
+    on:      eventer(delegate.on),
+    off:     eventer(delegate.off),
+    trigger: eventer(delegate.trigger)
 };

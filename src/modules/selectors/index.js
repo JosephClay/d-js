@@ -8,7 +8,6 @@ var _            = require('_'),
     isArray      = require('is/array'),
     isString     = require('is/string'),
     isD          = require('is/D'),
-    array        = require('../array'),
     order        = require('order'),
     Fizzle       = require('Fizzle');
 
@@ -124,7 +123,7 @@ exports.fn = {
 
         var result = findWithin(selector, this);
         if (this.length > 1) {
-            array.elementSort(result);
+            order.sort(result);
         }
         return _.merge(D(), result);
 

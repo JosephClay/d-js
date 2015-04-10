@@ -6,8 +6,7 @@ var _          = require('_'),
     isFunction = require('is/function'),
     isObject   = require('is/object'),
     isNodeName = require('node/isName'),
-
-    docElem = document.documentElement;
+    DOC_ELEM   = document.documentElement;
 
 var getPosition = function(elem) {
     return {
@@ -86,13 +85,13 @@ exports.fn = {
     offsetParent: function() {
         return D(
             _.map(this, function(elem) {
-                var offsetParent = elem.offsetParent || docElem;
+                var offsetParent = elem.offsetParent || DOC_ELEM;
 
                 while (offsetParent && (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
                     offsetParent = offsetParent.offsetParent;
                 }
 
-                return offsetParent || docElem;
+                return offsetParent || DOC_ELEM;
             })
         );
     }
