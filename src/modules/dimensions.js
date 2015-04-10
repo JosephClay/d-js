@@ -1,45 +1,44 @@
-var parseNum = require('util/parseInt'),
-    isNumber = require('is/number'),
+var isNumber = require('is/number'),
     css      = require('./css');
 
 var getInnerWidth = function(elem) {
         var width = parseFloat(css.width.get(elem)) || 0;
 
         return width +
-            (parseNum(css.curCss(elem, 'paddingLeft')) || 0) +
-                (parseNum(css.curCss(elem, 'paddingRight')) || 0);
+            (_.parseInt(css.curCss(elem, 'paddingLeft')) || 0) +
+                (_.parseInt(css.curCss(elem, 'paddingRight')) || 0);
     },
     getInnerHeight = function(elem) {
         var height = parseFloat(css.height.get(elem)) || 0;
 
         return height +
-            (parseNum(css.curCss(elem, 'paddingTop')) || 0) +
-                (parseNum(css.curCss(elem, 'paddingBottom')) || 0);
+            (_.parseInt(css.curCss(elem, 'paddingTop')) || 0) +
+                (_.parseInt(css.curCss(elem, 'paddingBottom')) || 0);
     },
 
     getOuterWidth = function(elem, withMargin) {
         var width = getInnerWidth(elem);
 
         if (withMargin) {
-            width += (parseNum(css.curCss(elem, 'marginLeft')) || 0) +
-                (parseNum(css.curCss(elem, 'marginRight')) || 0);
+            width += (_.parseInt(css.curCss(elem, 'marginLeft')) || 0) +
+                (_.parseInt(css.curCss(elem, 'marginRight')) || 0);
         }
 
         return width +
-            (parseNum(css.curCss(elem, 'borderLeftWidth')) || 0) +
-                (parseNum(css.curCss(elem, 'borderRightWidth')) || 0);
+            (_.parseInt(css.curCss(elem, 'borderLeftWidth')) || 0) +
+                (_.parseInt(css.curCss(elem, 'borderRightWidth')) || 0);
     },
     getOuterHeight = function(elem, withMargin) {
         var height = getInnerHeight(elem);
 
         if (withMargin) {
-            height += (parseNum(css.curCss(elem, 'marginTop')) || 0) +
-                (parseNum(css.curCss(elem, 'marginBottom')) || 0);
+            height += (_.parseInt(css.curCss(elem, 'marginTop')) || 0) +
+                (_.parseInt(css.curCss(elem, 'marginBottom')) || 0);
         }
 
         return height +
-            (parseNum(css.curCss(elem, 'borderTopWidth')) || 0) +
-                (parseNum(css.curCss(elem, 'borderBottomWidth')) || 0);
+            (_.parseInt(css.curCss(elem, 'borderTopWidth')) || 0) +
+                (_.parseInt(css.curCss(elem, 'borderBottomWidth')) || 0);
     };
 
 exports.fn = {

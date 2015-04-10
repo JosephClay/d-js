@@ -1,5 +1,4 @@
 var _          = require('_'),
-    toPx       = require('util/toPx'),
     split      = require('util/split'),
     exists     = require('is/exists'),
     isAttached = require('is/attached'),
@@ -11,7 +10,6 @@ var _          = require('_'),
     isBoolean  = require('is/boolean'),
     isObject   = require('is/object'),
     isArray    = require('is/array'),
-    parseNum   = require('util/parseInt'),
     DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
     REGEX      = require('REGEX');
 
@@ -92,7 +90,7 @@ var hide = function(elem) {
             return getWidthOrHeight(elem, 'width');
         },
         set: function(elem, val) {
-            elem.style.width = isNumber(val) ? toPx(val < 0 ? 0 : val) : val;
+            elem.style.width = isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
         }
     },
 
@@ -121,7 +119,7 @@ var hide = function(elem) {
         },
 
         set: function(elem, val) {
-            elem.style.height = isNumber(val) ? toPx(val < 0 ? 0 : val) : val;
+            elem.style.height = isNumber(val) ? _.toPx(val < 0 ? 0 : val) : val;
         }
     };
 
@@ -153,7 +151,7 @@ var getWidthOrHeight = function(elem, name) {
     }
 
     // use the active box-sizing model to add/subtract irrelevant styles
-    return toPx(
+    return _.toPx(
         val + augmentBorderBoxWidthOrHeight(
             elem,
             name,
@@ -185,29 +183,29 @@ var augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, sty
 
         // both box models exclude margin, so add it if we want it
         if (extraIsMargin) {
-            val += parseNum(styles[extra + type]) || 0;
+            val += _.parseInt(styles[extra + type]) || 0;
         }
 
         if (isBorderBox) {
 
             // border-box includes padding, so remove it if we want content
             if (extraIsContent) {
-                val -= parseNum(styles['padding' + type]) || 0;
+                val -= _.parseInt(styles['padding' + type]) || 0;
             }
 
             // at this point, extra isn't border nor margin, so remove border
             if (!extraIsMargin) {
-                val -= parseNum(styles['border' + type + 'Width']) || 0;
+                val -= _.parseInt(styles['border' + type + 'Width']) || 0;
             }
 
         } else {
 
             // at this point, extra isn't content, so add padding
-            val += parseNum(styles['padding' + type]) || 0;
+            val += _.parseInt(styles['padding' + type]) || 0;
 
             // at this point, extra isn't content nor padding, so add border
             if (extraIsPadding) {
-                val += parseNum(styles['border' + type]) || 0;
+                val += _.parseInt(styles['border' + type]) || 0;
             }
         }
     }
@@ -247,7 +245,7 @@ var curCss = function(elem, name, computed) {
             if (rsLeft) { rs.left = elem.currentStyle.left; }
 
             style.left = (name === 'fontSize') ? '1em' : ret;
-            ret = toPx(style.pixelLeft);
+            ret = _.toPx(style.pixelLeft);
 
             // Revert the changed values
             style.left = left;
@@ -264,7 +262,7 @@ var normalizeCssKey = function(name) {
 
 var setStyle = function(elem, name, value) {
     name = normalizeCssKey(name);
-    elem.style[name] = (value === +value) ? toPx(value) : value;
+    elem.style[name] = (value === +value) ? _.toPx(value) : value;
 };
 
 var getStyle = function(elem, name) {

@@ -1,15 +1,16 @@
-var exists     = require('../../is/exists'),
-    isNodeList = require('../../is/nodeList'),
-    isElement  = require('../../is/element'),
+var exists     = require('is/exists'),
+    isNodeList = require('is/nodeList'),
+    isElement  = require('is/element'),
 
     GET_ELEMENT_BY_ID          = 'getElementById',
     GET_ELEMENTS_BY_TAG_NAME   = 'getElementsByTagName',
     GET_ELEMENTS_BY_CLASS_NAME = 'getElementsByClassName',
     QUERY_SELECTOR_ALL         = 'querySelectorAll',
-
-    selectorCache = require('../../cache')(),
-    REGEX         = require('../../REGEX'),
-    matches       = require('../../matchesSelector');
+    
+    uniqueId      = require('util/uniqueId').seed(0, 'D-uniqueId-'),
+    selectorCache = require('cache')(),
+    REGEX         = require('REGEX'),
+    matches       = require('matchesSelector');
 
 var determineMethod = function(selector) {
         var method = selectorCache.get(selector);
@@ -23,8 +24,6 @@ var determineMethod = function(selector) {
         selectorCache.set(selector, method);
         return method;
     },
-
-    uniqueId = require('util/uniqueId').seed(0, 'D-uniqueId-'),
 
     // need to force an array here
     fromDomArrayToArray = function(arrayLike) {

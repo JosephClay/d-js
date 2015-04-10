@@ -1,5 +1,13 @@
-var coerceNum = require('util/coerceNum'),
-    exists    = require('is/exists');
+var isString = require('is/string'),
+    exists   = require('is/exists');
+
+var coerceNum = (value) =>
+    // Its a number! || 0 to avoid NaN (as NaN's a number)
+    +value === value ? (value || 0) :
+    // Avoid NaN again
+    isString(value) ? (+value || 0) :
+    // Default to zero
+    0;
 
 var protect = function(context, val, callback) {
     var elem = context[0];

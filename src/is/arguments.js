@@ -1,3 +1,3 @@
-var toString = require('string/toString');
+var toString = Object.prototype.toString;
 
-module.exports = (value) => toString(value) === '[object Arguments]';
+module.exports = (value) => toString.call(value) === '[object Arguments]';

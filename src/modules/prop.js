@@ -1,7 +1,6 @@
 var _          = require('_'),
     isString   = require('is/string'),
     isFunction = require('is/function'),
-    parseNum   = require('util/parseInt'),
     split      = require('util/split'),
     SUPPORTS   = require('SUPPORTS'),
     TEXT       = require('NODE_TYPE/TEXT'),
@@ -58,7 +57,7 @@ var propHooks = {
             // Use proper attribute retrieval(#12072)
             var tabindex = elem.getAttribute('tabindex');
 
-            if (tabindex) { return parseNum(tabindex); }
+            if (tabindex) { return _.parseIntparseNum(tabindex); }
 
             var nodeName = elem.nodeName;
             return (REGEX.isFocusable(nodeName) || (REGEX.isClickable(nodeName) && elem.href)) ? 0 : -1;

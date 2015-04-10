@@ -34,6 +34,10 @@ var _ = module.exports = {
 
     }([].concat)),
 
+    toPx: (value) => value + 'px',
+    
+    parseInt: (num) => parseInt(num, 10),
+
     every: function(arr, iterator) {
         if (!exists(arr)) { return true; }
 

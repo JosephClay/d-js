@@ -2,8 +2,8 @@
  * Fizzle.js
  * Adapted from Sizzle.js
  */
-var tokenCache    = require('../../cache')(),
-    subqueryCache = require('../../cache')(),
+var tokenCache    = require('cache')(),
+    subqueryCache = require('cache')(),
 
     error = function(selector) {
         if (console && console.error) {
