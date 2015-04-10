@@ -5,7 +5,7 @@ var _ = require('_'),
     isString   = require('is/string'),
     isNodeList = require('is/nodeList'),
     isFunction = require('is/function'),
-    isD        = require('is/d'),
+    isD        = require('is/D'),
 
     parser      = require('parser'),
     onready     = require('modules/onready'),
