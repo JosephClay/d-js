@@ -2,7 +2,7 @@
   "name": "d-js",
   "version": "1.0.1",
   "description": "jQuery at half the size",
-  "main": "dist/d.js",
+  "main": "dist/d.min.js",
   "scripts": {
     "start": "npm install && gulp dev",
     "build": "npm install && gulp build",
