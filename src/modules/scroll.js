@@ -1,42 +1,36 @@
 var coerceNum = require('util/coerceNum'),
     exists    = require('is/exists');
 
-var getTop = (elem) => elem.scrollTop,
-    setTop = function(elem, val) {
-        elem.scrollTop = coerceNum(val);
-    },
+var protect = function(context, val, callback) {
+    var elem = context[0];
+    if (!elem && !exists(val)) { return null; }
+    if (!elem) { return context; }
 
-    getLeft = (elem) => elem.scrollTop,
-    setLeft = function(elem, val) {
-        elem.scrollTop = coerceNum(val);
+    return callback(context, elem, val);
+};
+
+var handler = function(attribute) {
+    return function(context, elem, val) {
+        if (exists(val)) {
+            elem[attribute] = coerceNum(val);
+            return context;
+        }
+
+        return elem[attribute];
     };
+};
+
+var scrollTop = handler('scrollTop');
+var scrollLeft = handler('scrollLeft');
 
 module.exports = {
-    scrollLeft: function(val) {
-        var elem = this[0],
-            valExists = exists(val);
-        if (!elem && !valExists) { return null; }
-        if (!elem) { return this; }
+    fn: {
+        scrollLeft: function(val) {
+            return protect(this, val, scrollLeft);
+        },
 
-        if (valExists) {
-            setLeft(elem, val);
-            return this;
+        scrollTop: function(val) {
+            return protect(this, val, scrollTop);
         }
-
-        return getLeft(elem);
-    },
-
-    scrollTop: function(val) {
-        var elem = this[0],
-            valExists = exists(val);
-        if (!elem && !valExists) { return null; }
-        if (!elem) { return this; }
-
-        if (valExists) {
-            setTop(elem, val);
-            return this;
-        }
-
-        return getTop(elem);
     }
 };

@@ -1,0 +1,1 @@
+module.exports = (tag) => document.createElement(tag);

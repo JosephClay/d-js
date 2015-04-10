@@ -1,13 +1,12 @@
 var DIV    = require('DIV'),
-    a      = DIV.getElementsByTagName('a')[0],
-    button = DIV.getElementsByTagName('button')[0],
-    select = document.createElement('select'),
-    option = select.appendChild(document.createElement('option'));
+    create = require('DIV/create'),
+    a      = DIV.querySelector('a'),
+    select = create('select'),
+    option = select.appendChild(create('option'));
 
 var test = function(tagName, testFn) {
     // Avoid variable references to elements to prevent memory leaks in IE.
-    // Avoid variable references to elements to prevent memory leaks in IE.
-    return testFn(document.createElement(tagName));
+    return testFn(create(tagName));
 };
 
 module.exports = {
@@ -55,4 +54,4 @@ module.exports = {
 };
 
 // Prevent memory leaks in IE
-DIV = a = button = select = option = null;
+DIV = a = select = option = null;
