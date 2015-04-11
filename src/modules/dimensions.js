@@ -1,4 +1,5 @@
-var isNumber = require('is/number'),
+var _        = require('_'),
+    isNumber = require('is/number'),
     css      = require('./css');
 
 var getInnerWidth = function(elem) {
@@ -70,7 +71,7 @@ exports.fn = {
         }
 
         if (arguments.length) { return this; }
-    
+
         // fallback
         var first = this[0];
         if (!first) { return null; }

@@ -57,7 +57,7 @@ var propHooks = {
             // Use proper attribute retrieval(#12072)
             var tabindex = elem.getAttribute('tabindex');
 
-            if (tabindex) { return _.parseIntparseNum(tabindex); }
+            if (tabindex) { return _.parseInt(tabindex); }
 
             var nodeName = elem.nodeName;
             return (REGEX.isFocusable(nodeName) || (REGEX.isClickable(nodeName) && elem.href)) ? 0 : -1;
