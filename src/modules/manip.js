@@ -1,5 +1,5 @@
 var _              = require('_'),
-    D              = require('../D'),
+    D              = require('D'),
     exists         = require('is/exists'),
     isD            = require('is/D'),
     isElement      = require('is/element'),
@@ -14,7 +14,7 @@ var _              = require('_'),
     isDocument     = require('is/document'),
     selectorFilter = require('./selectors/filter'),
     unique         = require('./array/unique'),
-    order          = require('../order'),
+    order          = require('order'),
     data           = require('./data'),
     parser         = require('parser');
 

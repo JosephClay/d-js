@@ -1,5 +1,5 @@
 var _          = require('_'),
-    D          = require('../D'),
+    D          = require('D'),
     exists     = require('is/exists'),
     isAttached = require('is/attached'),
     isFunction = require('is/function'),
