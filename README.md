@@ -73,7 +73,6 @@ Clone the repo, run `npm test` and navigate to `test/unit.html`
 - more tests
 - try to get a smaller build with the same feature set
 - identify any missing or non-working methods
-- `.insertBefore` and `.insertAfter`
 - namespaces for events
 
 #License
