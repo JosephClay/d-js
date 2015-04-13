@@ -1,6 +1,6 @@
 {
   "name": "d-js",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "jQuery at half the size",
   "main": "dist/d.min.js",
   "scripts": {
