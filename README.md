@@ -1,7 +1,7 @@
 d-js
 ====
 
-A jQuery replacement with a footprint of 15kB minified and gzipped vs the 29.59kB in jQuery. 
+A jQuery replacement with a footprint of 15.08kB minified and gzipped vs the 29.59kB in jQuery. 
 Made to be a dropin that still works with common jQuery plugins...a nice middleground between 
 [dominus](https://github.com/bevacqua/dominus) and [jQuery](http://jquery.com/).
 
@@ -33,6 +33,9 @@ None, there are plenty of good non-jquery alternatives.
 
 #### More conflict
 `.moreConflict()` to easily overwrite jQuery, $ and Zepto.
+
+#### Each
+D.each works as it does in jQuery e.g. `.each(function(index, value) {})`. D.forEach works as expected in ES5 e.g. `.forEach(function(value, index) {})` with `this` as the value;
 
 #### Custom Selectors
 Supported!
