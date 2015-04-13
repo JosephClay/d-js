@@ -193,6 +193,23 @@ module.exports = {
             return this;
         },
 
+        insertBefore: function(target) {
+            if (!target) { return this; }
+
+            if (isString(target)) {
+                target = D(target)[0];
+            }
+
+            this.each(function() {
+                var parent = this.parentNode;
+                if (parent) {
+                    parent.insertBefore(target, this.nextSibling);
+                }
+            });
+
+            return this;
+        },
+
         after: function(element) {
             var target = this[0];
             if (!target) { return this; }
@@ -211,6 +228,23 @@ module.exports = {
             }
 
             // fallback
+            return this;
+        },
+
+        insertAfter: function(target) {
+            if (!target) { return this; }
+
+            if (isString(target)) {
+                target = D(target)[0];
+            }
+
+            this.each(function() {
+                var parent = this.parentNode;
+                if (parent) {
+                    parent.insertBefore(this, target);
+                }
+            });
+
             return this;
         },
 
