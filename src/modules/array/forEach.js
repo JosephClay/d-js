@@ -1,4 +1,3 @@
-// differs from forEach in that the idx (or key) is first, then the value
 module.exports = function(obj, iterator) {
     if (!obj || !iterator) { return; }
 
@@ -8,7 +7,7 @@ module.exports = function(obj, iterator) {
             item;
         for (; idx < length; idx++) {
             item = obj[idx];
-            if (iterator.call(item, idx, item) === false) { return; }
+            if (iterator.call(item, item, idx) === false) { return; }
         }
 
         return;
@@ -18,6 +17,6 @@ module.exports = function(obj, iterator) {
     var key, value;
     for (key in obj) {
         value = obj[key];
-        if (iterator.call(value, key, value) === false) { return; }
+        if (iterator.call(value, value, key) === false) { return; }
     }
 };

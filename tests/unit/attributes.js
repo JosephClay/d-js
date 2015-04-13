@@ -591,7 +591,7 @@
                 rel: 'd'
             };
 
-        D.each(tests, function(val, key) {
+        D.forEach(tests, function(val, key) {
             equal(div.attr(key), val, 'Attribute `' + key + '` exists, and has a value of `' + val + '`');
         });
     });
@@ -659,7 +659,7 @@
         });
 
         obj = {};
-        D.each([ document /*, obj*/ ], function(ele, i) {
+        D.forEach([ document /*, obj*/ ], function(ele, i) {
             var $ele = D(ele);
             $ele.prop('nonexisting', 'foo');
             equal($ele.prop('nonexisting'), 'foo', 'prop(name, value) works correctly for non existing attributes (bug #7500).');

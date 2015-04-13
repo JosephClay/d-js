@@ -485,7 +485,7 @@ test('sort direction', function() {
 
     var elems = D('#ap, #select1 > *, #moretests > form');
 
-    D.each(methodDirections, function(expected, method) {
+    D.forEach(methodDirections, function(expected, method) {
         var actual = elems[method]().get();
         deepEqual(actual, q.apply(null, expected), 'Correct sort direction for ' + method);
     });

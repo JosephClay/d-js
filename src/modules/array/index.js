@@ -1,8 +1,8 @@
-var _      = require('_'),
-    D      = require('D'),
-    exists = require('is/exists'),
-    slice  = require('util/slice'),
-    each   = require('./each');
+var _       = require('_'),
+    D       = require('D'),
+    exists  = require('is/exists'),
+    slice   = require('util/slice'),
+    forEach = require('./forEach');
 
 var map = function(arr, iterator) {
     var results = [];
@@ -60,12 +60,12 @@ exports.fn = {
     },
 
     each: function(iterator) {
-        each(this, iterator);
+        forEach(this, iterator);
         return this;
     },
 
     forEach: function(iterator) {
-        each(this, iterator);
+        forEach(this, iterator);
         return this;
     }
 };
