@@ -1,5 +1,3 @@
-var _ = require('_');
-
 module.exports = function(arr, iterator) {
     var results = [];
     if (!arr.length || !iterator) { return results; }
@@ -11,5 +9,6 @@ module.exports = function(arr, iterator) {
         results.push(iterator.call(item, item, idx));
     }
 
-    return _.concatFlat(results);
+    // Concat flat for a single array of arrays
+    return [].concat.apply([], results);
 };

@@ -25,15 +25,6 @@ var _ = module.exports = {
         return result;
     },
 
-    // Concat flat for a single array of arrays
-    concatFlat: (function(concat) {
-
-        return function(nestedArrays) {
-            return concat.apply([], nestedArrays);
-        };
-
-    }([].concat)),
-
     toPx: (value) => value + 'px',
     
     parseInt: (num) => parseInt(num, 10),
