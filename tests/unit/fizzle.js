@@ -156,21 +156,27 @@
 
     walk(QUERIES, 'Selector parser');
 
+    var proxies = {
+        ":child-even" : ":nth-child(even)",
+        ":child-odd"  : ":nth-child(odd)",
+        ":text"       : "[type=text]",
+        ":password"   : "[type=password]",
+        ":radio"      : "[type=radio]",
+        ":checkbox"   : "[type=checkbox]",
+        ":submit"     : "[type=submit]",
+        ":reset"      : "[type=reset]",
+        ":button"     : "[type=button]",
+        ":image"      : "[type=image]",
+        ":input"      : "[type=input]",
+        ":file"       : "[type=file]",
+        ":selected"   : "[selected=selected]"
+    };
+
     test('Selector proxies', function(test) {
         var access = function(queries) { return queries[0].str; };
-        test.ok(access(selector(':child-even')) === ':nth-child(even)',    ':child-even');
-        test.ok(access(selector(':child-odd'))  === ':nth-child(odd)',     ':child-odd');
-        test.ok(access(selector(':text'))       === '[type=text]',         ':text');
-        test.ok(access(selector(':password'))   === '[type=password]',     ':password');
-        test.ok(access(selector(':radio'))      === '[type=radio]',        ':radio');
-        test.ok(access(selector(':checkbox'))   === '[type=checkbox]',     ':checkbox');
-        test.ok(access(selector(':submit'))     === '[type=submit]',       ':submit');
-        test.ok(access(selector(':reset'))      === '[type=reset]',        ':reset');
-        test.ok(access(selector(':button'))     === '[type=button]',       ':button');
-        test.ok(access(selector(':image'))      === '[type=image]',        ':image');
-        test.ok(access(selector(':input'))      === '[type=input]',        ':input');
-        test.ok(access(selector(':file'))       === '[type=file]',         ':file');
-        test.ok(access(selector(':selected'))   === '[selected=selected]', ':selected');
+        for (var shorthand in proxies) {
+            test.ok(access(selector(shorthand)) === proxies[shorthand], shorthand);
+        }
     });
 
 }());
