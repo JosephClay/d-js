@@ -7,8 +7,7 @@ var _          = require('_'),
 var parseHtml = function(str) {
     if (!str) { return null; }
     var result = parser(str);
-    if (!result || !result.length) { return null; }
-    return D(result);
+    return result && result.length ? D(result) : null;
 };
 
 _.extend(D,

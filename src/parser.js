@@ -1,8 +1,9 @@
 var REGEX = require('REGEX'),
-    MAX_SINGLE_TAG_LENGTH = 30;
+    MAX_SINGLE_TAG_LENGTH = 30,
+    create = require('DIV/create');
 
 var parseString = function(parentTagName, htmlStr) {
-    var parent = document.createElement(parentTagName);
+    var parent = create(parentTagName);
     parent.innerHTML = htmlStr;
     return parent;
 };
@@ -11,11 +12,7 @@ var parseSingleTag = function(htmlStr) {
     if (htmlStr.length > MAX_SINGLE_TAG_LENGTH) { return null; }
 
     var singleTagMatch = REGEX.singleTagMatch(htmlStr);
-    if (!singleTagMatch) { return null; }
-
-    var elem = document.createElement(singleTagMatch[1]);
-
-    return [ elem ];
+    return singleTagMatch ? [create(singleTagMatch[1])] : null;
 };
 
 module.exports = function(htmlStr) {
@@ -28,7 +25,6 @@ module.exports = function(htmlStr) {
     var child,
         idx = parent.children.length,
         arr = new Array(idx);
-
     while (idx--) {
         child = parent.children[idx];
         parent.removeChild(child);

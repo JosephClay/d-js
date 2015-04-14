@@ -8,5 +8,6 @@ var ELEMENT         = require('NODE_TYPE/ELEMENT'),
                       DIV.webkitMatchesSelector ||
                       DIV.oMatchesSelector;
 
+// only element types supported
 module.exports = (elem, selector) =>
     elem.nodeType === ELEMENT ? matchesSelector.call(elem, selector) : false;
