@@ -100,16 +100,14 @@ var _ = module.exports = {
     },
 
     any: function(arr, iterator) {
-        var result;
-        
         if (arr && arr.length) {
             var idx = 0, length = arr.length;
             for (; idx < length; idx++) {
-                if ((result = iterator(arr[idx], idx))) { break; }
+                if (iterator(arr[idx], idx)) { return true; }
             }
         }
 
-        return !!result;
+        return false;
     },
 
     // pulled from AMD
