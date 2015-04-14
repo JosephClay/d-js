@@ -195,12 +195,6 @@ var _ = module.exports = {
         return obj;
     },
 
-    hasSize: function(obj) {
-        var name;
-        for (name in obj) { return false; }
-        return true;
-    },
-
     merge: function(first, second) {
         var length = second.length,
             idx = 0,
