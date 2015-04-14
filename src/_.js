@@ -7,10 +7,9 @@ var exists      = require('is/exists'),
 var _ = module.exports = {
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
-        var result = [];
-
         var idx = 0,
             len = arr.length,
+            result = [],
             value;
         for (; idx < len; idx++) {
             value = arr[idx];
@@ -101,12 +100,13 @@ var _ = module.exports = {
     },
 
     any: function(arr, iterator) {
-        var result = false;
-        if (!arr || !arr.length) { return result; }
-
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-            if (result || (result = iterator(arr[idx], idx))) { break; }
+        var result;
+        
+        if (arr && arr.length) {
+            var idx = 0, length = arr.length;
+            for (; idx < length; idx++) {
+                if ((result = iterator(arr[idx], idx))) { break; }
+            }
         }
 
         return !!result;
