@@ -117,7 +117,7 @@ var hooks = {
         },
         elem: function(elem, attr, value) {
             elem.setAttribute(attr, value);
-        },
+        }
     },
     setAttributes = function(arr, attr, value) {
         var isFn   = isFunction(value),
@@ -203,7 +203,7 @@ exports.fn = {
 
     removeAttr: function(attr) {
         if (isString(attr)) { removeAttributes(this, attr); }
-        
+
         return this;
     },
 

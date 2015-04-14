@@ -1,22 +1,8 @@
-var _       = require('_'),
-    D       = require('D'),
+var D       = require('D'),
     exists  = require('is/exists'),
     slice   = require('util/slice'),
-    forEach = require('./forEach');
-
-var map = function(arr, iterator) {
-    var results = [];
-    if (!arr.length || !iterator) { return results; }
-
-    var idx = 0, length = arr.length,
-        item;
-    for (; idx < length; idx++) {
-        item = arr[idx];
-        results.push(iterator.call(item, item, idx));
-    }
-
-    return _.concatFlat(results);
-};
+    forEach = require('./forEach'),
+    map     = require('./map');
 
 exports.fn = {
     at: function(index) {
@@ -25,14 +11,14 @@ exports.fn = {
 
     get: function(index) {
         // No index, return all
-        if (!exists(index)) { return this.toArray(); }
+        if (!exists(index)) { return slice(this); }
 
-        index = +index;
-
-        // Looking to get an index from the end of the set
-        if (index < 0) { index = (this.length + index); }
-
-        return this[index];
+        var idx = +index;
+        return this[
+            // Looking to get an index from the end of the set
+            // if negative, or the start of the set if positive
+            idx < 0 ? this.length + idx : idx
+        ];
     },
 
     eq: function(index) {
@@ -40,7 +26,7 @@ exports.fn = {
     },
 
     slice: function(start, end) {
-        return D(slice(this.toArray(), start, end));
+        return D(slice(this, start, end));
     },
 
     first: function() {
