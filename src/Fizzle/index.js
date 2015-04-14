@@ -22,6 +22,7 @@ var toSelectors = function(str) {
 };
 
 module.exports = {
+    selector: toSelectors,
     parse: parse,
     
     query: function(str) {
