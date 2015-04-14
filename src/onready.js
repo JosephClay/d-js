@@ -27,12 +27,9 @@ wait(function() {
     ready = true;
 
     // call registered methods    
-    var idx = 0,
-        length = registration.length;
-    for (; idx < length; idx++) {
-        registration[idx]();
+    while (registration.length) {
+        registration.shift()();
     }
-    registration.length = 0;
 });
 
 module.exports = function(callback) {

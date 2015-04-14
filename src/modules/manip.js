@@ -18,53 +18,32 @@ var _              = require('_'),
     data           = require('./data'),
     parser         = require('parser');
 
-var empty = function(arr) {
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-
-            var elem = arr[idx],
-                descendants = elem.querySelectorAll('*'),
-                i = descendants.length,
-                desc;
-            while (i--) {
-                desc = descendants[i];
-                data.remove(desc);
-            }
-
-            elem.innerHTML = '';
-        }
-    },
-
-    remove = function(arr) {
-        var idx = 0, length = arr.length,
+var parentLoop = function(iterator) {
+    return function(elems) {
+        var idx = 0, length = elems.length,
             elem, parent;
         for (; idx < length; idx++) {
-            elem = arr[idx];
+            elem = elems[idx];
             if (elem && (parent = elem.parentNode)) {
-                data.remove(elem);
-                parent.removeChild(elem);
+                iterator(elem, parent);
             }
         }
-    },
+        return elems;
+    };
+};
 
-    detach = function(arr) {
-        var idx = 0, length = arr.length,
-            elem, parent;
-        for (; idx < length; idx++) {
-            elem = arr[idx];
-            if (elem && (parent = elem.parentNode)) {
-                parent.removeChild(elem);
-            }
-        }
-    },
+var remove = parentLoop(function(elem, parent) {
+        data.remove(elem);
+        parent.removeChild(elem);
+    }),
 
-    clone = function(elem) {
-        return elem.cloneNode(true);
-    },
+    detach = parentLoop(function(elem, parent) {
+        parent.removeChild(elem);
+    }),
 
-    stringToFrag = function(str) {
+    stringToFragment = function(str) {
         var frag = document.createDocumentFragment();
-        frag.textContent = str;
+        frag.textContent = '' + str;
         return frag;
     },
 
@@ -76,22 +55,16 @@ var empty = function(arr) {
             if (!exists(result)) { return; }
 
             if (isString(result)) {
-
                 if (isHtml(elem)) {
                     appendPrependArrayToElem(elem, parser(elem), pender);
                     return this;
                 }
 
-                pender(elem, stringToFrag(result));
-
+                pender(elem, stringToFragment(result));
             } else if (isElement(result)) {
-
                 pender(elem, result);
-
             } else if (isNodeList(result) || isD(result)) {
-
                 appendPrependArrayToElem(elem, result, pender);
-
             }
             
             // do nothing
@@ -126,254 +99,218 @@ var empty = function(arr) {
         base.insertBefore(elem, base.firstChild);
     };
 
-module.exports = {
-    append  : append,
-    prepend : prepend,
+exports.fn = {
+    clone: function() {
+        return _.fastmap(this.slice(), (elem) => elem.cloneNode(true));
+    },
 
-    fn: {
-        clone: function() {
-            return _.fastmap(this.slice(), (elem) => clone(elem));
-        },
-
-        append: function(value) {
-            if (isString(value)) {
-                if (isHtml(value)) {
-                    appendPrependMergeArray(this, parser(value), append);
-                    return this;
-                }
-
-                appendPrependElemToArray(this, stringToFrag(value), append);
-
-                return this;
-            }
-
-            if (isNumber(value)) {
-                appendPrependElemToArray(this, stringToFrag('' + value), append);
-                return this;
-            }
-
-            if (isFunction(value)) {
-                var fn = value;
-                appendPrependFunc(this, fn, append);
-                return this;
-            }
-
-            if (isElement(value)) {
-                var elem = value;
-                appendPrependElemToArray(this, elem, append);
-                return this;
-            }
-
-            if (isCollection(value)) {
-                var arr = value;
-                appendPrependMergeArray(this, arr, append);
-                return this;
-            }
-        },
-
-        before: function(element) {
-            var target = this[0];
-            if (!target) { return this; }
-
-            var parent = target.parentNode;
-            if (!parent) { return this; }
-
-
-            if (isElement(element) || isString(element)) {
-                element = D(element);
-            }
-
-            if (isD(element)) {
-                element.each(function() {
-                    parent.insertBefore(this, target);
-                });
-            }
-
-            // fallback
-            return this;
-        },
-
-        insertBefore: function(target) {
-            if (!target) { return this; }
-
-            if (isString(target)) {
-                target = D(target)[0];
-            }
-
-            this.each(function() {
-                var parent = this.parentNode;
-                if (parent) {
-                    parent.insertBefore(target, this.nextSibling);
-                }
-            });
-
-            return this;
-        },
-
-        after: function(element) {
-            var target = this[0];
-            if (!target) { return this; }
-
-            var parent = target.parentNode;
-            if (!parent) { return this; }
-
-            if (isElement(element) || isString(element)) {
-                element = D(element);
-            }
-
-            if (isD(element)) {
-                element.each(function() {
-                    parent.insertBefore(this, target.nextSibling);
-                });
-            }
-
-            // fallback
-            return this;
-        },
-
-        insertAfter: function(target) {
-            if (!target) { return this; }
-
-            if (isString(target)) {
-                target = D(target)[0];
-            }
-
-            this.each(function() {
-                var parent = this.parentNode;
-                if (parent) {
-                    parent.insertBefore(this, target);
-                }
-            });
-
-            return this;
-        },
-
-        appendTo: function(d) {
-            if (isD(d)) {
-                d.append(this);
-                return this;
-            }
-
-            // fallback
-            var obj = d;
-            D(obj).append(this);
-            return this;
-        },
-
-        prepend: function(value) {
-            if (isString(value)) {
-                if (isHtml(value)) {
-                    appendPrependMergeArray(this, parser(value), prepend);
-                    return this;
-                }
-
-                appendPrependElemToArray(this, stringToFrag(value), prepend);
-
-                return this;
-            }
-        
-            if (isNumber(value)) {
-                appendPrependElemToArray(this, stringToFrag('' + value), prepend);
-                return this;
-            }
-        
-            if (isFunction(value)) {
-                var fn = value;
-                appendPrependFunc(this, fn, prepend);
-                return this;
-            }
-        
-            if (isElement(value)) {
-                var elem = value;
-                appendPrependElemToArray(this, elem, prepend);
-                return this;
-            }
-        
-            if (isCollection(value)) {
-                var arr = value;
-                appendPrependMergeArray(this, arr, prepend);
-                return this;
-            }
-
-            // fallback
-            return this;
-        },
-
-        prependTo: function(d) {
-            if (isD(d)) {
-                d.prepend(this);
-                return this;
-            }
-
-            // fallback
-            var obj = d;
-            D(obj).prepend(this);
-            return this;
-        },
-
-        empty: function() {
-            empty(this);
-            return this;
-        },
-
-        add: function(selector) {
-            // String selector
-            if (isString(selector)) {
-                var elems = unique(
-                    [].concat(this.get(), D(selector).get())
-                );
-                order.sort(elems);
-                return D(elems);
-            }
-
-            // Array of elements
-            if (isCollection(selector)) {
-                var arr = selector;
-                var elems = unique(
-                    [].concat(this.get(), _.toArray(arr))
-                );
-                order.sort(elems);
-                return D(elems);
-            }
-
-            // Single element
-            if (isWindow(selector) || isDocument(selector) || isElement(selector)) {
-                var elem = selector;
-                var elems = unique(
-                    [].concat(this.get(), [ elem ])
-                );
-                order.sort(elems);
-                return D(elems);
-            }
-
-            // fallback
-            return D(this);
-        },
-
-        remove: function(selector) {
-            if (isString(selector)) {
-                if (selector === '') { return; }
-                var arr = selectorFilter(this, selector);
-                remove(arr);
-                return this;
-            }
-
-            // fallback
-            remove(this);
-            return this;
-        },
-
-        detach: function(selector) {
-            if (isString(selector)) {
-                if (selector === '') { return; }
-                var arr = selectorFilter(this, selector);
-                detach(arr);
-                return this;
-            }
-
-            // fallback
-            detach(this);
+    append: function(value) {
+        if (isHtml(value)) {
+            appendPrependMergeArray(this, parser(value), append);
             return this;
         }
+
+        if (isString(value) || isNumber(value)) {
+            appendPrependElemToArray(this, stringToFragment(value), append);
+            return this;
+        }
+
+        if (isFunction(value)) {
+            var fn = value;
+            appendPrependFunc(this, fn, append);
+            return this;
+        }
+
+        if (isElement(value)) {
+            var elem = value;
+            appendPrependElemToArray(this, elem, append);
+            return this;
+        }
+
+        if (isCollection(value)) {
+            var arr = value;
+            appendPrependMergeArray(this, arr, append);
+            return this;
+        }
+    },
+
+    before: function(element) {
+        var target = this[0];
+        if (!target) { return this; }
+
+        var parent = target.parentNode;
+        if (!parent) { return this; }
+
+
+        if (isElement(element) || isString(element)) {
+            element = D(element);
+        }
+
+        if (isD(element)) {
+            element.each(function() {
+                parent.insertBefore(this, target);
+            });
+        }
+
+        // fallback
+        return this;
+    },
+
+    insertBefore: function(target) {
+        if (!target) { return this; }
+
+        if (isString(target)) {
+            target = D(target)[0];
+        }
+
+        _.each(this, function(elem) {
+            var parent = elem.parentNode;
+            if (parent) {
+                parent.insertBefore(target, elem.nextSibling);
+            }
+        });
+
+        return this;
+    },
+
+    after: function(element) {
+        var target = this[0];
+        if (!target) { return this; }
+
+        var parent = target.parentNode;
+        if (!parent) { return this; }
+
+        if (isElement(element) || isString(element)) {
+            element = D(element);
+        }
+
+        if (isD(element)) {
+            element.each(function() {
+                parent.insertBefore(this, target.nextSibling);
+            });
+        }
+
+        // fallback
+        return this;
+    },
+
+    insertAfter: function(target) {
+        if (!target) { return this; }
+
+        if (isString(target)) {
+            target = D(target)[0];
+        }
+
+        _.each(this, function(elem) {
+            var parent = elem.parentNode;
+            if (parent) {
+                parent.insertBefore(elem, target);
+            }
+        });
+
+        return this;
+    },
+
+    appendTo: function(d) {
+        if (isD(d)) {
+            d.append(this);
+            return this;
+        }
+
+        // fallback
+        var obj = d;
+        D(obj).append(this);
+        return this;
+    },
+
+    prepend: function(value) {
+        if (isHtml(value)) {
+            appendPrependMergeArray(this, parser(value), prepend);
+            return this;
+        }
+    
+        if (isString(value) || isNumber(value)) {
+            appendPrependElemToArray(this, stringToFragment(value), prepend);
+            return this;
+        }
+    
+        if (isFunction(value)) {
+            var fn = value;
+            appendPrependFunc(this, fn, prepend);
+            return this;
+        }
+    
+        if (isElement(value)) {
+            var elem = value;
+            appendPrependElemToArray(this, elem, prepend);
+            return this;
+        }
+    
+        if (isCollection(value)) {
+            var arr = value;
+            appendPrependMergeArray(this, arr, prepend);
+            return this;
+        }
+
+        // fallback
+        return this;
+    },
+
+    prependTo: function(d) {
+        D(d).prepend(this);
+        return this;
+    },
+
+    empty: function() {
+        var elems = this,
+            idx = 0, length = elems.length;
+        for (; idx < length; idx++) {
+
+            var elem = elems[idx],
+                descendants = elem.querySelectorAll('*'),
+                i = descendants.length,
+                desc;
+            while (i--) {
+                desc = descendants[i];
+                data.remove(desc);
+            }
+
+            elem.innerHTML = '';
+        }
+        return elems;
+    },
+
+    add: function(selector) {
+        var elems = unique(
+            this.get().concat(
+                // string
+                isString(selector) ? D(selector).get() :
+                // collection
+                isCollection(selector) ? _.toArray(selector) :
+                // element
+                isWindow(selector) || isDocument(selector) || isElement(selector) ? [ selector ] : []
+            )
+        );
+        order.sort(elems);
+        return D(elems);
+    },
+
+    remove: function(selector) {
+        if (isString(selector)) {
+            remove(selectorFilter(this, selector));
+            return this;
+        }
+
+        // fallback
+        return remove(this);
+    },
+
+    detach: function(selector) {
+        if (isString(selector)) {
+            detach(selectorFilter(this, selector));
+            return this;
+        }
+
+        return detach(this);
     }
 };

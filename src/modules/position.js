@@ -66,7 +66,6 @@ exports.fn = {
     },
 
     offset: function(posOrIterator) {
-    
         if (!arguments.length) {
             var first = this[0];
             if (!first) { return; }

@@ -2,12 +2,9 @@ var DIV    = require('DIV'),
     create = require('DIV/create'),
     a      = DIV.querySelector('a'),
     select = create('select'),
-    option = select.appendChild(create('option'));
+    option = select.appendChild(create('option')),
 
-var test = function(tagName, testFn) {
-    // Avoid variable references to elements to prevent memory leaks in IE.
-    return testFn(create(tagName));
-};
+    test = (tagName, testFn) => testFn(create(tagName));
 
 module.exports = {
     // Make sure that URLs aren't manipulated
@@ -54,6 +51,3 @@ module.exports = {
         return !!select.querySelector('option[selected]');
     })
 };
-
-// Prevent memory leaks in IE
-DIV = a = select = option = null;

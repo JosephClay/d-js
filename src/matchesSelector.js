@@ -10,6 +10,3 @@ var ELEMENT         = require('NODE_TYPE/ELEMENT'),
 
 module.exports = (elem, selector) =>
     elem.nodeType === ELEMENT ? matchesSelector.call(elem, selector) : false;
-
-// Prevent memory leaks in IE
-DIV = null;
