@@ -4,6 +4,25 @@ var exists      = require('is/exists'),
     isNodeList  = require('is/nodeList'),
     slice       = require('util/slice');
 
+var loop = function(iterator) {
+    return function(obj, iteratee) {
+        if (!obj || !iteratee) { return; }
+
+        var idx = 0, length = obj.length;
+        if (length === +length) {
+            for (idx = 0; idx < length; idx++) {
+                iterator(iteratee, obj[idx], idx, obj);
+            }
+        } else {
+            var keys = Object.keys(obj);
+            for (length = keys.length; idx < length; idx++) {
+                iterator(iteratee, obj[keys[idx]], keys[idx], obj);
+            }
+        }
+        return obj;
+    };
+};
+
 var _ = module.exports = {
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
@@ -165,22 +184,17 @@ var _ = module.exports = {
 
     contains: (arr, item) => arr.indexOf(item) !== -1,
 
-    each: function(obj, iterator) {
-        if (!obj || !iterator) { return; }
+    jqEach: loop(function(fn, value, keyIndex, collection) {
+        fn.call(value, keyIndex, value, collection);
+    }),
 
-        var idx = 0, length = obj.length;
-        if (length === +length) {
-            for (idx = 0; idx < length; idx++) {
-                iterator(obj[idx], idx, obj);
-            }
-        } else {
-            var keys = Object.keys(obj);
-            for (length = keys.length; idx < length; idx++) {
-                iterator(obj[keys[idx]], keys[idx], obj);
-            }
-        }
-        return obj;
-    },
+    dEach: loop(function(fn, value, keyIndex, collection) {
+        fn.call(value, value, keyIndex, collection);
+    }),
+
+    each: loop(function(fn, value, keyIndex) {
+        fn(value, keyIndex);
+    }),
 
     merge: function(first, second) {
         var length = second.length,

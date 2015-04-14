@@ -1,7 +1,7 @@
-var D       = require('D'),
+var _       = require('_'),
+    D       = require('D'),
     exists  = require('is/exists'),
     slice   = require('util/slice'),
-    forEach = require('./forEach'),
     map     = require('./map');
 
 exports.fn = {
@@ -46,12 +46,12 @@ exports.fn = {
     },
 
     each: function(iterator) {
-        forEach(this, iterator);
+        _.dEach(this, iterator);
         return this;
     },
 
     forEach: function(iterator) {
-        forEach(this, iterator);
+        _.dEach(this, iterator);
         return this;
     }
 };
