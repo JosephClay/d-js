@@ -3,8 +3,6 @@
  * Adapted from Sizzle.js
  */
 var tokenCache    = require('cache')(),
-    subqueryCache = require('cache')(),
-
     error = function(selector) {
         if (console && console.error) {
             console.error('d-js: Invalid query selector (caught) "'+ selector +'"');
@@ -50,7 +48,7 @@ var fromCharCode = String.fromCharCode,
         CHILD:  new RegExp('^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(' + WHITESPACE +
             '*(even|odd|(([+-]|)(\\d*)n|)' + WHITESPACE + '*(?:([+-]|)' + WHITESPACE +
             '*(\\d+)|))' + WHITESPACE + '*\\)|)', 'i'),
-        bool:   new RegExp("^(?:checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$", "i")
+        bool:   new RegExp('^(?:checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$', 'i')
     },
 
     // CSS escapes http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
@@ -151,11 +149,7 @@ var fromCharCode = String.fromCharCode,
  * @return {String[]|Number|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing.
  * @private
  */
-var tokenize = function(selector, parseOnly) {
-    if (tokenCache.has(selector)) {
-        return parseOnly ? 0 : tokenCache.get(selector).slice(0);
-    }
-
+var tokenize = function(selector) {
     var /** @type {String} */
         type,
 
@@ -218,13 +212,7 @@ var tokenize = function(selector, parseOnly) {
 
     if (subquery) { subqueries.push(subquery); }
 
-    // Return the length of the invalid excess
-    // if we're just parsing.
-    if (parseOnly) { return soFar.length; }
-
-    if (soFar) { error(selector); return null; }
-
-    return tokenCache.set(selector, subqueries).slice();
+    return soFar ? null : subqueries;
 };
 
 module.exports = {
@@ -234,9 +222,12 @@ module.exports = {
      * @return {String[]|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing the selector.
      */
     subqueries: function(selector) {
-        return subqueryCache.has(selector) ? 
-            subqueryCache.get(selector) : 
-            subqueryCache.put(selector, () => tokenize(selector));
+        var tokens = tokenCache.has(selector) ? 
+            tokenCache.get(selector) : 
+            tokenCache.set(selector, tokenize(selector));
+
+        if (!tokens) { error(selector); return tokens; }
+        return tokens.slice();
     },
 
     isBool: function(name) {
