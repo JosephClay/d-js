@@ -2,44 +2,47 @@ var _        = require('_'),
     isNumber = require('is/number'),
     css      = require('./css');
 
-var getInnerWidth = function(elem) {
-        var width = parseFloat(css.width.get(elem)) || 0;
-
-        return width +
-            (_.parseInt(css.curCss(elem, 'paddingLeft')) || 0) +
-                (_.parseInt(css.curCss(elem, 'paddingRight')) || 0);
+var add = function(arr) {
+        var idx = arr.length,
+            total = 0;
+        while (idx--) {
+            total += (arr[idx] || 0);
+        }
+        return total;
+    },
+    
+    getInnerWidth = function(elem) {
+        return add([
+            parseFloat(css.width.get(elem)),
+            _.parseInt(css.curCss(elem, 'paddingLeft')),
+            _.parseInt(css.curCss(elem, 'paddingRight'))
+        ]);
     },
     getInnerHeight = function(elem) {
-        var height = parseFloat(css.height.get(elem)) || 0;
-
-        return height +
-            (_.parseInt(css.curCss(elem, 'paddingTop')) || 0) +
-                (_.parseInt(css.curCss(elem, 'paddingBottom')) || 0);
+        return add([
+            parseFloat(css.height.get(elem)),
+            _.parseInt(css.curCss(elem, 'paddingTop')),
+            _.parseInt(css.curCss(elem, 'paddingBottom'))
+        ]);
     },
 
     getOuterWidth = function(elem, withMargin) {
-        var width = getInnerWidth(elem);
-
-        if (withMargin) {
-            width += (_.parseInt(css.curCss(elem, 'marginLeft')) || 0) +
-                (_.parseInt(css.curCss(elem, 'marginRight')) || 0);
-        }
-
-        return width +
-            (_.parseInt(css.curCss(elem, 'borderLeftWidth')) || 0) +
-                (_.parseInt(css.curCss(elem, 'borderRightWidth')) || 0);
+        return add([
+            getInnerWidth(elem),
+            withMargin ? _.parseInt(css.curCss(elem, 'marginLeft')) : 0,
+            withMargin ? _.parseInt(css.curCss(elem, 'marginRight')) : 0,
+            _.parseInt(css.curCss(elem, 'borderLeftWidth')),
+            _.parseInt(css.curCss(elem, 'borderRightWidth'))
+        ]);
     },
     getOuterHeight = function(elem, withMargin) {
-        var height = getInnerHeight(elem);
-
-        if (withMargin) {
-            height += (_.parseInt(css.curCss(elem, 'marginTop')) || 0) +
-                (_.parseInt(css.curCss(elem, 'marginBottom')) || 0);
-        }
-
-        return height +
-            (_.parseInt(css.curCss(elem, 'borderTopWidth')) || 0) +
-                (_.parseInt(css.curCss(elem, 'borderBottomWidth')) || 0);
+        return add([
+            getInnerHeight(elem),
+            withMargin ? _.parseInt(css.curCss(elem, 'marginTop')) : 0,
+            withMargin ? _.parseInt(css.curCss(elem, 'marginBottom')) : 0,
+            _.parseInt(css.curCss(elem, 'borderTopWidth')),
+            _.parseInt(css.curCss(elem, 'borderBottomWidth'))
+        ]);
     };
 
 exports.fn = {
