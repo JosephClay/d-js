@@ -190,24 +190,17 @@ var _ = module.exports = {
     each: function(obj, iterator) {
         if (!obj || !iterator) { return; }
 
-        // Array-like
-        if (obj.length !== undefined) {
-            var idx = 0, length = obj.length;
-            for (; idx < length; idx++) {
-                if (iterator(obj[idx], idx) === false) {
-                    break;
-                }
+        var idx = 0, length = obj.length;
+        if (length === +length) {
+            for (idx = 0; idx < length; idx++) {
+                iterator(obj[idx], idx, obj);
+            }
+        } else {
+            var keys = Object.keys(obj);
+            for (length = keys.length; idx < length; idx++) {
+                iterator(obj[keys[idx]], keys[idx], obj);
             }
         }
-        // Plain object
-        else {
-            for (var prop in obj) {
-                if (iterator(obj[prop], prop) === false) {
-                    break;
-                }
-            }
-        }
-
         return obj;
     },
 
