@@ -150,6 +150,7 @@ var _ = module.exports = {
         return r;
     },
 
+    // TODO:
     toArray: function(obj) {
         if (!obj) {
             return [];
@@ -211,5 +212,11 @@ var _ = module.exports = {
         first.length = i;
 
         return first;
+    },
+
+    // pluck
+    // TODO: Check for places this can be applied
+    pluck: function(arr, key) {
+        return _.map(arr, (obj) => obj ? obj[key] : undefined);
     }
 };

@@ -253,13 +253,16 @@ exports.fn = {
     contents: function() {
         return D(
             _.flatten(
-                // TODO: pluck
-                _.map(this, (elem) => elem.childNodes)
+                _.pluck(this, 'childNodes')
             )
         );
     },
 
     index: function(selector) {
+        if (!this.length) {
+            return -1;
+        }
+
         if (isString(selector)) {
             var first = this[0];
             return D(selector).indexOf(first);  
@@ -273,11 +276,7 @@ exports.fn = {
             return this.indexOf(selector[0]);
         }
 
-        // fallback
-        if (!this.length) {
-            return -1;
-        }
-
+        // fallback        
         var first  = this[0],
             parent = first.parentNode;
 
@@ -296,7 +295,7 @@ exports.fn = {
 
         var childElems = parent.children || _.filter(parent.childNodes, (node) => node.nodeType === ELEMENT);
 
-        return [].indexOf.apply(childElems, [ first ]);
+        return [].indexOf.call(childElems, first);
     },
 
     closest: function(selector, context) {

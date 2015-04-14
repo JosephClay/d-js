@@ -1,8 +1,11 @@
 var ELEMENT   = require('NODE_TYPE/ELEMENT'),
     isArray   = require('is/array'),
     isString  = require('is/string'),
-    split     = require('string/split'),
-    isEmpty   = require('string/isEmpty');
+    isEmpty   = require('string/isEmpty'),
+
+    split = function(str) {
+        return str === '' ? [] : str.trim().split(/\s+/g);
+    };
 
 var addClass = function(classList, name) {
         classList.add(name);

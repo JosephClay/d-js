@@ -32,10 +32,5 @@ wait(function() {
     }
 });
 
-module.exports = function(callback) {
-    if (ready) {
-        callback(); return;
-    }
-
-    registration.push(callback);
-};
+module.exports = (callback) =>
+    ready ? callback() : registration.push(callback);

@@ -1,3 +1,4 @@
+// TODO: Only place bi level caching is used now...figure out how to remove
 var cache     = require('cache')(2, true),
     isString  = require('is/string'),
     isArray   = require('is/array'),
@@ -51,6 +52,7 @@ var cache     = require('cache')(2, true),
         cache.remove(id, key);
     };
 
+// TODO: Address API
 module.exports = {
     remove: (elem, str) =>
         str === undefined ? removeAllData(elem) : removeData(elem, str),
@@ -77,12 +79,7 @@ module.exports = {
                 return map;
             }
 
-            if (isElement(elem)) {
-                return getAllData(elem);
-            }
-
-            // fallback
-            return this;
+            return isElement(elem) ? getAllData(elem) : this;
         },
 
         hasData: (elem) =>
@@ -96,8 +93,8 @@ module.exports = {
                 }
 
                 // Remove multiple keys
-                var array = key;
-                var id;
+                var array = key,
+                    id;
                 if (!(id = getId(elem))) { return; }
                 var idx = array.length;
                 while (idx--) {
@@ -105,12 +102,7 @@ module.exports = {
                 }
             }
 
-            if (isElement(elem)) {
-                return removeAllData(elem);
-            }
-
-            // fallback
-            return this;
+            return isElement(elem) ? removeAllData(elem) : this;
         }
     },
 
