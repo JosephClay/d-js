@@ -3,9 +3,9 @@ var _                    = require('_'),
     isFunction           = require('is/function'),
     isString             = require('is/string'),
     isElement            = require('node/isElement'),
+    isNodeName           = require('node/isName'),
     newlines             = require('string/newlines'),
     SUPPORTS             = require('SUPPORTS'),
-    isNodeName           = require('node/isName'),
     Fizzle               = require('Fizzle'),
     sanitizeDataKeyCache = require('cache')();
 

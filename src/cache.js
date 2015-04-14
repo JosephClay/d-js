@@ -1,8 +1,7 @@
-var deleter = function(deletable) {
-    return deletable ? 
+var deleter = (deletable) =>
+    deletable ? 
         function(store, key) { delete store[key]; } :
         function(store, key) { store[key] = undefined; };
-};
 
 var getterSetter = function(deletable) {
     var store = {},
