@@ -1,116 +1,67 @@
-var _         = require('_'),
-    ELEMENT   = require('NODE_TYPE/ELEMENT'),
+var ELEMENT   = require('NODE_TYPE/ELEMENT'),
     isArray   = require('is/array'),
     isString  = require('is/string'),
     split     = require('string/split'),
     isEmpty   = require('string/isEmpty');
 
-var hasClass = function(elem, name) {
-        return !!elem.classList && elem.classList.contains(name);
+var addClass = function(classList, name) {
+        classList.add(name);
     },
 
-    addClasses = function(elem, names) {
-        if (!elem.classList) { return; }
-
-        var len = names.length,
-            idx = 0;
-        for (; idx < len; idx++) {
-            elem.classList.add(names[idx]);
-        }
+    removeClass = function(classList, name) {
+        classList.remove(name);
     },
 
-    removeClasses = function(elem, names) {
-        if (!elem.classList) { return; }
-
-        var len = names.length,
-            idx = 0;
-        for (; idx < len; idx++) {
-            elem.classList.remove(names[idx]);
-        }
+    toggleClass = function(classList, name) {
+        classList.toggle(name);
     },
 
-    toggleClasses = function(elem, names) {
-        if (!elem.classList) { return; }
-
-        var len = names.length,
-            idx = 0;
-        for (; idx < len; idx++) {
-            elem.classList.toggle(names[idx]);
+    doubleClassLoop = function(elems, names, method) {
+        var idx = elems.length,
+            elem;
+        while (idx--) {
+            elem = elems[idx];
+            if (elem.nodeType !== ELEMENT) { continue; }
+            var len = names.length,
+                i = 0,
+                classList = elem.classList;
+            for (; i < len; i++) {
+                method(classList, names[i]);
+            }
         }
-    };
+        return elems;
+    },
 
-var _doAnyElemsHaveClass = function(elems, name) {
-        var elemIdx = elems.length;
-        while (elemIdx--) {
-            if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            if (hasClass(elems[elemIdx], name)) { return true; }
+    doAnyElemsHaveClass = function(elems, name) {
+        var idx = elems.length;
+        while (idx--) {
+            if (elems[idx].nodeType !== ELEMENT) { continue; }
+            if (elems[idx].classList.contains(name)) { return true; }
         }
         return false;
     },
 
-    _addClasses = function(elems, names) {
-        // Support array-like objects
-        if (!isArray(names)) { names = _.toArray(names); }
-        var elemIdx = elems.length;
-        while (elemIdx--) {
-            if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            addClasses(elems[elemIdx], names);
+    removeAllClasses = function(elems) {
+        var idx = elems.length;
+        while (idx--) {
+            if (elems[idx].nodeType !== ELEMENT) { continue; }
+            elems[idx].className = '';
         }
-    },
-
-    _removeClasses = function(elems, names) {
-        // Support array-like objects
-        if (!isArray(names)) { names = _.toArray(names); }
-        var elemIdx = elems.length;
-        while (elemIdx--) {
-            if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            removeClasses(elems[elemIdx], names);
-        }
-    },
-
-    _removeAllClasses = function(elems) {
-        var elemIdx = elems.length;
-        while (elemIdx--) {
-            if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            elems[elemIdx].className = '';
-        }
-    },
-
-    _toggleClasses = function(elems, names) {
-        // Support array-like objects
-        if (!isArray(names)) { names = _.toArray(names); }
-        var elemIdx = elems.length;
-        while (elemIdx--) {
-            if (elems[elemIdx].nodeType !== ELEMENT) { continue; }
-            toggleClasses(elems[elemIdx], names);
-        }
+        return elems;
     };
 
 exports.fn = {
     hasClass: function(name) {
-        if (name === undefined || !this.length || isEmpty(name) || !name.length) { return this; }
-        return _doAnyElemsHaveClass(this, name);
+        return this.length && !isEmpty(name) ? doAnyElemsHaveClass(this, name) : false;
     },
 
     addClass: function(names) {
+        if (!this.length) { return this; }
+
+        if (isString(names)) { names = split(names); }
+
         if (isArray(names)) {
-            if (!this.length || isEmpty(name) || !name.length) { return this; }
-
-            _addClasses(this, names);
-
-            return this;
-        }
-
-        if (isString(names)) {
-            var name = names;
-            if (!this.length || isEmpty(name) || !name.length) { return this; }
-
-            var names = split(name);
-            if (!names.length) { return this; }
-
-            _addClasses(this, names);
-
-            return this;
+            return names.length ? doubleClassLoop(this, names, addClass) : this;
         }
 
         // fallback
@@ -118,33 +69,16 @@ exports.fn = {
     },
 
     removeClass: function(names) {
+        if (!this.length) { return this; }
+        
         if (!arguments.length) {
-            if (this.length) {
-                _removeAllClasses(this);
-            }
-
-            return this;
+            return removeAllClasses(this);
         }
+
+        if (isString(names)) { names = split(names); }
 
         if (isArray(names)) {
-
-            if (!this.length || isEmpty(names) || !names.length) { return this; }
-
-            _removeClasses(this, names);
-
-            return this;
-        }
-
-        if (isString(names)) {
-            var name = names;
-            if (!this.length || isEmpty(name) || !name.length) { return this; }
-
-            var names = split(name);
-            if (!names.length) { return this; }
-
-            _removeClasses(this, names);
-
-            return this;
+            return names.length ? doubleClassLoop(this, names, removeClass) : this;
         }
     
         // fallback
@@ -152,21 +86,11 @@ exports.fn = {
     },
 
     toggleClass: function(names, shouldAdd) {
-        if (!arguments.length) { return this; }
+        var nameList;
+        if (!arguments.length || !this.length || !(nameList = split(names)).length) { return this; }
 
-        if (!this.length || isEmpty(names) || !names.length) { return this; }
-
-        names = split(names);
-        if (!names.length) { return this; }
-
-        if (shouldAdd === undefined) {
-            _toggleClasses(this, names);
-        } else if (shouldAdd) {
-            _addClasses(this, names);
-        } else {
-            _removeClasses(this, names);
-        }
-
-        return this;
+        return shouldAdd === undefined ? doubleClassLoop(this, nameList, toggleClass) :
+            shouldAdd ? doubleClassLoop(this, nameList, addClass) :
+            doubleClassLoop(this, nameList, removeClass);
     }
 };
