@@ -4,16 +4,13 @@ var SUPPORTS           = require('SUPPORTS'),
     cache              = require('cache')(),
     proxies            = require('./proxy.json');
 
-var pseudoReplace = function(str) {
-    return str.replace(PSEUDO_SELECT, (match) => proxies[match] ? proxies[match] : match);
-};
-
-// IE8-9
-var booleanSelectorReplace = (str) => str.replace(SELECTED_SELECT, '[selected="selected"]');
-
 module.exports = function(str) {
     return cache.has(str) ? cache.get(str) : cache.put(str, function() {
-        var s = pseudoReplace(str);
-        return SUPPORTS.selectedSelector ? s : booleanSelectorReplace(s);
+        // pseudo replace if the captured selector is in the proxies
+        var s = str.replace(PSEUDO_SELECT, (match) => proxies[match] ? proxies[match] : match);
+
+        // boolean selector replacement?
+        // supports IE8-9
+        return SUPPORTS.selectedSelector ? s : s.replace(SELECTED_SELECT, '[selected="selected"]');
     });
 };

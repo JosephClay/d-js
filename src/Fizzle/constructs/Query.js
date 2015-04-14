@@ -1,9 +1,8 @@
-var find = function(query, context) {
+var find = function(selectors, context) {
     var result = [],
-        selectors = query._selectors,
         idx = 0, length = selectors.length;
     for (; idx < length; idx++) {
-        result.push.apply(result, selectors[idx].exec(context));
+        result = result.concat(selectors[idx].exec(context));
     }
     return result;
 };
@@ -17,7 +16,7 @@ Query.prototype = {
         var result = [],
             idx = 0, length = isNew ? 1 : arr.length;
         for (; idx < length; idx++) {
-            result.push.apply(result, find(this, arr[idx]));
+            result = result.concat(find(this._selectors, arr[idx]));
         }
         return result;
     }
