@@ -77,6 +77,7 @@ Clone the repo, run `npm test` and navigate to `test/unit.html`
 - try to get a smaller build with the same feature set
 - identify any missing or non-working methods
 - namespaces for events
+- Selector engine shouldn't need to handle dumb edge cases e.g. `[ foo = "\"a,b,c"]`
 
 #License
 
