@@ -1,8 +1,7 @@
 var _           = require('_'),
-    isArray     = require('is/array'),
+    isArrayLike = require('is/arrayLike'),
     isHtml      = require('is/html'),
     isString    = require('is/string'),
-    isNodeList  = require('is/nodeList'),
     isFunction  = require('is/function'),
     isD         = require('is/D'),
     parser      = require('parser'),
@@ -40,17 +39,17 @@ var Init = function(selector, attrs) {
         return this;
     }
 
-    // Array of Elements, NodeList, or D object
-    // TODO: Could this be arrayLike?
-    if (isArray(selector) || isNodeList(selector) || isD(selector)) {
-        _.merge(this, selector);
-        return this;
-    }
-
     // document ready
     if (isFunction(selector)) {
         onready(selector);
     }
+
+    // Array of Elements, NodeList, or D object
+    if (isArrayLike(selector)) {
+        _.merge(this, selector);
+        return this;
+    }
+
     return this;
 };
 Init.prototype = D.prototype;
