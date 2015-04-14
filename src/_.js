@@ -86,13 +86,13 @@ var _ = module.exports = {
 
     filter: function(arr, iterator) {
         var results = [];
-        if (!arr || !arr.length) { return results; }
-        iterator = iterator || (arg) => !!arg;
 
-        var idx = 0, length = arr.length;
-        for (; idx < length; idx++) {
-            if (iterator(arr[idx], idx)) {
-                results.push(arr[idx]);
+        if (arr && arr.length) {
+            var idx = 0, length = arr.length;
+            for (; idx < length; idx++) {
+                if (iterator(arr[idx], idx)) {
+                    results.push(arr[idx]);
+                }
             }
         }
 
@@ -159,22 +159,11 @@ var _ = module.exports = {
         return arr;
     },
 
-    makeArray: function(arg) {
-        if (!exists(arg)) {
-            return [];
-        }
-        if (arg.slice === slice) {
-            return arg.slice();
-        }
-        if (isArrayLike(arg)) {
-            return slice(arg);
-        }
-        return [ arg ];
-    },
+    makeArray: (arg) =>
+        !exists(arg) ? [] :
+        isArrayLike(arg) ? slice(arg) : [ arg ],
 
-    contains: function(arr, item) {
-        return arr.indexOf(item) !== -1;
-    },
+    contains: (arr, item) => arr.indexOf(item) !== -1,
 
     each: function(obj, iterator) {
         if (!obj || !iterator) { return; }
