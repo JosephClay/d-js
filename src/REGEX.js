@@ -1,3 +1,8 @@
+// having caches isn't actually faster
+// for a majority of use cases for string
+// manipulations
+// http://jsperf.com/simple-cache-for-string-manip
+
     // Matches "-ms-" so that it can be changed to "ms-"
 var TRUNCATE_MS_PREFIX  = /^-ms-/,
 
@@ -30,22 +35,21 @@ var TRUNCATE_MS_PREFIX  = /^-ms-/,
         select:   /^<(?:option)\b/
     };
 
-// having caches isn't actually faster
-// for a majority of use cases for string
-// manipulations
-// http://jsperf.com/simple-cache-for-string-manip
+var test = function(regex) {
+    return (str) => regex.test(str);
+};
+
 module.exports = {
-    // TODO:
-    numNotPx:       (val) => NUM_NON_PX.test(val),
-    position:       (val) => POSITION.test(val),
-    singleTagMatch: (val) => SINGLE_TAG.exec(val),
-    isNoneOrTable:  (str) => NONE_OR_TABLE.test(str),
-    isFocusable:    (str) => TYPE_TEST_FOCUSABLE.test(str),
-    isClickable:    (str) => TYPE_TEST_CLICKABLE.test(str),
-    isStrictId:     (str) => SELECTOR_ID.test(str),
-    isTag:          (str) => SELECTOR_TAG.test(str),
-    isClass:        (str) => SELECTOR_CLASS.test(str),
-    isBoolAttr:     (str) => IS_BOOL_ATTR.test(str),
+    numNotPx:       test(NUM_NON_PX),
+    position:       test(POSITION),
+    singleTagMatch: test(SINGLE_TAG),
+    isNoneOrTable:  test(NONE_OR_TABLE),
+    isFocusable:    test(TYPE_TEST_FOCUSABLE),
+    isClickable:    test(TYPE_TEST_CLICKABLE),
+    isStrictId:     test(SELECTOR_ID),
+    isTag:          test(SELECTOR_TAG),
+    isClass:        test(SELECTOR_CLASS),
+    isBoolAttr:     test(IS_BOOL_ATTR),
 
     camelCase: function(str) {
         return str.replace(TRUNCATE_MS_PREFIX, 'ms-')
