@@ -1,11 +1,11 @@
 var _          = require('_'),
-    newlines   = require('string/newlines'),
+    newlines   = require('util/newlines'),
     exists     = require('is/exists'),
     isString   = require('is/string'),
     isArray    = require('is/array'),
     isNumber   = require('is/number'),
     isFunction = require('is/function'),
-    isNodeName = require('node/isName'),
+    isNodeName = require('is/nodeName'),
     SUPPORTS   = require('SUPPORTS'),
     isElement  = require('nodeType').elem;
 

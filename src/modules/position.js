@@ -4,7 +4,7 @@ var _          = require('_'),
     isAttached = require('is/attached'),
     isFunction = require('is/function'),
     isObject   = require('is/object'),
-    isNodeName = require('node/isName'),
+    isNodeName = require('is/nodeName'),
     DOC_ELEM   = document.documentElement;
 
 var getPosition = function(elem) {
