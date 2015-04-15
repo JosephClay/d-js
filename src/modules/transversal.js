@@ -97,12 +97,15 @@ var getSiblings = function(context) {
         return _.flatten(result);
     },
 
+    // Safely get parent node
+    _getNodeParent = (node) => node && node.parentNode,
+
     _crawlUpNode = function(node, context, stopSelector) {
         var result = [],
             parent = node;
 
-        while ((parent   = getNodeParent(parent))    &&
-               !nodeType.doc(parent)            &&
+        while ((parent   = _getNodeParent(parent))   &&
+               !nodeType.doc(parent)                 &&
                (!context      || parent !== context) &&
                (!stopSelector || !Fizzle.is(stopSelector).match(parent))) {
             if (nodeType.elem(parent)) {
@@ -119,15 +122,10 @@ var getSiblings = function(context) {
             len    = context.length,
             result = [];
         for (; idx < len; idx++) {
-            var parent = getNodeParent(context[idx]);
+            var parent = _getNodeParent(context[idx]);
             if (parent) { result.push(parent); }
         }
         return result;
-    },
-
-    // Safely get parent node
-    getNodeParent = function(node) {
-        return node && node.parentNode;
     },
 
     _prevNextCrawl = function(method) {
