@@ -1,7 +1,7 @@
 d-js
 ====
 
-A jQuery replacement with a footprint of 14.31kB minified and gzipped vs the 29.59kB in jQuery. 
+A jQuery replacement with a footprint of 13.53kB minified and gzipped vs the 29.59kB in jQuery. 
 Made to be a dropin that still works with common jQuery plugins...a nice middleground between 
 [dominus](https://github.com/bevacqua/dominus) and [jQuery](http://jquery.com/).
 
@@ -82,7 +82,6 @@ is going to be a bigger limiting factor than jQuery or d-js's performance.
 - try to get a smaller build with the same feature set
 - identify any missing or non-working methods
 - namespaces for events
-- Selector engine shouldn't need to handle dumb edge cases e.g. `[ foo = "\"a,b,c"]`
 
 #License
 
