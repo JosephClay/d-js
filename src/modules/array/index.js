@@ -1,7 +1,7 @@
 var _       = require('_'),
     D       = require('D'),
-    exists  = require('is/exists'),
     slice   = require('util/slice'),
+    exists  = require('is/exists'),
     map     = require('./map');
 
 exports.fn = {

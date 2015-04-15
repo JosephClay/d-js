@@ -1,12 +1,11 @@
 var _          = require('_'),
     isString   = require('is/string'),
     isFunction = require('is/function'),
-    split      = require('util/split'),
     SUPPORTS   = require('SUPPORTS'),
     nodeType   = require('nodeType'),
     REGEX      = require('REGEX');
 
-var propFix = split('tabIndex|readOnly|className|maxLength|cellSpacing|cellPadding|rowSpan|colSpan|useMap|frameBorder|contentEditable')
+var propFix = _.s('tabIndex|readOnly|className|maxLength|cellSpacing|cellPadding|rowSpan|colSpan|useMap|frameBorder|contentEditable')
     .reduce(function(obj, str) {
         obj[str.toLowerCase()] = str;
         return obj;

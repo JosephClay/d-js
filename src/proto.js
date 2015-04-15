@@ -1,6 +1,5 @@
 var _           = require('_'),
     D           = require('./D'),
-    split       = require('util/split'),
     array       = require('modules/array'),
     selectors   = require('modules/selectors'),
     transversal = require('modules/transversal'),
@@ -16,7 +15,7 @@ var _           = require('_'),
     data        = require('modules/data'),
     events      = require('modules/events');
 
-var arrayProto = split('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter')
+var arrayProto = _.s('length|toString|toLocaleString|join|pop|push|concat|reverse|shift|unshift|slice|splice|sort|some|every|indexOf|lastIndexOf|reduce|reduceRight|map|filter')
     .reduce(function(obj, key) {
         obj[key] = Array.prototype[key];
         return obj;

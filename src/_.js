@@ -24,6 +24,10 @@ var loop = function(iterator) {
 };
 
 var _ = module.exports = {
+    // Breaks even on arrays with 3 items. 3 or more
+    // items starts saving space
+    s: (str) => str.split('|'),
+
     // Flatten that also checks if value is a NodeList
     flatten: function(arr) {
         var idx = 0,
