@@ -11,7 +11,7 @@
         <script src="libs/qunit.js"></script>
 
         <!-- Dependencies -->
-        <script src="../dist/d.js"></script>
+        <script src="d.js"></script>
     </head>
     <body id="body">
         <div id="qunit"></div>
@@ -346,34 +346,10 @@
             }
         </style>
 
-        <script>
-            var q = function() {
-                var elems = [],
-                    idx,
-                    len = arguments.length,
-                    el;
-
-                for (idx = 0; idx < len; idx++) {
-                    el = document.getElementById(arguments[idx]);
-                    if (el) { elems.push(el); }
-                }
-
-                return elems;
-            };
-
-            var t = function(message, selector, args) {
-                var elems = D(selector).get();
-                deepEqual(elems, q.apply(null, args), message + ' (' + selector + ')' );
-            };
-        </script>
-
+        <script src="unit/globals.js"></script>
         <script src="unit/setup.js"></script>
         <script src="unit/core.js"></script>
         <script src="unit/ready.js"></script>
-
-        <!-- TODO: Uncomment when events are implemented -->
-        <!--script src="unit/event.js"></script-->
-
         <script src="unit/traversing.js"></script>
         <script src="unit/attributes.js"></script>
         <script src="unit/classes.js"></script>

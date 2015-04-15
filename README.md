@@ -70,7 +70,11 @@ Not supported:
 - `:input`
 
 ## Tests
-Clone the repo, run `npm test` and navigate to `test/unit.html`
+Clone the repo, and run `npm test`.
+
+## Perf
+Clone the repo, and run `npm run perf`. Please note that most perfs are micro benchmarks...the DOM 
+is going to be a bigger limiting factor than jQuery or d-js's performance.
 
 ## TODO
 - more unit tests

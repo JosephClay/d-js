@@ -66,6 +66,20 @@ gulp.task('dev', function() {
     });
 });
 
+gulp.task('test', function() {
+    return scripts.build({
+            debug:      true,
+            src:        './src/index.js',
+            paths:      ['./src'],
+            standalone: 'D',
+            file:       'd.js',
+            dest:       './dist'
+        }).stream
+        .pipe(header(extended))
+        .pipe(gulp.dest('./test/'))
+        .pipe(gulp.dest('./perf/'));
+});
+
 gulp.task('clean', clean('./dist'));
 gulp.task('footprint', footprint);
 gulp.task('bump', bump);

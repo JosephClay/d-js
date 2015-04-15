@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npm install && gulp dev",
     "build": "npm install && gulp build",
-    "test": "npm install && http-server ./ -o"
+    "test": "npm install && http-server ./test -o -s -p 8080",
+    "perf": "npm install && http-server ./perf -o -s -p 8081"
   },
   "dependencies": {
     "crossvent": "^1.3.1"
