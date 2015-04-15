@@ -130,41 +130,30 @@ var getSiblings = function(context) {
         return node && node.parentNode;
     },
 
-    // TODO: This can be more generic
-    getPrev = function(node) {
-        var prev = node;
-        while ((prev = prev.previousSibling) && !nodeType.elem(prev)) {}
-        return prev;
+    _prevNextCrawl = function(method) {
+        return function(node) {
+            var current = node;
+            while ((current = current[method]) && !nodeType.elem(current)) {}
+            return current;    
+        };
     },
+    getPrev = _prevNextCrawl('previousSibling'),
+    getNext = _prevNextCrawl('nextSibling'),
 
-    getNext = function(node) {
-        var next = node;
-        while ((next = next.nextSibling) && !nodeType.elem(next)) {}
-        return next;
-    },
-
-    // TODO: This can be more generic
-    getPrevAll = function(node) {
-        var result = [],
-            prev   = node;
-        while ((prev = prev.previousSibling)) {
-            if (nodeType.elem(prev)) {
-                result.push(prev);
+    _prevNextCrawlAll = function(method) {
+        return function(node) {
+            var result  = [],
+                current = node;
+            while ((current = current[method])) {
+                if (nodeType.elem(current)) {
+                    result.push(current);
+                }
             }
-        }
-        return result;
+            return result;
+        };
     },
-
-    getNextAll = function(node) {
-        var result = [],
-            next   = node;
-        while ((next = next.nextSibling)) {
-            if (nodeType.elem(next)) {
-                result.push(next);
-            }
-        }
-        return result;
-    },
+    getPrevAll = _prevNextCrawlAll('previousSibling'),
+    getNextAll = _prevNextCrawlAll('nextSibling'),
 
     getPositional = function(getter, d, selector) {
         var result = [],

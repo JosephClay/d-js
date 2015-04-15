@@ -45,6 +45,7 @@ var valHooks = {
             for (; idx < max; idx++) {
                 option = options[idx];
 
+                // TODO: IE6-8 bug. remove
                 // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
                         // Don't return options that are disabled or in a disabled optgroup
