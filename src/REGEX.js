@@ -16,6 +16,7 @@ var TRUNCATE_MS_PREFIX  = /^-ms-/,
     POSITION            = /^(top|right|bottom|left)$/,
     NUM_NON_PX          = new RegExp('^(' + (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source + ')(?!px)[a-z%]+$', 'i'),
     SINGLE_TAG          = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+    IS_BOOL_ATTR        = /^(?:checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$/i,
 
     /**
      * Map of parent tag names to the child tags that require them.
@@ -34,6 +35,7 @@ var TRUNCATE_MS_PREFIX  = /^-ms-/,
 // manipulations
 // http://jsperf.com/simple-cache-for-string-manip
 module.exports = {
+    // TODO:
     numNotPx:       (val) => NUM_NON_PX.test(val),
     position:       (val) => POSITION.test(val),
     singleTagMatch: (val) => SINGLE_TAG.exec(val),
@@ -43,6 +45,7 @@ module.exports = {
     isStrictId:     (str) => SELECTOR_ID.test(str),
     isTag:          (str) => SELECTOR_TAG.test(str),
     isClass:        (str) => SELECTOR_CLASS.test(str),
+    isBoolAttr:     (str) => IS_BOOL_ATTR.test(str),
 
     camelCase: function(str) {
         return str.replace(TRUNCATE_MS_PREFIX, 'ms-')

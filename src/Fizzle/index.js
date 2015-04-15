@@ -12,7 +12,7 @@ var toSelectors = function(str) {
     // Not returning early or doing extra checks as this will
     // noop on the Query and Is level and is the exception
     // instead of the rule
-    var selectors = parse.subqueries(str) || [];
+    var selectors = parse(str) || [];
 
     // Normalize each of the selectors...
     selectors = _.map(selectors, normalize);

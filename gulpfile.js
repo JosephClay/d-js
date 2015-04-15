@@ -36,7 +36,9 @@ gulp.task('build', function() {
             dest:       './dist'
         }).stream
         .pipe(header(extended))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./dist'))
+        .pipe(gulp.dest('./test/'))
+        .pipe(gulp.dest('./perf/'));
 });
 
 gulp.task('minify', function() {
@@ -64,20 +66,6 @@ gulp.task('dev', function() {
         file:       'd.js',
         dest:       './dist'
     });
-});
-
-gulp.task('test', function() {
-    return scripts.build({
-            debug:      true,
-            src:        './src/index.js',
-            paths:      ['./src'],
-            standalone: 'D',
-            file:       'd.js',
-            dest:       './dist'
-        }).stream
-        .pipe(header(extended))
-        .pipe(gulp.dest('./test/'))
-        .pipe(gulp.dest('./perf/'));
 });
 
 gulp.task('clean', clean('./dist'));

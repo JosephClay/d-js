@@ -6,7 +6,7 @@ var _                    = require('_'),
     isNodeName           = require('is/nodeName'),
     newlines             = require('util/newlines'),
     SUPPORTS             = require('SUPPORTS'),
-    Fizzle               = require('Fizzle'),
+    REGEX                = require('REGEX'),
     sanitizeDataKeyCache = require('cache')();
 
 var isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
@@ -35,7 +35,7 @@ var isDataKey = (key) => (key || '').substr(0, 5) === 'data-',
     };
 
 var boolHook = {
-    is: (attrName) => Fizzle.parse.isBool(attrName),
+    is: (attrName) => REGEX.isBoolAttr(attrName),
     get: (elem, attrName) => elem.hasAttribute(attrName) ? attrName.toLowerCase() : undefined,
     set: function(elem, value, attrName) {
         if (value === false) {

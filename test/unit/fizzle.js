@@ -125,7 +125,7 @@
 
     var testQuery = function(expectedArray) {
         var expected = expectedArray.join(', '),
-            actual   = parser.subqueries(expected).join(', ');
+            actual   = parser(expected).join(', ');
 
         strictEqual(expected, actual);
     };
