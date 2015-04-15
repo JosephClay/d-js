@@ -77,24 +77,4 @@
         .test('jQuery.find(selector)', finder($ctx))
         .test('D.find(selector)', finder(dctx));
 
-/*
-    // Text Tests ==========================
-    var htmlStr = '<div><ul><li></li><li></li><li></li></ul></div>';
-    var parseHtml = function(ctx) {
-        return function() {
-            ctx.parseHTML(htmlStr);
-        };
-    };
-    profiler.testSet({
-        'jQuery: parseHtml (small)': parseHtml($),
-        'D: parseHtml (small)': parseHtml(D)
-    });
-
-    htmlStr = document.getElementById('test-html').innerHTML;
-    profiler.testSet({
-        'jQuery: parseHtml (large)': parseHtml($),
-        'D: parseHtml (large)': parseHtml(D)
-    });
-*/
-
 }());
