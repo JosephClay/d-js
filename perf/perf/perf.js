@@ -41,9 +41,11 @@
         .test('d(html)', create(d, html));
 
     var obj = { 'data-num': 0 };
-    profiler('create: context')
+    profiler('create: context (element)')
         .test('jQuery(element, obj)', createWithContext($, body, obj))
-        .test('d(element, obj)', createWithContext(d, body, obj))
+        .test('d(element, obj)', createWithContext(d, body, obj));
+
+    profiler('create: context (html)')
         .test('jQuery(html, obj)', createWithContext($, html, obj))
         .test('d(html, obj)', createWithContext(d, html, obj));
 
@@ -55,9 +57,11 @@
             ctx.parseHTML(str);
         };
     };
-    profiler('parseHtml')
+    profiler('parse html (small)')
         .test('jQuery.parseHtml(small)', parseHtml($, htmlStrSmall))
-        .test('d.parseHtml(small)', parseHtml(d, htmlStrSmall))
+        .test('d.parseHtml(small)', parseHtml(d, htmlStrSmall));
+
+    profiler('parse html (large)')
         .test('jQuery.parseHtml(large)', parseHtml($, htmlStrLarge))
         .test('d.parseHtml(large)', parseHtml(d, htmlStrLarge));
 
