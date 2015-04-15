@@ -26,11 +26,9 @@ var determineMethod = (selector) =>
         // ensure it's an array and not an HTMLCollection
         _.toArray(selection),
 
-    childOrSiblingQuery = function(context, _this) {
+    childOrSiblingQuery = function(context, method, selector) {
         // Child select - needs special help so that "> div" doesn't break
-        var method    = _this.method,
-            selector  = _this.selector,
-            idApplied = false,
+        var idApplied = false,
             newId,
             id;
 
@@ -53,62 +51,59 @@ var determineMethod = (selector) =>
         return processQuerySelection(selection);
     },
 
-    classQuery = function(context, _this) {
-        var method   = _this.method,
-            selector = _this.selector,
-            // Class search, don't start with '.'
-            selector = _this.selector.substr(1);
+    classQuery = function(context, method, selector) {
+        // Class search, don't start with '.'
+        var selector = selector.substr(1),
+            selection = context[method](selector);
 
+        return processQuerySelection(selection);
+    },
+
+    idQuery = function(context, method, selector) {
+        var sel = selector.substr(1),
+            selection = document[method](sel);
+
+        return processQuerySelection(selection);
+    },
+
+    defaultQuery = function(context, method, selector) {
         var selection = context[method](selector);
-
         return processQuerySelection(selection);
     },
 
-    idQuery = function(context, _this) {
-        var method   = _this.method,
-            selector = _this.selector.substr(1),
-            selection = document[method](selector);
-
-        return processQuerySelection(selection);
-    },
-
-    defaultQuery = function(context, _this) {
-        var selection = context[_this.method](_this.selector);
-        return processQuerySelection(selection);
-    },
-
-    determineQuery = (_this) =>
-        _this.isChildOrSiblingSelect ? childOrSiblingQuery :
-        _this.isClassSearch ? classQuery :
-        _this.isIdSearch ? idQuery :
+    determineQuery = (isChildOrSiblingSelect, isClassSearch, isIdSearch) =>
+        isChildOrSiblingSelect ? childOrSiblingQuery :
+        isClassSearch ? classQuery :
+        isIdSearch ? idQuery :
         defaultQuery;
 
-var Selector = module.exports = function(str) {
+module.exports = function Selector(str) {
     var selector                = str.trim(),
         isChildOrSiblingSelect  = selector[0] === '>' || selector[0] === '+',
-        method                  = isChildOrSiblingSelect ? QUERY_SELECTOR_ALL : determineMethod(selector);
+        method                  = isChildOrSiblingSelect ? QUERY_SELECTOR_ALL : determineMethod(selector),
+        isIdSearch              = method === GET_ELEMENT_BY_ID,
+        isClassSearch           = !isIdSearch && method === GET_ELEMENTS_BY_CLASS_NAME;
 
-    this.str                    = str;
-    this.selector               = selector;
-    this.isChildOrSiblingSelect = isChildOrSiblingSelect;
-    this.isIdSearch             = method === GET_ELEMENT_BY_ID;
-    this.isClassSearch          = !this.isIdSearch && method === GET_ELEMENTS_BY_CLASS_NAME;
-    this.method                 = method;
-};
+    var query = determineQuery(
+        isChildOrSiblingSelect,
+        isClassSearch,
+        isIdSearch
+    );
 
-Selector.prototype = {
-    match: function(context) {
-        // No neeed to check, a match will fail if it's
-        // child or sibling
-        return !this.isChildOrSiblingSelect ? matches(context, this.selector) : false;
-    },
+    return {
+        str: str,
 
-    exec: function(context) {
-        var query = determineQuery(this);
+        match: function(context) {
+            // No neeed to check, a match will fail if it's
+            // child or sibling
+            return !isChildOrSiblingSelect ? matches(context, selector) : false;
+        },
 
-        // these are the types we're expecting to fall through
-        // isElement(context) || isNodeList(context) || isCollection(context)
-        // if no context is given, use document
-        return query(context || document, this);
-    }
+        exec: function(context) {
+            // these are the types we're expecting to fall through
+            // isElement(context) || isNodeList(context) || isCollection(context)
+            // if no context is given, use document
+            return query(context || document, method, selector);
+        }
+    };
 };

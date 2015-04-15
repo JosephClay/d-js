@@ -18,7 +18,7 @@ var tokenCache = require('cache')(),
 /**
  * Splits the given comma-separated CSS selector into separate sub-queries.
  * @param  {String} selector Full CSS selector (e.g., 'a, input:focus, div[attr="value"]').
- * @return {String[]|null} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]') or null if there was an error parsing the selector.
+ * @return {String[]} Array of sub-queries (e.g., [ 'a', 'input:focus', 'div[attr="(value1),[value2]"]').
  */
 module.exports = function(selector) {
     var tokens = tokenCache.has(selector) ? 
@@ -26,8 +26,8 @@ module.exports = function(selector) {
         tokenCache.set(selector, tokenize(selector));
 
     if (!tokens) {
-        console.error('d-js: Invalid query selector (caught) "'+ selector +'"');
-        return tokens;
+        console.error(`d-js: Invalid query selector "${selector}"`);
+        return [];
     }
 
     return tokens.slice();

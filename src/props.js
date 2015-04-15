@@ -22,8 +22,6 @@ _.extend(D,
 
     each:    _.jqEach,
     forEach: _.dEach,
-
-    map:     _.map,
     extend:  _.extend,
 
     moreConflict: function() {
