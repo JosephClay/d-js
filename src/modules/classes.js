@@ -1,7 +1,7 @@
-var ELEMENT   = require('NODE_TYPE/ELEMENT'),
+var isElement = require('nodeType').elem,
     isArray   = require('is/array'),
     isString  = require('is/string'),
-    isEmpty   = require('string/isEmpty'),
+    exists    = require('is/exists'),
 
     split = function(str) {
         return str === '' ? [] : str.trim().split(/\s+/g);
@@ -24,7 +24,7 @@ var addClass = function(classList, name) {
             elem;
         while (idx--) {
             elem = elems[idx];
-            if (elem.nodeType !== ELEMENT) { continue; }
+            if (!isElement(elem)) { continue; }
             var len = names.length,
                 i = 0,
                 classList = elem.classList;
@@ -38,7 +38,7 @@ var addClass = function(classList, name) {
     doAnyElemsHaveClass = function(elems, name) {
         var idx = elems.length;
         while (idx--) {
-            if (elems[idx].nodeType !== ELEMENT) { continue; }
+            if (!isElement(elems[idx])) { continue; }
             if (elems[idx].classList.contains(name)) { return true; }
         }
         return false;
@@ -47,7 +47,7 @@ var addClass = function(classList, name) {
     removeAllClasses = function(elems) {
         var idx = elems.length;
         while (idx--) {
-            if (elems[idx].nodeType !== ELEMENT) { continue; }
+            if (!isElement(elems[idx])) { continue; }
             elems[idx].className = '';
         }
         return elems;
@@ -55,7 +55,7 @@ var addClass = function(classList, name) {
 
 exports.fn = {
     hasClass: function(name) {
-        return this.length && !isEmpty(name) ? doAnyElemsHaveClass(this, name) : false;
+        return this.length && exists(name) && name !== '' ? doAnyElemsHaveClass(this, name) : false;
     },
 
     addClass: function(names) {

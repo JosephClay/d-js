@@ -1,17 +1,17 @@
-var _          = require('_'),
-    split      = require('util/split'),
-    exists     = require('is/exists'),
-    isAttached = require('is/attached'),
-    isElement  = require('is/element'),
-    isDocument = require('is/document'),
-    isWindow   = require('is/window'),
-    isString   = require('is/string'),
-    isNumber   = require('is/number'),
-    isBoolean  = require('is/boolean'),
-    isObject   = require('is/object'),
-    isArray    = require('is/array'),
-    DOCUMENT   = require('NODE_TYPE/DOCUMENT'),
-    REGEX      = require('REGEX');
+var _              = require('_'),
+    split          = require('util/split'),
+    exists         = require('is/exists'),
+    isAttached     = require('is/attached'),
+    isElement      = require('is/element'),
+    isDocument     = require('is/document'),
+    isWindow       = require('is/window'),
+    isString       = require('is/string'),
+    isNumber       = require('is/number'),
+    isBoolean      = require('is/boolean'),
+    isObject       = require('is/object'),
+    isArray        = require('is/array'),
+    isDocumentType = require('nodeType').doc,
+    REGEX          = require('REGEX');
 
 var swapMeasureDisplaySettings = {
     display:    'block',
@@ -72,7 +72,7 @@ var hide = function(elem) {
                 return elem.document.documentElement.clientWidth;
             }
 
-            if (elem.nodeType === DOCUMENT) {
+            if (isDocumentType(elem)) {
                 return getDocumentDimension(elem, 'Width');
             }
 
@@ -100,7 +100,7 @@ var hide = function(elem) {
                 return elem.document.documentElement.clientHeight;
             }
 
-            if (elem.nodeType === DOCUMENT) {
+            if (isDocumentType(elem)) {
                 return getDocumentDimension(elem, 'Height');
             }
 

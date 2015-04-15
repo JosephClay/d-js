@@ -3,9 +3,7 @@ var _          = require('_'),
     isFunction = require('is/function'),
     split      = require('util/split'),
     SUPPORTS   = require('SUPPORTS'),
-    TEXT       = require('NODE_TYPE/TEXT'),
-    COMMENT    = require('NODE_TYPE/COMMENT'),
-    ATTRIBUTE  = require('NODE_TYPE/ATTRIBUTE'),
+    nodeType   = require('nodeType'),
     REGEX      = require('REGEX');
 
 var propFix = split('tabIndex|readOnly|className|maxLength|cellSpacing|cellPadding|rowSpan|colSpan|useMap|frameBorder|contentEditable')
@@ -66,10 +64,8 @@ var propHooks = {
 };
 
 var getOrSetProp = function(elem, name, value) {
-    var nodeType = elem.nodeType;
-
     // don't get/set properties on text, comment and attribute nodes
-    if (!elem || nodeType === TEXT || nodeType === COMMENT || nodeType === ATTRIBUTE) {
+    if (!elem || nodeType.text(elem) || nodeType.comment(elem) || nodeType.attr(elem)) {
         return;
     }
 

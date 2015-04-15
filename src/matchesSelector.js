@@ -1,4 +1,4 @@
-var ELEMENT         = require('NODE_TYPE/ELEMENT'),
+var isElement       = require('nodeType').elem,
     DIV             = require('DIV'),
     // Support: IE9+, modern browsers
     matchesSelector = DIV.matches               ||
@@ -10,4 +10,4 @@ var ELEMENT         = require('NODE_TYPE/ELEMENT'),
 
 // only element types supported
 module.exports = (elem, selector) =>
-    elem.nodeType === ELEMENT ? matchesSelector.call(elem, selector) : false;
+    isElement(elem) ? matchesSelector.call(elem, selector) : false;

@@ -1,10 +1,11 @@
-var DOCUMENT_FRAGMENT = require('NODE_TYPE/DOCUMENT_FRAGMENT');
+var isDocumentFragment = require('nodeType').doc_frag;
 
 module.exports = function(elem) {
-    return elem                                         &&
-        elem.ownerDocument                              &&
-        elem !== document                               &&
-        elem.parentNode                                 &&
-        elem.parentNode.nodeType !== DOCUMENT_FRAGMENT  &&
-        elem.parentNode.isParseHtmlFragment !== true;
+    var parent;
+    return elem                                &&
+        elem.ownerDocument                     &&
+        elem !== document                      &&
+        (parent = elem.parentNode)             &&
+        !isDocumentFragment(parent)            &&
+        parent.isParseHtmlFragment !== true;
 };

@@ -1,5 +1,5 @@
-var isWindow = require('is/window'),
-    ELEMENT  = require('NODE_TYPE/ELEMENT');
+var isWindow  = require('is/window'),
+    isElement = require('nodeType').elem;
 
 module.exports = (value) =>
-    value && (value === document || isWindow(value) || value.nodeType === ELEMENT);
+    value && (value === document || isWindow(value) || isElement(value));

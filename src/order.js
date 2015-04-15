@@ -1,5 +1,5 @@
 var isAttached   = require('is/attached'),
-    ELEMENT      = require('NODE_TYPE/ELEMENT'),
+    isElement    = require('nodeType').elem,
     // http://ejohn.org/blog/comparing-document-position/
     // https://developer.mozilla.org/en-US/docs/Web/API/Node.compareDocumentPosition
     CONTAINED_BY = 16,
@@ -91,7 +91,7 @@ exports.contains = function(a, b) {
         return true;
     }
 
-    if (bUp && bUp.nodeType === ELEMENT) {
+    if (isElement(bUp)) {
         // Modern browsers (IE9+)
         if (a.compareDocumentPosition) {
             return isNode(bUp, CONTAINED_BY, a);

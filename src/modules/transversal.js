@@ -1,8 +1,6 @@
 var _                 = require('_'),
     D                 = require('D'),
-    ELEMENT           = require('NODE_TYPE/ELEMENT'),
-    DOCUMENT          = require('NODE_TYPE/DOCUMENT'),
-    DOCUMENT_FRAGMENT = require('NODE_TYPE/DOCUMENT_FRAGMENT'),
+    nodeType          = require('nodeType'),
     isString          = require('is/string'),
     isAttached        = require('is/attached'),
     isElement         = require('is/element'),
@@ -101,14 +99,13 @@ var getSiblings = function(context) {
 
     _crawlUpNode = function(node, context, stopSelector) {
         var result = [],
-            parent = node,
-            nodeType;
+            parent = node;
 
-        while ((parent   = getNodeParent(parent)) &&
-               (nodeType = parent.nodeType) !== DOCUMENT &&
+        while ((parent   = getNodeParent(parent))    &&
+               !nodeType.doc(parent)            &&
                (!context      || parent !== context) &&
                (!stopSelector || !Fizzle.is(stopSelector).match(parent))) {
-            if (nodeType === ELEMENT) {
+            if (nodeType.elem(parent)) {
                 result.push(parent);
             }
         }
@@ -133,23 +130,25 @@ var getSiblings = function(context) {
         return node && node.parentNode;
     },
 
+    // TODO: This can be more generic
     getPrev = function(node) {
         var prev = node;
-        while ((prev = prev.previousSibling) && prev.nodeType !== ELEMENT) {}
+        while ((prev = prev.previousSibling) && !nodeType.elem(prev)) {}
         return prev;
     },
 
     getNext = function(node) {
         var next = node;
-        while ((next = next.nextSibling) && next.nodeType !== ELEMENT) {}
+        while ((next = next.nextSibling) && !nodeType.elem(next)) {}
         return next;
     },
 
+    // TODO: This can be more generic
     getPrevAll = function(node) {
         var result = [],
             prev   = node;
         while ((prev = prev.previousSibling)) {
-            if (prev.nodeType === ELEMENT) {
+            if (nodeType.elem(prev)) {
                 result.push(prev);
             }
         }
@@ -160,7 +159,7 @@ var getSiblings = function(context) {
         var result = [],
             next   = node;
         while ((next = next.nextSibling)) {
-            if (next.nodeType === ELEMENT) {
+            if (nodeType.elem(next)) {
                 result.push(next);
             }
         }
@@ -287,13 +286,13 @@ exports.fn = {
         // isAttached check to pass test "Node without parent returns -1"
         // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
         var attached         = isAttached(first),
-            isParentFragment = parent.nodeType === DOCUMENT_FRAGMENT;
+            isParentFragment = nodeType.doc_frag(parent);
 
         if (!attached && !isParentFragment) {
             return -1;
         }
 
-        var childElems = parent.children || _.filter(parent.childNodes, (node) => node.nodeType === ELEMENT);
+        var childElems = parent.children || _.filter(parent.childNodes, nodeType.elem);
 
         return [].indexOf.call(childElems, first);
     },

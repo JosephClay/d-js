@@ -6,11 +6,12 @@ var _          = require('_'),
     isNumber   = require('is/number'),
     isFunction = require('is/function'),
     isNodeName = require('node/isName'),
-    normalName = require('node/normalizeName'),
     SUPPORTS   = require('SUPPORTS'),
-    ELEMENT    = require('NODE_TYPE/ELEMENT');
+    isElement  = require('nodeType').elem;
 
-var outerHtml = function() {
+var normalNodeName = (elem) => elem.nodeName.toLowerCase(),
+
+    outerHtml = function() {
         return this.length ? this[0].outerHTML : null;
     },
 
@@ -104,9 +105,9 @@ if (!SUPPORTS.checkOn) {
 }
 
 var getVal = function(elem) {
-    if (!elem || (elem.nodeType !== ELEMENT)) { return; }
+    if (!isElement(elem)) { return; }
 
-    var hook = valHooks[elem.type] || valHooks[normalName(elem)];
+    var hook = valHooks[elem.type] || valHooks[normalNodeName(elem)];
     if (hook && hook.get) {
         return hook.get(elem);
     }
@@ -123,12 +124,12 @@ var stringify = (value) =>
     !exists(value) ? '' : (value + '');
 
 var setVal = function(elem, val) {
-    if (elem.nodeType !== ELEMENT) { return; }
+    if (!isElement(elem)) { return; }
 
     // Stringify values
     var value = isArray(val) ? _.map(val, stringify) : stringify(val);
 
-    var hook = valHooks[elem.type] || valHooks[normalName(elem)];
+    var hook = valHooks[elem.type] || valHooks[normalNodeName(elem)];
     if (hook && hook.set) {
         hook.set(elem, value);
     } else {
@@ -169,7 +170,7 @@ exports.fn = {
         if (isFunction(value)) {
             var iterator = value;
             return _.each(this, function(elem, idx) {
-                if (elem.nodeType !== ELEMENT) { return; }
+                if (!isElement(elem)) { return; }
 
                 var value = iterator.call(elem, idx, getVal(elem));
 
