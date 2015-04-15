@@ -97,7 +97,7 @@ var fromCharCode = String.fromCharCode,
             if (match[1].slice(0, 3) === 'nth') {
                 // nth-* requires argument
                 if (!match[3]) {
-                    throw new Error(match[0]);
+                    throw match[0];
                 }
 
                 // numeric x and y parameters for Expr.filter.CHILD
@@ -107,7 +107,7 @@ var fromCharCode = String.fromCharCode,
 
             // other types prohibit arguments
             } else if (match[3]) {
-                throw new Error(match[0]);
+                throw match[0];
             }
 
             return match;
