@@ -35,14 +35,15 @@ var TRUNCATE_MS_PREFIX  = /^-ms-/,
         select:   /^<(?:option)\b/
     };
 
-var test = function(regex) {
-    return (str) => regex.test(str);
+var test = function(reg) {
+    return (str) => reg.test(str);
 };
 
 module.exports = {
+    singleTagMatch: (val) => SINGLE_TAG.exec(val),
+
     numNotPx:       test(NUM_NON_PX),
     position:       test(POSITION),
-    singleTagMatch: test(SINGLE_TAG),
     isNoneOrTable:  test(NONE_OR_TABLE),
     isFocusable:    test(TYPE_TEST_FOCUSABLE),
     isClickable:    test(TYPE_TEST_CLICKABLE),
