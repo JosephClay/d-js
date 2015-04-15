@@ -1,7 +1,7 @@
 d-js
 ====
 
-A jQuery replacement with a footprint of 14.29kB minified and gzipped vs the 29.59kB in jQuery. 
+A jQuery replacement with a footprint of 14.31kB minified and gzipped vs the 29.59kB in jQuery. 
 Made to be a dropin that still works with common jQuery plugins...a nice middleground between 
 [dominus](https://github.com/bevacqua/dominus) and [jQuery](http://jquery.com/).
 
