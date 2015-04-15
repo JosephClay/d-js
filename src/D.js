@@ -8,13 +8,13 @@ var _           = require('_'),
     onready     = require('onready'),
     Fizzle      = require('Fizzle');
 
-var D = module.exports = function(selector, attrs) {
-    return new Init(selector, attrs);
+var Api = module.exports = function(selector, attrs) {
+    return new D(selector, attrs);
 };
 
-isD.set(D);
+isD.set(Api);
 
-var Init = function(selector, attrs) {
+function D(selector, attrs) {
     // nothin
     if (!selector) { return this; }
 
@@ -51,5 +51,5 @@ var Init = function(selector, attrs) {
     }
 
     return this;
-};
-Init.prototype = D.prototype;
+}
+D.prototype = Api.prototype;
