@@ -49,7 +49,7 @@ var getSiblings = function(context) {
     _children = function(elem) {
         var kids = elem.children,
             idx  = 0, len  = kids.length,
-            arr  = new Array(len);
+            arr  = Array(len);
         for (; idx < len; idx++) {
             arr[idx] = kids[idx];
         }

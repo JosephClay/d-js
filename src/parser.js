@@ -24,7 +24,7 @@ module.exports = function(htmlStr) {
 
     var child,
         idx = parent.children.length,
-        arr = new Array(idx);
+        arr = Array(idx);
     while (idx--) {
         child = parent.children[idx];
         parent.removeChild(child);

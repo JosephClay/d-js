@@ -165,7 +165,7 @@ var _ = module.exports = {
             idx = 0;
 
         if (obj.length === +obj.length) {
-            arr = new Array(obj.length);
+            arr = Array(obj.length);
             for (; idx < len; idx++) {
                 arr[idx] = obj[idx];
             }
