@@ -126,7 +126,6 @@ exports.fn = {
             order.sort(result);
         }
         return _.merge(D(), result);
-
     },
 
     filter: function(selector) {

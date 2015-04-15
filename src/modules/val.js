@@ -45,12 +45,10 @@ var valHooks = {
             for (; idx < max; idx++) {
                 option = options[idx];
 
-                // TODO: IE6-8 bug. remove
-                // oldIE doesn't update selected after form reset (#2551)
                 if ((option.selected || idx === index) &&
-                        // Don't return options that are disabled or in a disabled optgroup
-                        (SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
-                        (!option.parentNode.disabled || !isNodeName(option.parentNode, 'optgroup'))) {
+                    // Don't return options that are disabled or in a disabled optgroup
+                    (SUPPORTS.optDisabled ? !option.disabled : option.getAttribute('disabled') === null) &&
+                    (!option.parentNode.disabled || !isNodeName(option.parentNode, 'optgroup'))) {
 
                     // Get the specific value for the option
                     value = valHooks.option.get(option);
@@ -67,7 +65,7 @@ var valHooks = {
 
             return values;
         },
-
+       
         set: function(elem, value) {
             var optionSet, option,
                 options = elem.options,
@@ -155,7 +153,7 @@ exports.fn = {
         }
 
         var first = this[0];
-        return (!first) ? undefined : first.innerHTML;
+        return !first ? undefined : first.innerHTML;
     },
 
     val: function(value) {
@@ -199,6 +197,6 @@ exports.fn = {
             );
         }
 
-        return _.map(this, (elem) => textGet(elem)).join('');
+        return _.map(this, textGet).join('');
     }
 };

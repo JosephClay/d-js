@@ -35,19 +35,18 @@ function D(selector, attrs) {
     // String
     if (isString(selector)) {
         // Selector: perform a find without creating a new D
-        _.merge(this, Fizzle.query(selector).exec(this, true));
-        return this;
+        return _.merge(this, Fizzle.query(selector).exec(this, true));
     }
 
     // document ready
     if (isFunction(selector)) {
         onready(selector);
+        return this;
     }
-
+    
     // Array of Elements, NodeList, or D object
     if (isArrayLike(selector)) {
-        _.merge(this, selector);
-        return this;
+        return _.merge(this, selector);
     }
 
     return this;

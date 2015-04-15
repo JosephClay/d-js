@@ -6,9 +6,7 @@ var cache     = require('cache')(2, true),
     ACCESSOR  = '__D_id__ ',
     uniqueId  = require('util/uniqueId').seed(Date.now()),
 
-    getId = function(elem) {
-        return elem ? elem[ACCESSOR] : null;
-    },
+    getId = (elem) => elem && elem[ACCESSOR],
 
     getOrSetId = function(elem) {
         var id;

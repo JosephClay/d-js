@@ -15,24 +15,26 @@ var getPosition = function(elem) {
 };
 
 var getOffset = function(elem) {
-    var rect = isAttached(elem) ? elem.getBoundingClientRect() : {};
+    var rect = isAttached(elem) ? elem.getBoundingClientRect() : {},
+        body = document.body;
 
     return {
-        top:  (rect.top  + document.body.scrollTop)  || 0,
-        left: (rect.left + document.body.scrollLeft) || 0
+        top:  (rect.top  + body.scrollTop)  || 0,
+        left: (rect.left + body.scrollLeft) || 0
     };
 };
 
 var setOffset = function(elem, idx, pos) {
-    var position = elem.style.position || 'static',
+    var style    = elem.style,
+        position = style.position || 'static',
         props    = {};
 
     // set position first, in-case top/left are set even on static elem
-    if (position === 'static') { elem.style.position = 'relative'; }
+    if (position === 'static') { style.position = 'relative'; }
 
     var curOffset         = getOffset(elem),
-        curCSSTop         = elem.style.top,
-        curCSSLeft        = elem.style.left,
+        curCSSTop         = style.top,
+        curCSSLeft        = style.left,
         calculatePosition = (position === 'absolute' || position === 'fixed') && (curCSSTop === 'auto' || curCSSLeft === 'auto');
 
     if (isFunction(pos)) {
@@ -53,8 +55,8 @@ var setOffset = function(elem, idx, pos) {
     if (exists(pos.top))  { props.top  = (pos.top  - curOffset.top)  + curTop;  }
     if (exists(pos.left)) { props.left = (pos.left - curOffset.left) + curLeft; }
 
-    elem.style.top  = _.toPx(props.top);
-    elem.style.left = _.toPx(props.left);
+    style.top  = _.toPx(props.top);
+    style.left = _.toPx(props.left);
 };
 
 exports.fn = {
@@ -85,7 +87,8 @@ exports.fn = {
             _.map(this, function(elem) {
                 var offsetParent = elem.offsetParent || DOC_ELEM;
 
-                while (offsetParent && (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
+                while (offsetParent && 
+                    (!isNodeName(offsetParent, 'html') && (offsetParent.style.position || 'static') === 'static')) {
                     offsetParent = offsetParent.offsetParent;
                 }
 

@@ -182,29 +182,29 @@ var augmentBorderBoxWidthOrHeight = function(elem, name, extra, isBorderBox, sty
 
         // both box models exclude margin, so add it if we want it
         if (extraIsMargin) {
-            val += _.parseInt(styles[extra + type]) || 0;
+            val += parseInt(styles[extra + type]) || 0;
         }
 
         if (isBorderBox) {
 
             // border-box includes padding, so remove it if we want content
             if (extraIsContent) {
-                val -= _.parseInt(styles['padding' + type]) || 0;
+                val -= parseInt(styles['padding' + type]) || 0;
             }
 
             // at this point, extra isn't border nor margin, so remove border
             if (!extraIsMargin) {
-                val -= _.parseInt(styles['border' + type + 'Width']) || 0;
+                val -= parseInt(styles['border' + type + 'Width']) || 0;
             }
 
         } else {
 
             // at this point, extra isn't content, so add padding
-            val += _.parseInt(styles['padding' + type]) || 0;
+            val += parseInt(styles['padding' + type]) || 0;
 
             // at this point, extra isn't content nor padding, so add border
             if (extraIsPadding) {
-                val += _.parseInt(styles['border' + type]) || 0;
+                val += parseInt(styles['border' + type]) || 0;
             }
         }
     }

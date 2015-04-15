@@ -20,15 +20,12 @@ var _              = require('_'),
 
 var parentLoop = function(iterator) {
     return function(elems) {
-        var idx = 0, length = elems.length,
-            elem, parent;
-        for (; idx < length; idx++) {
-            elem = elems[idx];
+        return _.each(elems, function(elem) {
+            var parent;
             if (elem && (parent = elem.parentNode)) {
                 iterator(elem, parent);
             }
-        }
-        return elems;
+        });
     };
 };
 
@@ -135,12 +132,9 @@ exports.fn = {
     },
 
     before: function(element) {
-        var target = this[0];
-        if (!target) { return this; }
-
-        var parent = target.parentNode;
-        if (!parent) { return this; }
-
+        var target = this[0],
+            parent = target && target.parentNode;
+        if (!target || !parent) { return this; }
 
         if (isElement(element) || isString(element)) {
             element = D(element);
@@ -174,11 +168,9 @@ exports.fn = {
     },
 
     after: function(element) {
-        var target = this[0];
-        if (!target) { return this; }
-
-        var parent = target.parentNode;
-        if (!parent) { return this; }
+        var target = this[0],
+            parent = target && target.parentNode;
+        if (!target || !parent) { return this; }
 
         if (isElement(element) || isString(element)) {
             element = D(element);

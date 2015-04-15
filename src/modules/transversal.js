@@ -105,7 +105,7 @@ var getSiblings = function(context) {
         var result = [],
             parent = node;
 
-        while ((parent   = _getNodeParent(parent))   &&
+        while ((parent = _getNodeParent(parent))     &&
                !nodeType.doc(parent)                 &&
                (!context      || parent !== context) &&
                (!stopSelector || !Fizzle.is(stopSelector).match(parent))) {
@@ -175,16 +175,12 @@ var getSiblings = function(context) {
             idx,
             len = d.length,
             siblings,
-            filter;
-
-        if (selector) {
-            filter = function(sibling) { return Fizzle.is(selector).match(sibling); };
-        }
+            filter = selector ? function(sibling) { return Fizzle.is(selector).match(sibling); } : exists;
 
         for (idx = 0; idx < len; idx++) {
             siblings = getter(d[idx]);
             if (selector) {
-                siblings = _.filter(siblings, filter || exists);
+                siblings = _.filter(siblings, filter);
             }
             result.push.apply(result, siblings);
         }
@@ -246,9 +242,8 @@ exports.fn = {
     },
 
     index: function(selector) {
-        if (!this.length) {
-            return -1;
-        }
+        var outOfBounds = -1;
+        if (!this.length) { return outOfBounds; }
 
         if (isString(selector)) {
             var first = this[0];
@@ -267,18 +262,14 @@ exports.fn = {
         var first  = this[0],
             parent = first.parentNode;
 
-        if (!parent) {
-            return -1;
-        }
+        if (!parent) { return outOfBounds; }
 
         // isAttached check to pass test "Node without parent returns -1"
         // nodeType check to pass "If D#index called on element whose parent is fragment, it still should work correctly"
         var attached         = isAttached(first),
             isParentFragment = nodeType.doc_frag(parent);
 
-        if (!attached && !isParentFragment) {
-            return -1;
-        }
+        if (!attached && !isParentFragment) { return outOfBounds; }
 
         var childElems = parent.children || _.filter(parent.childNodes, nodeType.elem);
 

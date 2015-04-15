@@ -154,7 +154,6 @@ var _ = module.exports = {
         return r;
     },
 
-    // TODO:
     toArray: function(obj) {
         if (!obj) {
             return [];
