@@ -73,7 +73,8 @@ Not supported:
 Clone the repo, run `npm test` and navigate to `test/unit.html`
 
 ## TODO
-- more tests
+- more unit tests
+- more perf tests
 - try to get a smaller build with the same feature set
 - identify any missing or non-working methods
 - namespaces for events
