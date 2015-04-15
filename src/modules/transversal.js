@@ -1,6 +1,7 @@
 var _                 = require('_'),
     D                 = require('D'),
     nodeType          = require('nodeType'),
+    exists            = require('is/exists'),
     isString          = require('is/string'),
     isAttached        = require('is/attached'),
     isElement         = require('is/element'),
@@ -183,7 +184,7 @@ var getSiblings = function(context) {
         for (idx = 0; idx < len; idx++) {
             siblings = getter(d[idx]);
             if (selector) {
-                siblings = _.filter(siblings, filter);
+                siblings = _.filter(siblings, filter || exists);
             }
             result.push.apply(result, siblings);
         }

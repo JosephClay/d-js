@@ -17,7 +17,9 @@ _.extend(D,
     parseHtml: parseHtml,
     parseHTML: parseHtml,
 
+    // expose the selector engine for debugging
     Fizzle:  Fizzle,
+
     each:    _.jqEach,
     forEach: _.dEach,
 
