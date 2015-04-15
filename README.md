@@ -82,7 +82,7 @@ is going to be a bigger limiting factor than jQuery or d-js's performance.
 ## TODO
 - more unit tests
 - more perf tests
-- try to get a smaller build with the same feature set
+- smaller builds, same feature set
 - identify any missing or non-working methods
 - namespaces for events
 
