@@ -1,4 +1,3 @@
-// TODO: Only place bi level caching is used now...figure out how to remove
 var cache     = require('cache')(2, true),
     isString  = require('is/string'),
     isArray   = require('is/array'),
