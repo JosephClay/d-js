@@ -4,10 +4,6 @@ var _       = require('_'),
     exists  = require('is/exists'),
     map     = require('./map');
 
-var each = function(iterator) {
-    return _.dEach(this, iterator);
-};
-
 exports.fn = {
     at: function(index) {
         return this[+index];
@@ -49,6 +45,10 @@ exports.fn = {
         return D(map(this, iterator));
     },
 
-    each: each,
-    forEach: each
+    each: function(iterator) {
+        return _.jqEach(this, iterator);
+    },
+    forEach: function(iterator) {
+        return _.dEach(this, iterator);
+    }
 };
